@@ -1,0 +1,1106 @@
+#!/usr/bin/env python3
+"""
+Creates a NEMESIS compatible *.spx file from a set of target fits cubes and NEMESIS run templates.
+The *.spx file is a combination of the data in all fo the fits cubes.
+
+The `if __name__=='__main__':` statement allows execution of code if the script is called directly.
+eveything else not in that block will be executed when a script is imported. 
+Import statements that the rest of the code relies upon should not be in the if statement, python
+is quite clever and will only import a given package once, but will give it multiple names if it
+has been imported under different names.
+
+Standard library documentation can be found at https://docs.python.org/3/library/
+
+Packages used in this program are:
+	sys
+	os 
+"""
+
+# TODO:
+# import standard library packages
+import sys # https://docs.python.org/3/library/sys.html
+import os # https://docs.python.org/3/library/os.html
+import stat
+import datetime as dt
+import subprocess as sp
+# import 3rd party packages
+from astropy.io import fits
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.patches as ptc
+# import my packages
+import fitscube.fit_region
+import fitscube.process.sinfoni
+import fitscube.exceptions
+import subsample
+import utils as ut # used for convenience functions
+#import fitscube_fit_region
+import nemesis.write
+import nemesis.read
+import slurm
+import fitscube.limb_darkening_synthetic_img
+import nemesis.copy_inputs
+import fitscube.limb_darkening.minnaert
+import fitscube.header
+import plotutils
+
+def main(argv):
+	"""This code will be executed if the script is called directly"""
+	args = parse_args(argv)
+	print(ut.str_wrap_in_tag(ut.str_dict(args), 'ARGUMENTS'))
+	
+	# get a unique name for each nemesis template
+	nemesis_template_unique_path_part = get_unique_path_part([os.path.abspath(x) for x in args['nemesis_templates']])
+	print(nemesis_template_unique_path_part)
+
+	# get a unique name for each target cube
+	tc_unique_path_part = get_unique_path_part([os.path.abspath(os.path.dirname(x)) for x in args['target_cubes']])
+	print(tc_unique_path_part)
+
+	# create a holder for submission scripts
+	slurm_submission_scripts = []
+	
+	"""
+	for i, tc in enumerate(args['target_cubes']):
+		tc_dir = os.path.dirname(tc)
+
+		# create directory tree for spx files
+		ut.pINFO('Operating on target cube "{}"'.format(tc_unique_path_part[i]))
+		
+		# assume we have a cube that conforms to my format
+		with fits.open(tc) as hdul:
+			#hdul = fits.open(tc)
+			wavgrid = fitscube.process.sinfoni.datacube_wavelength_grid(hdul[0])
+			
+			# scale error if we have to, should be separate from pre-processing error
+			hdul = scale_error(hdul, args['data_err_scaling'], show_plots=False)
+
+			# mask out bright spots (clouds)
+			if args['cloud_mask.enable']:
+				if args['cloud_mask.load'] is not None:
+					mask_fits_file = os.path.join(tc_dir, args['cloud_mask.load'])
+					ut.pINFO(f'Loading maks from file "{mask_fits_file}"')
+					with fits.open(mask_fits_file) as mask_hdul:
+						hdul[0].data = np.ma.array(hdul[0].data, mask=mask_hdul[0].data, fill_value=np.nan)
+				else:
+					hdul[0].data = fitscube.limb_darkening_synthetic_img.mask_bright_spots(hdul, 
+										wavgrid=wavgrid, mask_type=args['cloud_mask.mode'],
+										show_plot=args['show_plots'], show_animated_plot=False, 
+										save_plot=False, save_animated_plot=False, 
+										plot_dir=None, frame_dir=None, overwrite=True)
+				if args['cloud_mask.edit']:
+					viewer = fitscube.fit_region.FitscubeMaskPainter(hdul, mask=hdul[0].data.mask)
+					viewer.run()
+					hdul[0].data = viewer.getMaskedData()
+
+				if args['cloud_mask.save'] is not None:
+					mask_hdul = fits.HDUList([fits.PrimaryHDU(hdul[0].data.mask)])
+					mask_hdul.writeto(os.path.join([tc_dir, args['cloud_mask.save']]))
+			else:
+				hdul[0].data = np.ma.array(hdul[0].data, mask=np.zeros_like(hdul[0].data), fill_value=np.nan) # create an empty mask
+			
+			
+			# get data, this is where the majority of the difficult stuff happens, the rest of the code in main is mostly just arranging the data
+			# we get from here.
+			#(containing_folders, nemesis_datas) = get_limb_darkening_data(tc, hdul, wavgrid, args)
+			(containing_folders, nemesis_datas) = create_nemesis_run_ensemble(tc, hdul, args['wavgrid'], args)
+	"""
+	(containing_folders, nemesis_datas) = create_nemesis_run_information_from_target_cube_set(**args)
+
+	# Loop over the nemesis templates to apply to the data we have chosen
+	for j, nemesis_template in enumerate(args['nemesis_templates']):
+		ut.pINFO('Using nemesis template "{}"'.format(nemesis_template))
+	
+		# for each nemesis template and each target cube, create a unique subdirectory where we can store runs
+		tc_top_slurm_dir = os.path.abspath(	os.path.join(	args['slurm_dir'], 
+															nemesis_template_unique_path_part[j]#, 
+															#tc_unique_path_part[i]
+														)
+											)
+	
+		# create a holder for job scripts
+		slurm_job_scripts = []
+	
+		# for each set of data generated by the target cube set
+		for containing_folder, nemesis_data in zip(containing_folders, nemesis_datas):
+			# create directory tree
+			current_slurm_dir = os.path.join(tc_top_slurm_dir, containing_folder)
+			os.makedirs(current_slurm_dir, exist_ok=True)
+			
+			# copy template data
+			#copy_command = [sys.executable, args['copy_nemesis_inputs_path'], nemesis_template, 
+			#				current_slurm_dir, '--from_run_name', 'neptune', '--to_run_name', args['runname'], 
+			#				'--overwrite', 'no']
+			#ut.pINFO(' '.join(copy_command))
+			#sp.run(copy_command)	
+			argl = [	nemesis_template, 
+						current_slurm_dir, 
+						'--src.runname', args['copy.src.runname'], 
+						'--dest.runname', args['runname'],
+						'--src.n_search_parents', args['copy.src.n_search_parents'], 
+						'--nemesis.tags', *args['copy.nemesis.tags'], 
+						]
+			if args['copy.dry_run']:
+				argl.append('--dry_run')
+			if not args['copy.dest.overwrite']:
+				argl.append('--dest.no_overwrite')
+			nemesis.copy_inputs.main(list(map(str, argl)))
+						
+			# overwrite copied template data with our new data	
+			write_nemesis_data(nemesis_data, os.path.join(current_slurm_dir, args['runname']))
+			
+			# create slurm submission scripts in each directory
+			current_slurm_job_script = slurm.create_job_script(current_slurm_dir)
+			slurm_job_scripts.append(current_slurm_job_script)
+			
+			# change permissions of job script to give read,write,execute permission to user,
+			# read permission to group and other
+			os.chmod(current_slurm_job_script, stat.S_IRWXU|stat.S_IRGRP|stat.S_IROTH)
+				
+		
+		# create master submission script at top level of directory
+		tc_slurm_submission_script = slurm.create_submission_script(tc_top_slurm_dir, slurm_job_scripts)
+		slurm_submission_scripts.append(tc_slurm_submission_script)
+		os.chmod(tc_slurm_submission_script, stat.S_IRWXU|stat.S_IRGRP|stat.S_IROTH)
+			
+	for sss in slurm_submission_scripts:
+		ut.pINFO('Slurm Submission Script created at: {}'.format(sss))
+	gss = slurm.create_global_script(args['slurm_dir'], slurm_submission_scripts)
+	ut.pINFO('Global slurm submission script created at: {}'.format(gss))
+	os.chmod(gss, stat.S_IRWXU|stat.S_IRGRP|stat.S_IROTH)
+
+	gsocs = slurm.create_global_output_clean_script(args['slurm_dir'])
+	ut.pINFO('Global slurm clean output script created at: {}'.format(gsocs))
+	os.chmod(gsocs, stat.S_IRWXU|stat.S_IRGRP|stat.S_IROTH)
+
+	notesf = create_notes_file(args['slurm_dir'], args)
+	ut.pINFO('Notes file created at: {}'.format(notesf))
+		
+	ut.pIMPORT('IF RUNS ARE FAILING TRY TO RECOMPILE NEMESIS ON THIS MACHINE')
+
+	return
+
+def create_nemesis_run_information_from_target_cube_set(**args):
+	# get mask file names
+	mask_files = len(args['target_cubes'])*[None]
+	for i, tc in enumerate(args['target_cubes']):
+		tc_dir = os.path.dirname(tc)
+		mask_file = os.path.join(tc_dir, args['cloud_mask.load']) if args['cloud_mask.load'] is not None else None
+		mask_files[i] = mask_file
+
+	# create run information from the combined target cube set (as this is the combined version)
+	if args['limb_darkening.type'] is not None:
+		if args['limb_darkening.type'] == 'minnaert':
+			return(get_combined_minnaert_nemesis_data(mask_files=mask_files, **args))
+		else:
+			ut.pERROR('The limb darkening type {} has not been implemented'.format(args['limb_darkening.type']))
+			raise fitscube.exceptions.FitscubeNotImplementedError
+	else:
+		print(f'ERROR: No ensemble type passed to create data from, exiting...')
+		raise fitscube.exceptions.FitscubeNotImplementedError
+
+	return([],[])
+
+def get_combined_minnaert_nemesis_data(**args):
+	if args['limb_darkening.full_disk']:
+		lat_limits = np.array([[-90,90]])
+	else:
+		lat_limits = get_latitude_limits(args['latitude.min'], args['latitude.max'], args['latitude.n'], args['latitude.bin_width'], args['latitude.bin_step'], args['latitude.micro_step'])
+
+	# hold minnaert data for each cube (and for each slice of the cube)
+	n_tc = len(args['target_cubes'])
+	n_slices = len(lat_limits)
+	# must use this method for creating lists, otherwise the list's rows will all be copies of the
+	# first row and we won't be able to store data because all of the list will be duplicates.
+	IperFl = [[None]*n_tc for _i in range(n_slices)]
+	ul = [[None]*n_tc for _i in range(n_slices)]
+	u_0l = [[None]*n_tc for _i in range(n_slices)]
+	frac_err = [[None]*n_tc for _i in range(n_slices)]
+	print('INFO: Memory addresses of IperFl' +'-'*30)
+	print('\t'+'\t'.join([f'{hex(id(_x))}' for _x in IperFl]))
+	
+
+	wavgrid = None
+
+	for i, (tc, mask_file) in enumerate(zip(args['target_cubes'], args['mask_files'])):
+		# create holders for minnaert data for each slice
+		print(f'INFO: Operating on cube {tc}')
+		with fits.open(tc) as hdul:
+			nz,ny,nx = hdul[args['fitscube.extension']].data.shape
+			if args['cloud_mask.enable'] and (mask_file is not None):
+				with fits.open(mask_file) as mask_hdul:
+					mask_3d = np.array(mask_hdul['PRIMARY'].data, dtype=bool)
+			else:
+				mask_3d = np.zeros((nz,ny,nx), dtype=bool)
+
+			# If the mask is not the same shape as the fitscube, then resize it
+			# we are assuming that mask_3d does not vary with wavelength
+			# so we can just repeat the initial element nz times
+			if hdul[args['fitscube.extension']].data.shape[0] != mask_3d.data.shape[0]:
+				mask_3d = mask_3d[0][None].repeat(nz, axis=0)
+
+			if wavgrid is None:
+				wavgrid = fitscube.header.get_wavelength_grid(hdul[args['fitscube.extension']])
+			
+			# create slices for latitudes
+			print('INFO: Creating slices by latitude')
+			lat_slices = []
+			for lat_lim in lat_limits:
+				#print(f'INFO: latitude limits {lat_lim}')
+				aslice = np.logical_and(lat_lim[0] <= hdul['LATITUDE'].data, hdul['LATITUDE'].data <= lat_lim[1])
+				lat_slices.append(np.broadcast_to(aslice[None,:,:], (nz,ny,nx)))
+			
+			print('INFO: Get minnaert inputs for masked and sliced data')
+			for j, aslice in enumerate(lat_slices):
+				print(f'INFO: i {i} j {j} -----------------------------------------')
+				print(f'mask_3d.shape {mask_3d.shape} mask_3d.dtype {mask_3d.dtype}')
+				print(f'aslice {type(aslice)} aslice.shape {aslice.shape} aslice.dtype {aslice.dtype}')
+				# mask_3d is zeros for pixels that aren't cloud (mask_3d=True means that the pixel should be masked out
+				# aslice=True means that the pixel should be included in the slice
+				masked_and_sliced_region = ~np.logical_and(~mask_3d, aslice)
+				#fitscube.limb_darkening.minnaert.plot_mask(hdul[args['fitscube.extension']].data, masked_and_sliced_region)
+				IperF, u, u_0 = fitscube.limb_darkening.minnaert.get_minnaert_inputs_by_wav_mask_array(hdul, masked_and_sliced_region)
+				IperF, u, u_0 = fitscube.limb_darkening.minnaert.make_arrays_smaller([IperF, u, u_0], reorder_by=u, nout_max=100)
+				print(f'IperF.shape {IperF.shape} u.shape {u.shape} u_0.shape {u_0.shape}')
+				print(f'IperF[{j}] length {len(IperFl[j])}')
+				print(f'Memory addresses IperF {hex(id(IperF))} u {hex(id(u))} u_0 {hex(id(u_0))}')
+				IperFl[j][i] = IperF
+				ul[j][i] = u
+				u_0l[j][i] = u_0
+				frac_err[j][i] = np.abs(hdul['ERROR'].data[~masked_and_sliced_region]/hdul[args['fitscube.extension']].data[~masked_and_sliced_region]).reshape(hdul[args['fitscube.extension']].data.shape[0], -1)
+
+
+	print(f'INFO: Shape of IperFl ({len(IperFl)}, {len(IperFl[0])}) type(IPerFl) {type(IperFl)} type(IperFl[0]) {type(IperFl[0])}')
+
+	print(f'INFO: Memory addresses of IperFl, ul, u_0l')
+	print('\tIperFl'+'-'*30)
+	for j in range(n_slices):
+		print('\t'+'\t'.join([f'{hex(id(_x))}' for _x in IperFl[j]]))
+
+	print('\tu'+'-'*30)
+	for j in range(n_slices):
+		print('\t'+'\t'.join([f'{hex(id(_x))}' for _x in ul[j]]))
+
+	print('\tu_0'+'-'*30)
+	for j in range(n_slices):
+		print('\t'+'\t'.join([f'{hex(id(_x))}' for _x in u_0l[j]]))
+
+	# get minnaert coefficients for each slice
+	#IperFs = [None]*len(lat_limits)
+	#us = [None]*len(lat_limits)
+	#u_0s = [None]*len(lat_limits)
+	IperF0s = [None]*len(lat_limits)
+	ks = [None]*len(lat_limits)
+	log_IperF0s_var =  [None]*len(lat_limits)
+	ks_var =  [None]*len(lat_limits)
+
+	print('INFO: Combining IperF, u, u_0 for each slice')
+	for j in range(0, len(lat_limits)):
+		print(f'INFO: j {j}')
+		print(f'INFO: ul[j] {ul[j]}')
+		# combine IperF for each latitude
+		print(f'INFO: Combining {len(IperFl[j])} IperF arrays')
+		print(f'INFO: {sum([_x.nbytes for _x in IperFl[j]])/(2**20)} Mb')
+		IperFl[j] = np.concatenate(IperFl[j], axis=-1)
+		print(f'INFO: Combining {len(ul[j])} u arrays')
+		print(f'INFO: {sum([_x.nbytes for _x in ul[j]])/(2**20)} Mb')
+		ul[j] = np.concatenate(ul[j], axis=-1)
+		print(f'INFO: Combining {len(u_0l[j])} u_0 arrays')
+		print(f'INFO: {sum([_x.nbytes for _x in u_0l[j]])/(2**20)} Mb')
+		u_0l[j] = np.concatenate(u_0l[j], axis=-1)		
+		print(f'INFO Combining {len(frac_err[j])} frac_err arrays')
+		print(f'INFO: {sum([_x.nbytes for _x in frac_err[j]])/(2**20)} Mb')
+		frac_err[j] = np.nanmean(np.concatenate(frac_err[j], axis=-1), axis=-1)/np.sqrt(len(frac_err[j])) #  average error in region divided by square root of the number of observations
+		# find minnaert coefficents for each latitude
+		print('INFO: Finding minnaert coefficents IperF0 and k')
+		IperF0s[j], ks[j], log_IperF0s_var[j], ks_var[j] = fitscube.limb_darkening.minnaert.get_coefficients_v_wavelength(u_0l[j], ul[j], IperFl[j])
+
+	# DEBUGGING frac_err
+	#print(f'INFO: frac_err length {len(frac_err)} frac_err[0].shape {frac_err[0].shape}')
+	#print(frac_err)
+
+
+	# interpolate to desired wavelength grid
+	print('INFO: Interpolating to desired wavelength grid (if none specified using full grid from data)')
+	new_wavgrid = get_points_in_interval(args['wavgrid.file'], args['wavgrid.min'], args['wavgrid.max'], args['wavgrid.n'], args['wavgrid.step'])
+	if new_wavgrid is not None:
+		# interpolate to new wavgrid
+		for j in range(n_slices):
+			IperF0s[j] = np.interp(new_wavgrid, wavgrid, IperF0s[j], left=np.nan, right=np.nan)
+			ks[j] = np.interp(new_wavgrid, wavgrid, ks[j], left=np.nan, right=np.nan)
+			frac_err[j] = np.interp(new_wavgrid, wavgrid, frac_err[j], left=np.nan, right=np.nan)
+			log_IperF0s_var[j] = np.interp(new_wavgrid, wavgrid, log_IperF0s_var[j], left=np.nan, right=np.nan)
+			ks_var[j] = np.interp(new_wavgrid, wavgrid, ks_var[j], left=np.nan, right=np.nan)
+			
+		wavgrid = new_wavgrid
+
+	"""
+	print('INFO: Plotting IperF0 and k for each slice')
+	# plot stuff so we can see what we're doing
+	f0 = plt.figure()
+	a0 = f0.subplots(2,1, squeeze=False)
+	for j, (IperF0, k) in enumerate(zip(IperF0s, ks)):
+		print(f'INFO: j {j} Memory addresses of IperF0 {hex(id(IperF0))} k {hex(id(k))}')
+		label = f'lat {lat_limits[j][0]} to {lat_limits[j][1]}'
+		a0[0,0].errorbar(wavgrid, IperF0, frac_err[j]*IperF0, label=label)
+		a0[1,0].plot(wavgrid, k, label=label)
+	a0[0,0].set_ylim(min([np.nanmin(_x) for _x in IperF0s]), max([np.max(_x) for _x in IperF0s]))
+	a0[0,0].legend()
+	a0[1,0].legend()
+	plt.show()
+	"""
+	# TODO:
+	# * Try using log_IperF0s_var and ks_var to get the spectral flux error to input into NEMESIS
+
+	print(f'log_IperF0s_var[0].shape {log_IperF0s_var[0].shape}')
+	print(f'u_0.shape {u_0.shape}')
+	print(f'ks[0].shape {ks[0].shape}')
+	print(f'u.shape {u.shape}')
+	#IperF_var_frac = [log_IperF0s_var[j] + (np.log(u_0)*ks_var[j]/(u_0**ks[j]))**2 + (np.log(u)*ks_var[0]/(u**(ks[j]-1)))**2 for j in range(len(ks))]
+
+	# create wavelength vs radiance for each zenith angle to pass to *.spx writer
+	print('INFO: Creating wavelength vs. radinace for each zenith + solar zenith angle combination desired in *.spx file')
+	
+	# TODO: make this a parameter rather than a hard-coded value
+	spx_minnaert_inputs = [(0,0), (61.45,61.45)] # zenith and solar zenith list to create spx inputs for, use 61.45 degrees as otherwise nemesis will have to interpolate 
+	
+	spectral_flux_lats_zens = [[None for i in range(len(spx_minnaert_inputs))] for j in range(n_slices)]
+	spectral_flux_lats_zens_err = [[None for i in range(len(spx_minnaert_inputs))] for j in range(n_slices)]
+
+	def get_IperF_err_from_minnaert_variances(ks_var, log_IperF0s_var, u_in, u0_in, IperF0s, ks):
+		log_u0u_grid = u_in*u0_in
+		log_uIperF = np.log(u*IperF)
+		print(log_u0u_grid)
+		print(log_uIperF)
+		"""
+		worst_log_uIperF_fit = np.zeros((ks_var.shape[0], 4))
+		ks_lims = (ks+np.sqrt(ks_var), ks-np.sqrt(ks_var))
+		log_IperF0s_lims = (np.log(IperF0s)+np.sqrt(log_IperF0s_var), np.log(IperF0s)-np.sqrt(log_IperF0s_var))
+		_i = 0
+		for _k in ks_lims:
+			for _l in log_IperF0s_lims:
+				worst_log_uIperF_fit[:,_i] = _l + _k*log_u0u_grid
+		wf_min = np.nanmin(worst_log_uIperF_fit, axis=-1)
+		wf_max = np.nanmax(worst_log_uIperF_fit, axis=-1)
+		IperF_min = np.exp(wf_min)/u_in
+		IperF_max = np.exp(wf_max)/u_in
+		IperF_err = 0.5*(IperF_max - IperF_min)
+		"""
+		worst_IperF_fit = np.zeros((ks_var.shape[0], 4))
+		ks_lims =  (ks+np.sqrt(ks_var), ks-np.sqrt(ks_var))
+		log_IperF0s_lims = np.array((np.log(IperF0s)+np.sqrt(log_IperF0s_var), np.log(IperF0s)-np.sqrt(log_IperF0s_var)))
+		IperF0s_lims = np.exp(log_IperF0s_lims)
+		_i = 0
+		for _k in ks_lims:
+			for _I in IperF0s_lims:
+				worst_IperF_fit[:,_i] = _I*u0_in**(_k)*u_in**(_k-1)
+		wI_min = np.nanmin(worst_IperF_fit, axis=-1)
+		wI_max = np.nanmax(worst_IperF_fit, axis=-1)
+		IperF_err = 0.5*(wI_max-wI_min)
+
+		return(IperF_err) 
+
+	print(f'INFO: Getting spectral flux values and error form minnaert coefficients')
+	for j in range(n_slices):
+		for i, (zen, sol_zen) in enumerate(spx_minnaert_inputs):
+			u_in = np.cos(zen*np.pi/180)
+			u_0_in = np.cos(sol_zen*np.pi/180)
+			print(f'\tINFO: j {j} i {i}')
+			print(f'\tINFO: IperF0s[{j}][100] {IperF0s[j][100]} ks[{j}][100] {ks[j][100]} u_0_in {u_0_in} u_in {u_in}')
+			spectral_flux_lats_zens[j][i] = fitscube.limb_darkening.minnaert.calculate(IperF0s[j], ks[j], u_0_in, u_in)
+			#spectral_flux_lats_zens_err[j][i] = (log_IperF0s_var[j] + (np.log(u_0_in)*ks_var[j]/(u_0_in**ks[j]))**2 + (np.log(u_in)*ks_var[j]/(u_in**(ks[j]-1)))**2)*spectral_flux_lats_zens[j][i]
+			spectral_flux_lats_zens_err[j][i] = get_IperF_err_from_minnaert_variances(ks_var[j], log_IperF0s_var[j], u_in, u_0_in, IperF0s[j], ks[j])
+
+
+	# apply error scaling if we need to
+	if args['data_err_scaling'] != 1.0:
+		print(f'INFO: Scaling error by a factor of {args["data_err_scaling"]}')
+		for i in range(len(spectral_flux_lats_zens_err)):
+			for j in range(len(spectral_flux_lats_zens_err[i])):
+				spectral_flux_lats_zens_err[i][j] *= args['data_err_scaling']
+	
+	# create file names based on latitude slices to create nemesis runs in, also create spx data
+	print('INFO: Creating folder names and nemesis data for nemesis runs')
+	containing_folders = []
+	nemesis_datas = []
+
+	for j, lats in enumerate(lat_limits):
+		containing_folders.append(f'lat_{lats[0]:+07.2f}_to_{lats[1]:+07.2f}')
+
+		# create spx data
+		spec_fwhm = args['spec_fwhm']
+		mean_lat = 0.5*(lats[0]+lats[1])
+		mean_lon = 0
+		ngeom = len(spx_minnaert_inputs)
+		navs = [1]*ngeom
+		nconvs = [len(wavgrid)]*ngeom
+		fov_averaging_record = []
+		spec_record = []
+		for i, (za, sza) in enumerate(spx_minnaert_inputs):
+			fov_each_geom = []
+			for k in range(navs[i]):
+				fov = (
+					mean_lat,
+					mean_lon,
+					sza, # solar zenith angle same as observer zenith angle if target is neptune
+					za,
+					180, # sun and earth are so close to eachother from Neptune's point of view the light is effectively backscattered
+					1.0
+				)
+				fov_each_geom.append(fov)
+			fov_averaging_record.append(fov_each_geom)
+			spec_data = np.zeros((nconvs[i],3))
+			spec_data[:,0] = wavgrid
+			spec_data[:,1] = spectral_flux_lats_zens[j][i]
+			#spec_data[:,2] = np.abs(frac_err[j]*spectral_flux_lats_zens[j][i]) # error should be +ve
+			#spec_data[:,2] = np.sqrt(IperF_var_frac[j]/(spectral_flux_lats_zens[j][i]**2))
+			spec_data[:,2] = spectral_flux_lats_zens_err[j][i]
+			# telluric error scaling should already be done in the reduction step so don't have to do it here
+			#if args['telluric_error_scaling']:
+			#	spec_data[:,2] *= 1.0/opac_data_interp
+			# make sure error is at least some prescribed fraction of the signal
+			base_frac_err = args['base_fractional_error']*spec_data[:,1]
+			spec_data[:,2] = np.where(spec_data[:,2] > base_frac_err, spec_data[:,2], base_frac_err)
+			# cap maximum error at 10x the value
+			spec_data[:,2] = np.where(spec_data[:,2] > 10*spec_data[:,1], 10*spec_data[:,1], spec_data[:,2])
+				
+			spec_record.append(spec_data)
+		
+		spx_dict = {	'fwhm':spec_fwhm,
+						'latitude':mean_lat,
+						'longitude':mean_lon,
+						'ngeom':ngeom,
+						'nconvs':nconvs,
+						'navs':navs,
+						'fov_averaging_record':fov_averaging_record,
+						'spec_record':spec_record}
+
+		nemesis_datas.append({'spx':spx_dict})
+
+	return(containing_folders, nemesis_datas)
+
+def get_points_in_interval(afile=None, amin=None, amax=None, n=None, step=None):
+	# if we have a file, use it
+	if afile is not None:
+		grid_points = np.loadtxt(afile)
+		return(grid_points)
+	if (amin is not None) and (amax is not None) and (n is not None):
+		grid_points = np.linspace(amin, amax, n)
+		return(grid_points)
+	if (amin is not None) and (amax is not None) and (step is not None):
+		n = (amax - amin)/step
+		grid_points = np.linspace(amin, amax, n)
+		return(grid_points)
+	print('INFO: not enough information to get points in interval, returning None')
+	return(None)
+
+def get_latitude_limits(start, stop, n, bin_width=None, bin_step=None, micro_step=True):
+	lat_range = stop - start
+	latvals = np.linspace(start, stop, n+1)
+	if (bin_step is None) and (bin_width is None):
+		if micro_step:
+			lat_limits = np.zeros((n-1, 2))
+			print(latvals)
+			lat_limits[:,0] = latvals[:-2]
+			lat_limits[:,1] = latvals[2:]
+		else:
+			lat_limits = np.zeros((n, 2))
+			lat_limits[:,0] = latvals[:-1] 
+			lat_limits[:,1] = latvals[1:]
+	elif bin_width is None:
+		lat_delta = (n*bin_width - lat_range)/(n-1)
+		lat_limits[:,0] = np.linspace(start, stop - bin_width, n)
+		lat_limits[:,1] = np.linspace(start + bin_width, stop, n)
+	elif bin_step is None:
+		lat_width = lat_range - n*bin_step
+		lat_limits[0,:] = np.linspace(start, stop - lat_width, n)
+		lat_limits[1,:] = np.linspace(start + bin_step, stop, n)
+	else:
+		# both width and step are given so we would overwite something
+		print('ERROR: both "--latitude.bin_width" and "--latitude.bin_step" are given. Problem is over-specified. Exiting...')
+		sys.exit()
+	return(lat_limits)
+
+	
+def write_nemesis_data(nemesis_data, runname):
+	"""
+	Takes a dictionary consisting of key-value pairs that describe a file type (keys) and the data to write to them
+	(values). 
+	"""
+	rundir = os.path.dirname(runname)
+	if 'spx' in nemesis_data:
+		nemesis.write.spx(nemesis_data['spx'], runname=runname)
+	if 'set' in nemesis_data:
+		nemesis.write.set(nemesis_data['set'], runname=runname)
+
+
+def create_notes_file(topdir, input_args):
+	notesf = os.path.join(topdir, 'notes.txt')
+	with open(notesf, 'w') as f:
+		f.write('This file keeps a record of the command that created this directory structure.\n')
+		f.write('Script "{}"\n'.format(__file__))
+		f.write('Called at {}\n'.format(dt.datetime.now()))
+		f.write('Called using arguments\n')
+		f.write(ut.str_wrap_in_tag(ut.str_dict(input_args), 'ARGUMENTS'))
+		f.write('\n') # ut.str_wrap_in_tag does not include a final newline character
+		f.write('\n')
+	return(notesf)
+
+def gauss_lobatto_quadrature(n, interval_min, interval_max):
+	"""
+	Gets the points and weights for gauss-lobatto quadrature of n points in an interval.
+	"""
+	leg_series_coeffs = np.zeros(n) # goes up to the n-1^th polynomial, currently this is a series of legendre 
+									# polynomials with all coefficients = 0 (e.g. 0*L_0 + 0*L_1 + ... + 0*L_(n-1) )
+	leg_series_coeffs[n-1] = 1 # make the n-1^th polynomial in the series have coefficient = 1
+	# e.g. 0*L_0 + 0*L_1 + ... + 1*L_(n-1)
+
+	# differentiate the legendre polynomial series defined above
+	diff_leg_series_coeffs = np.polynomial.legendre.legder(leg_series_coeffs, m=1)
+
+	# the n quadrature points (x_i's) of gauss-lobatto are the roots of the deriviative of 
+	# the n-1^th Legendre polynomial for the interstital points, and -1, 1 for the endpoints
+	l_roots = np.polynomial.legendre.legroots(diff_leg_series_coeffs)
+
+	quad_points = np.zeros(n)
+	quad_points[0] = -1
+	quad_points[-1] = 1
+	quad_points[1:-1] = l_roots
+
+	# the interstitial weights of the quadrature points are given by
+	# w_i = 2/(n*(n-1)*(L_(n-1)(x_i))^2), where i = 1 -> (n-1)
+	interstitial_weights = 2/(n*(n-1)*(np.polynomial.legendre.legval(l_roots, leg_series_coeffs))**2)
+	# the weights of the endpoints are given by
+	# w_0 = w_n = 2/(n*(n-1))
+	endpoint_weights = [2/(n*(n-1))]*2
+	
+	weights = np.zeros(n)
+	weights[0] = endpoint_weights[0]
+	weights[-1] = endpoint_weights[1]
+	weights[1:-1] = interstitial_weights
+	
+	# gauss-lobatto quadrature is defined on interval [-1,1] so have to adjust for desired interval
+	interval_range = interval_max - interval_min
+	#quad_points += 1
+	#quad_points /=2
+	#quad_points += (interval_min)
+	#quad_points *= (interval_range)
+	
+	quad_points *= interval_range/2
+	quad_points += (interval_min + interval_max)/2
+	
+	return(quad_points, weights)
+
+def gauss_quadrature(n, interval_min, interval_max):
+	"""
+	Get the quadrature points and weights for gaussian quadrature for some interval.
+	"""
+	q_points, weights = np.polynomial.legendre.leggauss(n)
+	q_points *= (interval_max - interval_min)/2
+	q_points += (interval_max + interval_min)/2
+	return(q_points, weights)
+
+def create_nemesis_run_ensemble(tc, hdul, wavgrid, args):
+	"""
+	Creates directory tree names and list of dictonaries that contain nemesis input file data
+	for each latitude swath where the limb-darkening is being calculated, calls a function that does
+	the actual computation.
+
+	# ARGUMENTS #
+		tc
+			Target fits cube that is being operated on
+		hdul
+			Header Data Unit List of the fits cube that is being operated on
+		wavgrid
+			Wavelength points present in the fits cube being operated on
+		args
+			Arguments passed to the program (see 'parse_args()')
+	
+	# RETURNS #
+		containing_folders
+			Paths of folders to create (relative to the top nemesis run folder), these are
+			usually named using a unique identifier that relates to (in this case) the latitude
+			swath included in the sub-run (e.g. "./lat_-10.0_to_-5.0").
+		nemesis_datas
+			List of dictionaries of data need to create various nemesis input files, there should
+			be one dictionary for each 'containing_folder' that contains all the data needed to create
+			the input files for the sub-run in that specific folder.		
+	"""
+	
+	if not (args['limb_darkening.type'] is None):
+		if args['limb_darkening.type'] == 'simple':
+			return(get_limb_darkening_data(tc, hdul, wavgrid, args))
+		elif args['limb_darkening.type'] == 'minnaert':
+			return(get_minnaert_limb_darkening_data(tc, hdul, wavgrid, args))
+		else:
+			ut.pERROR('The limb darkening type {} has not been implemented'.format(args['limb_darkening.type']))
+			raise fitscube.exceptions.FitscubeNotImplementedError
+
+	if args['region.pixel_box'] is not None:
+		# we have a box of pixels to average together
+		if args['region.as_set']:
+			return(get_pixel_box_set_data(tc, hdul, wavgrid, args))
+		else:
+			return(get_pixel_box_average_data(tc, hdul, wavgrid, args))
+	else:
+		print(f'ERROR: No ensemble type passed to create data from, exiting...')
+		raise fitscube.exceptions.FitscubeNotImplementedError
+
+	return([],[]) # if we somehow get here, return empty containers
+
+def get_pixel_box_average_data(tc, hdul, wavgrid, args):
+	"""
+	Get a pixel box from the passed hdul and average it's contents, create appropriate *.spx file
+	"""
+	print('INFO: In "get_pixel_box_average_data()"')
+
+	px_minx, px_miny, px_maxx, px_maxy = args['region.pixel_box']
+	px_num = (px_maxx-px_minx) * (px_maxy-px_miny)
+	aslice = np.s_[px_miny:px_maxy,px_minx:px_maxx] # image plane slice to use
+
+	print(f'INFO: aslice {aslice}')
+	
+	hdul_wavgrid = fitscube.process.sinfoni.datacube_wavelength_grid(hdul[0])
+	if wavgrid is None:
+		wavgrid = hdul_wavgrid
+	if args['telluric_error_scaling']:
+		# load this if we need it later
+		opac_data = np.loadtxt(args['telluric_reference_file'])
+		opac_data_interp = np.interp(wavgrid, opac_data[:,0], opac_data[:,1])			
+	
+	spec_flux_slice = hdul[0].data[:, aslice[0], aslice[1]]
+	spec_flux_slice_mean = np.nanmean(spec_flux_slice, axis=(1,2))
+	spec_flux = np.interp(wavgrid, hdul_wavgrid, spec_flux_slice_mean)
+
+	spec_err_slice = hdul['ERROR'].data[:, aslice[0], aslice[1]]
+	spec_err_slice_mean = np.nanmean(spec_err_slice, axis=(1,2))
+	spec_err = np.interp(wavgrid, hdul_wavgrid, spec_err_slice_mean)
+
+	# reduce error by sqrt(pix_num)
+	spex_err = spec_err/np.sqrt(px_num)
+
+	print(f'INFO: spec_flux_slice_mean {spec_flux_slice_mean}')
+	print(f'INFO: spec_err_slice_mean {spec_err_slice_mean}')
+
+	lats = hdul['LATITUDE'].data[aslice]
+	lons = hdul['LONGITUDE'].data[aslice]
+	zens = hdul['ZENITH'].data[aslice]
+	weights = hdul['DISK_FRAC'].data[aslice]
+	print(f'INFO: lats {lats}')
+	print(f'INFO: lons {lons}')
+	print(f'INFO: zens {zens}')
+	print(f'INFO: weights {weights}')
+	meanlat = np.nanmean(lats)
+	meanlon = np.nanmean(lons)
+	ngeom = 1
+	nconvs = [len(wavgrid)]
+	navs = [lats.flatten().shape[0]]
+	fov_averaging_record = []
+
+	flats = lats.flatten()
+	flons = lons.flatten()
+	fzens = zens.flatten()
+	fweights = weights.flatten()
+	for i in range(ngeom):
+		a_fov = []
+		for j in range(navs[i]):
+			a_fov.append([flats[j], flons[j],fzens[j],fzens[j],180.0,fweights[j]])
+		fov_averaging_record.append(a_fov)
+	spec_record = [np.zeros((nconv,3)) for nconv in nconvs]
+	for i in range(ngeom):
+		spec_record[i][:,0] = wavgrid
+		spec_record[i][:,1] = spec_flux
+		spec_record[i][:,2] = spec_err
+		if args['telluric_error_scaling']:
+			spec_record[i][:,2] *= 1.0/opac_data_interp
+		# make sure error is at least some prescribed fraction of the signal
+		base_frac_err = args['base_fractional_error']*spec_record[i][:,1]
+		spec_record[i][:,2] = np.where(spec_record[i][:,2] > base_frac_err, spec_record[i][:,2], base_frac_err)
+		# cap maximum error at 10x the value
+		spec_record[i][:,2] = np.where(spec_record[i][:,2] > 10*spec_record[i][:,1], 10*spec_record[i][:,1], spec_record[i][:,2])
+				
+
+	# construct *.spx data
+	spx_data = {
+		'fwhm':args['spec_fwhm'],
+		'latitude':meanlat,
+		'longitude':meanlon,
+		'ngeom':ngeom,
+		'nconvs':nconvs,
+		'navs':navs,
+		'fov_averaging_record':fov_averaging_record,
+		'spec_record':spec_record
+		}
+
+	#print(spx_data)
+	containing_folders = [f'./lat_{meanlat:+#07.2f}_lon_{meanlon:+#07.2f}']
+	nemesis_datas=[{'spx':spx_data}]
+	return(containing_folders, nemesis_datas)
+
+def get_pixel_box_set_data(tc, hdul, wavgrid, args):
+	"""
+	Uses a pixel box to create a set of runs, one per pixel
+	"""
+	print('INFO: In "get_pixel_box_set_data()"')
+
+	px_minx, px_miny, px_maxx, px_maxy = args['region.pixel_box']
+	px_num = (px_maxx-px_minx) * (px_maxy-px_miny)
+	aidx = np.mgrid[px_miny:px_maxy,px_minx:px_maxx] # image plane slice to use
+
+	print(f'INFO: aidx {aidx}')
+	
+	hdul_wavgrid = fitscube.process.sinfoni.datacube_wavelength_grid(hdul[0])
+	if wavgrid is None:
+		wavgrid = hdul_wavgrid
+	if args['telluric_error_scaling']:
+		# load this if we need it later
+		opac_data = np.loadtxt(args['telluric_reference_file'])
+		opac_data_interp = np.interp(wavgrid, opac_data[:,0], opac_data[:,1])			
+	
+	#spec_flux_slice = hdul[0].data[:, aslice[0], aslice[1]]
+	#spec_err_slice = hdul['ERROR'].data[:, aslice[0], aslice[1]]
+	#lats = hdul['LATITUDE'].data[aslice]
+	#lons = hdul['LONGITUDE'].data[aslice]
+	#zens = hdul['ZENITH'].data[aslice]
+	#weights = hdul['DISK_FRAC'].data[aslice]
+
+	#nz,ny,nx = spec_flux_slice.shape
+	#print(spec_flux_slice.shape)
+	#print(spec_flux_slice.reshape(nz,ny*nx).shape)
+
+	nemesis_datas = []	
+	containing_folders = []
+	yy, xx = aidx
+	for y, x in zip(yy.flatten(), xx.flatten()):
+		print(y,x)
+		spec_flux_raw = hdul[0].data[:,y,x]
+		print(hdul[0].data.shape)
+		print(spec_flux_raw.shape)
+		spec_flux = np.interp(wavgrid, hdul_wavgrid, hdul[0].data[:, y, x])
+		spec_err = np.interp(wavgrid, hdul_wavgrid, hdul['ERROR'].data[:, y, x])
+		lat = hdul['LATITUDE'].data[y,x]
+		lon = hdul['LONGITUDE'].data[y,x]
+		zen = hdul['ZENITH'].data[y,x]
+		weight = hdul['DISK_FRAC'].data[y,x]
+
+		ngeom = 1
+		nconvs = [len(wavgrid)]
+		navs = [1]
+		fov_averaging_record = []
+
+		for i in range(ngeom):
+			a_fov = []
+			for j in range(navs[i]):
+				a_fov.append([lat, lon,zen,zen,180.0,weight])
+			fov_averaging_record.append(a_fov)
+		spec_record = [np.zeros((nconv,3)) for nconv in nconvs]
+		for i in range(ngeom):
+			spec_record[i][:,0] = wavgrid
+			spec_record[i][:,1] = spec_flux
+			spec_record[i][:,2] = spec_err
+			if args['telluric_error_scaling']:
+				spec_record[i][:,2] *= 1.0/opac_data_interp
+			# make sure error is at least some prescribed fraction of the signal
+			base_frac_err = args['base_fractional_error']*spec_record[i][:,1]
+			spec_record[i][:,2] = np.where(spec_record[i][:,2] > base_frac_err, spec_record[i][:,2], base_frac_err)
+			# cap maximum error at 10x the value
+			spec_record[i][:,2] = np.where(spec_record[i][:,2] > 10*spec_record[i][:,1], 10*spec_record[i][:,1], spec_record[i][:,2])
+					
+
+		# construct *.spx data
+		spx_data = {
+			'fwhm':args['spec_fwhm'],
+			'latitude':lat,
+			'longitude':lon,
+			'ngeom':ngeom,
+			'nconvs':nconvs,
+			'navs':navs,
+			'fov_averaging_record':fov_averaging_record,
+			'spec_record':spec_record
+			}
+		nemesis_datas.append({'spx':spx_data})
+		containing_folders.append(f'./lat_{lat:+#07.2f}_lon_{lon:+#07.2f}')
+
+	return(containing_folders, nemesis_datas)
+
+def read_zenX_file(zenfile):
+	from io import StringIO
+	# have to quickly hack 'D' to 'E' as FORTRAN uses D to represent 10^X for doubles
+	with open(zenfile, 'r') as f:
+		data = ''.join(f.read()).replace('D','E')
+	newf = StringIO(data)
+	return(np.loadtxt(newf, skiprows=1,usecols=0))
+
+def scale_error(hdul, factor, show_plots=True):
+	# scale error
+	if show_plots:
+		f1, a1 = make_fig_axes(2,2,4)
+		nz,ny,nx = hdul[0].data.shape
+		wavgrid = fitscube.process.sinfoni.datacube_wavelength_grid(hdul[0])
+		i, j = (int(nx/2), int(ny/2))
+		ylims = (np.nanmin(hdul[0].data[:,j,i]), np.nanmax(hdul[0].data[:,j,i]))
+		a1[0].plot(wavgrid, hdul[0].data[:,j,i])
+		a1[0].plot(wavgrid, hdul[1].data[:,j,i])
+		a1[0].set_title('full error before scaling')
+		a1[0].set_ylim(ylims)
+
+		a1[1].plot(wavgrid, hdul[0].data[:,j,i])
+		a1[1].plot(wavgrid, hdul[11].data[:,0,0])
+		a1[1].set_title('small error before scaling')
+		a1[1].set_ylim(ylims)
+
+	hdul['ERROR'].data *= factor # hdul[1]
+	hdul['ERROR_VS_SPECTRAL'].data *= factor # hdul[11]
+
+	if show_plots:
+		a1[2].plot(wavgrid, hdul[0].data[:,j,i])
+		a1[2].plot(wavgrid, hdul[1].data[:,j,i])
+		a1[2].set_title('full error after scaling')
+		a1[2].set_ylim(ylims)
+
+		a1[3].plot(wavgrid, hdul[0].data[:,j,i])
+		a1[3].plot(wavgrid, hdul[11].data[:,0,0])
+		a1[3].set_title('small error after scaling')
+		a1[3].set_ylim(ylims)
+		plt.show()
+
+	return(hdul)
+
+def spectral_scale_error(hdul, spectral_factor, show_plots=True):
+	# spectral_factor - an array that has the same number of entries as hdul[1] and hdul[11] has wavelengths
+	# 					applies a spectrally varying factor
+	if show_plots:
+		f1, a1 = make_fig_axes(2,2,4)
+		nz,ny,nx = hdul[0].data.shape
+		wavgrid = fitscube.process.sinfoni.datacube_wavelength_grid(hdul[0])
+		i, j = (int(nx/2), int(ny/2))
+		ylims = (np.nanmin(hdul[0].data[:,j,i]), np.nanmax(hdul[0].data[:,j,i]))
+		a1[0].plot(wavgrid, hdul[0].data[:,j,i])
+		a1[0].plot(wavgrid, hdul[1].data[:,j,i])
+		a1[0].set_title('full error before spectral scaling')
+		a1[0].set_ylim(ylims)
+
+		a1[1].plot(wavgrid, hdul[0].data[:,j,i])
+		a1[1].plot(wavgrid, hdul[11].data[:,0,0])
+		a1[1].set_title('small error before spectral scaling')
+		a1[1].set_ylim(ylims)
+
+	hdul['ERROR'].data *= spectral_factor[:, None,None]
+	hdul['ERROR_VS_SPECTRAL'].data *= spectral_factor[:,None,None]
+
+	if show_plots:
+		a1[2].plot(wavgrid, hdul[0].data[:,j,i])
+		a1[2].plot(wavgrid, hdul[1].data[:,j,i])
+		a1[2].set_title('full error after spectral scaling')
+		a1[2].set_ylim(ylims)
+
+		a1[3].plot(wavgrid, hdul[0].data[:,j,i])
+		a1[3].plot(wavgrid, hdul[11].data[:,0,0])
+		a1[3].set_title('small error after spectral scaling')
+		a1[3].set_ylim(ylims)
+		plt.show()
+
+	return(hdul)
+
+def telluric_transmittance_to_error_spec_factor(telluric_transmittance_file, wavgrid):
+	ttd = np.loadtxt(telluric_transmittance_file)
+	dw = np.min(wavgrid[1:]-wavgrid[:-1])
+	wg, tt = subsample.conv(ttd[:,0], ttd[:,1], dw, conv_type='norm_top_hat', outgrid=wavgrid)
+	return(1.0/tt)
+
+def make_fig_axes(nx,ny,n,sx=12,sy=12):
+	f1 = plt.figure(figsize=[x/2.54 for x in (sx*nx, sy*ny)])
+	a1 = []
+	for i in range(n):
+		a1.append(f1.add_subplot(ny,nx,i+1))
+	return(f1, a1)
+
+def get_unique_path_part(paths):
+	#print(paths)
+	common_prefix = os.path.commonpath(paths)
+	common_suffix = os.path.commonpath([p[::-1] for p in paths])[::-1]
+	print(common_prefix)
+	print(common_suffix)
+	unique_path_part = []
+	for p in paths:
+		unique_path_part.append('.'+p[len(common_prefix):len(p)-(len(common_suffix))])
+	return(unique_path_part)
+
+def parse_args(argv):
+	"""Parses command line arguments, see https://docs.python.org/3/library/argparse.html"""
+	import argparse as ap
+	# =====================
+	# FORMATTER INFORMATION
+	# ---------------------
+	# A formatter that inherits from multiple formatter classes has all the attributes of those formatters
+	# see https://docs.python.org/3/library/argparse.html#formatter-class for more information on what each
+	# of them do.
+	# Quick reference:
+	# ap.RawDescriptionHelpFormatter -> does not alter 'description' or 'epilog' text in any way
+	# ap.RawTextHelpFormatter -> Maintains whitespace in all help text, except multiple new lines are treated as one
+	# ap.ArgumentDefaultsHelpFormatter -> Adds a string at the end of argument help detailing the default parameter
+	# ap.MetavarTypeHelpFormatter -> Uses the type of the argument as the display name in help messages
+	# =====================	
+	class RawDefaultTypeFormatter(ap.RawDescriptionHelpFormatter, ap.ArgumentDefaultsHelpFormatter, ap.MetavarTypeHelpFormatter):
+		pass
+	class RawDefaultFormatter(ap.RawDescriptionHelpFormatter, ap.ArgumentDefaultsHelpFormatter):
+		pass
+	class TextDefaultTypeFormatter(ap.RawTextHelpFormatter, ap.ArgumentDefaultsHelpFormatter, ap.MetavarTypeHelpFormatter):
+		pass
+	class TextDefaultFormatter(ap.RawTextHelpFormatter, ap.ArgumentDefaultsHelpFormatter):
+		pass
+
+	#parser = ap.ArgumentParser(description=__doc__, formatter_class = ap.TextDefaultTypeFormatter, epilog='END OF USAGE')
+	# ====================================
+	# UNCOMMENT to enable block formatting
+	# ------------------------------------
+	parser = ap.ArgumentParser	(	description=ut.str_block_indent_raw(ut.str_rationalise_newline_for_wrap(__doc__), wrapsize=79),
+									formatter_class = RawDefaultTypeFormatter,
+									epilog=ut.str_block_indent_raw(ut.str_rationalise_newline_for_wrap('END OF USAGE'), wrapsize=79)
+								)
+	# ====================================
+
+	parser.add_argument('target_cubes', type=str, nargs='+',  help='fitscubes to operate on, ')
+	
+	parser.add_argument('--slurm_dir', type=str, help='Will write slurm submission scripts and directory trees to this directory, cubes will be given a unique directory within this one', 
+						default=os.path.expanduser('~/scratch/slurm/nemesis'))
+
+	# add arguments for plotting
+	plotutils.add_plot_arguments(parser)
+
+	# arguments for filtering target cubes
+	parser.add_argument('--require_relative', type=str, nargs='+', help='If present, will ensure that ALL the files (relative to the target cube) are present before operating', default=[])
+	
+	parser.add_argument('--nemesis_templates', type=str, nargs='+', help='Directory that contains the template files for this nemesis run, will copy supporting files from this location', 
+						default=list(map(os.path.expanduser, ('~/scratch/nemesis_run_results/nemesis_run_templates/neptune/2cloud_ch4_imajrefidx_std/fix_iri_larger_haze_err/02/03',
+													'~/scratch/nemesis_run_results/nemesis_run_templates/neptune/2cloud_ch4_imajrefidx_std/fix_iri_larger_haze_err/02/05',
+													'~/scratch/nemesis_run_results/nemesis_run_templates/neptune/2cloud_ch4_imajrefidx_std/fix_iri_larger_haze_err/02/00'))))
+	parser.add_argument('--telluric_reference_file', type=str, help='A file containing data on atmospheric transmission covering the wavelength range we are interested in',
+						default=os.path.expanduser('~/Documents/reference_data/telluric_features/mauna_kea/sky_transmission/mktrans_zm_30_15.dat'))
+
+	parser.add_argument('--fitscube.extension', type=str, help='Which extension of the target cube to use', default='PRIMARY')
+	parser.add_argument('--data_err_scaling', type=float, help='Scale the error on the data by this value, use this to tune the error for the NEMESIS runs', default=1)
+	parser.add_argument('--error_from_smooth', action='store_true', help='If present, when the spectrum is smoothed will find the standard deviation of (spec - smoothed_spec) and add it to the error')
+
+	parser.add_argument('--zen_output_min', type=float, help='The minimum zenith angle to output', default=0)
+	parser.add_argument('--zen_output_max', type=float, help='The maximum zenith angle to output', default=80)
+	parser.add_argument('--n_zen_quadrature', type=int, help='the number of zenith quadrature points to compute',
+						default=9)
+	parser.add_argument('--which_zens', type=str, choices=['folded','unfolded'], help='Should we unfold or fold zenith angles?', 
+						default='folded')
+	parser.add_argument('--set_file', type=str, help='A <runname>.set file to get quadrature points from')
+	
+	parser.add_argument('--wavgrid.file', type=str, help='A file containing a wavelength grid to interpolate to')
+	parser.add_argument('--wavgrid.n', type=int, help='Number of points in between wavgrid.min and wavgrid.max')
+	parser.add_argument('--wavgrid.min', type=float, help='Lower bound of wavelength grid')
+	parser.add_argument('--wavgrid.max', type=float, help='Upper bound of wavelength grid')
+	parser.add_argument('--wavgrid.step', type=float, help='Step size of wavelength grid')
+
+	parser.add_argument('--spec_fwhm', type=float, help='FWHM of the square box to convolve with the calculated spectrum. -ve if providing a *.fil file, 0 if using channel integrated K-tables, +ve otherwise', default=0)
+
+	parser.add_argument('--runname', type=str, help='name of nemesis run to output to, combined with slurm_dir and unique name', default='./neptune')
+
+	# get type of region/retrieval we want to work on
+	parser.add_argument('--limb_darkening.type', type=str, choices=('simple', 'minnaert', 'none'), help='What type of limb darkening should we create an run-ensemble for?', default='none')	
+	parser.add_argument('--limb_darkening.full_disk', action='store_true', help='If present, will use the complete disk as the region to compute limb darkening over')
+	parser.add_argument('--limb_darkening.max_zen', type=float, nargs='?', const=60.0,  help='If present, will use a restricted set of zenith angles to compute minnaert limb darkening parameters.')
+	
+	# get the retrieval region to operate on
+	parser.add_argument('--region.pixel_box', type=int, nargs=4, help='If present will grab a range of pixels specified in the format "minx,miny,maxx,maxy". Note that due to differences with 0 vs 1 indexing, the corresponding pixel region in QFitsView will have 1 added to each value.', default=None)
+
+	# how is the region interpreted?
+	parser.add_argument('--region.as_set', action='store_true', help='If present, will treat a region as a set of pixels to run individual retrievals for instead of averaging them together')
+
+	# if we are slicing via latitude, how is that working?
+	parser.add_argument('--latitude.min', type=float, help='Minimum latitude to consider', default=-90)
+	parser.add_argument('--latitude.max', type=float, help='Maximum latitude to consider', default=90)
+	parser.add_argument('--latitude.n', type=int, help='Number of chunks to split latitude into (NOT the number of boundaries), if using "micro stepping" will actually create n-1 bins but there will be n+1 bin boundaries.', default=36)
+	parser.add_argument('--latitude.micro_step', action='store_true', help='If present, latitude bins will be "micro stepped", i.e. their step with be half the bin width (0->10, 5->15, 10->20, etc.). If not present, bin step will be the same as the bin width (0->10, 10->20, 20->30, etc.).')
+	parser.add_argument('--latitude.bin_step', type=float, help='step between latitude bins (leave unset to automatically work it out). Note, if both this and "--latitude.bin_width" are present, will ignore "--latitude.n" and "--latitude.micro_step".', default=None)
+	parser.add_argument('--latitude.bin_width', type=float, help='width of latitude bins (leave unset to automatically work it out). Note, if both this and "--latitude.bin_step" are present, will ignore "--latitude.n" and "--latitude.micro_step".', default=None)
+
+	parser.add_argument('--no_telluric_error_scaling', action='store_false', dest='telluric_error_scaling', 
+																help='If present, *.spx files that are created will not have their error scaled by atmospheric transmission')
+	parser.add_argument('--base_fractional_error', type=float, help='The smallest fraction of the spectral radiance the error on the spectral radiance can be. Set to 0 to disable.', default=0.1)
+
+	# arguments that control cloud masking
+	parser.add_argument('--cloud_mask.disable', action='store_false', dest='cloud_mask.enable', help='If present, will not mask out cloulds before calculating limb darkening')
+	parser.add_argument('--cloud_mask.load', nargs='?', type=str, default=None, const='./mask.fits', help='If present will load a mask from the file "./mask.fits" relative to the target cube instead of creating one using "--cloud_mask.mode". My pass a different filename')
+	
+	parser.add_argument('--cloud_mask.save', nargs='?', type=str, default=None, const='./mask.fits', help='If present, will save a mask in the file "./mask.fits" that is relative to the target cube. May pass a different filename')
+	cloud_mask_mode_choices=['adaptive', 'additive', 'static', 'manual']
+	parser.add_argument('--cloud_mask.mode', type=str, default='manual', choices=cloud_mask_mode_choices, help=f'How is the cloud mask calculated, choices are {cloud_mask_mode_choices}')
+	parser.add_argument('--cloud_mask.edit', action='store_true', help='If present will edit any loaded or created mask using the manual mask editor.')
+
+	# arguments that control copying from "nemesis_templates"
+	parser.add_argument('--copy.src.runname', type=str, help='runname of the NEMESIS files to copy to', default='neptune')
+	parser.add_argument('--copy.dest.no_overwrite', action='store_false', dest='copy.dest.overwrite', help='If present, will not overwrite files at destination')
+	parser.add_argument('--copy.src.n_search_parents', type=int, help='Sets the number of parent directories that will be searched for NEMESIS input files not found in the current directory', default=5)
+
+	nemesis_tags = {'LBL':'Layer by layer calcuation',
+					'LIMB':'Calculation is of a limb',
+					'GP':'Calculation is of a giant planet',
+					'REF':'Calcualtion is of a reflectance spectrum',
+					'TRA':'Calculation is of a transit spectrum',
+					'SCA':'Calculation includes scattering',
+					'CHI':'Channel integratons are required',
+					'RFL':'Include extra reflecting layer calculations the output',
+					'VPF':'Include a file that limits specified gases volume mixing ratio by saturation',
+					'RDW':'Includes a file that contains ranked wavelengths, NEMESIS will fit highest ranked wavelengths first, reduces computational time, incompatible with SCA',
+					'ZEN':'Includes a file that specifies where the zenith angle is measured from, if not present zenith angle is measured from bottom of deepest layer'
+					}
+					
+	parser.add_argument('--copy.nemesis.tags', type=str, nargs='+', choices=nemesis_tags.keys(), 
+						help=f'What type of run are you performing (changes files to be copied)\n{ut.str_dict(nemesis_tags)}', default=['SCA','GP','REF'])
+	parser.add_argument('--copy.dry_run', action='store_true', help='If present, will not actually copy files')
+
+
+
+	print(argv)
+
+	# Actually parse arguments
+	parsed_args = vars(parser.parse_args(argv)) # I prefer a dictionary interface
+
+	# ================
+	# Filter arguments
+	# ----------------
+	# filter target cubes to only include those where all required files are present
+	chosen_target_cubes = []
+	for tc in parsed_args['target_cubes']:
+		required_files_present = [os.path.exists(os.path.join(os.path.dirname(tc),req_rel)) for req_rel in parsed_args['require_relative']]
+		if all(required_files_present):
+			chosen_target_cubes.append(os.path.abspath(tc))
+	parsed_args['target_cubes'] = chosen_target_cubes
+
+	# use "--wavgrid_XXX" arguments to find a wavelength grid to interpolate to
+	if parsed_args['wavgrid.file']:
+		parsed_args['wavgrid'] = np.loadtxt(parsed_args['wavgrid.file'], usecols=0)
+	elif not any([x is None for x in (parsed_args['wavgrid.n'],parsed_args['wavgrid.min'],parsed_args['wavgrid.max'])]):
+		parsed_args['wavgrid'] = np.linspace(	parsed_args['wavgrid.min'],
+												parsed_args['wavgrid.max'],parsed_args['wavgrid.n'])
+	elif not any([x is None for x in (parsed_args['wavgrid.step'],
+									parsed_args['wavgrid.min'],
+									parsed_args['wavgrid.max'])]):
+		parsed_args['wavgrid'] = np.arange(	parsed_args['wavgrid.min'], 
+											parsed_args['wavgrid.max']+1E-6*parsed_args['wavgrid.step'], 
+											parsed_args['wavgrid.step'])
+	else:
+		ut.pINFO('Not enough "--wavgrid_XXX" arguments passed to specify a wavelength grid to interpolate to')
+		parsed_args['wavgrid'] = None
+
+	# change "none" as a string to None value when appropriate
+	if parsed_args['limb_darkening.type'].lower()  == 'none':
+		parsed_args['limb_darkening.type'] = None
+	
+	# cull nemesis templates to only include folders
+	temp = []
+	for item in parsed_args['nemesis_templates']:
+		if os.path.isdir(item):
+			temp.append(item)
+	parsed_args['nemesis_templates'] = temp
+	# ================
+
+	return(parsed_args)
+
+if __name__=='__main__':
+	main(sys.argv[1:])

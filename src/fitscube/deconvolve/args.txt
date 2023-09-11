@@ -1,0 +1,594 @@
+################################################################################
+## usage: glue.py [-h] [--ssa.wshape int int] [--output.fits.mode {no_overwrite,overwrite,append,no_output}] [--output.fits.fmt_str None|str] [--output.fits.include_extensions] [--output.argfile [None|str]] [-v] [--!output.plots.show]
+##                [--!output.plots.save] [--!output.plots.dir None|str] [--plot_priority int] [--algorithm.param_file str] [--algorithm.write_param_file str] [--testing.reduce_data_volume] [--testing.exit_after int]
+##                [--algorithm {CleanModified,LucyRichardson,MaximumEntropy}] [--algorithm.CleanModified.n_iter int] [--algorithm.CleanModified.loop_gain float] [--algorithm.CleanModified.threshold float]
+##                [--algorithm.CleanModified.n_positive_iter int] [--algorithm.CleanModified.noise_std float] [--algorithm.CleanModified.rms_frac_threshold float] [--algorithm.CleanModified.fabs_frac_threshold float]
+##                [--algorithm.LucyRichardson.n_iter int] [--algorithm.LucyRichardson.nudge_factor float] [--algorithm.LucyRichardson.strength float] [--algorithm.LucyRichardson.cf_negative_fix] [--algorithm.LucyRichardson.cf_limit float]
+##                [--algorithm.LucyRichardson.cf_uclip float] [--algorithm.LucyRichardson.cf_lclip float] [--algorithm.LucyRichardson.offset_obs] [--algorithm.LucyRichardson.threshold float|None]
+##                [--algorithm.LucyRichardson.fix_nans {interpolate,zero}] [--algorithm.LucyRichardson.pad_observation] [--algorithm.MaximumEntropy.n_iter int] [--algorithm.MaximumEntropy.alpha float]
+##                [--algorithm.MaximumEntropy.rms_frac_threshold float] [--algorithm.MaximumEntropy.fabs_frac_threshold float] [--algorithm.MaximumEntropy.grad_step_size float] [--algorithm.MaximumEntropy.grad_step_multiplier float]
+##                [--algorithm.MaximumEntropy.objf_tol float] [--algorithm.MaximumEntropy.stochastic_decent_n int] [--algorithm.MaximumEntropy.noise_std ndarray|float] [--algorithm.MaximumEntropy.model ndarray|float|None]
+##                [--algorithm.MaximumEntropy.regularising_function {fitscube.deconvolve.helpers.entropy_pos_neg}] [--flag_bad_pixels_func {ssa2d_sum_prob_map,ssa2d_ratio_bp_maps,ssa2d_cumulative_histograms}]
+##                [--flag_bad_pixels_func.ssa2d_sum_prob_map.start int] [--flag_bad_pixels_func.ssa2d_sum_prob_map.stop int] [--flag_bad_pixels_func.ssa2d_sum_prob_map.value float]
+##                [--flag_bad_pixels_func.ssa2d_sum_prob_map.show_plots int] [--flag_bad_pixels_func.ssa2d_sum_prob_map.apply_outlier_func_to_value] [--flag_bad_pixels_func.ssa2d_sum_prob_map.weight_by_evals]
+##                [--flag_bad_pixels_func.ssa2d_ratio_bp_maps.bins int] [--flag_bad_pixels_func.ssa2d_ratio_bp_maps.start int] [--flag_bad_pixels_func.ssa2d_ratio_bp_maps.stop None]
+##                [--flag_bad_pixels_func.ssa2d_ratio_bp_maps.cutoff_mode str] [--flag_bad_pixels_func.ssa2d_ratio_bp_maps.cutoff_value float] [--flag_bad_pixels_func.ssa2d_ratio_bp_maps.combine_what str]
+##                [--flag_bad_pixels_func.ssa2d_ratio_bp_maps.combine_mode str] [--flag_bad_pixels_func.ssa2d_ratio_bp_maps.combined_cutoff_mode None] [--flag_bad_pixels_func.ssa2d_ratio_bp_maps.combined_cutoff_value float]
+##                [--flag_bad_pixels_func.ssa2d_ratio_bp_maps.make_plots int] [--flag_bad_pixels_func.ssa2d_cumulative_histograms.bins int] [--flag_bad_pixels_func.ssa2d_cumulative_histograms.cutoff_type str]
+##                [--flag_bad_pixels_func.ssa2d_cumulative_histograms.cutoff_value float] [--flag_bad_pixels_func.ssa2d_cumulative_histograms.start int] [--flag_bad_pixels_func.ssa2d_cumulative_histograms.stop None]
+##                [--flag_bad_pixels_func.ssa2d_cumulative_histograms.sum_stop None] [--flag_bad_pixels_func.ssa2d_cumulative_histograms.show_plots] [--logging.disable] [--logging.set_level str] [--logging.modules str [str ...]]
+##                [--logging.to_file str]
+##                str [str ...]
+## 
+## Script for gluing "algorithms.py", "flag_bad_pixels.py", and
+## "archive_crawler.py" together for end-to-end deconvolution
+## 
+## positional arguments:
+##   str                   Root directory of an archive to be searched for data with "archive_crawler.py"
+## 
+## optional arguments:
+##   -h, --help            show this help message and exit
+##   --ssa.wshape int int  Dimensions of the window used in single spectrum analysis routines (default: (10, 10))
+##   --output.fits.mode {no_overwrite,overwrite,append,no_output}
+##                         How should we treat outputting a *.fits file. "overwrite" - overwrite any files with the same name, "append" - add a new image extension if the file exists. (default: no_overwrite)
+##   --output.fits.fmt_str None|str
+##                         Format string for the output file name, used in "str.format()", any nonexistent folders will be created when the file is written. The following variables are avilable: "fdir" - the name of the file's directory,
+##                         "fname" - the name of the file without it's extension, "fext" - the extension of the file including the ".", "cwd" - the current working directory, "algorithm" - the name of the deconvolution algorithm,
+##                         "timestamp" - the iso format timestamp (YYYY-MM-DDTHH:mm:ss.ffffff) of the file creation time (default: {fdir}/{fname}_deconv_{algorithm}{fext})
+##   --output.fits.include_extensions, --output.fits.no_include_extensions
+##                         If present the output file will include the extensions present in the original file, any slicing will be applied to extensions that have the same size and shape as the initial data (default: True)
+##   --output.argfile [None|str]
+##                         Create a file containing the current command line arguments. Use on command line as @<argfilename> (default: None)
+##   -v                    Increases the verbosity level of logging (default: 0)
+##   --!output.plots.show, --!output.plots.no_show
+##                         Global overwrite for showing (or not) plots (default: None)
+##   --!output.plots.save, --!output.plots.no_save
+##                         Global overwrite for saving (or not) plots (default: None)
+##   --!output.plots.dir None|str
+##                         Global overwrite for plotting directory, if path starts with a "/", is an absolute path. Otherwise path is relative to the current working directory. (default: None)
+##   --plot_priority int   DEPRECIATED: controls how far "down the stack" plots are made (default: 0)
+##   --algorithm.param_file str
+##                         If the specified file is present relative to the current observation *.fits file then use parameters specified in that file instead of default parameters. Parameters not in the file will take their default
+##                         values. Pass an absolute path (e.g. "/some/absolute/path") to use a non-relative file. Assumes JSON format. (default: deconv.params)
+##   --algorithm.write_param_file str
+##                         File to write current algorithm parameters to, this should write the same format as the "--algorithm.param_file" option reads. Use it to write a parameter file you can alter easily and change locally for a
+##                         dataset. JSON format. (default: None)
+##   --testing.reduce_data_volume, --testing.no_reduce_data_volume
+##                         For testing purposes, reduce the data-volume of all inputs. Useful for testing code changes. (default: False)
+##   --testing.exit_after int
+##                         Number of items to deconvolve (if +ve) or visit (if -ve) before exiting, useful for testing. (default: 0)
+##   --algorithm {CleanModified,LucyRichardson,MaximumEntropy}
+##                         Choice of deconvolution algorithm (default: LucyRichardson)
+##   --flag_bad_pixels_func {ssa2d_sum_prob_map,ssa2d_ratio_bp_maps,ssa2d_cumulative_histograms}
+##                         Choice of functions designed to identify bad pixels (default: ssa2d_sum_prob_map)
+##   --logging.disable     If present will disable logging (default: False)
+##   --logging.set_level str
+##                         The level of logging to set the associated modules to (default: [])
+##   --logging.modules str [str ...]
+##                         The modules to have their level of logging set by the associated "--logging.set_level" argument, these should be module names. A special value of "*" will set all user defined modules to the specified logging
+##                         level. (default: [])
+##   --logging.to_file str
+##                         File to log to, pass a filename ending in a ".number" (e.g. "script.log.4") to enable log rotation. (default: None)
+## 
+## algorithm.CleanModified:
+##   A modified verison of the CLEAN algorithm, designed to account for non-point
+##   objects better
+## 
+##   --algorithm.CleanModified.n_iter int
+##                         Number of iterations (default: 1000)
+##   --algorithm.CleanModified.loop_gain float
+##                         Fraction of emission that could be accounted for by a PSF added to components each iteration. Higher values are faster, but unstable. (default: 0.01)
+##   --algorithm.CleanModified.threshold float
+##                         Fraction of maximum brightness above which pixels will be included in CLEAN step (default: 0.6)
+##   --algorithm.CleanModified.n_positive_iter int
+##                         Number of iterations to do that only "adds" emission, before switching to "adding and subtracting" emission (default: 0)
+##   --algorithm.CleanModified.noise_std float
+##                         Estimate of the deviation of the noise present in the observation (default: 0.01)
+##   --algorithm.CleanModified.rms_frac_threshold float
+##                         Fraction of original RMS of residual at which iteration is stopped (default: 0.1)
+##   --algorithm.CleanModified.fabs_frac_threshold float
+##                         Fraction of original Absolute Brightest Pixel of residual at which iteration is stopped (default: 0.1)
+## 
+## algorithm.LucyRichardson:
+##   Implementation of the Lucy-Richardson algorithm
+## 
+##   --algorithm.LucyRichardson.n_iter int
+##                         Maximum number of iterations to perform before returning. (default: 200)
+##   --algorithm.LucyRichardson.nudge_factor float
+##                         Fraction of maximum brightness to add to numerator and denominator to try and avoid numerical instability. (default: 0.01)
+##   --algorithm.LucyRichardson.strength float
+##                         Multiplier to the correction factors, if numerical insability is encountered decrease this. (default: 0.1)
+##   --algorithm.LucyRichardson.cf_negative_fix, --algorithm.LucyRichardson.no_cf_negative_fix
+##                         Should we change negative correction factors in to close-to-zero correction factors? (default: True)
+##   --algorithm.LucyRichardson.cf_limit float
+##                         End iteration if the correction factors are larger than this limit (default: inf)
+##   --algorithm.LucyRichardson.cf_uclip float
+##                         Clip the correction factors to be no larger than this value (default: inf)
+##   --algorithm.LucyRichardson.cf_lclip float
+##                         Clip the correction factors to be no smaller than this value (default: -inf)
+##   --algorithm.LucyRichardson.offset_obs, --algorithm.LucyRichardson.no_offset_obs
+##                         Should we offset the observation so there are no negative pixels? Enables the algorithm to find -ve values (offset is reversed at the end) (default: False)
+##   --algorithm.LucyRichardson.threshold float|None
+##                         Below this value LR will not be applied to pixels. This is useful as at low brightness LR has a tendency to fit itself to noise. If -ve will use |threshold|*brightest_pixel as threshold each step, If zero will
+##                         use mean and standard deviation to work out a threshold, if None will not be used. (default: None)
+##   --algorithm.LucyRichardson.fix_nans {interpolate,zero}
+##                         How should we treat NANs in the input data? (default: interpolate)
+##   --algorithm.LucyRichardson.pad_observation, --algorithm.LucyRichardson.no_pad_observation
+##                         Should we pad the input data with extra space to avoid edge effects? (default: True)
+## 
+## algorithm.MaximumEntropy:
+##   Implementation of the Maximum Entropy Method. Gradient decent is stochastic
+##   for speed.
+## 
+##   --algorithm.MaximumEntropy.n_iter int
+##                         Maximum number of iterations to perform before returning. (default: 200)
+##   --algorithm.MaximumEntropy.alpha float
+##                         balance between regularising function and least squares (default: 1)
+##   --algorithm.MaximumEntropy.rms_frac_threshold float
+##                         If the RMS of the residual goes below this fraction of it's original value, terminate iteration (default: 0.1)
+##   --algorithm.MaximumEntropy.fabs_frac_threshold float
+##                         If the absolute brightest pixel of the residual goes below this fraction of it's original value, terminate iteration. (default: 0.1)
+##   --algorithm.MaximumEntropy.grad_step_size float
+##                         how large the steps are during gradient descent (default: 1e-06)
+##   --algorithm.MaximumEntropy.grad_step_multiplier float
+##                         maximum step size as a multiple of magnitude of residual (default: 0.01)
+##   --algorithm.MaximumEntropy.objf_tol float
+##                         tolerance for objective function (default: 0.005)
+##   --algorithm.MaximumEntropy.stochastic_decent_n int
+##                         number of points to use in stochastic gradient decent. (default: 1000)
+##   --algorithm.MaximumEntropy.noise_std ndarray|float
+##                         Standard deviation of observation noise, either an array or a float (default: 0.02)
+##   --algorithm.MaximumEntropy.model ndarray|float|None
+##                         A 'guess' as to the underlying "real" image. Should be either a physically informed model (e.g. synthetic image) or values expected from an empty field (e.g. RMS noise values) (default: None)
+##   --algorithm.MaximumEntropy.regularising_function {fitscube.deconvolve.helpers.entropy_pos_neg}
+##                         Function that computes the "regularising" factor this factor is present to avoid over-fitting, and is usually some sort of entropy-based function (hence "maximum entropy method". (default:
+##                         fitscube.deconvolve.helpers.entropy_pos_neg)
+## 
+## flag_bad_pixels_func.ssa2d_sum_prob_map:
+##   Computes a bad pixel map from an SSA2D object. 
+##   	
+##   	For each component of the
+##   SSA decomposition, a probability map is made of how far a given
+##   	pixel
+##   deviates from the median. The probabilities for each component are combined
+##   together
+##   	(by mean or weighted mean) to give a 'score' for each pixel. A bad
+##   pixel map is chosen by
+##   	selecting all pixels whose 'score' is larger than a
+##   passed value.
+## 
+##   --flag_bad_pixels_func.ssa2d_sum_prob_map.start int
+##                         -> (default: 3)
+##   --flag_bad_pixels_func.ssa2d_sum_prob_map.stop int
+##                         -> (default: 12)
+##   --flag_bad_pixels_func.ssa2d_sum_prob_map.value float
+##                         -> (default: 0.99)
+##   --flag_bad_pixels_func.ssa2d_sum_prob_map.show_plots int
+##                         -> (default: 0)
+##   --flag_bad_pixels_func.ssa2d_sum_prob_map.apply_outlier_func_to_value, --flag_bad_pixels_func.ssa2d_sum_prob_map.no_apply_outlier_func_to_value
+##                         -> (default: False)
+##   --flag_bad_pixels_func.ssa2d_sum_prob_map.weight_by_evals, --flag_bad_pixels_func.ssa2d_sum_prob_map.no_weight_by_evals
+##                         -> (default: True)
+## 
+## flag_bad_pixels_func.ssa2d_ratio_bp_maps:
+##   Computes the ratio between the input image ssa.a and the
+##   np.sum(ssa.X_ssa[start:z], axis=0), 
+##   	where z = range(start,stop)+1,
+##   representation of an image. I.e. the partial-sum of SSA components.
+## 
+##   --flag_bad_pixels_func.ssa2d_ratio_bp_maps.bins int
+##                         -> (default: 100)
+##   --flag_bad_pixels_func.ssa2d_ratio_bp_maps.start int
+##                         -> (default: 0)
+##   --flag_bad_pixels_func.ssa2d_ratio_bp_maps.stop None
+##                         -> (default: None)
+##   --flag_bad_pixels_func.ssa2d_ratio_bp_maps.cutoff_mode str
+##                         -> (default: >cauchy_cdf<)
+##   --flag_bad_pixels_func.ssa2d_ratio_bp_maps.cutoff_value float
+##                         -> (default: 0.9)
+##   --flag_bad_pixels_func.ssa2d_ratio_bp_maps.combine_what str
+##                         -> (default: bp_maps)
+##   --flag_bad_pixels_func.ssa2d_ratio_bp_maps.combine_mode str
+##                         -> (default: sum)
+##   --flag_bad_pixels_func.ssa2d_ratio_bp_maps.combined_cutoff_mode None
+##                         -> (default: None)
+##   --flag_bad_pixels_func.ssa2d_ratio_bp_maps.combined_cutoff_value float
+##                         -> (default: 0.8)
+##   --flag_bad_pixels_func.ssa2d_ratio_bp_maps.make_plots int
+##                         -> (default: 0)
+## 
+## flag_bad_pixels_func.ssa2d_cumulative_histograms:
+##   Calculate a set of bad pixel maps based on histograms of cumulative sums of
+##   SSA components
+## 
+##   --flag_bad_pixels_func.ssa2d_cumulative_histograms.bins int
+##                         -> (default: 100)
+##   --flag_bad_pixels_func.ssa2d_cumulative_histograms.cutoff_type str
+##                         -> (default: >cauchy_cdf<)
+##   --flag_bad_pixels_func.ssa2d_cumulative_histograms.cutoff_value float
+##                         -> (default: 0.95)
+##   --flag_bad_pixels_func.ssa2d_cumulative_histograms.start int
+##                         -> (default: 0)
+##   --flag_bad_pixels_func.ssa2d_cumulative_histograms.stop None
+##                         -> (default: None)
+##   --flag_bad_pixels_func.ssa2d_cumulative_histograms.sum_stop None
+##                         -> (default: None)
+##   --flag_bad_pixels_func.ssa2d_cumulative_histograms.show_plots, --flag_bad_pixels_func.ssa2d_cumulative_histograms.no_show_plots
+##                         -> (default: True)
+## 
+## END OF USAGE
+## 
+################################################################################
+
+#===============================================================================
+# Root directory of an archive to be searched for data with "archive_crawler.py"
+
+# archive_roots
+['./archive']
+
+
+#===============================================================================
+# Dimensions of the window used in single spectrum analysis routines
+
+--ssa.wshape 10 10
+
+#===============================================================================
+# How should we treat outputting a *.fits file. "overwrite" - overwrite any files
+# with the same name, "append" - add a new image extension if the file exists.
+
+--output.fits.mode no_overwrite
+
+#===============================================================================
+# Format string for the output file name, used in "str.format()", any nonexistent
+# folders will be created when the file is written. The following variables are
+# avilable: "fdir" - the name of the file's directory, "fname" - the name of the
+# file without it's extension, "fext" - the extension of the file including the
+# ".", "cwd" - the current working directory, "algorithm" - the name of the
+# deconvolution algorithm, "timestamp" - the iso format timestamp
+# (YYYY-MM-DDTHH:mm:ss.ffffff) of the file creation time
+
+--output.fits.fmt_str {fdir}/{fname}_deconv_{algorithm}{fext}
+
+#===============================================================================
+# If present the output file will include the extensions present in the original
+# file, any slicing will be applied to extensions that have the same size and
+# shape as the initial data
+
+--output.fits.include_extensions
+
+
+#===============================================================================
+# Global overwrite for showing (or not) plots
+
+--!output.plots.show
+
+#===============================================================================
+# Global overwrite for saving (or not) plots
+
+--!output.plots.save
+
+#===============================================================================
+# Global overwrite for plotting directory, if path starts with a "/", is an
+# absolute path. Otherwise path is relative to the current working directory.
+
+#--!output.plots.dir <VALUE_PLACEHOLDER>
+
+#===============================================================================
+# DEPRECIATED: controls how far "down the stack" plots are made
+
+--plot_priority 0
+
+#===============================================================================
+# If the specified file is present relative to the current observation *.fits
+# file then use parameters specified in that file instead of default parameters.
+# Parameters not in the file will take their default values. Pass an absolute
+# path (e.g. "/some/absolute/path") to use a non-relative file. Assumes JSON
+# format.
+
+--algorithm.param_file deconv.params
+
+#===============================================================================
+# File to write current algorithm parameters to, this should write the same
+# format as the "--algorithm.param_file" option reads. Use it to write a
+# parameter file you can alter easily and change locally for a dataset. JSON
+# format.
+
+#--algorithm.write_param_file <VALUE_PLACEHOLDER>
+
+#===============================================================================
+# For testing purposes, reduce the data-volume of all inputs. Useful for testing
+# code changes.
+
+--testing.reduce_data_volume
+
+#===============================================================================
+# Number of items to deconvolve (if +ve) or visit (if -ve) before exiting, useful
+# for testing.
+
+--testing.exit_after 0
+
+#===============================================================================
+# Choice of deconvolution algorithm
+
+--algorithm LucyRichardson
+
+#===============================================================================
+# Number of iterations
+
+--algorithm.CleanModified.n_iter 1000
+
+#===============================================================================
+# Fraction of emission that could be accounted for by a PSF added to components
+# each iteration. Higher values are faster, but unstable.
+
+--algorithm.CleanModified.loop_gain 0.01
+
+#===============================================================================
+# Fraction of maximum brightness above which pixels will be included in CLEAN step
+
+--algorithm.CleanModified.threshold 0.6
+
+#===============================================================================
+# Number of iterations to do that only "adds" emission, before switching to
+# "adding and subtracting" emission
+
+--algorithm.CleanModified.n_positive_iter 0
+
+#===============================================================================
+# Estimate of the deviation of the noise present in the observation
+
+--algorithm.CleanModified.noise_std 0.01
+
+#===============================================================================
+# Fraction of original RMS of residual at which iteration is stopped
+
+--algorithm.CleanModified.rms_frac_threshold 0.1
+
+#===============================================================================
+# Fraction of original Absolute Brightest Pixel of residual at which iteration is
+# stopped
+
+--algorithm.CleanModified.fabs_frac_threshold 0.1
+
+#===============================================================================
+# Maximum number of iterations to perform before returning.
+
+--algorithm.LucyRichardson.n_iter 200
+
+#===============================================================================
+# Fraction of maximum brightness to add to numerator and denominator to try and
+# avoid numerical instability.
+
+--algorithm.LucyRichardson.nudge_factor 0.01
+
+#===============================================================================
+# Multiplier to the correction factors, if numerical insability is encountered
+# decrease this.
+
+--algorithm.LucyRichardson.strength 0.1
+
+#===============================================================================
+# Should we change negative correction factors in to close-to-zero correction
+# factors?
+
+--algorithm.LucyRichardson.cf_negative_fix
+
+#===============================================================================
+# End iteration if the correction factors are larger than this limit
+
+--algorithm.LucyRichardson.cf_limit inf
+
+#===============================================================================
+# Clip the correction factors to be no larger than this value
+
+--algorithm.LucyRichardson.cf_uclip inf
+
+#===============================================================================
+# Clip the correction factors to be no smaller than this value
+
+--algorithm.LucyRichardson.cf_lclip=-inf
+
+#===============================================================================
+# Should we offset the observation so there are no negative pixels?  Enables the
+# algorithm to find -ve values (offset is reversed at the end)
+
+--algorithm.LucyRichardson.offset_obs
+
+#===============================================================================
+# Below this value LR will not be applied to pixels. This is useful as at low
+# brightness LR has a tendency to fit itself to noise. If -ve will use
+# |threshold|*brightest_pixel as threshold each step, If zero will use mean and
+# standard deviation to work out a threshold, if None will not be used.
+
+#--algorithm.LucyRichardson.threshold <VALUE_PLACEHOLDER>
+
+#===============================================================================
+# How should we treat NANs in the input data?
+
+--algorithm.LucyRichardson.fix_nans interpolate
+
+#===============================================================================
+# Should we pad the input data with extra space to avoid edge effects?
+
+--algorithm.LucyRichardson.pad_observation
+
+#===============================================================================
+# Maximum number of iterations to perform before returning.
+
+--algorithm.MaximumEntropy.n_iter 200
+
+#===============================================================================
+# balance between regularising function and least squares
+
+--algorithm.MaximumEntropy.alpha 1
+
+#===============================================================================
+# If the RMS of the residual goes below this  fraction of it's original value,
+# terminate iteration
+
+--algorithm.MaximumEntropy.rms_frac_threshold 0.1
+
+#===============================================================================
+# If the absolute brightest pixel of the residual goes below this fraction of
+# it's original value, terminate iteration.
+
+--algorithm.MaximumEntropy.fabs_frac_threshold 0.1
+
+#===============================================================================
+# how large the steps are during gradient descent
+
+--algorithm.MaximumEntropy.grad_step_size 1e-06
+
+#===============================================================================
+# maximum step size as a multiple of magnitude of residual
+
+--algorithm.MaximumEntropy.grad_step_multiplier 0.01
+
+#===============================================================================
+# tolerance for objective function
+
+--algorithm.MaximumEntropy.objf_tol 0.005
+
+#===============================================================================
+# number of points to use in stochastic gradient decent.
+
+--algorithm.MaximumEntropy.stochastic_decent_n 1000
+
+#===============================================================================
+# Standard deviation of  observation noise,  either an array or a float
+
+--algorithm.MaximumEntropy.noise_std 0.02
+
+#===============================================================================
+# A 'guess' as to the underlying  "real" image. Should be either  a physically
+# informed model  (e.g. synthetic image) or values  expected from an empty field
+# (e.g. RMS noise values)
+
+#--algorithm.MaximumEntropy.model <VALUE_PLACEHOLDER>
+
+#===============================================================================
+# Function that computes the "regularising" factor this factor is present to
+# avoid over-fitting, and is usually some sort of entropy-based function (hence
+# "maximum entropy method".
+
+--algorithm.MaximumEntropy.regularising_function fitscube.deconvolve.helpers.entropy_pos_neg
+
+#===============================================================================
+# Choice of functions designed to identify bad pixels
+
+--flag_bad_pixels_func ssa2d_sum_prob_map
+
+#===============================================================================
+
+--flag_bad_pixels_func.ssa2d_sum_prob_map.start 3
+
+#===============================================================================
+
+--flag_bad_pixels_func.ssa2d_sum_prob_map.stop 12
+
+#===============================================================================
+
+--flag_bad_pixels_func.ssa2d_sum_prob_map.value 0.99
+
+#===============================================================================
+
+--flag_bad_pixels_func.ssa2d_sum_prob_map.show_plots 0
+
+#===============================================================================
+
+--flag_bad_pixels_func.ssa2d_sum_prob_map.apply_outlier_func_to_value
+
+#===============================================================================
+
+--flag_bad_pixels_func.ssa2d_sum_prob_map.weight_by_evals
+
+#===============================================================================
+
+--flag_bad_pixels_func.ssa2d_ratio_bp_maps.bins 100
+
+#===============================================================================
+
+--flag_bad_pixels_func.ssa2d_ratio_bp_maps.start 0
+
+#===============================================================================
+
+#--flag_bad_pixels_func.ssa2d_ratio_bp_maps.stop <VALUE_PLACEHOLDER>
+
+#===============================================================================
+
+--flag_bad_pixels_func.ssa2d_ratio_bp_maps.cutoff_mode >cauchy_cdf<
+
+#===============================================================================
+
+--flag_bad_pixels_func.ssa2d_ratio_bp_maps.cutoff_value 0.9
+
+#===============================================================================
+
+--flag_bad_pixels_func.ssa2d_ratio_bp_maps.combine_what bp_maps
+
+#===============================================================================
+
+--flag_bad_pixels_func.ssa2d_ratio_bp_maps.combine_mode sum
+
+#===============================================================================
+
+#--flag_bad_pixels_func.ssa2d_ratio_bp_maps.combined_cutoff_mode <VALUE_PLACEHOLDER>
+
+#===============================================================================
+
+--flag_bad_pixels_func.ssa2d_ratio_bp_maps.combined_cutoff_value 0.8
+
+#===============================================================================
+
+--flag_bad_pixels_func.ssa2d_ratio_bp_maps.make_plots 0
+
+#===============================================================================
+
+--flag_bad_pixels_func.ssa2d_cumulative_histograms.bins 100
+
+#===============================================================================
+
+--flag_bad_pixels_func.ssa2d_cumulative_histograms.cutoff_type >cauchy_cdf<
+
+#===============================================================================
+
+--flag_bad_pixels_func.ssa2d_cumulative_histograms.cutoff_value 0.95
+
+#===============================================================================
+
+--flag_bad_pixels_func.ssa2d_cumulative_histograms.start 0
+
+#===============================================================================
+
+#--flag_bad_pixels_func.ssa2d_cumulative_histograms.stop <VALUE_PLACEHOLDER>
+
+#===============================================================================
+
+#--flag_bad_pixels_func.ssa2d_cumulative_histograms.sum_stop <VALUE_PLACEHOLDER>
+
+#===============================================================================
+
+--flag_bad_pixels_func.ssa2d_cumulative_histograms.show_plots
+
+#===============================================================================
+# If present will disable logging
+
+--logging.disable
+
+#===============================================================================
+# The level of logging to set the associated modules to
+
+#--logging.set_level <VALUE_PLACEHOLDER>
+
+#===============================================================================
+# The modules to have their level of logging set by the associated
+# "--logging.set_level" argument, these should be module names. A special value
+# of "*" will set all user defined modules to the specified logging level.
+
+#--logging.modules <VALUE_PLACEHOLDER>
+
+#===============================================================================
+# File to log to, pass a filename ending in a ".number" (e.g. "script.log.4") to
+# enable log rotation.
+
+#--logging.to_file <VALUE_PLACEHOLDER>
