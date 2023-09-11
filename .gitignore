@@ -1,2 +1,6 @@
 *~
+*.swo
+*.swp
 __pycache__/
+output/
+/example_data

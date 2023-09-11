@@ -1,0 +1,163 @@
+
+% Put LOCAL commands here
+\newcommand{\asymshfile}{\texttt{run\textunderscore asymmetric\textunderscore psf\textunderscore correction.sh}}
+\newcommand{\asympyfile}{\texttt{asymmetric\textunderscore psf\textunderscore correction.py}}
+
+
+\subsection{Usage}
+ 
+This routine is slightly different from the others in that I've written an example bash script \asymshfile ~that invokes the Python code \asympyfile ~that does the heavy lifting. This is because the Python code is a bit more user-friendly than the other routines in this tutorial. \asymshfile ~is just an example of calling the Python code from the command line, therefore I'll detail the Python code here as that's where things are happeining. Please see \tabref{tbl:asym_psf_corr_args} for argument descriptions and defaults.
+
+\begin{table}[h!]
+\small
+\addtolength{\tabcolsep}{-1.5mm}
+
+\caption{Arguments of \asympyfile}
+\label{tbl:asym_psf_corr_args}
+\begin{tabular}{l|l|l|p{50mm}|p{30mm}}
+	\arrayrulecolor{gray}
+	Argument & Type & Number & Description & Default \\
+	\hline
+	
+	\verb|file_obs|\sups{(1)} 
+	& string\sups{(2)}
+	& $N \geq 1$ 
+	& Path to FITS file of observations to operate upon.
+	& No Default, is a positional argument.
+	\\
+	
+	\verb|ext_obs|
+	& integer
+	& $\leq N$\sups{(3)}
+	& Extension number of the observation FITS files to operate upon, associated with members of \verb|file_obs| by position.
+	& Will use the following named extensions if they are present, (`DATA', `SCI'). Otherwise will use primary FITS extension.
+	\\
+	
+	\verb|file_psf|
+	& string\sups{(2,4)}
+	& $\leq N$\sups{(3)}
+	& Path to the FITS file of the PSF associated to the associated \verb|file_obs|.
+	& \texttt{`../{\la}basename{\ra}{\_}standard{\_}star{\la}ext{\ra}'}
+	\\
+	
+	\verb|ext_psf|
+	& integer
+	& $\leq N$\sups{(3)}
+	& Extension number of the PSF FITS files to operate upon, associated with members of \verb|file_psf| by position.
+	& Will use the following named extensions if they are present, (`DATA', `SCI'). Otherwise will use primary FITS extension.
+	\\
+	
+	\verb|corr_cache|
+	& string\sups{(2,4)}
+	& $\leq N$\sups{(3)}
+	& Path to a cache file that holds lengthy intermediate calculations associated with a \verb|file_psf|.
+	& \texttt{`./cache/{\la}basename{\ra}{\_}corr{\_}cache.npz'}
+	\\
+	
+	\verb|file_out|
+	& string\sups{(2,4)}
+	& $\leq N$\sups{(3)}
+	& Output file associated with each \verb|file_obs|.
+	& \texttt{`./{\la}basename{\ra}{\_}asym{\_}correction{\la}ext{\ra}'}
+	\\
+	
+	\verb|window_shape|
+	& integer
+	& 1
+	& Size of the window that is centered on the brightest pixel of a PSF that is used to calculate asymmetry correlation. Have to limit the window size sometimes as there can be weird effects otherwise.
+	& 51
+	\\
+	
+	\verb|n_subdivisions|
+	& integer
+	& 1
+	& Number of sub-pixels to divide each `real' pixel into when calculating the asymmetry correlation.
+	& 64
+	\\
+	
+	\verb|index_shift_obs|
+	& integer
+	& $\leq N$\sups{(3)}
+	& A constant shift to apply between the \verb|file_obs| indices and the \verb|file_psf| when calculating the asymmetry correlation. (Mostly unused, and may need re-working at some point)
+	& 0
+	\\
+	
+	\verb|dry_run|
+	& boolean
+	& 0
+	& A switch that, if present, will not actually perform any calculations but will print out any information messages. Useful for debugging or just to see what is supposed to happen when the script is invoked with a specific set of arguments.
+	& False
+	
+	
+\end{tabular}
+{
+	\footnotesize
+	(1) Is a positional argument. 
+	(2) Must be a string that represents a path. 
+	(3) If less elements are present than the number of strings in \verb|file_obs| the last value will be repeated, if more elements will be truncated. 
+	(4) If starting with a `/' or `@' character, the path will be absolute or relative to the calling location, otherwise the path will be relative to the \emph{associated file}. For ease of operation, the \emph{associated file} basename and extension are available as special placeholders \texttt{`{\la}basename{\ra}}' and \texttt{`{\la}ext{\ra}'} respectively, which can be used in the path and are expanded when the arguments are read.
+}
+	
+\end{table}
+
+
+
+\subsection{Description}
+The main problem encountered that \asympyfile ~tries to solve is that if a PSF is not completely symmetric, there can be some shifting of the images between the original FITS cube, and the \textsc{clean}ed FITS cube. This usually only shifts the images by a fraction of a pixel, but this can be noticeable when comparing the original and deconvolved dataset and the images seem to `jump' slightly when blinking between them.
+
+Firstly the PSF is normalised by dividing by its sum, centering on the brightest pixel, removing NANs, and ensuring it has an odd shape (so there is a central pixel). Then for each wavelength, the autocorrelation of the PSF is calculated, then cubic-interpolated at \verb|n_subdivisions| points for each pixel, and the position of the  maximum value of the interpolated autocorrelation is the fractional-pixel-coordinate.
+
+The difference between the fractional-pixel-coordinate and the center-pixel-coordinate is then used to define the asymmetry correction which the data is re-gridded (by linearly interpolating the data at the offset points) to adjust for.
+
+Large and small values of \verb|window_shape| can lead to weird behaviour, I found that smaller sizes are more stable, but sometimes don't capture the entire range of adjustment needed. It's best to use a few different values and inspect the results.
+
+My process for inspecting the results:
+\begin{itemize}
+	\item Open the corrected file in a FITS viewer (DS9 or QFitsView both work well).
+	\item Use the `region' tool in the viewer (or some other way of providing a fixed reference) to encircle the disk.
+	\item Scrub through the image-planes and see if there is any jitter away from the region.
+\end{itemize}
+
+If neccesary, you can also use the PSF Modelling routines (\secref{sec:psf_modelling}) to fit a symmetric PSF very closely to the original PSF (lots of iterations, low stopping thresholds) and use the fitted PSF in the deconvolution. It should be practically identical to the original PSF, but symmetric and centered as that's how the modelling routine outputs the PSF model.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,357 @@
+
+
+\subsection{Notation}
+	\begin{description}
+		\item{$O(\x)$} The \emph{ground truth} signal (true-signal, or original-signal), i.e. what we would measure if our instruments were perfect.
+		\item{$R(\x)$} The response function of an instrument. Usually called the Point Spread Function (PSF) when talking about telescopes.
+		\item{$N(\x)$} Some noise function that corrupts $O(\x)$.
+		\item{$I(\x)$} The observational data recorded by the instrument. I.e., $O(\x)$ after it has been passed through the response function and corrupted by noise.
+		\item{$\x$} A vector that holds the state of a system, in our case $\x$ is the position of a pixel in an image.
+		\item{$\fft{...}(u)$} The fourier transform operation to some conjugate space denoted by $u$.
+		\item{$\ifft{...}(x)$} The inverse fourier transform back to the original space denoted by $x$.
+		\item{$\tilde{\square}$} An estimate of the decorated symbol.
+		\item{$\square^\star$} Conjugate transpose of the decorated symbol.
+
+	\end{description}		
+
+\subsection{PSF Normalisation}
+In the rest of this document, I've made the implicit assumption that the Response Function, $R(\x)$ (or PSF for telescopes), is normalised. By that, I mean the following conditions are true:
+\begin{itemize}
+	\item $\sum_{\x} R(\x) = 1$, I.e. convolving (or deconvolving) the observation with the response function does not change the total sum of the signal, except for edge effects in some cases.
+	\item If $R(\x)$ is represented as a vector or array, it's shape is \emph{odd} in all of it's dimensions. I.e. A PSF needs to have a unambiguous central pixel.
+	\item $R(\x)$ is centered such that convolution (or deconvolution) with $R(\x)$ does not shift a signal. I.e. A PSF's centroid (and hopefully brightest pixel) is coincident with it's central pixel. Hence the need for an unambiguous center.
+	\item $R(\x)$ Has no NANs in it, generally these play havok with convolution and deconvolution routines.
+\end{itemize}
+	
+A failure of these conditions can typically be fixed after the fact (except for the NAN condition) by working out what the effect was and undoing it, but it's a hassle.
+
+\subsection{Background}
+
+For any original signal, $O(\x)$, measured by an instrument there is some corruption due to non-perfect response $R(\x)$, and noise $N(\x)$, which gives an observation $I(\x)$ that is related to the original signal by
+\begin{align}
+	I(\x) 	&= \int {R(\x-\x_1) \, O(\x_1)} \, d\x_1 + N(\x) \nonumber \\
+			&= (R \star O)(\x) + N(\x)
+	\label{eq:convolution}
+\end{align}
+where $\star$ denotes the convolution operation.
+
+The problem we face much of the time is recovering the original signal $O(\x)$ from the observed data $I(\x)$ as accurately and quickly as possible.
+
+The convolution theorem
+\begin{align}
+	\fft{(f \star g)(x)}(k) = \fft{f(x)}(k) \fft{g(x)}(k),
+	\label{eq:conv_theorem}
+\end{align}
+where $\fft{f(x)}(k)$ denotes the fourier transform of $f(x)$, $k$ is the conjugate variable to $x$, and $\ifft{...}(x)$ denotes the inverse fourier transform operation, helps us see some way to fix the problem.
+
+As the Fourier transform is a linear operator,
+\[
+	\fft{I(\x)}(\vec{k}) = \fft{R(\x)}(\vec{k}) \, \fft{O(\x)}(\vec{k}) 
+							+ \fft{N(\x)}(\vec{k}),
+\]
+which can be re-arranged to give
+\begin{align}
+	\fft{O(\x)}(\k) &= \frac{\fft{I(\x)}(\k) - \fft{N(\x)}(\k)}
+						{\fft{R(\x)}(\k)},
+	\label{eq:fourier_quotient}
+\end{align}
+the \emph{fourier quotient} method of deconvolution. Unfortunately in practice there is a frequency cutoff to our measurements of $R(\x)$ and close to that cutoff the noise $N(\x)$ is amplified, leaving \eqref{eq:fourier_quotient} unusable where there is any high-frequency noise, which there usually is.
+
+Also, \eqref{eq:convolution} is typically an ill-posed problem as there are many possible $O(\x)$ functions that can give a $I(\x)$ observation. Therefore, deconvolution in general is used to find a method which gives an \emph{estimate}, $\tilde{O}(\x)$, of the original signal.
+
+
+\subsubsection{Lucy-Richardson}
+
+Many approaches to deconvolution take inspiration from fitting algorithms and probability theory; one widely used method is Lucy-Richardson (LR) \cite{Richardson72,Lucy74} deconvolution \cite[][section 5.4]{Starck02}. LR-deconvolution is based on the principle of finding a maximum likelihood estimator (MLE) for $O(\x)$
+
+The likelyhood comes from Bayes theorem
+\begin{align}
+	p(O|I) = \frac{p(I|O) p(O)}{p(I)},
+	\label{eq:bayes_theorem}
+\end{align}
+where $p(O|I)$, the likelyhood, is the probability that our estimate $\tilde{O}(\x)$ is the original signal $O(\x)$ for some observed data $I(\x)$, $p(I|O)$ is the probability that we could get our observed data $I(\x)$ from our estimate $\tilde{O}(\x)$, $p(O)$ is the probability our estimate is correct, and $p(I)$ is the probability our data is correct.
+
+When minimising \eqref{eq:bayes_theorem}, our observational data $I(\x)$ is constant, and $O(\x)$ is the subject. Therefore $p(I)$ will not change, but $p(I|O)$ will vary depending on the different original signals we test. $p(I|O)$ is the probability of getting our observed data $I(\x)$ from some original signal $O(\x)$, i.e. it is the joint probability that, given some statistical model $\mathcal{N}$ we would draw $I(\x)$ from the possible set of functions given by $(R\star O)(\x)$, i.e.
+
+\begin{align*}
+	p(I|O) 	&= \prod_{\x} (\mathcal{N}[(R \star O)(\x)] = I(\x)) \\
+			&= \prod_{\x} f_{\mathcal{N}}(I(\x);(R \star O)(\x))
+\end{align*}
+Or, as this is always positive we can use the log-likelihood instead
+\begin{align}
+	l(O|I) &= \textrm{ln}[\mathcal{L}(O|I)] = ln[p(I|O)] \nonumber \\
+		&= \sum_{\x} \textrm{ln}[f_{\mathcal{N}}(I(\x);(R \star O)(\x)] \\
+	\label{eq:likelihood}
+\end{align}
+where $f_{\mathcal{N}}(a(\x); \theta(\x))$ is the probability mass function (or probability density function for continuous distributions) for a random variable to be $a(\x)$ when it is drawn from the distribution $\mathcal{N}$ with the parameters $\theta(\x)$, $\mathcal{L}(O|I)$ is the \emph{likelihood} of $O(\x)$ given we have the data $I(\x)$, and $l(O|I)$ is the \emph{log-likelihood}.
+
+Since in Astronomy, images are made up of photons collected by a telescope and deposited on a CCD Poisson statisticis apply. Therefore
+\begin{align*}
+	\mathcal{N} &\sim \textrm{Poisson}((R \star O)(\x)) \\
+	f_{\mathcal{N}}(k; \lambda) &= \frac{\lambda^{k} e^{-\lambda}}{k!} \\
+	\mathcal{L}(O|I) &= \prod_{\x} \frac{(R \star O)(\x)^{I(\x)} e^{-(R \star O)(\x)}} {I(\x)!} \\
+	l(O|I) &= \sum_{\x} I(\x) \textrm{ln}[(R \star O)(\x)] -(R \star O)(\x) - I(\x)!,
+\end{align*}
+after some manipulation \cite{LR_derivation}, we get
+\begin{align}
+	O_{n+1}(\x) = \left[\frac{I}{\left( R \star O_n \right)} \star R^\star \right](\x) \, O_n(\x)
+	\label{eq:lr_deconv}
+\end{align}
+where successive iterations give new approximations to the original signal. 
+
+In general LR-deconvolution works well for point-like sources, however where to stop the iteration is non-trivial. As $n$ increases, higher and higher fourier frequencies are being deconvolved and you start running into the same problem as \eqref{eq:fourier_quotient}, noise becomes amplified.
+
+\subsubsection{Modified CLEAN}
+
+CLEAN \cite{hogbom74} is used extensively in radio astronomy, and occasionally in the wider astronomy community \cite{Keel91}. The original algorithm builds up an estimate $\tilde{O}(\x)$ (the \emph{component map}) by subtracting the response function convolved with low-amplitude delta-functions from $I(\x)$, and adding them to the estimate. I.e.
+\begin{align}
+	\tilde{O}_0(\x) &= \vec{0} \nonumber \\
+	I_n(\x) &= I(\x) - (R \star \tilde{O}_n)(\x) \nonumber \\
+	x_i &= \textrm{argmax}[I_n(\x)] \nonumber \\
+	\tilde{O}_{n+1}(\x) &= \tilde{O}_n(\x) + g_\textrm{loop} I_n(x_i)
+	\label{eq:hogbom_clean}
+\end{align}
+where $g_\textrm{loop}$ is the \emph{loop-gain}, the fraction of the brightest pixel added to the \emph{components}, $\tilde{O}(\x)$, each iteration. Stopping criteria are fairly standard, usually once $I_n(x_i)$ has reduced by some factor. Once the component map $\tilde{O}(\x)$ is complete, it is convolved with the \emph{clean beam} $\tilde{R}(\x)$, a response function that does not have the wings of the original $R(\x)$ (the \emph{dirty beam}) this gives the \emph{clean map} $\tilde{I}(\x) = (\tilde{R} \star \tilde{O})(\x)$.
+
+This method has various problems for our purposes, mostly that extended sources are not deconvolved efficiently and exhibit striping artifacts on the size scale of $R(\x)$. To get around this limitation various methods have been proposed \cite{Giovannelli21, Choi17, Wakker88, Cornwell08, Cornwell83}, for our purposes Modified CLEAN \cite{Steer84} seems to have the best properties.
+
+Modified CLEAN works similarly to \eqref{eq:hogbom_clean} except that instead of just selecting the brightest pixel, all pixels above the selection threshold, $t_s$, are treated as a single extended source. For sufficiently small values of $g_\textrm{loop}$ and $t_s$ the subtractions will be linear enough that the differences between regions of slightly different brightness do not matter. Modified clean has the following main iterative scheme:
+\begin{align}
+	\tilde{O}_0(\x) &= \vec{0}, \nonumber \\
+	I_n(\x) &= I(\x) - (R \star \tilde{O}_n)(\x), \nonumber \\
+	\x_s &= \left\lbrace x_i; I_n(x_i) > t_s; x_i \in \x \right\rbrace , \nonumber \\
+	\tilde{O}_{n+1}(\x) &= \tilde{O}_n(\x) + g_\textrm{loop} I_n(x_s).
+	\label{eq:modified_clean}
+\end{align}
+
+
+
+\subsubsubsection{Variable Threshold}
+Another modification to \eqref{eq:modified_clean} is to vary $t_s$, the selection threshold, to attempt to deconvolve small and bright features before more extended features.
+
+One method is Otsu Thresholding \cite{Otsu79,otsu_thresholding}, a technique that divides a set into two different classes by choosing a dividing threshold, $t_\textrm{otsu}$, in such a way that the variance between the two classes is minimised. Apply successive Otsu thresholds to an image, and then selecting the candidate threshold that is the most \emph{exclusive} (i.e. the threshold that rejects the largest fraction of pixels per fraction of range.
+\[
+	e(t) = \frac{f_\textrm{range}(t) - f_\textrm{pix}(t)}{f_\textrm{range}(t) + f_\textrm{pix}(t)} ,
+	\label{eq:exclusivity}
+\]
+where $e(t)$ is the exclusivity of a threshold $t$, $f_\textrm{range}(t) = (t - \textrm{min})/(\textrm{min} - \textrm{max})$ is the fraction of range rejected by a threshold, and $f_\textrm{pix}(t) = N_\textrm{bright}/N$ is the fraction of pixels kept by the threshold. Here $N_\textrm{bright}$ is the number of pixels above the threshold, and $N$ is the original number of pixels. Finally, $t_s$ is calculated via:
+\begin{align*}
+	t_{\textrm{otsu},j} &= \textrm{The j\sups{th} Otsu threshold of our image data}\,, I(\x), \\
+	t_\textrm{factor} &= \textrm{A user supplied factor}\,, >0, <1, \\
+	i &= \textrm{argmax}\lbrace e(t_{\textrm{otsu},j}); 0 <= j <= N_\textrm{thresholds} \rbrace, \\
+	t_i &= t_{\textrm{otsu},i}, \\
+	t_s &= \textrm{max}[I_n(\x)] t_\textrm{factor} + (1 - t_\textrm{factor}) t_i.
+\end{align*}
+
+As before, the final estimate of the original signal $\tilde{O}(\x)$ is normally convolved with a \emph{clean beam} $\tilde{R}(\x)$ found from the main lobe of the response function (usually an approximate gaussian) to give the \emph{clean map},
+\[
+	\tilde{I}(\x) = (\tilde{R} \star \tilde{O})(\x).
+\]
+When the components $\tilde{O}(\x)$ of the image are not well correlated with their neighbours this process can result in huge gains. However, in various tests it has been found that this step is not always neccesary for the production of a smooth image. Infact using the components directly has been better in many cases, with the extra convolution step just degrading the spatial resolution of the map.
+
+
+\subsubsubsection{Flux Loss}
+Typically deconvolution does not change the total sum of an observation, or any differences are marginal. However if not enough iterations are performed to completely explain all of the signal in our observation, then some difference in $\sum_{\x} I(\x)$ vs $\sum_{\x} \tilde{O}(\x)$ may occur.
+
+The simplest way to deal with this difference is to add back the residual such that the \emph{clean map} is 
+\[
+\tilde{I}(\x) = (\tilde{R} \star \tilde{O})(\x) + \left[ I(\x) - (R \star \tilde{O})(\x) \right],
+\]
+i.e., the residual of the deconvolution is added to the output.
+
+
+
+\subsection{Usage of \texttt{./tutorial{\textunderscore}0{\textunderscore}deconv/run{\textunderscore}deconv.py}}
+
+\begingroup
+\small
+\begin{verbatim}
+usage: run_deconv.py [-h] [--output.file str] [--output.file.overwrite]
+                     [--CleanModified.show_plots] [--CleanModified.save_plots]
+                     [--CleanModified.plot_dir str] [--CleanModified.verbose int]
+                     [--CleanModified.n_iter int] [--CleanModified.loop_gain float]
+                     [--CleanModified.threshold float]
+                     [--CleanModified.n_positive_iter int]
+                     [--CleanModified.noise_std float]
+                     [--CleanModified.rms_frac_threshold float]
+                     [--CleanModified.fabs_frac_threshold float]
+                     OBS_FITS_PATH PSF_FITS_PATH
+
+# DESCRIPTION #
+        Front-end to deconvolution routines.
+
+        ## Example ##
+                $ python3 ./deconv.py ../data/test_rebin.fits{1}[229:230] 
+                      ../data/test_standard_star.fits{1}
+
+        ## FITS File Path Format ##
+                ../path/to/datafile.fits{ext}[slice_tuple](img_axes_tuple)
+                        ext : int | str
+                                Extension of the FITS file to operate upon, if not present,
+                                will use the first extension that has some data.
+                        slice_tuple : tuple[Slice,...]
+                                Slice of the data to operate upon, useful for choosing
+                                a subset of wavelength channels. If not present, will
+                                assume all wavelengths are to be deconvolved.
+                        img_axes_tuple : tuple[int,...]
+                                Tuple of the spatial axes indices, uses FITS ordering
+                                if +ve, numpy ordering if -ve. Usually the RA,DEC axes.
+
+                ### Examples ###
+                        ./some_datafile.fits{PRIMARY}[100:150]
+                                Select the extension called 'PRIMARY' and deconvolve the 
+                                channels 100->150
+                        /an/absolute/path/to/this_data.fits[99:700:50]
+                                Try to guess the extension to use, deconvolve every 50th 
+                                channel in the range 99->700
+                        ./deconv/whole/file.fits{SCI}
+                                Use the extension 'SCI'
+                        ./some/path/big_file.fits{1}[5:500:10](0,2)
+                                use the 1st extension (not the 0th), deconvolve every 10th 
+                                channel in the range 5->500, the spatial axes are 0th and 
+                                2nd axis.
+
+
+# END DESCRIPTION #
+
+positional arguments:
+  OBS_FITS_PATH         Observation file to operate upon, uses FITS file path format
+  PSF_FITS_PATH         Point Spread Function (PSF) to use during deconvolution, uses FITS
+                        file path format
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --output.file str     file to output deconvolved data to. (default: ./output/deconv.fits)
+  --output.file.overwrite, --output.file.no_overwrite
+                        Should we overwrite the output file or not? (default: True)
+
+CleanModified:
+  
+        A modified verison of the CLEAN algorithm, designed to account for non-point 
+        objects better than standard CLEAN see 
+        https://articles.adsabs.harvard.edu/pdf/1984A%26A...137..159S
+  
+        Creation of the class sets up the attributes that define how the algorithm behaves,
+        calling the class runs the algorithm on input data.
+  
+
+  --CleanModified.show_plots, --CleanModified.no_show_plots
+                         should plots be displayed interactively when running?
+                         (default: False)
+  --CleanModified.save_plots, --CleanModified.no_save_plots
+                         should plots be saved to a file?
+                         (default: False)
+  --CleanModified.plot_dir str
+                         folder to save plots to (if they should be saved), relative to
+                         current working directory
+                         (default: ./plots)
+  --CleanModified.verbose int
+                         verbosity of messages from algorithm
+                         (default: 1)
+  --CleanModified.n_iter int
+                         Number of iterations
+                         (default: 1000)
+  --CleanModified.loop_gain float
+                         Fraction of emission that could be accounted for by a PSF added to
+                         components each iteration. Higher values are faster, but unstable.
+                         I may want a way to scale this with the number of iterations, or
+                         with the amount of point-like sources found each step. Once the 
+                         image becomes noisy (i.e. is already noisy, or only noise left in 
+                         map), this can lead to stippling accross the image when it's too 
+                         high
+                         (default: 0.5)
+  --CleanModified.threshold float
+                         Fraction of maximum brightness above which pixels will be included
+                         in CLEAN step (want 0 < x < 1)
+                         Some magic numbers are:
+                                0
+                                        Uses "otsu thresholding" to guess a good value
+                                0 > x > -1
+                                        Uses multiple "otsu thresholds" each iteration to
+                                        get a value, and then applies the threshold value 
+                                        so that higher order otsu threholds result in a 
+                                        much larger effective "self.threshold" value. 
+                                        Useful for deconvolving bright features on a 
+                                        surface first.
+                                -1
+                                        Uses multiple "otsu thresholds" each iteration, 
+                                        chooses a higher order one based onhow many pixels 
+                                        the higher order threshold rejects. Selects for 
+                                        many pixels rejected as this should mean that 
+                                        small-but-bright features are deconvolved first.
+                                -2
+                                        Uses "otsu thresholding" each iteration, just uses 
+                                        the first value.
+                         (default: -1)
+  --CleanModified.n_positive_iter int
+                         Number of iterations to do that only "adds" emission, before 
+                         switching to "adding and subtracting" emission
+                         (default: 0)
+  --CleanModified.noise_std float
+                         Estimate of the deviation of the noise present in the observation
+                         (default: 0.01)
+  --CleanModified.rms_frac_threshold float
+                         Fraction of original RMS of residual at which iteration is stopped
+                         (default: 0.01)
+  --CleanModified.fabs_frac_threshold float
+                         Fraction of original Absolute Brightest Pixel of residual at which 
+                         iteration is stopped
+                         (default: 0.01)
+
+END OF USAGE
+\end{verbatim}
+\endgroup
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

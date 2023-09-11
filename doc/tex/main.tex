@@ -1,0 +1,167 @@
+\documentclass[10pt,twoside,a4paper]{article}
+
+% I could put all of this into a file and then \input{} it
+
+%% PACKAGES %%
+\usepackage{mathtools} % amsmath plus some fixes
+\usepackage{amssymb} %symbols such as "therefore"
+\usepackage{bm} % bold maths symbols
+\usepackage{natbib} % for biliography and citation commands
+\setcitestyle{numbers,square,comma} % see https://gking.harvard.edu/files/natnotes2.pdf
+
+\usepackage{ulem} %underline empahsis
+\usepackage{enumitem} %altering list style
+\usepackage{tcolorbox}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{realboxes}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{caption}
+\usepackage{colortbl}
+\usepackage{hyperref}
+
+
+
+%% PARAMETERS %%
+\setlist[description]{
+	style=nextline, 
+%	labelwidth=0em, 
+%	leftmargin=1em,
+%	%itemindent=\dimexpr-5pt-\labelsep\relax, 
+%	labelsep=15em,
+%	labelindent=\parindent,
+%	font=\normalfont
+}
+\definecolor{bgCodeColor}{rgb}{0.95,0.95,0.95}
+\lstdefinestyle{generalCodeStyle}{
+	backgroundcolor=\color{bgCodeColor},
+	basicstyle=\ttfamily\small
+}
+\lstset{style=generalCodeStyle}
+\captionsetup{justification=raggedright,singlelinecheck=false}
+
+%% COMMANDS %%
+\newcommand{\aj}{Astrophysical Journal} % command for references
+\newcommand{\aap}{Astronomy and Astrophysics} % command for references
+
+\newcommand{\sups}[1]{\textsuperscript{#1}}
+\newcommand{\subs}[1]{\textsubscript{#1}}
+\renewcommand{\emph}[1]{\textit{#1}}
+\newcommand{\eemph}[1]{\uline{#1}}
+\newcommand{\eeemph}[1]{\textbf{#1}}
+\newcommand{\eeeemph}[1]{\textsc{#1}}
+\newcommand{\code}[1]{\Colorbox{bgCodeColor}{\lstinline{#1}}}
+
+\newcommand{\subsubsubsection}[1]{\smallskip \paragraph{\noindent #1}~\\}
+
+\newcommand{\jnote}[1]{\textcolor{red}{[#1]}}
+
+\newcommand{\tabref}[1]{Tbl.~\ref{#1}}
+\newcommand{\secref}[1]{Sec.~\ref{#1}}
+\newcommand{\figref}[1]{Fig.~\ref{#1}}
+
+\newcommand{\rt}[1]{\ensuremath{\textrm{#1}}}
+
+\newcommand{\mat}[1]{\ensuremath{\bm{#1}}} % how we are showing a matrix
+\renewcommand{\vec}[1]{\ensuremath{\underline{#1}}} % how we are showing a vector
+\newcommand{\tr}[1]{\ensuremath{#1^{\rt{T}}}} % transpose operation for a vector/matrix
+\newcommand{\inv}[1]{\ensuremath{#1^{-1}}} % inverse operation for a scalar/vector/matrix
+\newcommand{\abs}[1]{\ensuremath{\left|{#1}\right|}} %magnitude operator
+\newcommand{\partialdiff}[2]{\ensuremath{\frac{\partial #1}{\partial #2}}} %partial differential
+\newcommand{\ppartialdiff}[2]{\ensuremath{\frac{\partial}{\partial #2}\left[ #1 \right]}} %partial differential, prefix version
+\newcommand{\partialddiff}[2]{\ensuremath{\frac{\partial^{2} #1}{\partial #2^{2}}}} %partial differential
+\newcommand{\ppartialddiff}[2]{\ensuremath{\frac{\partial^{2}}{\partial #2^{2}}\left[ #1 \right]}} %partial differential, prefix version
+
+\newcommand{\rarrow}{\ensuremath{\rightarrow}}
+
+% Fourier transform commands
+\newcommand{\fft}[1]{\ensuremath{\mathcal{F}\left[ #1 \right]}}
+\newcommand{\fftconj}[1]{\ensuremath{\mathcal{F}^{*}\left[ #1 \right]}}
+\newcommand{\ifft}[1]{\ensuremath{\mathcal{F}^{-1}\left[ #1 \right]}}
+\newcommand{\ifftconj}[1]{\ensuremath{{\mathcal{F}^*}^{-1}\left[ #1 \right]}}
+
+% text mode commands
+\renewcommand{\_}{\textunderscore\linebreak[0]}
+\newcommand{\la}{\textlangle}
+\newcommand{\ra}{\textrangle}
+
+
+% LOCAL COMMANDS %
+\newcommand{\trp}[1]{\ensuremath{\left(#1\right)^{\rt{T}}}}
+\newcommand {\y} {\vec{y}}
+\newcommand {\ym} {\vec{y}_m}
+\newcommand {\yc} {\vec{y}_0}
+\newcommand {\ye} {\hat{\vec{y}}}
+\newcommand {\K} {\mat{K}}
+\renewcommand{\k} {\vec{k}}
+\newcommand {\x} {\vec{x}}
+\newcommand {\xe} {\hat{\vec{x}}}
+\newcommand {\xc} {\vec{x}_0}
+\newcommand {\xa} {\vec{x}_a}
+\renewcommand {\L} {\mat{L}}
+\newcommand {\La} {\mat{L}_a}
+\newcommand {\rb}[1]{\left(#1\right)}
+\renewcommand {\sb}[1]{\left[#1\right]}
+\newcommand {\Sm} {\mat{S}_m}
+\newcommand {\Sa} {\mat{S}_a}
+
+% ENVIRONMENTS %
+\newenvironment{aside}
+{ 
+	\hfill\break
+	\begin{tcolorbox}
+}
+{
+	\hfill\break
+	\end{tcolorbox}
+}
+
+\begin{document}
+	\title{Deconvolution Tutorial}
+	\author{Dr. Jack Dobinson}
+	\date{\today}
+	\maketitle
+
+	\begin{abstract}
+	Notes on the decovolution routines I've created. I've copied the relevant parts of my code-base into the `scripts' folder. All the main routines are in the `./scripts/fitscube/deconvolve/' sub-folder. Each of the `./tutorial*/' folders contains an example implementation of one of the main routines I've used. Hopefully they should all run if you use the command \code{python3 -I ./run_XXX.py} from inside the folder.
+	\end{abstract}
+	
+	\section{Python Setup}
+		\label{sec:python_setup}
+		\input{python_setup.tex}
+
+	\section{Deconvolution}
+		\label{sec:deconvolution}
+		\input{deconv.tex}
+
+	\section{SSA Filtering}
+		\label{sec:ssa_filtering}
+		\input{ssa_filtering.tex}
+
+	\section{Interpolation}
+		\label{sec:interpolation}
+		\input{interpolation.tex}
+
+	\section{PSF Modelling}
+		\label{sec:psf_modelling}
+		\input{psf_modelling.tex}
+
+	\section{PSF Asymmetries}
+		\label{sec:psf_asymmetries}
+		\input{psf_asymmetries.tex}
+
+	\section{Overall Procedure}
+		\label{sec:overall_procedure}
+		\input{overall_procedure.tex}
+		
+	\section{Other Routines}
+		\label{sec:other_routines}
+		\input{other_routines.tex}
+
+	%\bibliographystyle{abbrvnat}
+	%\bibliographystyle{plain}
+	\bibliographystyle{unsrtnat}
+	\bibliography{references}
+
+\end{document}

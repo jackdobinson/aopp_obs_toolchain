@@ -1,0 +1,226 @@
+\begin{thebibliography}{30}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[{Richardson}(1972)]{Richardson72}
+William~Hadley {Richardson}.
+\newblock {Bayesian-Based Iterative Method of Image Restoration}.
+\newblock \emph{Journal of the Optical Society of America (1917-1983)},
+  62\penalty0 (1):\penalty0 55, January 1972.
+
+\bibitem[{Lucy}(1974)]{Lucy74}
+L.~B. {Lucy}.
+\newblock {An iterative technique for the rectification of observed
+  distributions}.
+\newblock \emph{\aj}, 79:\penalty0 745, June 1974.
+\newblock \doi{10.1086/111605}.
+
+\bibitem[{Starck} et~al.(2002){Starck}, {Pantin}, and {Murtagh}]{Starck02}
+J.~L. {Starck}, E.~{Pantin}, and F.~{Murtagh}.
+\newblock {Deconvolution in Astronomy: A Review}.
+\newblock \emph{PASP}, 114\penalty0 (800):\penalty0 1051--1069, October 2002.
+\newblock \doi{10.1086/342606}.
+
+\bibitem[AUTHOR(2022)]{LR_derivation}
+UNKNOWN AUTHOR.
+\newblock Lucy ricardson derivation.
+\newblock
+  https://en.wikipedia.org/wiki/Richardson-Lucy\_deconvolution\#Derivation,
+  2022.
+\newblock [Online; accessed 2022].
+
+\bibitem[{H{\"o}gbom}(1974)]{hogbom74}
+J.~A. {H{\"o}gbom}.
+\newblock {Aperture Synthesis with a Non-Regular Distribution of Interferometer
+  Baselines}.
+\newblock \emph{Astronomy and Astrophysics Supplement}, 15:\penalty0 417, June
+  1974.
+
+\bibitem[{Keel}(1991)]{Keel91}
+William~C. {Keel}.
+\newblock {A Simple, Photometrically Accurate Algorithm for Deconvolution of
+  Optical Images}.
+\newblock \emph{PASP}, 103:\penalty0 723, July 1991.
+\newblock \doi{10.1086/132871}.
+
+\bibitem[{Giovannelli, J.-F.} and {Coulais, A.}(2005)]{Giovannelli21}
+{Giovannelli, J.-F.} and {Coulais, A.}
+\newblock Positive deconvolution for superimposed extended source and point
+  sources.
+\newblock \emph{A\&A}, 439\penalty0 (1):\penalty0 401--412, 2005.
+\newblock \doi{10.1051/0004-6361:20047011}.
+\newblock URL \url{https://doi.org/10.1051/0004-6361:20047011}.
+
+\bibitem[Choi and Choi(2017)]{Choi17}
+Young-Jae Choi and In-Sik Choi.
+\newblock A novel fast clean algorithm using the gradient descent method.
+\newblock \emph{Microwave and Optical Technology Letters}, 59:\penalty0
+  1018--1022, 05 2017.
+\newblock \doi{10.1002/mop.30448}.
+
+\bibitem[{Wakker} and {Schwarz}(1988)]{Wakker88}
+B.~P. {Wakker} and U.~J. {Schwarz}.
+\newblock {The Multi-Resolution CLEAN and its application to the short-spacing
+  problem in interferometry}.
+\newblock \emph{Astronomy and Astrophysics}, 200\penalty0 (1-2):\penalty0
+  312--322, July 1988.
+
+\bibitem[{Cornwell}(2008)]{Cornwell08}
+T.~J. {Cornwell}.
+\newblock {Multiscale CLEAN Deconvolution of Radio Synthesis Images}.
+\newblock \emph{IEEE Journal of Selected Topics in Signal Processing},
+  2\penalty0 (5):\penalty0 793--801, November 2008.
+\newblock \doi{10.1109/JSTSP.2008.2006388}.
+
+\bibitem[{Cornwell}(1983)]{Cornwell83}
+T.~J. {Cornwell}.
+\newblock {A method of stabilizing the clean algorithm}.
+\newblock \emph{\aap}, 121\penalty0 (2):\penalty0 281--285, May 1983.
+
+\bibitem[{Steer} et~al.(1984){Steer}, {Dewdney}, and {Ito}]{Steer84}
+D.~G. {Steer}, P.~E. {Dewdney}, and M.~R. {Ito}.
+\newblock {Enhancements to the deconvolution algorithm `CLEAN'}.
+\newblock \emph{Astronomy and Astrophysics}, 137\penalty0 (2):\penalty0
+  159--165, August 1984.
+
+\bibitem[Otsu(1979)]{Otsu79}
+Nobuyuki Otsu.
+\newblock A threshold selection method from gray-level histograms.
+\newblock \emph{IEEE Transactions on Systems, Man, and Cybernetics}, 9\penalty0
+  (1):\penalty0 62--66, 1979.
+\newblock \doi{10.1109/TSMC.1979.4310076}.
+
+\bibitem[Sezgin and Sankur(2004)]{otsu_thresholding}
+Mehmet Sezgin and Bülent Sankur.
+\newblock {Survey over image thresholding techniques and quantitative
+  performance evaluation}.
+\newblock \emph{Journal of Electronic Imaging}, 13\penalty0 (1):\penalty0 146
+  -- 165, 2004.
+\newblock \doi{10.1117/1.1631315}.
+\newblock URL \url{https://doi.org/10.1117/1.1631315}.
+
+\bibitem[Ghil et~al.(2002)Ghil, Allen, Dettinger, Ide, Kondrashov, Mann,
+  Robertson, Saunders, Tian, Varadi, and Yiou]{Ghil02}
+Michael Ghil, M.R. Allen, Michael Dettinger, Kayo Ide, D.~Kondrashov, Michael
+  Mann, Andrew Robertson, A.~Saunders, Yudong Tian, Ferenc Varadi, and P.~Yiou.
+\newblock Advanced spectral methods for climate time series.
+\newblock \emph{Rev. Geophys.}, 2002:\penalty0 1003--1043, 01 2002.
+
+\bibitem[{Golyandina} et~al.(2013){Golyandina}, {Korobeynikov}, {Shlemov}, and
+  {Usevich}]{Golyandina13}
+Nina {Golyandina}, Anton {Korobeynikov}, Alex {Shlemov}, and Konstantin
+  {Usevich}.
+\newblock {Multivariate and 2D Extensions of Singular Spectrum Analysis with
+  the Rssa Package}.
+\newblock \emph{arXiv e-prints}, art. arXiv:1309.5050, September 2013.
+
+\bibitem[Bourke(2022)]{InterpolationOverview}
+Paul Bourke.
+\newblock Interpolation methods.
+\newblock http://paulbourke.net/miscellaneous/interpolation/, 2022.
+\newblock [Online; accessed 2022].
+
+\bibitem[{F\'etick, R. J. L.} et~al.(2019){F\'etick, R. J. L.}, {Fusco, T.},
+  {Neichel, B.}, {Mugnier, L. M.}, {Beltramo-Martin, O.}, {Bonnefois, A.},
+  {Petit, C.}, {Milli, J.}, {Vernet, J.}, {Oberti, S.}, and {Bacon,
+  R.}]{Fetick19}
+{F\'etick, R. J. L.}, {Fusco, T.}, {Neichel, B.}, {Mugnier, L. M.},
+  {Beltramo-Martin, O.}, {Bonnefois, A.}, {Petit, C.}, {Milli, J.}, {Vernet,
+  J.}, {Oberti, S.}, and {Bacon, R.}
+\newblock Physics-based model of the adaptive-optics-corrected point spread
+  function - applications to the sphere/zimpol and muse instruments.
+\newblock \emph{A\&A}, 628:\penalty0 A99, 2019.
+\newblock \doi{10.1051/0004-6361/201935830}.
+\newblock URL \url{https://doi.org/10.1051/0004-6361/201935830}.
+
+\bibitem[{Moffat}(1969)]{Moffat69}
+A.~F.~J. {Moffat}.
+\newblock {A Theoretical Investigation of Focal Stellar Images in the
+  Photographic Emulsion and Application to Photographic Photometry}.
+\newblock \emph{\aap}, 3:\penalty0 455, December 1969.
+
+\bibitem[Various(2004)]{AO_online_book}
+Various.
+\newblock Ao summer conf.~2004 book.
+\newblock https://cfao.ucolick.org/aosummer/book/, 2004.
+\newblock [Online; accessed 2022].
+
+\bibitem[Durbin(2021)]{Durbin21}
+Paul~A. Durbin.
+\newblock \emph{Advanced Approaches in Turbulence}.
+\newblock Elsevier, 2021.
+\newblock ISBN 978-0-12-820774-1.
+\newblock \doi{https://doi.org/10.1016/B978-0-12-820774-1.00007-0}.
+\newblock URL
+  \url{https://www.sciencedirect.com/science/article/pii/B9780128207741000070}.
+
+\bibitem[McMurty(2022)]{McMurty_OnlineTurbulenceCourse}
+Patrick McMurty.
+\newblock Turbulence.
+\newblock https://my.eng.utah.edu/~mcmurtry/Turbulence/, 2022.
+\newblock [Online; accessed 2022].
+
+\bibitem[Andrews(2019)]{Andrews19}
+Larry~C. Andrews.
+\newblock \emph{Field Guide to Atmospheric Optics}.
+\newblock SPIE, 2 edition, 2019.
+\newblock ISBN 9781510619371.
+
+\bibitem[Tyson(2012)]{Tyson_2012}
+Robert~K. Tyson.
+\newblock \emph{Topics in Adaptive Optics}.
+\newblock IntechOpen, Rijeka, Jan 2012.
+\newblock \doi{10.5772/1086}.
+\newblock URL \url{https://doi.org/10.5772/1086}.
+
+\bibitem[Coulman(1985)]{Coulman85}
+C.~E. Coulman.
+\newblock Fundamental and applied aspects of astronomical “seeing”.
+\newblock \emph{Annual Review of Astronomy and Astrophysics}, 23\penalty0
+  (1):\penalty0 19--57, 1985.
+\newblock \doi{10.1146/annurev.aa.23.090185.000315}.
+\newblock URL \url{https://doi.org/10.1146/annurev.aa.23.090185.000315}.
+
+\bibitem[Born and Wolf(2019)]{born_wolf_2019}
+Max Born and Emil Wolf.
+\newblock \emph{Principles of Optics: 60th Anniversary Edition}.
+\newblock Cambridge University Press, 7 edition, 2019.
+\newblock \doi{10.1017/9781108769914}.
+
+\bibitem[Lahiri(2016)]{Lahiri16}
+Avijit Lahiri.
+\newblock \emph{Basic Optics}.
+\newblock Elsevier, Amsterdam, 2016.
+\newblock ISBN 978-0-12-805357-7.
+\newblock \doi{https://doi.org/10.1016/B978-0-12-805357-7.00007-1}.
+\newblock URL
+  \url{https://www.sciencedirect.com/science/article/pii/B9780128053577000071}.
+
+\bibitem[SCHROEDER(2000)]{Schroeder00}
+DANIEL~J. SCHROEDER.
+\newblock \emph{Astronomical Optics (Second Edition)}.
+\newblock Academic Press, San Diego, second edition edition, 2000.
+\newblock ISBN 978-0-12-629810-9.
+\newblock \doi{https://doi.org/10.1016/B978-0-12-629810-9.50023-2}.
+\newblock URL
+  \url{https://www.sciencedirect.com/science/article/pii/B9780126298109500232}.
+
+\bibitem[Keating(2002)]{Keating02}
+Michael~P. Keating.
+\newblock \emph{Geometric, Physical, and Visual Optics (Second Edition)}.
+\newblock Butterworth-Heinemann, Burlington, second edition edition, 2002.
+\newblock ISBN 978-0-7506-7262-7.
+\newblock \doi{https://doi.org/10.1016/B978-0-7506-7262-7.50005-9}.
+\newblock URL
+  \url{https://www.sciencedirect.com/science/article/pii/B9780750672627500059}.
+
+\bibitem[Roddier(1999)]{roddier_1999}
+Francois Roddier.
+\newblock \emph{Adaptive Optics in Astronomy}.
+\newblock Cambridge University Press, 1999.
+\newblock \doi{10.1017/CBO9780511525179}.
+
+\end{thebibliography}

@@ -1,0 +1,34 @@
+
+\subsection{Useful Information}
+\begin{description}
+	\item{Version\\} Python 3.9.6 ($\geq$ 3.8 required)
+	\item{3rd Party Packages (used for the tutorials)}
+		\begin{description}
+			\item{numpy\\} \verb|https://numpy.org/install/|
+			\item{scipy\\} \verb|https://scipy.org/install/|
+			\item{matplotlib\\} \verb|https://matplotlib.org/stable/users/getting_started/|
+			\item{astropy\\} \verb|https://docs.astropy.org/en/stable/install.html|
+		\end{description}
+	\item{Virtual Environments}
+	\begin{description}
+		\item{pyenv\\} \verb|https://github.com/pyenv/pyenv| Used to manage multiple versions of python without interfering with the system's installation. See this tutorial for details \texttt{https://towardsdatascience.com/managing-\linebreak[0]virtual-\linebreak[0]environment-\linebreak[0]with-\linebreak[0]pyenv-\linebreak[0]ae6f3fb835f8}
+		\item{virtualenv\\} \verb|https://github.com/pyenv/pyenv-virtualenv| A plugin for pyenv to manage multiple virtual environments
+		\item{anaconda\\} \verb|https://www.anaconda.com/products/distribution| A managed distribution and virtual environment manager. I've not used it really, but lots of people like it.
+	\end{description}
+	
+\end{description} 
+
+
+
+\subsection{Background}
+
+Updating and upgrading Python and it's packages can be a horrible can of worms. The main problem is that many computers come with a \emph{system} installation of Python. The \emph{system} installation is required, as some utilities and system-level things need it. Unfortunately, if you update to a newer version of Python (especially if you swap your `python` command to point to a `python3` executable) nasty things can happen. Therefore, rather than solving the problem people stuck a patch on it called \emph{version managers}, \emph{virtual environments}, and \emph{virtual environment managers}.
+
+Technically, you can install a different version of Python onto your system just by providing some variables when installing it. However, it can become a massive hassle to rememeber which versions you need and where you kept them. `pyenv' is a version manager, and can let you replace the commands `python' and `python3' with whatever you want without interfering with the \emph{system} installation. I've managed to set up `pyenv' on my machine such that I never have to do anything special unless I'm updating to a new version of python (and then I just need to change the `global' version to the new one and ignore it again).
+
+A virtual environment, just swaps out all of the environment variables that Python needs to different versions so they don't interfere with the \emph{system} installation or any other installation. This is useful if you need a specific version of a package (to run some archaic scripts you found), but that version is incompatible with your normal setup. `pyenv' has a plugin called `pyenv-virtualenv' that can make and manage virtual environments for you.
+
+Anaconda is a managed python distribution that comes with a version manager and virtual environment manager built-in. I've not used it much, but many people do and it's considered good. It's probably the simplest way to get everything working, they also have a `miniconda' version that just installs their management software so you can customise everything yourself.
+
+
+
