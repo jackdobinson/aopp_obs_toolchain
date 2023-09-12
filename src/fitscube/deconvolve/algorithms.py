@@ -1377,13 +1377,13 @@ if __name__=='__main__':
 	
 	print(np.nanargmin(lr2.iter_stat_record[:,-1]))
 	"""
-	"""
-	deconv = CleanModified(obs, psf, verbose=2, loop_gain=0.2, threshold=0.6, n_iter=1000, alpha=1, show_plots=True, noise_std=1E-1)
-	deconv()
-	"""
+	
+	deconv = CleanModified(show_plots=True, verbose=2, loop_gain=0.2, threshold=0.6, n_iter=1000, noise_std=1E-1)
+	deconv(obs, psf)
+	
 	# make smaller for testing
 	#obs, psf = obs[::10,::10], psf[::10,::10]/np.nansum(psf[::10,::10])
-	
+	"""
 	deconv = MaximumEntropy(obs, psf, show_plots=True, verbose=2, n_iter=500)
 	deconv()
 	
@@ -1417,7 +1417,7 @@ if __name__=='__main__':
 	a2[1,0].imshow(sp.signal.convolve(deconv.components, psf, mode='same'), origin='lower')
 	
 	plt.show()
-	
+	"""
 
 
 

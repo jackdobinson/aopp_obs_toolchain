@@ -147,7 +147,7 @@ class Splitter:
 	whitespace_strings : typing.Sequence[str] = whitespace_strings
 	can_lbrk_strings : typing.Sequence[str] = (')',']','}')
 	width : int = ut.cfg.wrap_width
-	special_width : np.ndarray = np.zeros((0,2), dtype=int)
+	special_width : np.ndarray = dc.field(default_factory=lambda : np.zeros((0,2), dtype=int))
 
 	def get_split_idxs(self, astr):
 		#_lgr.DEBUG('Splitter::__call__()')

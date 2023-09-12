@@ -47,7 +47,6 @@ class SSA:
 			self.v_star[:self.lx,:self.kx] = v.T
 			self.s = np.zeros((self.lx, self.kx))
 			self.s[:self.u.shape[0], :self.u.shape[1]] = np.sqrt(np.diag(s))
-
 		
 		self.X_decomp = py_svd.decompose_to_matricies(self.u,self.s,self.v_star)
 		self.d = self.X_decomp.shape[0]
@@ -347,6 +346,7 @@ class SSA2D:
 		#self.X_decomp = py_svd.decompose_to_matricies(self.u,self.s,self.v_star)
 		#self.X_decomp = np.einsum('ii,jk,kl->ijl', self.s, self.u, self.v_star)
 		#self.X_decomp = np.diag(self.s)[:,None,None]*(self.u @ self.v_star)[None,:,:]
+		
 		self.X_decomp = np.diag(self.s)[:,None,None]*(self.u.T[:,:,None] @ self.v_star[:,None,:])
 		self.d = self.X_decomp.shape[0]
 		
@@ -649,6 +649,26 @@ if __name__=='__main__':
 	test_data_type_2d = ('fitscube','fractal','random')
 	test_data_type_1d = ('random',)
 	
+	
+	# find 1d testing data
+	for data_type in test_data_type_1d:
+		if data_type == 'random':
+			np.random.seed(100)
+			n = 1000
+			w = 10
+			data1d = np.convolve(np.random.random((n,)), np.ones((w,)), mode='same')
+		else:
+			raiseValueError(f'Unknown type of test data for 1d case {repr(data_type)}')
+			
+	print(f'TESTING: 1d ssa with {data_type} example data')
+	
+	ssa = SSA(data1d, svd_strategy='eigval', rev_mapping='fft', grouping_method='elementary')
+	ssa.plot_ssa()
+	plt.show()
+	
+	
+	
+	
 	# find 2d testing data
 	for data_type in test_data_type_2d:
 		if data_type == 'fitscube':
@@ -677,25 +697,13 @@ if __name__=='__main__':
 			raise ValueError(f'Unknown type of test data for 2d case {repr(data_type)}')
 			
 	print(f'TESTING: 2d ssa with {data_type} example data')
-	
-	# find 1d testing data
-	for data_type in test_data_type_1d:
-		if data_type == 'random':
-			np.random.seed(100)
-			n = 1000
-			w = 10
-			data1d = np.convolve(np.random.random((n,)), np.ones((w,)), mode='same')
-		else:
-			raiseValueError(f'Unknown type of test data for 1d case {repr(data_type)}')
-	print(f'TESTING: 1d ssa with {data_type} example data')
-	
+	ssa2d = SSA2D(data2d.astype(np.float64), (7,7), svd_strategy='numpy', grouping_method='elementary')
+	ssa2d.plot_ssa()
+	plt.show()
 	
 	ssa2d = SSA2D(data2d.astype(np.float64), (7,7), svd_strategy='numpy', grouping_method='elementary')
 	ssa2d.plot_ssa()
 	plt.show()
 	
 	
-	ssa = SSA(data1d, svd_strategy='numpy', rev_mapping='fft', grouping_method='elementary')
-	ssa.plot_ssa()
-	plt.show()
 	
