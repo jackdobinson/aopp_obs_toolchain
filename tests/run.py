@@ -91,7 +91,11 @@ def main(
 		only_report_failures = True # If true, will only show result details when failures happen.
 	):
 	if test_dir is None: test_dir = Path(__file__).parent 
-	print(f'{test_dir=}')
+	#print(f'{test_dir=}')
+	
+	# Add test_dir to END of sys.path
+	sys.path += [str(test_dir)]
+	#print(f'{sys.path=}')
 
 
 	test_discovery_data = {}
@@ -104,37 +108,53 @@ def main(
 		files[:] = list(filter(modulefile_search_predicate, files))
 		
 		for item in files:
-			module_file = (Path(prefix) / item).relative_to(test_dir)
-			print(f'Searching "{module_file}", discovering tests:')
+			package_file = Path(prefix).relative_to(test_dir)
+			#module_file = (Path(prefix) / item).relative_to(test_dir)
+			module_file = Path(item)
+			print(f'Searching "{package_file}/{module_file}", discovering tests:')
 			
-			module_name = str(module_file).replace(os.sep, '.')
+			
+			package_name = str(package_file)
+			#if not package_name.startswith('.'):
+			#	package_name = '.'+package_name
+			#module_name = str(module_file).replace(os.sep, '.')
+			module_name = str(module_file)
 			
 			if module_name.endswith('.py'): 
 				module_name = module_name[:-3]
 			
-			module = importlib.import_module(module_name)
+			#print(f'{Path(prefix)=} {test_dir=}')
+			#print(f'{package_name=} {module_name=}')
 			
-			test_discovery_data[module_name] = {}
+			if Path(prefix) != test_dir:
+				module = importlib.import_module('.'.join((package_name,module_name)))
+				full_module_name = '.'.join((package_name, module_name))
+			else:
+				module = importlib.import_module(module_name)
+				full_module_name = module_name
+			
+			
+			test_discovery_data[full_module_name] = {}
 			
 			for test_name, test_member_callable in inspect.getmembers(module, member_search_predicate):
 				print(f'    "{test_name}"')
-				tid = f"{module_name}::{test_name}"
+				tid = f"{full_module_name}::{test_name}"
 				
-				test_discovery_data[module_name][tid] = {'callable':test_member_callable,'name':test_name}
+				test_discovery_data[full_module_name][tid] = {'callable':test_member_callable,'name':test_name}
 	
 	print('Discovery Summary:')
 	
 	# Test discovery ends
 	
-	for module_name, test_data in test_discovery_data.items():
-		print(f'    module "{module_name}" contains tests:')
+	for full_module_name, test_data in test_discovery_data.items():
+		print(f'    module "{full_module_name}" contains tests:')
 		for tid, td in test_data.items():
 			print(f'        {td["name"]}')
 	
 	
 	print()
 	print(terminal_center(' Running Tests ', '='))
-	for module_name, test_data in test_discovery_data.items():
+	for full_module_name, test_data in test_discovery_data.items():
 		for tid, td in test_data.items():
 			print(terminal_left(f'{tid} ', '-', -7), end='')
 			
@@ -201,7 +221,7 @@ def main(
 	print()
 	if not only_report_failures or any(not td['success'] for td in test_data.values() for test_data in test_discovery_data.values()):
 		print(terminal_center(' Test Result Details ', '='))
-		for module_name, test_data in test_discovery_data.items():
+		for full_module_name, test_data in test_discovery_data.items():
 			for tid, td in test_data.items():
 				
 				if not only_report_failures or not td['success']:
