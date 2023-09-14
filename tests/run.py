@@ -8,7 +8,7 @@ from contextlib import contextmanager, redirect_stdout, redirect_stderr
 from io import StringIO
 import textwrap
 import shutil
-
+import subprocess as sp
 
 terminal_wrapper = textwrap.TextWrapper(
 	expand_tabs = True,
@@ -22,9 +22,9 @@ terminal_wrapper = textwrap.TextWrapper(
 	subsequent_indent=''
 	
 )
-def terminal_wrap(text, indent_level, indent_str='\t'):
+def terminal_wrap(text, indent_level, indent_str='\t', d=0):
 	indent = indent_level*indent_str
-	terminal_wrapper.width = shutil.get_terminal_size().columns - terminal_wrapper.tabsize*indent_level
+	terminal_wrapper.width = shutil.get_terminal_size().columns - terminal_wrapper.tabsize*indent_level + d
 	#terminal_wrapper.width = 60 - terminal_wrapper.tabsize*indent_level
 	
 	wrapped_text_lines = []
@@ -32,17 +32,17 @@ def terminal_wrap(text, indent_level, indent_str='\t'):
 		wrapped_text_lines += terminal_wrapper.wrap(line)
 	return(indent + ('\n'+indent).join(wrapped_text_lines))
 
-def terminal_fill(text):
+def terminal_fill(text, d=0):
 	assert len(text) > 0, "must have some amount of text to repeat"
-	c = shutil.get_terminal_size().columns
+	c = shutil.get_terminal_size().columns + d
 	n = c // len(text)
 	r = c % len(text)
 	return(text*n + text[:r])
 
-def terminal_center(text, fill):
+def terminal_center(text, fill, d=0):
 	assert len(text) > 0
 	assert len(fill) > 0
-	c = shutil.get_terminal_size().columns
+	c = shutil.get_terminal_size().columns + d
 	x = (c - len(text))
 	h = x//2
 	b = x%2
@@ -50,58 +50,168 @@ def terminal_center(text, fill):
 	r = h % len(fill)
 	return(fill*n + fill[:r] + text + fill[:b] + fill*n + fill[:r])
 
-def main(continue_on_fail=True):
-	test_dir = Path(__file__).parent
-	sys.path = [str(test_dir), *sys.path]
-	print(sys.path)
+def terminal_left(text, fill, d=0):
+	assert len(text) > 0
+	assert len(fill) > 0
+	c = shutil.get_terminal_size().columns + d
+	x = (c - len(text))
+	n = x // len(fill)
+	r = x % len(fill)
+	return(text + fill*n + fill[:r])
+	
+def terminal_right(text, fill, d=0):
+	assert len(text) > 0
+	assert len(fill) > 0
+	c = shutil.get_terminal_size().columns + d
+	x = (c - len(text))
+	n = x // len(fill)
+	r = x % len(fill)
+	return(fill*n + fill[:r] + text)
+
+def dict_diff(a, b):
+	ak = set(a.keys())
+	bk = set(b.keys())
+	uk = ak & bk
+	ak = ak - uk # keys only in a
+	bk = bk - uk # keys only in b
+	
+	ck = set() # keys changed from a to b
+	for k in uk:
+		if a[k] != b[k]:
+			ck |= {k}
+	
+	return(ak, bk, ck)
+
+def main(
+		test_dir = None, # Top of directory tree to search for tests
+		continue_on_fail=True, # Should we continue executing tests if one fails?
+		directory_search_predicate = lambda adir: not adir.startswith('__'), # If this is true, directory will be included in test search
+		modulefile_search_predicate = lambda mf: (not mf.startswith('__')) and mf.endswith('.py') and ('test' in mf), # if this is true, modulefile will be included in test search
+		member_search_predicate = lambda m: inspect.isfunction(m) and ('test' in m.__name__), # if this is true, the member of the module is a test and will be run.
+		only_report_failures = True # If true, will only show result details when failures happen.
+	):
+	if test_dir is None: test_dir = Path(__file__).parent 
 	print(f'{test_dir=}')
 
 
-	test_results = {}
+	test_discovery_data = {}
 
+	# Perform test discovery
+	print(terminal_center(f' Starting test discovery from folder "{test_dir}" ', '='))
+	
 	for prefix, dirs, files in os.walk(test_dir, topdown=True):
-		dirs[:] = list(filter(lambda adir: not adir.startswith('__'), dirs))
-		files[:] = list(filter(lambda afile: (not afile.startswith('__')) and afile.endswith('.py') and ('test' in afile), files))
+		dirs[:] = list(filter(directory_search_predicate, dirs))
+		files[:] = list(filter(modulefile_search_predicate, files))
 		
 		for item in files:
-			module_file = Path(prefix) / item
+			module_file = (Path(prefix) / item).relative_to(test_dir)
+			print(f'Searching "{module_file}", discovering tests:')
 			
-			module_name = str(module_file.relative_to(test_dir)).replace(os.sep, '.')
-			if not module_name.startswith('.'): module_name = '.'+module_name
-			if module_name.endswith('.py'): module_name = module_name[:-3]
-			module = importlib.import_module(module_name, test_dir.name)
+			module_name = str(module_file).replace(os.sep, '.')
 			
-			print(f'Imported {module}')
+			if module_name.endswith('.py'): 
+				module_name = module_name[:-3]
 			
-			for test_name, test_function in inspect.getmembers(module, lambda m: inspect.isfunction(m) and ('test' in m.__name__)):
-				test_identifier = f"{test_dir.name}{module_name}::{test_name}"
-				test_results[test_identifier] = {}
+			module = importlib.import_module(module_name)
+			
+			test_discovery_data[module_name] = {}
+			
+			for test_name, test_member_callable in inspect.getmembers(module, member_search_predicate):
+				print(f'    "{test_name}"')
+				tid = f"{module_name}::{test_name}"
 				
-				test_results[test_identifier].update({'stdout': StringIO()})
-				
-				print(terminal_center(f' Running test "{test_identifier}" ', '='))
-				try:
-					with redirect_stdout(test_results[test_identifier]['stdout']), redirect_stderr(test_results[test_identifier]['stdout']):
-						test_function()
-				except BaseException as e:
-					print('Failed')
-					test_results[test_identifier].update({'success': False, 'message':'\n'.join(traceback.format_exception(e))})
-					if not continue_on_fail: raise e
-				else:
-					test_results[test_identifier].update({'success': True, 'message':''})
-					print('Passed')
-				finally:
-					print()
+				test_discovery_data[module_name][tid] = {'callable':test_member_callable,'name':test_name}
+	
+	print('Discovery Summary:')
+	
+	# Test discovery ends
+	
+	for module_name, test_data in test_discovery_data.items():
+		print(f'    module "{module_name}" contains tests:')
+		for tid, td in test_data.items():
+			print(f'        {td["name"]}')
+	
+	
+	print()
+	print(terminal_center(' Running Tests ', '='))
+	for module_name, test_data in test_discovery_data.items():
+		for tid, td in test_data.items():
+			print(terminal_left(f'{tid} ', '-', -7), end='')
+			
+			# Enable output capture
+			td.update({'stdout': StringIO()})
+			
+			
+			# Run the test
+			try:
+				with redirect_stdout(td['stdout']), redirect_stderr(td['stdout']):
 					
-	print(terminal_fill('='))
-	for test_identifier, test_result in test_results.items():
-		print(("PASSED" if test_result['success'] else "FAILED" )
-			+ ': ' 
-			+ f'{test_identifier} '
-			+ '-'*(shutil.get_terminal_size().columns-len(test_identifier)-9) 
-		)
-		print(terminal_wrap(test_result['stdout'].getvalue(), 1))
-		print(terminal_wrap(test_result["message"], 1))
+					# Remember program state before the test
+					pre_globals = dict(globals())
+					pre_locals = dict(locals())
+					for item in ('pre_globals', 'pre_locals', 'new_globals', 'new_locals'):
+						if item in pre_locals:
+							del pre_locals[item]
+					del pre_locals['item']
+					
+					td['callable']()
+					
+					# Save program state directly after test
+					new_globals = dict(globals())
+					new_locals = dict(locals())
+					for item in ('pre_globals', 'pre_locals', 'new_globals', 'new_locals'):
+						if item in new_locals:
+							del new_locals[item]
+					del new_locals['item']
+					
+					# Compare to see if program state has changed
+					if pre_globals != new_globals:
+						print('WARINING: Test altered global variables see below for details ("-" = removed, "+" = added):')
+						pk, nk, ck = dict_diff(pre_globals, new_globals)
+						for k in pk:
+							print(f"    - '{k}' : {pre_globals[k]}")
+						for k in nk:
+							print(f"    + '{k}' : {pre_globals[k]}")
+						for k in ck:
+							print(f"    - '{k}' : {pre_globals[k]}")
+							print(f"    + '{k}' : {new_globals[k]}")
+							
+					if pre_locals  != new_locals:
+						print('WARNING: Test altered local variables see below for details ("-" = removed, "+" = added):')
+						pk, nk, ck = dict_diff(pre_locals, new_locals)
+						for k in pk:
+							print(f"    - '{k}' : {pre_locals[k]}")
+						for k in nk:
+							print(f"    + '{k}' : {new_locals[k]}")
+						for k in ck:
+							print(f"    - '{k}' : {pre_locals[k]}")
+							print(f"    + '{k}' : {new_locals[k]}")
+						
+					
+			except BaseException as e:
+				print(' Failed')
+				td.update({'success':False, 'message':'\n'.join(traceback.format_exception(e))})
+				if not continue_on_fail:
+					print(terminal_wrap(td['stdout'].getvalue(),1))
+					raise e
+			else:
+				td.update({'success':True, 'message':''})
+				print(' Passed')
+				
+	print()
+	if not only_report_failures or any(not td['success'] for td in test_data.values() for test_data in test_discovery_data.values()):
+		print(terminal_center(' Test Result Details ', '='))
+		for module_name, test_data in test_discovery_data.items():
+			for tid, td in test_data.items():
+				
+				if not only_report_failures or not td['success']:
+					print(("PASSED" if td['success'] else "FAILED" )
+						+ ': ' 
+						+ f'{tid} '
+						+ '-'*(shutil.get_terminal_size().columns-len(tid)-9) 
+					)
+					print(terminal_wrap(td['stdout'].getvalue(), 1))
+					print(terminal_wrap(td["message"], 1))
 
 
 
