@@ -6,6 +6,9 @@ from collections import namedtuple
 import text
 import cast
 
+import numpy_helper as nph
+import numpy_helper.slice
+
 
 FitsSpecifier = namedtuple('FitsSpecifier', ('path', 'extension', 'slices', 'axes'))
 
@@ -46,7 +49,7 @@ Format:
 			Selects the "DATA" extension, slices the 0th axis from 100->200 leaving the others untouched, and signals that axes 1 and 2 are important e.g. they are the RA-DEC axes.
 		~/home/datasets/MUSE/neptune_obs_1.fits{{DATA}}[100:200](1,2)
 			Does the same thing as above, but omits un-needed slice specifiers.
-		~/home/datasets/MUSE/neptune_obs_1.fits{{DATA}}[100:200]{CELESTIAL:(1,2)}
+		~/home/datasets/MUSE/neptune_obs_1.fits{{DATA}}[100:200]{{CELESTIAL:(1,2)}}
 			Again, same as above, but adds explicit axes type.
 """
 
@@ -142,11 +145,7 @@ def parse(specifier : str, axes_types : list[str]):
 			if i == -1:
 				raise RuntimeError("FITS specifier is malformed, missing '['")
 			slice_tuple_str = specifier[i+1:j] # exclude "[" and "]" to give "a:b:c,d:e:f,..."
-			try:
-				slices = tuple(slice(*tuple(cast.to(z,int) if z != '' else None for z in y.split(':'))) for y in slice_tuple_str.split(','))
-			except Exception as e:
-				e.add_note(f"slice tuple string '{slice_tuple_str}' is malformed")
-				raise
+			slices = nph.slice.from_string(slice_tuple_str)
 			specifier = specifier[:i]
 			j = i-1
 		

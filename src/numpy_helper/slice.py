@@ -6,6 +6,15 @@ import numpy as np
 import numpy_helper as nph
 import numpy_helper.axes
 
+import cast
+
+def from_string(slice_tuple_str : str):
+	try:
+		return tuple(slice(*tuple(cast.to(z,int) if z != '' else None for z in y.split(':'))) for y in slice_tuple_str.split(','))
+	except Exception as e:
+		e.add_note(f"slice tuple string '{slice_tuple_str}' is malformed")
+		raise
+
 def get_indices(
 		a : np.ndarray, 
 		slice_tuple : tuple[slice|int,...] | np.ndarray[int] | None,
