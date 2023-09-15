@@ -1,0 +1,177 @@
+"""
+Routine for parsing a string containing the path, extension, slices, and axes
+of a FITS file that we want to operate on.
+"""
+from collections import namedtuple 
+import text
+import cast
+
+
+FitsSpecifier = namedtuple('FitsSpecifier', ('path', 'extension', 'slices', 'axes'))
+
+axes_types_and_descriptions={
+	"SPECTRAL" : "wavelength/frequency varies along this axis",
+	"CELESTIAL" : "sky position varies along this axis",
+	"POLARISATION" : "polarisation varies along this axis, could be linear of circular",
+	"TIME" : "time varies along this axis"
+}
+
+help_fmt = """\
+Format:
+	`.../path/to/a.fits{{ext}}[slice0,slice1,...]{{axes_type_1:(ax11,ax12,...),axes_type_2:(ax21,ax22,...)}}
+	
+	Where:
+		.../path/to/a.fits
+			A path to a FITS file. Must be present.
+		ext : str | int
+			Fits extension, either a string or an index. If not present, will assume PRIMARY hdu, (hdu index 0)
+		sliceM : str
+			Slice of Mth axis in the normal python `start:stop:step` format. If not present will assume slice(None) for an axis.
+		axes_type_N : axes_type
+			Type of the Nth axes set. Axes types are detailed below. They are used to tell a program what to do with
+			an axis when normal FITS methods of description fail (or as a backup). Note, the type (and enclosing curly backets
+			`{{}}` can be ommited if a program only accepts one or two axes types. In that case, the specified axes will be
+			assumed to be of the first type specified in the documentation, and the remaining axes of the second type (if there
+			is a second type).
+		axNL : int
+			Axes of the extension that are of the specified type. If not present, will assume all axes are of the first type
+			specified in the documentation.
+	
+	Accepted axes_type:
+		{axes_types}
+		
+	
+	Examples:
+		~/home/datasets/MUSE/neptune_obs_1.fits{{DATA}}[100:200,:,:](1,2)
+			Selects the "DATA" extension, slices the 0th axis from 100->200 leaving the others untouched, and signals that axes 1 and 2 are important e.g. they are the RA-DEC axes.
+		~/home/datasets/MUSE/neptune_obs_1.fits{{DATA}}[100:200](1,2)
+			Does the same thing as above, but omits un-needed slice specifiers.
+		~/home/datasets/MUSE/neptune_obs_1.fits{{DATA}}[100:200]{CELESTIAL:(1,2)}
+			Again, same as above, but adds explicit axes type.
+"""
+
+def get_help(axes_types : list[str]):
+	"""
+	Generates the help string for a list of axes_types.
+	"""
+	for x in axes_types:
+		if x not in axes_types_and_descriptions:
+			raise RuntimeError(f"axes_type '{x}' is not one of the known axes_types {list(axes_types_and_descriptions.keys())}")
+	
+	return help_fmt.format(axes_types='\n\t\t'.join([k+'\n\t\t\t'+axes_types_and_descriptions[k] for k in axes_types]))
+
+
+
+def parse_axes_type_list(axes_type_list : str, axes_types: list[str] | tuple[str]):
+	"""
+	Parses the axes type list at the end of the specifier string.
+	
+	Arguments:
+		axes_type_list : str
+			"axes_type_1:(ax11,ax22,...),axes_type_2:(ax21,ax22,...)" or "(ax11,ax22)"
+		axes_types : list[str] | tuple[str]
+			List of acceptable axes types
+	"""
+	
+	# first split on commas
+	axes = {}
+	print(f"{text.split_around_brackets(axes_type_list)=}")
+	for i, axes_type_str in enumerate(text.split_around_brackets(axes_type_list)):
+		# axes_type_str = "axes_type_1:(ax11,ax12,...)" or "(ax11,ax12,...)"
+		print(f'{axes_type_str=}')
+		n_colon = axes_type_str.count(':')
+		if n_colon == 0:
+			axtype, axtuple_str = (axes_types[i], axes_type_str)
+		elif n_colon == 1:
+			axtype, axtuple_str = axes_type_str.split(':')
+		else:
+			raise RuntimeError("axes_type_str '{axes_type_str}' has more than one colon, it is malformed.")
+		
+		# now parse axtuple_str
+		assert axtuple_str[0] == '(' and axtuple_str[-1] ==')', f"axes tuple '{axtuple_str}' must be enclosed in brackets"
+		
+		axtuple = text.to_tuple(axtuple_str[1:-1], int)
+		axes[axtype] = axtuple
+	
+	return(axes)
+		
+	
+
+def parse(specifier : str, axes_types : list[str]):
+	f"""
+	Parses a string that specifies a fits file, extension, and slices.
+	
+	Arguments:
+		specifier : str
+			A FITS specifier string, has the following format:
+				{text.indent(get_help(axes_types), 4)}
+			
+	"""
+	help_string = get_help(axes_types)
+	
+	# Go through cases from end to start
+	
+	try:
+		# get axes information
+		j = len(specifier) - 1
+		axes_type_list = None
+		if specifier[j] == '}':
+			# we have axes_types in the specifier.
+			i = specifier.rfind('{',0,j)
+			if i == -1:
+				raise RuntimeError("FITS specifier is malformed, missing '{'")
+			axes_type_list = specifier[i+1:j]
+			specifier = specifier[:i]
+			j = i-1
+		elif specifier[j] == ')':
+			i = specifier.rfind('(',0,j)
+			if i == -1:
+				raise RuntimeError("FITS specifier is malformed, missing '('")
+			axes_type_list = specifier[i:j+1]
+			specifier = specifier[:i]
+			j = i-1
+		
+		if axes_type_list is not None:
+			axes = parse_axes_type_list(axes_type_list, axes_types)
+			
+		
+		# get slice information
+		if specifier[j] == ']':
+			# we have slice information
+			i = specifier.rfind('[',0,j)
+			if i == -1:
+				raise RuntimeError("FITS specifier is malformed, missing '['")
+			slice_tuple_str = specifier[i+1:j] # exclude "[" and "]" to give "a:b:c,d:e:f,..."
+			try:
+				slices = tuple(slice(*tuple(cast.to(z,int) if z != '' else None for z in y.split(':'))) for y in slice_tuple_str.split(','))
+			except Exception as e:
+				e.add_note(f"slice tuple string '{slice_tuple_str}' is malformed")
+				raise
+			specifier = specifier[:i]
+			j = i-1
+		
+		
+		# get extension
+		if specifier[j] == '}':
+			i = specifier.rfind('{',0,j)
+			if i == -1:
+				raise RuntimeError("FITS specifier is malformed, missing '{'")
+			ext_str = specifier[i+1:j]
+			ext = cast.to_any(ext_str, (int, str))
+			specifier = specifier[:i]
+			j = i-1
+		
+	except Exception as e:
+		e.add_note(help_string)
+		raise
+	
+	# get path
+	path = specifier
+	
+	return FitsSpecifier(path, ext, slices, axes)
+	
+		
+		
+		
+		
+		

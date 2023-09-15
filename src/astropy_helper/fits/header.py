@@ -1,4 +1,6 @@
-
+"""
+Helper functions to operate on FITS headers.
+"""
 
 
 class DictReader:
