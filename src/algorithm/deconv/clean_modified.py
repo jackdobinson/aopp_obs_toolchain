@@ -47,7 +47,12 @@ class CleanModified(Base):
 	_get_pixel_threshold : Any = dc.field(init=False, repr=False, hash=False, compare=False)
 	_fabs_threshold : float = dc.field(init=False, repr=False, hash=False, compare=False)
 	_rms_threshold : float = dc.field(init=False, repr=False, hash=False, compare=False)
-	
+
+	def get_components(self) -> np.ndarray:
+		return(self._components)
+	def get_residual(self) -> np.ndarray:
+		return(self._residual)
+
 	def _init_algorithm(self, obs, psf) -> None:
 		super(CleanModified, self)._init_algorithm(obs, psf)
 		# initialise arrays

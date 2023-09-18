@@ -5,6 +5,7 @@ Base class for all deconvolution algorithms
 import dataclasses as dc
 import numpy as np
 from typing import Callable, Any
+import inspect
 
 import context as ctx
 import context.temp
@@ -46,7 +47,17 @@ class Base:
 	_i : int = dc.field(init=False, repr=False, hash=False, compare=False) # iteration counter
 	_components : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False) # result of the deconvolution
 	_residual : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False) # residual (obs - _components) of the deconvolution
-		
+	
+	def get_parameters(self):
+		p = {}
+		for k, m in self.__dataclass_fields__.items():
+			if (k[0] != '_') \
+					and not hasattr(m, '__call__') \
+					and not k.endswith('hook') \
+				:
+				p[k] = getattr(self, k)
+		return p
+			
 	
 	def __call__(self, obs : np.ndarray, psf : np.ndarray, **kwargs) -> tuple[np.ndarray, np.ndarray, int]:
 		"""

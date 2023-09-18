@@ -1,7 +1,9 @@
 """
 Helper functions to operate on FITS headers.
 """
+import astropy as ap
 
+from numpy_helper.axes import AxesOrdering
 
 class DictReader:
 	"""
@@ -78,3 +80,64 @@ class DictReader:
 		self.fits_dict[key_fmt_str.format(v_key)] = val_fmt_str.format(v)
 		self.key_count += 1
 		return
+
+
+def get_celestial_axes(hdr : ap.io.fits.Header, wcsaxes_label=''):
+	placeholders = ('x','y')
+	fits_celestial_codes = ['RA--', 'DEC-', 'xLON','xLAT', 'xyLN', 'xyLT']
+	iraf_celestial_codes = ['axtype=xi', 'axtype=eta']
+
+	celestial_idxs = []
+	for i in AxesOrdering.range(hdr['NAXIS']):
+		if any(fits_code==hdr.get(f'CTYPE{i.fits}{wcsaxes_label}', '')[sum(fits_code.count(p) for p in placeholders):len(fits_code)] 
+						for fits_code in fits_celestial_codes) \
+				or any(iraf_code in hdr.get(f'WAT{i.fits}_{"001" if wcsaxes_label=="" else wcsaxes_label}', '') 
+						for iraf_code in iraf_celestial_codes) \
+				:
+			celestial_idxs.append(i.numpy)
+	return(tuple(celestial_idxs))
+
+
+def get_spectral_axes(hdr, wcsaxes_label=''):
+	fits_spectral_codes = ['FREQ', 'ENER','WAVN','VRAD','WAVE','VOPT','ZOPT','AWAV','VELO','BETA']
+	iraf_spectral_codes = ['axtype=wave']
+	
+	spectral_idxs = []
+	for i in AxesOrdering.range(hdr['NAXIS']):
+		if any(fits_code==hdr.get(f'CTYPE{i.fits}{wcsaxes_label}', '')[:len(fits_code)] for fits_code in fits_spectral_codes):
+			spectral_idxs.append(i.numpy)
+		elif any(iraf_code in hdr.get(f'WAT{i.fits}_{"001" if wcsaxes_label=="" else wcsaxes_label}', '') for iraf_code in iraf_spectral_codes):
+			spectral_idxs.append(i.numpy)
+	return(tuple(spectral_idxs))
+
+def get_polarisation_axes(hdr, wcsaxes_label=''):
+	raise NotImplementedError
+
+def get_time_axes(hdr, wcsaxes_label=''):
+	raise NotImplementedError
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

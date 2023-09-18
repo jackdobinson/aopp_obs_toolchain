@@ -159,17 +159,19 @@ def discover_tests(
 
 	return test_discovery_data
 
-def run_tests(test_discovery_data, continue_on_fail=True):
-
+def run_tests(test_discovery_data, continue_on_fail=True, live_output=False):
 	test_results = {}
 	for full_module_name, test_data in test_discovery_data.items():
 		for tid, td in test_data.items():
-			print(terminal_left(f'{tid} ', '-', -7), end='')
+			if not live_output:
+				print(terminal_left(f'{tid} ', '-', -7), end='')
+			else:
+				print(terminal_left(f'{tid} ', '-'))
 			
 			test_results[tid] = {}
 
 			# Enable output capture
-			test_results[tid]['stdout'] = StringIO()
+			test_results[tid]['stdout'] = StringIO() if not live_output else sys.stdout
 			
 			
 			# Run the test
@@ -225,18 +227,21 @@ def run_tests(test_discovery_data, continue_on_fail=True):
 				test_results[tid]['success'] = False
 				test_results[tid]['exception'] = e
 				if not continue_on_fail:
-					print(terminal_wrap(td['stdout'].getvalue(),1))
+					if not live_output: print(terminal_wrap(td['stdout'].getvalue(),1))
 					raise e
 			else:
 				test_results[tid]['success'] = True
 				test_results[tid]['exception'] = None
 				print(' Passed')
 	return(test_results)
-		
+
+
+
 def main(
 		test_dir = None, # Top of directory tree to search for tests
-		continue_on_fail=True, # Should we continue executing tests if one fails?
+		continue_on_fail=False, # Should we continue executing tests if one fails?
 		only_report_failures = True, # If true, will only show result details when failures happen.
+		live_output=True, # If true, will output to terminal as the tests are run.
 
 		 # If this is true, directory will be included in test search
 		directory_search_predicate = \
@@ -277,7 +282,7 @@ def main(
 	
 	print()
 	print(terminal_center(' Running Tests ', '='))
-	test_results = run_tests(test_discovery_data, continue_on_fail)
+	test_results = run_tests(test_discovery_data, continue_on_fail, live_output)
 
 
 	print()
@@ -291,7 +296,8 @@ def main(
 					+ f'{tid} '
 					+ '-'*(shutil.get_terminal_size().columns-len(tid)-9) 
 				)
-				print(terminal_wrap(td['stdout'].getvalue(), 1))
+				if not live_output:
+					print(terminal_wrap(td['stdout'].getvalue(), 1))
 				for aline in traceback.format_exception(td["exception"]):
 					print(terminal_wrap(aline, 1))
 

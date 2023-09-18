@@ -2,21 +2,40 @@
 Routine for parsing a string containing the path, extension, slices, and axes
 of a FITS file that we want to operate on.
 """
+from pathlib import Path
+import dataclasses as dc
 from collections import namedtuple 
+
+from astropy.io import fits
+
+
 import text
 import cast
 
 import numpy_helper as nph
 import numpy_helper.slice
 
+import astropy_helper as aph
+import astropy_helper.fits.header
 
-FitsSpecifier = namedtuple('FitsSpecifier', ('path', 'extension', 'slices', 'axes'))
 
-axes_types_and_descriptions={
-	"SPECTRAL" : "wavelength/frequency varies along this axis",
-	"CELESTIAL" : "sky position varies along this axis",
-	"POLARISATION" : "polarisation varies along this axis, could be linear of circular",
-	"TIME" : "time varies along this axis"
+FitsSpecifier = namedtuple('FitsSpecifier', ('path', 'ext', 'slices', 'axes'))
+#class FitsSpecifier:
+#	def __init__(
+#			path : str | Path,
+#			extension : str | int,
+#			slices : tuple[slice,...] | None,
+#			axes : dict[str, tuple[int,...]] | None,
+#		):
+		
+
+
+AxesInfo = namedtuple('AxesInfo', ('description', 'default_callable'))
+axes_type_info={
+	"SPECTRAL" : AxesInfo("wavelength/frequency varies along this axis", aph.fits.header.get_spectral_axes),
+	"CELESTIAL" : AxesInfo("sky position varies along this axis", aph.fits.header.get_celestial_axes),
+	"POLARISATION" : AxesInfo("polarisation varies along this axis, could be linear of circular", aph.fits.header.get_polarisation_axes),
+	"TIME" : AxesInfo("time varies along this axis", aph.fits.header.get_time_axes),
 }
 
 help_fmt = """\
@@ -58,10 +77,10 @@ def get_help(axes_types : list[str]):
 	Generates the help string for a list of axes_types.
 	"""
 	for x in axes_types:
-		if x not in axes_types_and_descriptions:
-			raise RuntimeError(f"axes_type '{x}' is not one of the known axes_types {list(axes_types_and_descriptions.keys())}")
+		if x not in axes_type_info:
+			raise RuntimeError(f"axes_type '{x}' is not one of the known axes_types {list(axes_type_info.keys())}")
 	
-	return help_fmt.format(axes_types='\n\t\t'.join([k+'\n\t\t\t'+axes_types_and_descriptions[k] for k in axes_types]))
+	return help_fmt.format(axes_types='\n\t\t'.join([k+'\n\t\t\t'+axes_type_info[k].description for k in axes_types]))
 
 
 
@@ -118,7 +137,7 @@ def parse(specifier : str, axes_types : list[str]):
 		# get axes information
 		j = len(specifier) - 1
 		axes_type_list = None
-		if specifier[j] == '}':
+		if specifier[j-1:] == ')}':
 			# we have axes_types in the specifier.
 			i = specifier.rfind('{',0,j)
 			if i == -1:
@@ -133,9 +152,13 @@ def parse(specifier : str, axes_types : list[str]):
 			axes_type_list = specifier[i:j+1]
 			specifier = specifier[:i]
 			j = i-1
-		
+		print(f'{axes_type_list=}')	
 		if axes_type_list is not None:
 			axes = parse_axes_type_list(axes_type_list, axes_types)
+		else:
+			axes = None
+		print(f'{axes=}')
+			
 			
 		
 		# get slice information
@@ -148,6 +171,8 @@ def parse(specifier : str, axes_types : list[str]):
 			slices = nph.slice.from_string(slice_tuple_str)
 			specifier = specifier[:i]
 			j = i-1
+		else:
+			slices=None
 		
 		
 		# get extension
@@ -159,6 +184,8 @@ def parse(specifier : str, axes_types : list[str]):
 			ext = cast.to_any(ext_str, (int, str))
 			specifier = specifier[:i]
 			j = i-1
+		else:
+			ext = "DATA"
 		
 	except Exception as e:
 		e.add_note(help_string)
@@ -166,7 +193,17 @@ def parse(specifier : str, axes_types : list[str]):
 	
 	# get path
 	path = specifier
-	
+
+	if slices is None or axes is None:
+		hdr = fits.getheader(path,ext=ext if type(ext) is int else (ext,1))
+		if slices is None:
+			slices = tuple(slice(None) for _ in range(hdr['NAXIS']))
+		if axes is None:
+			axes = {}
+			for ax_name in axes_types:
+				axes[ax_name] = axes_type_info[ax_name].default_callable(hdr)
+
+
 	return FitsSpecifier(path, ext, slices, axes)
 	
 		
