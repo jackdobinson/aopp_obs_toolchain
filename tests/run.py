@@ -12,7 +12,7 @@ import subprocess as sp
 
 terminal_wrapper = textwrap.TextWrapper(
 	expand_tabs = True,
-	tabsize = 4,
+	tabsize = 8,
 	replace_whitespace= False,
 	drop_whitespace= False,
 	fix_sentence_endings= False,
@@ -22,6 +22,11 @@ terminal_wrapper = textwrap.TextWrapper(
 	subsequent_indent=''
 	
 )
+
+
+def get_indent(text):
+	return text[:-len(text.lstrip())]
+
 def terminal_wrap(text, indent_level, indent_str='\t', d=0):
 	indent = indent_level*indent_str
 	terminal_wrapper.width = shutil.get_terminal_size().columns - terminal_wrapper.tabsize*indent_level + d
@@ -29,7 +34,10 @@ def terminal_wrap(text, indent_level, indent_str='\t', d=0):
 	
 	wrapped_text_lines = []
 	for line in text.splitlines(False):
-		wrapped_text_lines += terminal_wrapper.wrap(line)
+		wls = terminal_wrapper.wrap(line)
+		windent = get_indent(wls[0])
+		wls[1:] = [windent+x for x in wls[1:]]
+		wrapped_text_lines += wls
 	return(indent + ('\n'+indent).join(wrapped_text_lines))
 
 def terminal_fill(text, d=0):
@@ -82,21 +90,28 @@ def dict_diff(a, b):
 	
 	return(ak, bk, ck)
 
-def main(
-		test_dir = None, # Top of directory tree to search for tests
-		continue_on_fail=True, # Should we continue executing tests if one fails?
-		directory_search_predicate = lambda adir: not adir.startswith('__'), # If this is true, directory will be included in test search
-		modulefile_search_predicate = lambda mf: (not mf.startswith('__')) and mf.endswith('.py') and ('test' in mf), # if this is true, modulefile will be included in test search
-		member_search_predicate = lambda m: inspect.isfunction(m) and ('test' in m.__name__), # if this is true, the member of the module is a test and will be run.
-		only_report_failures = True # If true, will only show result details when failures happen.
-	):
-	if test_dir is None: test_dir = Path(__file__).parent 
-	#print(f'{test_dir=}')
-	
-	# Add test_dir to END of sys.path
-	sys.path += [str(test_dir)]
-	#print(f'{sys.path=}')
 
+def discover_tests(
+		test_dir : str, # directory to start searching for tests in
+
+		 # If this is true, directory will be included in test search
+		directory_search_predicate = \
+			lambda adir: \
+				not adir.startswith('__'),		
+		
+		# if this is true, modulefile will be included in test search
+		modulefile_search_predicate = \
+			lambda mf: \
+				(not mf.startswith('__')) \
+					and mf.endswith('.py') \
+					and ('test' in mf), 
+		
+		# if this is true, the member of the module is a test and will be run
+		member_search_predicate = \
+			lambda m: \
+				inspect.isfunction(m) \
+					and ('test' in m.__name__),
+	):
 
 	test_discovery_data = {}
 
@@ -141,30 +156,25 @@ def main(
 				tid = f"{full_module_name}::{test_name}"
 				
 				test_discovery_data[full_module_name][tid] = {'callable':test_member_callable,'name':test_name}
-	
-	print('Discovery Summary:')
-	
-	# Test discovery ends
-	
-	for full_module_name, test_data in test_discovery_data.items():
-		print(f'    module "{full_module_name}" contains tests:')
-		for tid, td in test_data.items():
-			print(f'        {td["name"]}')
-	
-	
-	print()
-	print(terminal_center(' Running Tests ', '='))
+
+	return test_discovery_data
+
+def run_tests(test_discovery_data, continue_on_fail=True):
+
+	test_results = {}
 	for full_module_name, test_data in test_discovery_data.items():
 		for tid, td in test_data.items():
 			print(terminal_left(f'{tid} ', '-', -7), end='')
 			
+			test_results[tid] = {}
+
 			# Enable output capture
-			td.update({'stdout': StringIO()})
+			test_results[tid]['stdout'] = StringIO()
 			
 			
 			# Run the test
 			try:
-				with redirect_stdout(td['stdout']), redirect_stderr(td['stdout']):
+				with redirect_stdout(test_results[tid]['stdout']), redirect_stderr(test_results[tid]['stdout']):
 					
 					# Remember program state before the test
 					pre_globals = dict(globals())
@@ -172,7 +182,8 @@ def main(
 					for item in ('pre_globals', 'pre_locals', 'new_globals', 'new_locals'):
 						if item in pre_locals:
 							del pre_locals[item]
-					del pre_locals['item']
+					if 'item' in pre_locals:
+						del pre_locals['item']
 					
 					td['callable']()
 					
@@ -182,7 +193,8 @@ def main(
 					for item in ('pre_globals', 'pre_locals', 'new_globals', 'new_locals'):
 						if item in new_locals:
 							del new_locals[item]
-					del new_locals['item']
+					if 'item' in new_locals:
+						del new_locals['item']
 					
 					# Compare to see if program state has changed
 					if pre_globals != new_globals:
@@ -210,28 +222,78 @@ def main(
 					
 			except BaseException as e:
 				print(' Failed')
-				td.update({'success':False, 'message':'\n'.join(traceback.format_exception(e))})
+				test_results[tid]['success'] = False
+				test_results[tid]['exception'] = e
 				if not continue_on_fail:
 					print(terminal_wrap(td['stdout'].getvalue(),1))
 					raise e
 			else:
-				td.update({'success':True, 'message':''})
+				test_results[tid]['success'] = True
+				test_results[tid]['exception'] = None
 				print(' Passed')
-				
+	return(test_results)
+		
+def main(
+		test_dir = None, # Top of directory tree to search for tests
+		continue_on_fail=True, # Should we continue executing tests if one fails?
+		only_report_failures = True, # If true, will only show result details when failures happen.
+
+		 # If this is true, directory will be included in test search
+		directory_search_predicate = \
+			lambda adir: \
+				not adir.startswith('__'),		
+		
+		# if this is true, modulefile will be included in test search
+		modulefile_search_predicate = \
+			lambda mf: \
+				(not mf.startswith('__')) \
+					and mf.endswith('.py') \
+					and ('test' in mf), 
+		
+		# if this is true, the member of the module is a test and will be run
+		member_search_predicate = \
+			lambda m: \
+				inspect.isfunction(m) \
+					and ('test' in m.__name__),
+
+	):
+	if test_dir is None: test_dir = Path(__file__).parent 
+	#print(f'{test_dir=}')
+	
+	# Add test_dir to END of sys.path
+	sys.path += [str(test_dir)]
+	#print(f'{sys.path=}')
+
+
+	test_discovery_data = discover_tests(test_dir, directory_search_predicate, modulefile_search_predicate, member_search_predicate)
+
 	print()
-	if not only_report_failures or any(not td['success'] for td in test_data.values() for test_data in test_discovery_data.values()):
+	print(terminal_center(' Discovery Summary ', '='))
+	for full_module_name, test_data in test_discovery_data.items():
+		print(f'    module "{full_module_name}" contains tests:')
+		for tid, td in test_data.items():
+			print(f'        {td["name"]}')
+	
+	
+	print()
+	print(terminal_center(' Running Tests ', '='))
+	test_results = run_tests(test_discovery_data, continue_on_fail)
+
+
+	print()
+	if (not only_report_failures) or any(not td['success'] for td in test_results.values()):
 		print(terminal_center(' Test Result Details ', '='))
-		for full_module_name, test_data in test_discovery_data.items():
-			for tid, td in test_data.items():
-				
-				if not only_report_failures or not td['success']:
-					print(("PASSED" if td['success'] else "FAILED" )
-						+ ': ' 
-						+ f'{tid} '
-						+ '-'*(shutil.get_terminal_size().columns-len(tid)-9) 
-					)
-					print(terminal_wrap(td['stdout'].getvalue(), 1))
-					print(terminal_wrap(td["message"], 1))
+		for tid, td in test_results.items():
+			
+			if (not only_report_failures) or not td['success']:
+				print(("PASSED" if td['success'] else "FAILED" )
+					+ ': ' 
+					+ f'{tid} '
+					+ '-'*(shutil.get_terminal_size().columns-len(tid)-9) 
+				)
+				print(terminal_wrap(td['stdout'].getvalue(), 1))
+				for aline in traceback.format_exception(td["exception"]):
+					print(terminal_wrap(aline, 1))
 
 
 

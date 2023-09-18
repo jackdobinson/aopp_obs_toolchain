@@ -26,3 +26,24 @@ Placeholders:
 * Activate the virtual environment via the command: `source <VENV_DIR>/bin/activate`. I will assume the virual environment is active from now on.
 
 * Run the command `pip install -r <REPO_DIR>/requirements.txt` to install required supporting packages.
+
+
+## Running Tests ##
+
+The tests are in the directory `<REPO_DIR>/tests`, there is a special file `<REPO_DIR>/tests/run.py` which will search for tests and run them one by one. It tries to ensure that tests do not have side-effects. 
+
+Folders are searched if:
+	* They **do not**  begin with double underscores (`__`).
+
+Files are searched if:
+	* They have `test` in their name.
+	* They end with `.py`.
+	* They **do not** begin with double underscores (`__`).
+
+Steps to run tests:
+	* Open a terminal window.
+	* Ensure you are in the repository directory via `cd <REPO_DIR>`
+	* Activate the virtual environment with `source <VENV_DIR>/bin/activate`
+	* Run the tests (includes test discovery) via `python3 ./tests/run.py`.
+
+* 
