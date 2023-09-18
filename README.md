@@ -21,8 +21,8 @@ Placeholders:
 
 * Run the command `cd <REPO_DIR>; echo "${PWD}/src" > <VENV_DIR>/lib/python3.11/site-packages/aopp_obs_toolchain.pth`. This will create a ".pth" file that tells python where to look for the package's source files.
 
-* **If** you have modified the environment variable PYTHONPATH, and those changes will interfere with development, run the command `echo -e"alias python="python -E"\nalias python3="python3 -E"\nalias python3.11="python3.11 -E" >> <VENV_DIR>/bin/activate`. This will ensure that the PYTHONPATH environment variable is ignored for the virtual environment.
+* **If** you have modified the environment variable PYTHONPATH, and those changes will interfere with development, run the command `echo -e"alias python=\"python -E"\nalias python3=\"python3 -E"\nalias python3.11=\"python3.11 -E\"" >> <VENV_DIR>/bin/activate`. This will ensure that the PYTHONPATH environment variable is ignored for the virtual environment.
 
-* Activate the virtual environment via the command: `<VENV_DIR>/bin/activate`. I will assume the virual environment is active from now on.
+* Activate the virtual environment via the command: `source <VENV_DIR>/bin/activate`. I will assume the virual environment is active from now on.
 
 * Run the command `pip install -r <REPO_DIR>/requirements.txt` to install required supporting packages.
