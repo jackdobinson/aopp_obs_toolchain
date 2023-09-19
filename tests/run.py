@@ -10,6 +10,8 @@ import textwrap
 import shutil
 import subprocess as sp
 
+from decorators import TestSkippedException
+
 terminal_wrapper = textwrap.TextWrapper(
 	expand_tabs = True,
 	tabsize = 8,
@@ -35,8 +37,9 @@ def terminal_wrap(text, indent_level, indent_str='\t', d=0):
 	wrapped_text_lines = []
 	for line in text.splitlines(False):
 		wls = terminal_wrapper.wrap(line)
-		windent = get_indent(wls[0])
-		wls[1:] = [windent+x for x in wls[1:]]
+		if len(wls) > 1:
+			windent = get_indent(wls[0])
+			wls[1:] = [windent+x for x in wls[1:]]
 		wrapped_text_lines += wls
 	return(indent + ('\n'+indent).join(wrapped_text_lines))
 
@@ -119,6 +122,8 @@ def discover_tests(
 	print(terminal_center(f' Starting test discovery from folder "{test_dir}" ', '='))
 	
 	for prefix, dirs, files in os.walk(test_dir, topdown=True):
+		print(f'{dirs=}')
+		print(f'{files=}')
 		dirs[:] = list(filter(directory_search_predicate, dirs))
 		files[:] = list(filter(modulefile_search_predicate, files))
 		
@@ -164,7 +169,7 @@ def run_tests(test_discovery_data, continue_on_fail=True, live_output=False):
 	for full_module_name, test_data in test_discovery_data.items():
 		for tid, td in test_data.items():
 			if not live_output:
-				print(terminal_left(f'{tid} ', '-', -7), end='')
+				print(terminal_left(f'{tid} ', '-', -8), end='')
 			else:
 				print(terminal_left(f'{tid} ', '-'))
 			
@@ -222,6 +227,10 @@ def run_tests(test_discovery_data, continue_on_fail=True, live_output=False):
 							print(f"    + '{k}' : {new_locals[k]}")
 						
 					
+			except TestSkippedException as e:
+				print(' Skipped')
+				test_results[tid]['success'] = True
+				test_results[tid]['exception'] = e
 			except BaseException as e:
 				print(' Failed')
 				test_results[tid]['success'] = False
@@ -291,10 +300,22 @@ def main(
 		for tid, td in test_results.items():
 			
 			if (not only_report_failures) or not td['success']:
-				print(("PASSED" if td['success'] else "FAILED" )
+				
+				msg = None
+				if td['success']:
+					if td['exception'] is None:
+						msg = 'PASSED'
+					elif type(td['exception']) is TestSkippedException:
+						msg = 'SKIPPED'
+					else:
+						msg = 'UNKNOWN STATE'
+				else:
+					msg = 'FAILED'
+				
+				print(msg
 					+ ': ' 
 					+ f'{tid} '
-					+ '-'*(shutil.get_terminal_size().columns-len(tid)-9) 
+					+ '-'*(shutil.get_terminal_size().columns-len(tid)-10) 
 				)
 				if not live_output:
 					print(terminal_wrap(td['stdout'].getvalue(), 1))

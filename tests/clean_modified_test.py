@@ -14,6 +14,7 @@ from algorithm.deconv.clean_modified import CleanModified
 import algorithm.bad_pixels.simple
 
 import test_data
+import decorators
 
 algo_basic_test_data = SimpleNamespace(
 	n_iter = 10,
@@ -38,10 +39,11 @@ def test_clean_modified_call_altered_instantiated_parameters():
 	assert result[2] == n_iter_overwrite, f"Expect {n_iter_overwrite} iterations of CleanModified, have {result[2]} instead."
 
 
+@decorators.skip(False)
 def test_clean_modified_on_example_data():
 	# get example data
-	obs = FitsSpecifier(test_data.example_fits_file, 'DATA', (slice(200,201),slice(None),slice(None)), {'CELESTIAL':(1,2)}) 
-	psf = FitsSpecifier(test_data.example_fits_psf_file, 0, (slice(200,201),slice(None),slice(None)), {'CELESTIAL':(1,2)}) 
+	obs = FitsSpecifier(test_data.example_fits_file, 'DATA', (slice(229,230),slice(None),slice(None)), {'CELESTIAL':(1,2)}) 
+	psf = FitsSpecifier(test_data.example_fits_psf_file, 0, (slice(229,230),slice(None),slice(None)), {'CELESTIAL':(1,2)}) 
 	
 
 	deconvolver = CleanModified()
@@ -69,15 +71,25 @@ def test_clean_modified_on_example_data():
 			#print(f'{obs_data.shape=} {psf_data.shape=}')
 			#print(f'{obs.slices=} {psf.slices=}')
 
-			# TODO: Have another look at how this works,
-			#       want interface to work more naturally, right now it fails.
-			for k, (i,j) in enumerate(zip(nph.slice.get_indices(obs_data, obs.slices, group=(0,)), nph.slice.get_indices(psf_data, psf.slices, group=(0,)))):
-				#print(f'{k=}')
-				#print(f'{i=}')
-				#print(f'{obs_data[i].shape=}')
+			for k, (i,j) in enumerate(
+					zip(nph.slice.iter_indices(
+							obs_data, 
+							obs.slices, 
+							group=(x for x in range(len(obs.axes['CELESTIAL'])-1,obs_data.ndim))
+						), 
+						nph.slice.iter_indices(
+							psf_data, 
+							psf.slices, 
+							group=(x for x in range(len(psf.axes['CELESTIAL'])-1,psf_data.ndim))
+						)
+					)
+				):
+				print(f'{k=}')
+				print(f'{i=}')
+				print(f'{obs_data[i].shape=}')
 				deconvolver(obs_data[i], psf_data[j])
-				deconv_components[i,...] = deconvolver.get_components()
-				deconv_residual[i,...] = deconvolver.get_residual()
+				deconv_components[i] = deconvolver.get_components()
+				deconv_residual[i] = deconvolver.get_residual()
 
 		print('Finished deconvolution, copying and updating header data')
 		hdr = obs_hdul[obs.ext].header
@@ -99,7 +111,7 @@ def test_clean_modified_on_example_data():
 	])
 
 	output_dir = os.path.join(test_data.test_dir, 'output')
-	os.mkdir(output_dir)
+	os.makedirs(output_dir, exist_ok=True)
 	output_fname = os.path.join(output_dir, f"{__name__}_test_clean_modified_on_example_data_output.fits")
 	print(f'Outputting test result to {output_fname}')
 	hdul_output.writeto(output_fname, overwrite=True)

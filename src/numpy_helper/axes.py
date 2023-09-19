@@ -99,9 +99,15 @@ def reverse(a : np.ndarray):
 	axes = tuple(range(a.ndim))
 	return np.moveaxis(a, axes, axes[::-1])
 
-def group(a : np.ndarray, axes : tuple[int,...], axis : int = 0):
+def not_in(a : np.ndarray, group : tuple[int,...]) -> tuple[int,...]:
 	"""
-	Group a set of axes into a single axis.
+	Returns the axes of `a` that are not in `group`
+	"""
+	return tuple(i for i in range(a.ndim) if i not in group)
+
+def merge(a : np.ndarray, axes : tuple[int,...], axis : int = 0):
+	"""
+	Merge a set of axes into a single axis.
 	
 	a : np.ndarray
 		Numpy array to group axes of
@@ -110,9 +116,9 @@ def group(a : np.ndarray, axes : tuple[int,...], axis : int = 0):
 	axis : int
 		location of the final grouped axis
 	"""
-	not_group_shape = (a.shape[i] for i in range(a.ndim) if i not in axes)
+	not_merge_shape = (a.shape[i] for i in range(a.ndim) if i not in axes)
 	
-	return np.moveaxis(np.moveaxis(a, axes, tuple(range(len(axes)))).reshape(-1, *not_group_shape), 0, axis)
+	return np.moveaxis(np.moveaxis(a, axes, tuple(range(len(axes)))).reshape(-1, *not_merge_shape), 0, axis)
 
 
 

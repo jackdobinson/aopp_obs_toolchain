@@ -2,8 +2,6 @@
 Routine for parsing a string containing the path, extension, slices, and axes
 of a FITS file that we want to operate on.
 """
-from pathlib import Path
-import dataclasses as dc
 from collections import namedtuple 
 
 from astropy.io import fits
@@ -20,14 +18,7 @@ import astropy_helper.fits.header
 
 
 FitsSpecifier = namedtuple('FitsSpecifier', ('path', 'ext', 'slices', 'axes'))
-#class FitsSpecifier:
-#	def __init__(
-#			path : str | Path,
-#			extension : str | int,
-#			slices : tuple[slice,...] | None,
-#			axes : dict[str, tuple[int,...]] | None,
-#		):
-		
+
 
 
 AxesInfo = namedtuple('AxesInfo', ('description', 'default_callable'))
@@ -97,10 +88,10 @@ def parse_axes_type_list(axes_type_list : str, axes_types: list[str] | tuple[str
 	
 	# first split on commas
 	axes = {}
-	print(f"{text.split_around_brackets(axes_type_list)=}")
+	#print(f"{text.split_around_brackets(axes_type_list)=}")
 	for i, axes_type_str in enumerate(text.split_around_brackets(axes_type_list)):
 		# axes_type_str = "axes_type_1:(ax11,ax12,...)" or "(ax11,ax12,...)"
-		print(f'{axes_type_str=}')
+		#print(f'{axes_type_str=}')
 		n_colon = axes_type_str.count(':')
 		if n_colon == 0:
 			axtype, axtuple_str = (axes_types[i], axes_type_str)
@@ -152,12 +143,12 @@ def parse(specifier : str, axes_types : list[str]):
 			axes_type_list = specifier[i:j+1]
 			specifier = specifier[:i]
 			j = i-1
-		print(f'{axes_type_list=}')	
+		#print(f'{axes_type_list=}')	
 		if axes_type_list is not None:
 			axes = parse_axes_type_list(axes_type_list, axes_types)
 		else:
 			axes = None
-		print(f'{axes=}')
+		#print(f'{axes=}')
 			
 			
 		
