@@ -34,7 +34,6 @@ class CleanModified(Base):
 	_iter_stat_names : tuple[str,...] = dc.field(init=False, repr=False, hash=False, compare=False)
 	_selected_px : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False)
 	_selected_map : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False)
-	_current_cleaned : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False)
 	_accumulator : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False)
 	_current_convolved : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False)
 	_current_cleaned : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False)

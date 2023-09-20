@@ -27,26 +27,29 @@ class Base:
 	verbosity : int = 0 # How verbose messages should be
 	
 	# Hooks for callbacks at various parts of the algorithm.
-	pre_init_hook \
-		: Callable[[Any, np.ndarray, np.ndarray],None] \
-		= lambda obj, obs, psf: None # callback before initialisation
-	post_init_hook \
-		: Callable[[Any, np.ndarray, np.ndarray],None] \
-		= lambda obj, obs, psf: None # callback after initialisation
-	pre_iter_hook \
-		: Callable[[Any, np.ndarray, np.ndarray],None] \
-		= lambda obj, obs, psf: None # callback at the start of each iteration
-	post_iter_hook \
-		: Callable[[Any, np.ndarray, np.ndarray],None] \
-		= lambda obj, obs, psf: None # callback at the end of each iteration
-	final_hook \
-		: Callable[[Any, np.ndarray, np.ndarray],None] \
-		= lambda obj, obs, psf: None # callback after the final iteration
+	pre_init_hooks \
+		: list[Callable[[Any, np.ndarray, np.ndarray],None]] \
+		= dc.field(default_factory=lambda : [], repr=False, hash=False, compare=False) # callbacks before initialisation
+	post_init_hooks \
+		: list[Callable[[Any, np.ndarray, np.ndarray],None]] \
+		= dc.field(default_factory=lambda : [], repr=False, hash=False, compare=False) # callbacks after initialisation
+	pre_iter_hooks \
+		: list[Callable[[Any, np.ndarray, np.ndarray],None]] \
+		= dc.field(default_factory=lambda : [], repr=False, hash=False, compare=False) # callbacks at the start of each iteration
+	post_iter_hooks \
+		: list[Callable[[Any, np.ndarray, np.ndarray],None]] \
+		= dc.field(default_factory=lambda : [], repr=False, hash=False, compare=False) # callbacks at the end of each iteration
+	final_hooks \
+		: list[Callable[[Any, np.ndarray, np.ndarray],None]] \
+		= dc.field(default_factory=lambda : [], repr=False, hash=False, compare=False) # callbacks after the final iteration
 	
 	# Internal attributes
 	_i : int = dc.field(init=False, repr=False, hash=False, compare=False) # iteration counter
 	_components : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False) # result of the deconvolution
 	_residual : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False) # residual (obs - _components) of the deconvolution
+	
+	def accept_plot_attachment(self, plot):
+		self.post_iter_hooks.append(lambda *a, **k: plot.update())
 	
 	def get_parameters(self):
 		p = {}
@@ -75,12 +78,12 @@ class Base:
 		"""
 		with ctx.temp.attributes(self, **kwargs):
 			self._init_algorithm(obs, psf)
-			self.post_init_hook(self, obs, psf)
+			for c in self.post_init_hooks: c(self, obs, psf)
 			while (self._i < self.n_iter) and self._iter(obs, psf):
-				self.post_iter_hook(self, obs, psf)
+				for c in self.post_iter_hooks: c(self, obs, psf)
 				self._i += 1
 			
-			self.final_hook(self, obs, psf)
+			for c in self.final_hooks: c(self, obs, psf)
 		
 		return(
 			self._components,
@@ -92,7 +95,7 @@ class Base:
 		"""
 		Perform any initialisation that needs to be done before the algorithm runs.
 		"""
-		self.pre_init_hook(self, obs, psf)
+		for c in self.pre_init_hooks: c(self, obs, psf)
 		self._i = 0
 		self._components = np.zeros_like(obs)
 		self._residual = np.array(obs)
@@ -101,26 +104,9 @@ class Base:
 		"""
 		Perform a single iteration of the algorithm.
 		"""
-		self.pre_iter_hook(self, obs, psf)
+		for c in self.pre_iter_hooks: c(self, obs, psf)
 		print(f'TESTING: i={self._i}') 
 		return(True)
 		
-
-@dc.dataclass(slots=True)
-class Specific(Base):
-	
-	# Input parameters
-	param_1 : int = 0
-	param_2 : float = 7.7
-	param_3 : str = "test_value"
-	
-	def _init_algorithm(self, obs, psf) -> None:
-		super(Specific, self)._init_algorithm(obs, psf)
-		print('Child class init algorithm')
-	
-	def _iter(self, obs, psf) -> bool:
-		if not super(Specific, self)._iter(obs, psf): return(False)
-		print('Child class iter')
-		return(True)
 		
 

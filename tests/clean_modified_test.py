@@ -119,65 +119,32 @@ def test_clean_modified_on_example_data():
 
 @decorators.skip(False)
 def test_clean_modified_on_example_data_with_plotting_hooks():
-	import matplotlib as mpl
-	import matplotlib.pyplot as plt
+	from plot_helper import figure_n_subplots
+	from plot_helper.plotters import Histogram, Image, VerticalLine
 	
 	# get example data
 	obs = FitsSpecifier(test_data.example_fits_file, 'DATA', (slice(229,230),slice(None),slice(None)), {'CELESTIAL':(1,2)}) 
 	psf = FitsSpecifier(test_data.example_fits_psf_file, 0, (slice(229,230),slice(None),slice(None)), {'CELESTIAL':(1,2)}) 
 	
-	
-	class Histogram:
-		def __init__(self, ax, nbins, data : np.ndarray | None = None):
-			self.ax = ax
-			self.nbins = nbins
-			self.n_updates = 0
-			self._hist = None
-			self._bins = None
-			self._lines = self.ax.step([],[])
-			self.set_data(data)
-		
-		def set_data(self, data : np.ndarray | None = None):
-			print(f'{data.shape if data is not None else None=}')
-			self.data = data
-			if self.data is not None:
-				self._hist, self._bins = np.histogram(self.data, bins=self.nbins)
-				print(f'{self._hist.shape=}')
-			
-		def __call__(self):
-			"""
-			Update the axes
-			"""
-			self.n_updates += 1
-			if self.data is not None:
-				self._lines[0].set_data(self._bins[1:], self._hist)
-				self.ax.set_xlim(np.min(self._bins), np.max(self._bins))
-				self.ax.set_ylim(np.min(self._hist), np.max(self._hist))
-		
-	fig = plt.gcf()
-	ax = plt.gca()
-
-	plots = {
-		'histogram' : Histogram(ax, 100)
-	}
-	
-	def update_plots(self, obs, psf):
-		plots['histogram'].set_data(self._residual)
-		plots['histogram']()
-		plt.pause(0.001)
-		
-
-
 	deconvolver = CleanModified(
 		n_iter = 10,
-		rms_frac_threshold=1E-1,
-		fabs_frac_threshold=1E-1,
-		pre_init_hook = lambda self, obs, psf: None,
-		post_init_hook = lambda *a, **k: print('POST_INIT'),
-		pre_iter_hook = lambda *a, **k: print('PRE_ITER'),
-		post_iter_hook = update_plots,
-		final_hook = lambda *a, **k: plt.close(fig),
+		rms_frac_threshold=1E-2,
+		fabs_frac_threshold=1E-2,
+		threshold=-1
 	)
+	
+	
+	fig, axes = figure_n_subplots(5)
+	axes_iter = iter(axes)
+
+	plots = {}
+	plots['histogram'] = Histogram(next(axes_iter), deconvolver, lambda x: x._residual)
+	plots['histogram_line'] = VerticalLine(axes[0], deconvolver, lambda x: x._pixel_threshold)
+	plots['residual'] = Image(next(axes_iter), deconvolver, lambda x: x._residual)
+	plots['current'] = Image(next(axes_iter), deconvolver, lambda x: x._current_cleaned)
+	plots['components'] =  Image(next(axes_iter), deconvolver, lambda x: x._components)
+	plots['selected pixels'] =  Image(next(axes_iter), deconvolver, lambda x: x._selected_px)
+
 
 	with fits.open(obs.path) as obs_hdul, fits.open(psf.path) as psf_hdul:
 		deconv_components_raw = np.full_like(obs_hdul[obs.ext].data, fill_value=np.nan)
@@ -247,6 +214,7 @@ def test_clean_modified_on_example_data_with_plotting_hooks():
 	print(f'Outputting test result to {output_fname}')
 	hdul_output.writeto(output_fname, overwrite=True)
 	
-	assert plots['histogram'].n_updates == deconvolver._i, "histogram should be called once for each frame"
+	for k in plots.keys():
+		assert plots[k].n_updates == deconvolver._i, "plot updates should be called once for each frame"
 
 
