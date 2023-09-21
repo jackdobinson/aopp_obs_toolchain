@@ -119,24 +119,30 @@ def test_clean_modified_on_example_data():
 
 @decorators.skip(False)
 def test_clean_modified_on_example_data_with_plotting_hooks():
+	import matplotlib as mpl
+	mpl.use('TKagg')
+	import matplotlib.pyplot as plt
 	from plot_helper import figure_n_subplots
-	from plot_helper.plotters import Histogram, Image, VerticalLine
+	from plot_helper.plotters import PlotSet, Histogram, Image, VerticalLine
+	
+	print(f'{mpl.is_interactive()=}')
 	
 	# get example data
 	obs = FitsSpecifier(test_data.example_fits_file, 'DATA', (slice(229,230),slice(None),slice(None)), {'CELESTIAL':(1,2)}) 
 	psf = FitsSpecifier(test_data.example_fits_psf_file, 0, (slice(229,230),slice(None),slice(None)), {'CELESTIAL':(1,2)}) 
 	
 	deconvolver = CleanModified(
-		n_iter = 10,
-		rms_frac_threshold=1E-2,
-		fabs_frac_threshold=1E-2,
+		n_iter = 1000,
+		rms_frac_threshold=1E-1,
+		fabs_frac_threshold=1E-1,
 		threshold=-1
 	)
 	
 	
 	fig, axes = figure_n_subplots(5)
 	axes_iter = iter(axes)
-
+	
+	"""
 	plots = {}
 	plots['histogram'] = Histogram(next(axes_iter), deconvolver, lambda x: x._residual)
 	plots['histogram_line'] = VerticalLine(axes[0], deconvolver, lambda x: x._pixel_threshold)
@@ -144,7 +150,27 @@ def test_clean_modified_on_example_data_with_plotting_hooks():
 	plots['current'] = Image(next(axes_iter), deconvolver, lambda x: x._current_cleaned)
 	plots['components'] =  Image(next(axes_iter), deconvolver, lambda x: x._components)
 	plots['selected pixels'] =  Image(next(axes_iter), deconvolver, lambda x: x._selected_px)
+	deconvolver.post_iter_hooks.append(lambda *a, **k: (fig.canvas.draw(), fig.canvas.flush_events()))
 
+	fig.canvas.draw()
+	plt.show(block=False)
+	"""
+	
+	plot_set = PlotSet(
+		fig,
+		'clean modified plots',
+		 [	Histogram(next(axes_iter), deconvolver, lambda x: x._residual, static_frame=False),
+			VerticalLine(axes[0], deconvolver, lambda x: x._pixel_threshold, static_frame=False, color='red'),
+			Image(next(axes_iter), deconvolver, lambda x: x._residual),
+			Image(next(axes_iter), deconvolver, lambda x: x._current_cleaned),
+			Image(next(axes_iter), deconvolver, lambda x: x._components),
+			Image(next(axes_iter), deconvolver, lambda x: x._selected_px),
+		]
+	)
+		 
+	
+	deconvolver.post_iter_hooks.append(lambda *a, **k: plot_set.update())
+	plot_set.show()
 
 	with fits.open(obs.path) as obs_hdul, fits.open(psf.path) as psf_hdul:
 		deconv_components_raw = np.full_like(obs_hdul[obs.ext].data, fill_value=np.nan)
@@ -214,7 +240,7 @@ def test_clean_modified_on_example_data_with_plotting_hooks():
 	print(f'Outputting test result to {output_fname}')
 	hdul_output.writeto(output_fname, overwrite=True)
 	
-	for k in plots.keys():
-		assert plots[k].n_updates == deconvolver._i, "plot updates should be called once for each frame"
+	for p in plot_set.plots:
+		assert p.n_updates == deconvolver._i, "plot updates should be called once for each frame"
 
 

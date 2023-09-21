@@ -48,8 +48,6 @@ class Base:
 	_components : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False) # result of the deconvolution
 	_residual : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False) # residual (obs - _components) of the deconvolution
 	
-	def accept_plot_attachment(self, plot):
-		self.post_iter_hooks.append(lambda *a, **k: plot.update())
 	
 	def get_parameters(self):
 		p = {}

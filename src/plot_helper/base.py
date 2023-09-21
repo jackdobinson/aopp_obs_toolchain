@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 AxisDataMapping = namedtuple('AxisDataMapping', ('label','attribute'))
 
 
+
 class Base:
 	
 	# independent and dependent variables in the format
@@ -29,7 +30,7 @@ class Base:
 	hdl : Any = None # handle to visualisation of the plot
 	
 	
-	def __init__(self, ax=None, datasource=None, datasource_data_getter=None, **plt_kwargs) -> None:
+	def __init__(self, ax=None, datasource=None, datasource_data_getter=None, static_frame=True, **plt_kwargs) -> None:
 		"""
 		Plot initialistion happens here.
 		
@@ -38,6 +39,7 @@ class Base:
 				dictionary containing any overwrites to class parameters
 		"""
 		self.plt_kwargs = plt_kwargs
+		self.static_frame = static_frame # Does the frame of the plot (including axis labels) change?
 		
 		self.datasource = None
 		self.datasource_data_getter = None
@@ -66,8 +68,6 @@ class Base:
 	def attach_datasource(self, datasource, datasource_data_getter):
 		self.datasource = datasource
 		self.datasource_data_getter = datasource_data_getter
-		if hasattr(datasource, 'accept_plot_attachment'):
-			datasource.accept_plot_attachment(self)
 		self.on_attach_datasource()
 	
 	def is_ax_attached(self):
@@ -84,14 +84,16 @@ class Base:
 	
 	def attach_ax(self, ax):
 		self.ax = ax
-		self.ax.set_title(self.title)
+		if self.title is not None:
+			self.ax.set_title(self.title)
 		for set_axis_label, adm in zip((
 					self.ax.set_xlabel, 
 					self.ax.set_ylabel
 				), 
 				self.axis_data_mappings
 			):
-			set_axis_label(adm.label)
+			if adm.label is not None:
+				set_axis_label(adm.label)
 		self.on_attach_ax()
 	
 	
@@ -127,10 +129,18 @@ class Base:
 			if adm.attribute is not None:
 				d = getattr(self, adm.attribute)
 				set_lims(np.min(d),np.max(d))
-		plt.pause(0.001)
+		
+		
+		if not self.static_frame and not self.ax.drawn:
+			for x in self.ax.get_children():
+				self.ax.draw_artist(x)
+			self.ax.drawn = True
+		self.ax.draw_artist(self.hdl)
+		#plt.pause(0.001)
 		
 	def update(self):
 		assert self.is_datasource_attached(), "requires datasource attribute"
+		
 		self.update_plot_data(self.datasource_data_getter(self.datasource))
 		self.update_plot_visual()
 		self.n_updates += 1
@@ -142,4 +152,6 @@ class Base:
 	
 	
 	
-	
+
+
+			
