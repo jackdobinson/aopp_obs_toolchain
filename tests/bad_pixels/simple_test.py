@@ -1,7 +1,8 @@
 
 
 import numpy as np
-import algorithm.bad_pixels.simple as simple_bp
+import algorithm.bad_pixels as bp
+import algorithm.bad_pixels.simple
 
 
 
@@ -28,8 +29,8 @@ def test_simple_map_gets_nans_and_infs():
 		a[coord] = np.inf
 		expected_result[coord] = 0.0
 
-	bp_map = simple_bp.get_map(a)
-	simple_bp.fix(a, bp_map)
+	bp_map = bp.get_map(a)
+	bp.simple.fix(a, bp_map)
 
 	assert np.all(np.equal(a, expected_result)), \
 		f"Array should have no NAN or INF elements, and should have zeros at {list(tuple(x) for x in np.argwhere(expected_result == 0))}. " \

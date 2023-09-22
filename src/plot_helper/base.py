@@ -11,10 +11,19 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 
-AxisDataMapping = namedtuple('AxisDataMapping', ('label','attribute'))
+import plot_helper
+#AxisDataMapping = namedtuple('AxisDataMapping', ('label','attribute','limit_getter'))
 
+@dc.dataclass(repr=False, eq=False, slots=True)
+class AxisDataMapping:
+	label : str
+	attribute : str | None = None
+	limit_getter : Callable[[Any],tuple[float,float]] = plot_helper.lim
+	
+	def get_limits(self, d):
+		return self.limit_getter(d)
 
-
+@dc.dataclass(repr=False, eq=False, slots=True)
 class Base:
 	
 	# independent and dependent variables in the format
@@ -22,36 +31,26 @@ class Base:
 	# a specific plot type has predefined labels and attributes, these can be
 	# overwritten in the __init__ of the class
 	title : str = 'Base Plot Helper Title'
-	datasource_name : str = 'datasource name'
 	
 	# Order corresponds to which axes they are associated with (0,1,2,..) -> (x,y,z,...)
+	axis_labels : tuple[str,...] = tuple()
 	axis_data_mappings : tuple[AxisDataMapping] = tuple() # (('ax1_label','ax1_attr'), ('ax2_label','ax2_attr'), ...)
-	ax : mpl.axes.Axes = None # matplotlib axis
-	hdl : Any = None # handle to visualisation of the plot
+	
+	static_frame : bool = True
+	plt_kwargs : dict = dc.field(default_factory=dict)
+	ax_funcs : list = dc.field(default_factory=list)
 	
 	
-	def __init__(self, ax=None, datasource=None, datasource_data_getter=None, static_frame=True, **plt_kwargs) -> None:
-		"""
-		Plot initialistion happens here.
-		
-		Arguments:
-			**kwargs
-				dictionary containing any overwrites to class parameters
-		"""
-		self.plt_kwargs = plt_kwargs
-		self.static_frame = static_frame # Does the frame of the plot (including axis labels) change?
-		
-		self.datasource = None
-		self.datasource_data_getter = None
-		self.ax = None
-		if datasource is not None and datasource_data_getter is not None:
-			self.attach_datasource(datasource, datasource_data_getter)
-			if ax is not None:
-				self.attach_ax(ax)
-		
-		
-		self.n_updates = 0
-		
+	# Internal attributes
+	# Will be assigned after initialisation
+	datasource_name : str = dc.field(default='datasource name', init=False)
+	ax : mpl.axes.Axes = dc.field(default=None, init=False) # matplotlib axis
+	datasource : Any = dc.field(default = None, init=False)
+	datasource_data_getter : Callable | None = dc.field(default=None, init=False)
+	
+	hdl : Any = dc.field(default=None,init=False) # handle to visualisation of the plot
+	n_updates : int = dc.field(default=0, init=False)
+
 	
 	
 	def is_datasource_attached(self):
@@ -62,6 +61,7 @@ class Base:
 		Performs any initial setup that is required when a datasource is attached.
 		Should be overwritten by subclass.
 		"""
+		self.n_updates=0
 		if not self.is_datasource_attached():
 			raise RuntimeError(f'{self} does not have a "datasource" attribute')
 	
@@ -69,6 +69,7 @@ class Base:
 		self.datasource = datasource
 		self.datasource_data_getter = datasource_data_getter
 		self.on_attach_datasource()
+		return(self)
 	
 	def is_ax_attached(self):
 		return hasattr(self, 'ax') and self.ax is not None
@@ -86,15 +87,22 @@ class Base:
 		self.ax = ax
 		if self.title is not None:
 			self.ax.set_title(self.title)
-		for set_axis_label, adm in zip((
+		
+		for i, (set_axis_label, adm) in enumerate(zip((
 					self.ax.set_xlabel, 
 					self.ax.set_ylabel
 				), 
 				self.axis_data_mappings
-			):
+			)):
 			if adm.label is not None:
-				set_axis_label(adm.label)
+				if len(self.axis_labels) > i and self.axis_labels[i] is not None:
+					set_axis_label(self.axis_labels[i])
+				else:
+					set_axis_label(adm.label)
+		for ax_func in self.ax_funcs:
+			ax_func(self.ax)
 		self.on_attach_ax()
+		return(self)
 	
 	
 	def attach(self, ax : mpl.axes.Axes, datasource : Any, datasource_data_getter : Callable[[Any],tuple[Any]] ):
@@ -103,6 +111,7 @@ class Base:
 		"""
 		self.attach_datasource(datasource, datasource_data_getter)
 		self.attach_ax(ax)
+		return(self)
 
 	def detach_datasource(self):
 		self.datasource = None
@@ -124,22 +133,22 @@ class Base:
 					self.ax.set_ylim,
 					self.hdl.set_clim if hasattr(self.hdl,'set_clim') else lambda *a, **k: None
 				), 
-				self.axes_data_mappings
+				self.axis_data_mappings
 			):
 			if adm.attribute is not None:
 				d = getattr(self, adm.attribute)
-				set_lims(np.min(d),np.max(d))
+				set_lims(*adm.get_limits(d))
 		
 		
 		if not self.static_frame and not self.ax.drawn:
 			for x in self.ax.get_children():
 				self.ax.draw_artist(x)
 			self.ax.drawn = True
+					
 		self.ax.draw_artist(self.hdl)
-		#plt.pause(0.001)
 		
 	def update(self):
-		assert self.is_datasource_attached(), "requires datasource attribute"
+		assert self.is_datasource_attached(), "requires datasource attribute is not None"
 		
 		self.update_plot_data(self.datasource_data_getter(self.datasource))
 		self.update_plot_visual()

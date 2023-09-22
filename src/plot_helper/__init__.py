@@ -2,6 +2,8 @@
 Classes and routines that assist with plotting, specifically plotting the
 progress of algorithms.
 """
+from typing import Any, Callable
+import dataclasses as dc
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -65,6 +67,37 @@ def figure_n_subplots(n, figure=None, fig_kwargs={}, sp_kwargs={}):
 		fig_kwargs={},
 		sp_kwargs={})
 	)
+
+
+def lim(data):
+	return np.nanmin(data), np.nanmax(data)
+
+@dc.dataclass
+class LimFixed:
+	vmin : float | None = None
+	vmax : float | None = None
+	
+	func : Callable[[Any],tuple[float,float]] = lim
+	
+	def __call__(self, data):
+		a,b = self.func(data)
+		if self.vmin is not None: a=self.vmin
+		if self.vmax is not None: b=self.vmax
+		return(a,b)
+
+
+@dc.dataclass
+class LimRememberExtremes:
+	func : Callable[[Any],tuple[float,float]] = lim
+	
+	_vmin : float = None
+	_vmax : float = None
+	
+	def __call__(self, data):
+		a,b = self.func(data)
+		if self._vmin is None or a < self._vmin: self._vmin = a
+		if self._vmax is None or b > self._vmax: self._vmax = b
+		return self._vmin, self._vmax
 
 def lim_sym_around_value(data, value=0):
 	farthest_from_value = np.nanmax(np.fabs(data-value))

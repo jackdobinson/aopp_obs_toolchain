@@ -1,7 +1,8 @@
 import os
 from types import SimpleNamespace
-import numpy as np
+import copy
 
+import numpy as np
 from astropy.io import fits
 import astropy_helper as aph
 import astropy_helper.fits.header
@@ -62,10 +63,10 @@ def test_clean_modified_on_example_data():
 			psf_data_offset = nph.array.get_center_offset_brightest_pixel(psf_data)
 			psf_data = nph.array.apply_offset(psf_data, psf_data_offset)
 
-			obs_data_bp_mask = algorithm.bad_pixels.simple.get_map(obs_data)
+			obs_data_bp_mask = algorithm.bad_pixels.get_map(obs_data)
 			obs_data = algorithm.bad_pixels.simple.fix(obs_data, obs_data_bp_mask)
 
-			psf_data_bp_mask = algorithm.bad_pixels.simple.get_map(psf_data)
+			psf_data_bp_mask = algorithm.bad_pixels.get_map(psf_data)
 			psf_data = algorithm.bad_pixels.simple.fix(psf_data, psf_data_bp_mask)
 
 			#print(f'{obs_data.shape=} {psf_data.shape=}')
@@ -121,9 +122,12 @@ def test_clean_modified_on_example_data():
 def test_clean_modified_on_example_data_with_plotting_hooks():
 	import matplotlib as mpl
 	mpl.use('TKagg')
+	import algorithm.bad_pixels.mean
 	import matplotlib.pyplot as plt
-	from plot_helper import figure_n_subplots
-	from plot_helper.plotters import PlotSet, Histogram, Image, VerticalLine
+	import plot_helper
+	from plot_helper import figure_n_subplots, lim_sym_around_value
+	from plot_helper.plotters import PlotSet, Histogram, Image, VerticalLine, IterativeLineGraph, HorizontalLine
+	from plot_helper.base import AxisDataMapping
 	
 	print(f'{mpl.is_interactive()=}')
 	
@@ -132,39 +136,97 @@ def test_clean_modified_on_example_data_with_plotting_hooks():
 	psf = FitsSpecifier(test_data.example_fits_psf_file, 0, (slice(229,230),slice(None),slice(None)), {'CELESTIAL':(1,2)}) 
 	
 	deconvolver = CleanModified(
-		n_iter = 1000,
-		rms_frac_threshold=1E-1,
-		fabs_frac_threshold=1E-1,
+		n_iter = 10,
+		rms_frac_threshold=1E-2,
+		fabs_frac_threshold=1E-2,
 		threshold=-1
 	)
 	
 	
-	fig, axes = figure_n_subplots(5)
+	fig, axes = figure_n_subplots(8)
 	axes_iter = iter(axes)
+	a7_2 = axes[7].twinx()
 	
-	"""
-	plots = {}
-	plots['histogram'] = Histogram(next(axes_iter), deconvolver, lambda x: x._residual)
-	plots['histogram_line'] = VerticalLine(axes[0], deconvolver, lambda x: x._pixel_threshold)
-	plots['residual'] = Image(next(axes_iter), deconvolver, lambda x: x._residual)
-	plots['current'] = Image(next(axes_iter), deconvolver, lambda x: x._current_cleaned)
-	plots['components'] =  Image(next(axes_iter), deconvolver, lambda x: x._components)
-	plots['selected pixels'] =  Image(next(axes_iter), deconvolver, lambda x: x._selected_px)
-	deconvolver.post_iter_hooks.append(lambda *a, **k: (fig.canvas.draw(), fig.canvas.flush_events()))
-
-	fig.canvas.draw()
-	plt.show(block=False)
-	"""
+	cmap = copy.copy(mpl.cm.get_cmap('bwr'))
+	cmap.set_over('magenta')
+	cmap.set_under('green')
+	cmap.set_bad('black')
+	mpl.cm.register_cmap(name='bwr_oob', cmap=cmap)
+	#mpl.rcParams['image.cmap'] = 'user_cmap'
 	
 	plot_set = PlotSet(
 		fig,
-		'clean modified plots',
-		 [	Histogram(next(axes_iter), deconvolver, lambda x: x._residual, static_frame=False),
-			VerticalLine(axes[0], deconvolver, lambda x: x._pixel_threshold, static_frame=False, color='red'),
-			Image(next(axes_iter), deconvolver, lambda x: x._residual),
-			Image(next(axes_iter), deconvolver, lambda x: x._current_cleaned),
-			Image(next(axes_iter), deconvolver, lambda x: x._components),
-			Image(next(axes_iter), deconvolver, lambda x: x._selected_px),
+		'clean modified step={self.n_frames}',
+		cadence=1,
+		plots = [	
+			Histogram(
+				'residual', 
+				static_frame=False,
+				axis_data_mappings = (AxisDataMapping('value','bins',limit_getter=plot_helper.lim), AxisDataMapping('count','_hist',limit_getter=plot_helper.LimRememberExtremes()))
+			).attach(next(axes_iter), deconvolver, lambda x: x._residual),
+		 	
+			VerticalLine(
+				None, 
+				static_frame=False, 
+				plt_kwargs={'color':'red'}
+			).attach(axes[0], deconvolver, lambda x: x._pixel_threshold),
+			
+			Image(
+		 		'residual'
+		 	).attach(next(axes_iter), deconvolver, lambda x: x._residual),
+			
+			Image(
+		 		'current cleaned'
+			).attach(next(axes_iter), deconvolver, lambda x: x._current_cleaned),
+			
+			Image(
+		 		'components'
+			).attach(next(axes_iter), deconvolver, lambda x: x._components),
+			
+			Image(
+		 		'selected pixels'
+			).attach(next(axes_iter), deconvolver, lambda x: x._selected_px),
+			
+			Image(
+		 		'pixel choice metric',
+		 		axis_data_mappings = (AxisDataMapping('x',None), AxisDataMapping('y',None), AxisDataMapping('brightness', '_z_data', lim_sym_around_value)),
+		 		plt_kwargs={'cmap':'bwr_oob'}
+			).attach(next(axes_iter), deconvolver, lambda x: x._px_choice_img_ptr.val),
+			
+			Histogram(
+				'pixel choice metric', 
+				static_frame=False,
+			).attach(next(axes_iter), deconvolver, lambda x: x._px_choice_img_ptr.val),
+			
+			IterativeLineGraph(
+				'metrics',
+				datasource_name='fabs',
+				axis_labels = (None, 'fabs value (blue)'),
+				static_frame=False,
+				plt_kwargs = {},
+				ax_funcs=[lambda ax: ax.set_yscale('log')]
+			).attach(next(axes_iter), deconvolver, lambda x: np.fabs(np.nanmax(x._residual))),
+			
+			HorizontalLine(
+				None, 
+				static_frame=False, 
+				plt_kwargs={'linestyle':'--'}
+			).attach(axes[7], deconvolver, lambda x: x._fabs_threshold),
+			
+			IterativeLineGraph(
+				'metrics',
+				datasource_name='rms',
+				axis_labels = (None,'rms value (red)'),
+				static_frame=False,
+				plt_kwargs={'color':'red'},
+				ax_funcs=[lambda ax: ax.set_yscale('log')]
+			).attach(a7_2, deconvolver, lambda x: np.sqrt(np.nansum(x._residual**2)/x._residual.size)),
+			
+			HorizontalLine(
+				None, 
+				static_frame=False, 
+				plt_kwargs={'color':'red', 'linestyle':'--'}
+			).attach(a7_2, deconvolver, lambda x: x._rms_threshold),
 		]
 	)
 		 
@@ -186,11 +248,11 @@ def test_clean_modified_on_example_data_with_plotting_hooks():
 			psf_data_offset = nph.array.get_center_offset_brightest_pixel(psf_data)
 			psf_data = nph.array.apply_offset(psf_data, psf_data_offset)
 
-			obs_data_bp_mask = algorithm.bad_pixels.simple.get_map(obs_data)
-			obs_data = algorithm.bad_pixels.simple.fix(obs_data, obs_data_bp_mask)
+			obs_data_bp_mask = algorithm.bad_pixels.get_map(obs_data)
+			obs_data = algorithm.bad_pixels.mean.fix(obs_data, obs_data_bp_mask)
 
-			psf_data_bp_mask = algorithm.bad_pixels.simple.get_map(psf_data)
-			psf_data = algorithm.bad_pixels.simple.fix(psf_data, psf_data_bp_mask)
+			psf_data_bp_mask = algorithm.bad_pixels.get_map(psf_data)
+			psf_data = algorithm.bad_pixels.mean.fix(psf_data, psf_data_bp_mask)
 
 			#print(f'{obs_data.shape=} {psf_data.shape=}')
 			#print(f'{obs.slices=} {psf.slices=}')
