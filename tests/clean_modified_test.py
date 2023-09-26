@@ -12,7 +12,7 @@ import numpy_helper.axes
 import numpy_helper.slice
 import numpy_helper.array
 from algorithm.deconv.clean_modified import CleanModified
-import algorithm.bad_pixels.simple
+import algorithm.bad_pixels
 
 import test_data
 import decorators
@@ -64,10 +64,10 @@ def test_clean_modified_on_example_data():
 			psf_data = nph.array.apply_offset(psf_data, psf_data_offset)
 
 			obs_data_bp_mask = algorithm.bad_pixels.get_map(obs_data)
-			obs_data = algorithm.bad_pixels.simple.fix(obs_data, obs_data_bp_mask)
+			obs_data = algorithm.bad_pixels.fix(obs_data, obs_data_bp_mask, 'simple')
 
 			psf_data_bp_mask = algorithm.bad_pixels.get_map(psf_data)
-			psf_data = algorithm.bad_pixels.simple.fix(psf_data, psf_data_bp_mask)
+			psf_data = algorithm.bad_pixels.fix(psf_data, psf_data_bp_mask, 'simple')
 
 			#print(f'{obs_data.shape=} {psf_data.shape=}')
 			#print(f'{obs.slices=} {psf.slices=}')
@@ -122,7 +122,6 @@ def test_clean_modified_on_example_data():
 def test_clean_modified_on_example_data_with_plotting_hooks():
 	import matplotlib as mpl
 	mpl.use('TKagg')
-	import algorithm.bad_pixels.mean
 	import matplotlib.pyplot as plt
 	import plot_helper
 	from plot_helper import figure_n_subplots, lim_sym_around_value
@@ -249,10 +248,10 @@ def test_clean_modified_on_example_data_with_plotting_hooks():
 			psf_data = nph.array.apply_offset(psf_data, psf_data_offset)
 
 			obs_data_bp_mask = algorithm.bad_pixels.get_map(obs_data)
-			obs_data = algorithm.bad_pixels.mean.fix(obs_data, obs_data_bp_mask)
+			obs_data = algorithm.bad_pixels.fix(obs_data, obs_data_bp_mask, 'simple')
 
 			psf_data_bp_mask = algorithm.bad_pixels.get_map(psf_data)
-			psf_data = algorithm.bad_pixels.mean.fix(psf_data, psf_data_bp_mask)
+			psf_data = algorithm.bad_pixels.fix(psf_data, psf_data_bp_mask, 'simple')
 
 			#print(f'{obs_data.shape=} {psf_data.shape=}')
 			#print(f'{obs.slices=} {psf.slices=}')
@@ -304,5 +303,7 @@ def test_clean_modified_on_example_data_with_plotting_hooks():
 	
 	for p in plot_set.plots:
 		assert p.n_updates == deconvolver._i, "plot updates should be called once for each frame"
+	
+	plt.close()
 
 

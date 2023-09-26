@@ -1,0 +1,4 @@
+"""
+Setting for the package
+"""
+
