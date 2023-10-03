@@ -56,7 +56,7 @@ def offsets_from_center_of_mask(mask):
 	assert all([s%2 == 1 for s in mask.shape]), "mask must have an odd shape to have a unique center"
 	return np.argwhere(mask) - np.array([s//2 for s in mask.shape])
 
-def index_array_from_mask(m : np.ndarray[[...],bool]) -> tuple[np.ndarray[int],...]:
+def indices_of_mask(m : np.ndarray[[...],bool]) -> tuple[np.ndarray[int],...]:
 	return np.where(m)
 
 def index_pacman(indices, a):
@@ -164,7 +164,7 @@ def mean(a : np.ndarray[[-1,-1],T], m : np.ndarray[[...],bool], window : np.ndar
 	else:
 		index_boundary_func = b_func
 	
-	idx_array = index_array_from_mask(m)
+	idx_array = indices_of_mask(m)
 	if type(window) is np.ndarray:
 		_lgr.debug(f'{a.ndim=} {window.ndim=}')
 		while window.ndim < a.ndim:
@@ -186,7 +186,8 @@ def mean(a : np.ndarray[[-1,-1],T], m : np.ndarray[[...],bool], window : np.ndar
 		offset_idx_array = (np.array(idx_array).T-delta).T
 		values = index_boundary_func(offset_idx_array, a)
 		_lgr.debug(f'{values=}')
-		contrib = ~(np.isnan(values) | np.isinf(values))
+		# Things that are not masked should contribute
+		contrib = ~index_boundary_func(offset_idx_array, m)
 		_lgr.debug(f'{contrib=}')
 		values[~contrib] = 0
 		accumulator += values

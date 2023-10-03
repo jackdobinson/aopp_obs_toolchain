@@ -100,7 +100,7 @@ def test_bp_map_mean_fix():
 			+ (f"Has NANs at {list(tuple(x) for x in np.argwhere(np.isnan(ar)))}. " if np.any(np.isnan(ar)) else "") \
 			+ (f"Has INFs at {list(tuple(x) for x in np.argwhere(np.isinf(ar)))}. " if np.any(np.isinf(ar)) else "") 
 	
-	assert False, "TESTING"
+	#assert False, "TESTING"
 
 
 
