@@ -118,7 +118,7 @@ def test_clean_modified_on_example_data():
 	hdul_output.writeto(output_fname, overwrite=True)
 
 
-@decorators.skip(False)
+@decorators.skip(True)
 def test_clean_modified_on_example_data_with_plotting_hooks():
 	import matplotlib as mpl
 	mpl.use('TKagg')
@@ -248,10 +248,10 @@ def test_clean_modified_on_example_data_with_plotting_hooks():
 			psf_data = nph.array.apply_offset(psf_data, psf_data_offset)
 
 			obs_data_bp_mask = algorithm.bad_pixels.get_map(obs_data)
-			obs_data = algorithm.bad_pixels.fix(obs_data, obs_data_bp_mask, 'simple')
+			obs_data = algorithm.bad_pixels.fix(obs_data, obs_data_bp_mask, 'mean')
 
 			psf_data_bp_mask = algorithm.bad_pixels.get_map(psf_data)
-			psf_data = algorithm.bad_pixels.fix(psf_data, psf_data_bp_mask, 'simple')
+			psf_data = algorithm.bad_pixels.fix(psf_data, psf_data_bp_mask, 'mean')
 
 			#print(f'{obs_data.shape=} {psf_data.shape=}')
 			#print(f'{obs.slices=} {psf.slices=}')

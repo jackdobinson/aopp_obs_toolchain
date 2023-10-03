@@ -4,6 +4,10 @@ import numpy as np
 import algorithm.bad_pixels as bp
 
 
+# NOTE: Better way to test these functions would be to generate an array of a
+#		known function, e.g. (r-r_0)**2, mask out some points with NANs and 
+#		INFs, then use the "bp.fix()" function. Compare the result with the
+#		input array
 
 def test_bp_map_simple_fix():
 	
@@ -50,8 +54,12 @@ def test_bp_map_mean_fix():
 		(6,3)
 	)
 
+	#a = np.ones((7,7))
 	a = np.indices((7,7))
+	#a = np.array(a[0],float)
+	print(f'{a=}')
 	a = np.sqrt(np.sum(a*a, 0))
+	a_old = np.array(a)
 	for coord in nans:
 		a[coord] = np.nan
 		
@@ -60,15 +68,23 @@ def test_bp_map_mean_fix():
 		
 	bp_map = bp.get_map(a)
 	
-	try:
-		bp.fix(a, bp_map, 'mean', window_shape=3)
-	except RuntimeError:
-		pass 
-	else:
-		assert False, "Window shape = 3 should fail as there are two bad pixels next to eachother"
+	#try:
+	#	bp.fix(a, bp_map, 'mean', window_shape=3)
+	#except RuntimeError:
+	#	pass 
+	#else:
+	#	assert False, "Window shape = 3 should fail as there are two bad pixels next to eachother"
 	
 	
-	bp.fix(a, bp_map, 'mean', window_shape=5)
+	a_results = [
+		bp.fix(a, bp_map, 'mean', window=1, boundary='reflect'),
+		bp.fix(a, bp_map, 'mean', window=np.array([[1,1,1],[0,0,0],[1,1,1]]), boundary='reflect'),
+		bp.fix(a, bp_map, 'mean', window=np.array([1,1,1]), boundary='reflect'),
+		bp.fix(a, bp_map, 'mean', window=(2,1), boundary='reflect'),
+		bp.fix(a, bp_map, 'mean', window=1, boundary='pacman'),
+		bp.fix(a, bp_map, 'mean', window=1, boundary='const',const=1),
+		#bp.fix(a_old, bp_map, 'mean', window_shape=5) # testing
+	]
 	
 	#import matplotlib.pyplot as plt
 	#import plot_helper as ph
@@ -77,11 +93,14 @@ def test_bp_map_mean_fix():
 	#ax[1].imshow(bp_map)
 	#ax[2].imshow(a)
 	#plt.show()
-
-	assert np.all(~np.isnan(a)) and np.all(~np.isinf(a)), \
-		"Array should have no NAN or INF elements. " \
-		+ (f"Has NANs at {list(tuple(x) for x in np.argwhere(np.isnan(a)))}. " if np.any(np.isnan(a)) else "") \
-		+ (f"Has INFs at {list(tuple(x) for x in np.argwhere(np.isinf(a)))}. " if np.any(np.isinf(a)) else "") 
+	
+	for i, ar in enumerate(a_results):
+		assert np.all(~np.isnan(ar)) and np.all(~np.isinf(ar)), \
+			"Array {i} should have no NAN or INF elements. " \
+			+ (f"Has NANs at {list(tuple(x) for x in np.argwhere(np.isnan(ar)))}. " if np.any(np.isnan(ar)) else "") \
+			+ (f"Has INFs at {list(tuple(x) for x in np.argwhere(np.isinf(ar)))}. " if np.any(np.isinf(ar)) else "") 
+	
+	assert False, "TESTING"
 
 
 
@@ -111,9 +130,9 @@ def test_bp_map_interp_fix():
 	
 	bp_map = bp.get_map(a)
 	
-	bp.fix(a, bp_map, 'interp', window_shape=3)
+	bp.fix(a, bp_map, 'interp', window=3)
 	
-	bp.fix(a, bp_map, 'interp', window_shape=5)
+	bp.fix(a, bp_map, 'interp', window=5)
 	
 	"""
 	import matplotlib.pyplot as plt

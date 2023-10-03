@@ -247,7 +247,7 @@ def run_tests(test_discovery_data, continue_on_fail=True, live_output=False):
 
 
 def main(
-		test_dir = None, # Top of directory tree to search for tests
+		test_dir = None, # Top of directory tree to search for tests, if None use parent directory of this file
 		continue_on_fail=False, # Should we continue executing tests if one fails?
 		only_report_failures = True, # If true, will only show result details when failures happen.
 		live_output=True, # If true, will output to terminal as the tests are run.
