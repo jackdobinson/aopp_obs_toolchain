@@ -37,6 +37,7 @@ class LucyRichardson(Base):
 	# Private attributes
 	#_example : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False)
 	_nudge : float = dc.field(init=False, repr=False, hash=False, compare=False)
+	_obs_shape : tuple[int,...] = dc.field(init=False, repr=False, hash=False, compare=False)
 	_dirty_img : float = dc.field(init=False, repr=False, hash=False, compare=False)
 	_offset : float = dc.field(init=False, repr=False, hash=False, compare=False)
 	_psf_reversed : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False)
@@ -52,7 +53,8 @@ class LucyRichardson(Base):
 		self._nudge = self.nudge_factor*np.max(obs)
 
 		# Pad observation to avoid edge effects
-		self._dirty_img = nph.array.pad.with_convolution(obs, psf) if self.pad_observation else np.array(self.obs)
+		self._obs_shape = obs.shape
+		self._dirty_img = nph.array.pad.with_convolution(obs, psf) if self.pad_observation else np.array(obs)
 		
 		# offset dirty_img if we want to allow -ve values in our results
 		# increase the value from 0 to allow more -ve values
@@ -78,9 +80,15 @@ class LucyRichardson(Base):
 
 	def get_components(self):
 		if self.pad_observation:
-			return(self._components[nph.slice.around_center(self._components.shape, self._dirty_img.shape)] - self._offset)
+			return(self._components[nph.slice.around_center(self._dirty_img.shape, self._obs_shape)] - self._offset)
 		else:
 			return(self._components - self._offset) 
+	
+	def get_residual(self):
+		if self.pad_observation:
+			return(self._residual[nph.slice.around_center(self._dirty_img.shape, self._obs_shape)])
+		else:
+			return(self._residual) 
 	
 	
 	def _iter(self, obs, psf):

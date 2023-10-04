@@ -97,7 +97,11 @@ class DecoratorClass:
 class TestSkippedException(Exception):
 	pass
 	
-	
+
+# TODO: Make this work by adding an attribute to the function instead of
+# changing it's name. Then alter 'run.py' to skip when the attribute is found,
+# also alter other wrappers to preserve the attributes of the function so that
+# the skip is propagated correctly.
 @decorator
 def skip(func, do_skip : bool = True):
 	@wraps(func)
