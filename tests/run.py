@@ -112,8 +112,10 @@ def discover_tests(
 		# if this is true, the member of the module is a test and will be run
 		member_search_predicate = \
 			lambda m: \
-				inspect.isfunction(m) \
-					and ('test' in m.__name__),
+				True
+				#inspect.isfunction(m) \
+				#callable(m) \
+				#	and ('test' in m.__name__),
 	):
 
 	test_discovery_data = {}

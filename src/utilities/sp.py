@@ -56,7 +56,7 @@ class ProbDistributionErr:
 		self.pv = tuple(self.p.values())
 		
 		if type(err) is dict:
-			self.err = tuple([err.get(k,0) for k in pn])
+			self.err = tuple([err.get(k,0) for k in self.pn])
 		else:
 			self.err = err
 		e = np.array(self.err)

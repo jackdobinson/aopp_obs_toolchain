@@ -1,5 +1,5 @@
 
-
+import decorators
 import numpy as np
 import algorithm.bad_pixels as bp
 
@@ -9,7 +9,10 @@ import algorithm.bad_pixels as bp
 #		INFs, then use the "bp.fix()" function. Compare the result with the
 #		input array
 
-def test_bp_map_simple_fix():
+#@decorators.argument_set(0, (1*np.ones((7,7)), 2*np.ones((7,7))))
+#@decorators.pass_args(np.ones((7,7)))
+@decorators.pass_args#(2*np.ones((7,7)))
+def test_bp_map_simple_fix(a):
 	
 	nans = (
 		(0,0),
@@ -22,7 +25,8 @@ def test_bp_map_simple_fix():
 		(6,3)
 	)
 
-	a = np.ones((7,7))
+	#a = np.ones((7,7))
+	print(a)
 	expected_result = np.array(a)
 
 	for coord in nans:
@@ -42,7 +46,10 @@ def test_bp_map_simple_fix():
 		+ (f"Has INFs at {list(tuple(x) for x in np.argwhere(np.isinf(a)))}. " if np.any(np.isinf(a)) else "") \
 		+ f"Has zeros at {list(tuple(x) for x in np.argwhere(a==0))}."
 
-def test_bp_map_mean_fix():
+
+
+@decorators.argument('a', np.indices((7,7)))
+def test_bp_map_mean_fix(a):
 	nans = (
 		(0,0),
 		(0,1),
@@ -55,7 +62,7 @@ def test_bp_map_mean_fix():
 	)
 
 	#a = np.ones((7,7))
-	a = np.indices((7,7))
+	#a = np.indices((7,7))
 	#a = np.array(a[0],float)
 	print(f'{a=}')
 	a = np.sqrt(np.sum(a*a, 0))
