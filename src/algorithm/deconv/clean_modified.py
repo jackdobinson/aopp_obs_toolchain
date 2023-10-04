@@ -15,7 +15,7 @@ import image_processing.otsu_thresholding
 
 
 
-@dc.dataclass(slots=True)
+@dc.dataclass(slots=True,repr=False)
 class CleanModified(Base):
 	"""
 	A modified verison of the CLEAN algorithm, designed to account for non-point objects better

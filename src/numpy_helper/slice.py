@@ -8,6 +8,14 @@ import numpy_helper.axes
 
 import cast
 
+def around_center(big_shape : tuple[int,...], small_shape : tuple[int,...]) -> tuple[slice,...]:
+	"""
+	returns a slice of a in the shape of b about the center of a
+	Accepts np.ndarray or tuple for each argument
+	"""
+	s_diff = tuple(s1-s2 for s1,s2 in zip(big_shape, small_shape))
+	return(tuple([slice(d//2, s-(d//2+d%2)) for s, d in zip(big_shape,s_diff)]))
+
 def from_string(slice_tuple_str : str):
 	try:
 		return tuple(slice(*tuple(cast.to(z,int) if z != '' else None for z in y.split(':'))) for y in slice_tuple_str.split(','))
