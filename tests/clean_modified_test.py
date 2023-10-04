@@ -40,7 +40,7 @@ def test_clean_modified_call_altered_instantiated_parameters():
 	assert result[2] == n_iter_overwrite, f"Expect {n_iter_overwrite} iterations of CleanModified, have {result[2]} instead."
 
 
-@decorators.skip(True)
+@decorators.skip(False)
 def test_clean_modified_on_example_data():
 	# get example data
 	obs = FitsSpecifier(test_data.example_fits_file, 'DATA', (slice(229,230),slice(None),slice(None)), {'CELESTIAL':(1,2)}) 
@@ -118,7 +118,7 @@ def test_clean_modified_on_example_data():
 	hdul_output.writeto(output_fname, overwrite=True)
 
 
-@decorators.skip(True)
+@decorators.skip(False)
 def test_clean_modified_on_example_data_with_plotting_hooks():
 	import matplotlib as mpl
 	mpl.use('TKagg')

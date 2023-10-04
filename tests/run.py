@@ -9,8 +9,10 @@ from io import StringIO
 import textwrap
 import shutil
 import subprocess as sp
+import logging
 
 from decorators import TestSkippedException
+import test_data
 
 terminal_wrapper = textwrap.TextWrapper(
 	expand_tabs = True,
@@ -112,10 +114,8 @@ def discover_tests(
 		# if this is true, the member of the module is a test and will be run
 		member_search_predicate = \
 			lambda m: \
-				True
-				#inspect.isfunction(m) \
-				#callable(m) \
-				#	and ('test' in m.__name__),
+				inspect.isfunction(m) \
+					and ('test' in m.__name__),
 	):
 
 	test_discovery_data = {}
@@ -166,6 +166,23 @@ def discover_tests(
 
 	return test_discovery_data
 
+@contextmanager
+def redirect_logging(stream, old_handler : logging.Handler = None):
+	if old_handler is None:
+		old_handler = logging.getLogger().handlers[0]
+	logger = logging.getLogger()
+	logger.removeHandler(old_handler)
+	
+	new_handler : logging.Handler = logging.StreamHandler(stream)
+	new_handler.setFormatter(old_handler.formatter)
+	logger.addHandler(new_handler)
+	
+	yield
+	
+	logger.removeHandler(new_handler)
+	logger.addHandler(old_handler)
+
+
 def run_tests(test_discovery_data, continue_on_fail=True, live_output=False):
 	test_results = {}
 	for full_module_name, test_data in test_discovery_data.items():
@@ -183,7 +200,10 @@ def run_tests(test_discovery_data, continue_on_fail=True, live_output=False):
 			
 			# Run the test
 			try:
-				with redirect_stdout(test_results[tid]['stdout']), redirect_stderr(test_results[tid]['stdout']):
+				with (	redirect_stdout(test_results[tid]['stdout']), 
+						redirect_stderr(test_results[tid]['stdout']), 
+						redirect_logging(test_results[tid]['stdout'])
+					):
 					
 					# Remember program state before the test
 					pre_globals = dict(globals())
@@ -233,26 +253,30 @@ def run_tests(test_discovery_data, continue_on_fail=True, live_output=False):
 				print(' Skipped')
 				test_results[tid]['success'] = True
 				test_results[tid]['exception'] = e
+				if not live_output:
+					del test_results[tid]['stdout'] # delete cached output on skip
 			except BaseException as e:
 				print(' Failed')
 				test_results[tid]['success'] = False
 				test_results[tid]['exception'] = e
 				if not continue_on_fail:
-					if not live_output: print(terminal_wrap(td['stdout'].getvalue(),1))
+					if not live_output: print(terminal_wrap(test_results[tid]['stdout'].getvalue(),1))
 					raise e
 			else:
 				test_results[tid]['success'] = True
 				test_results[tid]['exception'] = None
 				print(' Passed')
+				if not live_output:
+					del test_results[tid]['stdout'] # delete cached output on pass
 	return(test_results)
 
 
 
 def main(
 		test_dir = None, # Top of directory tree to search for tests, if None use parent directory of this file
-		continue_on_fail=False, # Should we continue executing tests if one fails?
+		continue_on_fail=True, # Should we continue executing tests if one fails?
 		only_report_failures = True, # If true, will only show result details when failures happen.
-		live_output=True, # If true, will output to terminal as the tests are run.
+		live_output=False, # If true, will output to terminal as the tests are run.
 
 		 # If this is true, directory will be included in test search
 		directory_search_predicate = \

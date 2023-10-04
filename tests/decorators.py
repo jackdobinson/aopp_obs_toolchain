@@ -1,7 +1,9 @@
 from typing import Any
-from functools import wraps, update_wrapper
-
+from functools import wraps, update_wrapper, partial
+import itertools as it
 import inspect
+
+import test_data
 
 def decorator(f : callable):
 	@wraps(f)
@@ -59,37 +61,11 @@ class DecoratorClass:
 		self.__init__(*args, **kwargs)
 		if func is not None:
 			if self._debug_print_decorator_info: print('Called as @DecoratorClass, expands to `DecoratorClass(func)`')
-			#return self.__decorator__(func)
-			return self._wrap_callable(func)
+			return self.__call__(func)
 		else:
 			if self._debug_print_decorator_info: print('Called as @DecoratorClass(...), expands to `DecoratorClass(...)(func)`')
-			#return self.__decorator__
-			return self._wrap_callable
-	
-	def _wrap_callable(self, acallable):
-		if self._debug_print_decorator_info: print(f'Wrapping {acallable=}')
-		self._wrapped_callable = acallable
-		update_wrapper(self, self._wrapped_callable)
-		if self._debug_print_decorator_info: print(f'{self=} {inspect.isfunction(self)=} {callable(self)=} {inspect.isclass(self)=} {inspect.ismethod(self)=}')
-		return self
-	
-	def __wrapper__(self, *args, **kwargs):
-		if self._debug_print_decorator_info: print('__wrapper__ wraps the __call__ method of DecoratorClass')
-		return self(*args, **kwargs)
-			
-	def __decorator__(self, func):
-		"""
-		Accepts a callable `func`, stores it in the `self._wrapped_callable`
-		attribute, and returns `__wrapper__` that forwards any argument to the
-		`self.__call__` method.
-		"""
-		self._wrapped_callable = func
-		update_wrapper(self.__wrapper__, func)
-		#@wraps(func)
-		#def __wrapper__(*args, **kwargs):
-		#	if self._debug_print_decorator_info: print('__wrapper__ wraps the __call__ method of DecoratorClass')
-		#	return self(*args, **kwargs)
-		return self.__wrapper__
+			return self.__call__
+
 	
 	def __init__(self, *args, **kwargs):
 		"""
@@ -102,13 +78,21 @@ class DecoratorClass:
 		#self._args = args
 		#self._kwargs = kwargs
 	
-	def __call__(self, *args, **kwargs):
+	def __call__(self, func):
 		"""
-		Is called instead of the wrapped function `func`. The wrapped function
-		is stored in the `self._wrapped_callable` attribute.
+		Accepts a callable `func`, stores it in the `self._wrapped_callable`
+		attribute, and returns `__wrapper__` that forwards any argument to the
+		`self.__call__` method.
+		
+		Example:
+		
+		>>> @wraps(func)
+		>>> def __wrapper__(*args, **kwargs):
+		>>> 	if self._debug_print_decorator_info: print('__wrapper__ wraps the __call__ method of DecoratorClass')
+		>>> 	return func(*args, **kwargs)
+		>>> return __wrapper__
 		"""
 		raise NotImplementedError
-
 
 class TestSkippedException(Exception):
 	pass
@@ -124,21 +108,86 @@ def skip(func, do_skip : bool = True):
 	return __wrapper__
 
 
-class pass_args(DecoratorClass):
-	def __init__(self, *args, **kwargs):
-		self._args = args
-		self._kwargs = kwargs
-	
+def get_base_wrapped_callable(func):
+	"""
+	Gets the function that is wrapped by following the chain of "__wrapped__"
+	attributes.
+	"""
+	while hasattr(func, '__wrapped__'):
+		func = func.__wrapped__
+	return func
+
+class DummyWrapper:
+	"""
+	Very simply wraps a function, does nothing else.
+	"""
+	def __init__(self, func):
+		self.__wrapped__ = func
 	def __call__(self, *args, **kwargs):
-		print(f'in self.__call__(...) {args=} {kwargs=}')
-		
+		pass
 
-
+@decorator
+def pass_args(func, *args, **kwargs):
+	"""
+	When given a function `func` and some arguments `*args` and `**kwargs`, 
+	creates a new function in the module of the old function that, when called,
+	returns the result of `func(*args, **kwargs)`.
 	
+	Used for feeding argument sets to tests.
+	"""
+	#print(f'in pass_args {args=} {kwargs=}')
+	# Can chain these, so get the base function
+	f_base = get_base_wrapped_callable(func)
+	
+	# Find out how many we have already saved
+	if hasattr(f_base, '_scientest_n_variants'):
+		f_base._scientest_n_variants+=1
+	else:
+		f_base._scientest_n_variants=0
+	
+	
+	module = inspect.getmodule(f_base)
+	
+	# get a new name for the generated function, create the new function and
+	# ensure it gets the correct name
+	new_name = f'{f_base.__name__}_{f_base._scientest_n_variants}'
+	f_new = lambda : f_base(*args, **kwargs)
+	update_wrapper(f_new, f_base)
+	f_new.__name__ = new_name
+	
+	# Add the new function to the module under the new name
+	setattr(module, new_name, f_new) 
 		
-		
-		
+	return DummyWrapper(func)
 
+@decorator
+def pass_arg_sets(func, arg_sets):
+	"""
+	Do the same thing as `pass_args`, but assume each element of `arg_sets` is a
+	set of arguments (*args,**kwargs) to pass.
+	"""
+	func = get_base_wrapped_callable(func)
+	#print(f'in pass_arg_sets() {func} {arg_sets=}')
+	for args in arg_sets:
+		pass_args(*args)(func) # call decorators like this due to "@decorator" decorator
+	
+	return DummyWrapper(func)
+
+
+@decorator
+def pass_arg_combinations(func, *args, **kwargs):
+	"""
+	Do the same thing as `pass_args`, but assume each argument is a sequence of
+	values that should be iterated over.
+	"""
+	func = get_base_wrapped_callable(func)
+	#print(f'in pass_arg_sets() {func} {args=} {kwargs=}')
+	for kwarg_set in (dict(zip(kwargs.keys(),values)) for values in it.product(*kwargs.values())):
+		for arg_set in it.product(*args):
+			#print(f'{arg_set=} {kwarg_set=}')
+			pass_args(*arg_set, **kwarg_set)(func) # call decorators like this due to "@decorator" decorator
+	
+	return DummyWrapper(func)
 
 @decorator
 def argument(func, arg_name : int | str, arg_value : Any):
