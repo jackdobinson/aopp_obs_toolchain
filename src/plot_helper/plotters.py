@@ -154,7 +154,10 @@ class Histogram(Base):
 	datasource_name : str = 'histogram datasource'
 	
 	# Order corresponds to which axes they are associated with (0,1,2,..) -> (x,y,z,...)
-	axis_data_mappings : tuple[AxisDataMapping] = (AxisDataMapping('value','bins',limit_getter=plot_helper.LimRememberExtremes()), AxisDataMapping('count','_hist',limit_getter=plot_helper.LimRememberExtremes()))
+	axis_data_mappings : tuple[AxisDataMapping] = dc.field(default_factory= lambda :(
+		AxisDataMapping('value','bins',limit_getter=plot_helper.LimRememberExtremes()),
+		AxisDataMapping('count','_hist',limit_getter=plot_helper.LimRememberExtremes()))
+	)
 	nbins : int = 100
 	
 	# Internal
@@ -200,7 +203,11 @@ class Image(Base):
 	datasource_name : str = 'image datasource'
 	
 	# Order corresponds to which axes they are associated with (0,1,2,..) -> (x,y,z,...)
-	axis_data_mappings : tuple[AxisDataMapping] = (AxisDataMapping('x',None), AxisDataMapping('y',None), AxisDataMapping('brightness', '_z_data'))
+	axis_data_mappings : tuple[AxisDataMapping] = dc.field(default_factory= lambda :(
+		AxisDataMapping('x',None), 
+		AxisDataMapping('y',None), 
+		AxisDataMapping('brightness', '_z_data'))
+	)
 	
 	_z_data : np.ndarray = None
 	
@@ -231,14 +238,13 @@ class VerticalLine(Base):
 	datasource_name : str = 'vertical line datasource'
 	
 	# Order corresponds to which axes they are associated with (0,1,2,..) -> (x,y,z,...)
-	axis_data_mappings : tuple[AxisDataMapping] = (AxisDataMapping(None,None),)
+	axis_data_mappings : tuple[AxisDataMapping] = dc.field(default_factory= lambda :(AxisDataMapping(None,None),))
 	
 	
 	# Internal
 	_x_pos : float = None
 	
 	def update_plot_data(self, data):
-		
 		self._x_pos = data
 		if self.hdl is not None:
 			self.hdl.remove()
@@ -257,7 +263,7 @@ class HorizontalLine(Base):
 	datasource_name : str = 'horizontal line datasource'
 	
 	# Order corresponds to which axes they are associated with (0,1,2,..) -> (x,y,z,...)
-	axis_data_mappings : tuple[AxisDataMapping] = (AxisDataMapping(None,None),)
+	axis_data_mappings : tuple[AxisDataMapping] = dc.field(default_factory= lambda :(AxisDataMapping(None,None),))
 	
 	
 	# Internal
@@ -282,16 +288,17 @@ class IterativeLineGraph(Base):
 	title : str = 'Iterative Line Graph'
 	datasource_name : str = 'iterative line datasource'
 	
-	axis_data_mappings : tuple[AxisDataMapping] = (
-		AxisDataMapping(
-			'iteration',
-			'_x',
-			limit_getter=plot_helper.LimRememberExtremes(plot_helper.LimFixed(0))
-		),
-		AxisDataMapping(
-			'value',
-			'_y',
-			limit_getter=plot_helper.LimRememberExtremes(plot_helper.LimFixed(0))
+	axis_data_mappings : tuple[AxisDataMapping] = dc.field(default_factory= lambda : (
+			AxisDataMapping(
+				'iteration',
+				'_x',
+				limit_getter=plot_helper.LimRememberExtremes(plot_helper.LimFixed(0))
+			),
+			AxisDataMapping(
+				'value',
+				'_y',
+				limit_getter=plot_helper.LimRememberExtremes(plot_helper.LimFixed(0))
+			)
 		)
 	)
 	
@@ -299,7 +306,7 @@ class IterativeLineGraph(Base):
 	_y : list = dc.field(default_factory=list)
 	
 	def update_plot_data(self, data):
-		
+		#print(f'{self.datasource_name} {self._y}')
 		self._x.append(len(self._x))
 		self._y.append(data)
 		self.hdl.set_data(self._x,self._y)

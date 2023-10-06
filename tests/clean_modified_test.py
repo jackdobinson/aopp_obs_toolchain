@@ -4,6 +4,12 @@ import copy
 
 import numpy as np
 from astropy.io import fits
+import matplotlib as mpl
+mpl.use('TKagg')
+import matplotlib.pyplot as plt
+
+
+
 import astropy_helper as aph
 import astropy_helper.fits.header
 from astropy_helper.fits.specifier import FitsSpecifier
@@ -13,6 +19,11 @@ import numpy_helper.slice
 import numpy_helper.array
 from algorithm.deconv.clean_modified import CleanModified
 import algorithm.bad_pixels
+import plot_helper
+from plot_helper import figure_n_subplots, LimSymAroundValue
+from plot_helper.plotters import PlotSet, Histogram, Image, VerticalLine, IterativeLineGraph, HorizontalLine
+from plot_helper.base import AxisDataMapping
+
 
 import test_data
 import decorators
@@ -40,14 +51,14 @@ def test_clean_modified_call_altered_instantiated_parameters():
 	assert result[2] == n_iter_overwrite, f"Expect {n_iter_overwrite} iterations of CleanModified, have {result[2]} instead."
 
 
-@decorators.skip(True)
-def test_clean_modified_on_example_data():
+@decorators.skip(False)
+def test_clean_modified_on_example_data(n_iter=200):
 	# get example data
 	obs = FitsSpecifier(test_data.example_fits_file, 'DATA', (slice(229,230),slice(None),slice(None)), {'CELESTIAL':(1,2)}) 
 	psf = FitsSpecifier(test_data.example_fits_psf_file, 0, (slice(229,230),slice(None),slice(None)), {'CELESTIAL':(1,2)}) 
 	
 
-	deconvolver = CleanModified()
+	deconvolver = CleanModified(n_iter=n_iter)
 
 	with fits.open(obs.path) as obs_hdul, fits.open(psf.path) as psf_hdul:
 		deconv_components_raw = np.full_like(obs_hdul[obs.ext].data, fill_value=np.nan)
@@ -119,14 +130,8 @@ def test_clean_modified_on_example_data():
 
 
 @decorators.skip(True)
-def test_clean_modified_on_example_data_with_plotting_hooks():
-	import matplotlib as mpl
-	mpl.use('TKagg')
-	import matplotlib.pyplot as plt
-	import plot_helper
-	from plot_helper import figure_n_subplots, lim_sym_around_value
-	from plot_helper.plotters import PlotSet, Histogram, Image, VerticalLine, IterativeLineGraph, HorizontalLine
-	from plot_helper.base import AxisDataMapping
+def test_clean_modified_on_example_data_with_plotting_hooks(n_iter=200):
+	
 	
 	print(f'{mpl.is_interactive()=}')
 	
@@ -135,7 +140,7 @@ def test_clean_modified_on_example_data_with_plotting_hooks():
 	psf = FitsSpecifier(test_data.example_fits_psf_file, 0, (slice(229,230),slice(None),slice(None)), {'CELESTIAL':(1,2)}) 
 	
 	deconvolver = CleanModified(
-		n_iter = 10,
+		n_iter = n_iter,
 		rms_frac_threshold=1E-2,
 		fabs_frac_threshold=1E-2,
 		threshold=-1
@@ -156,7 +161,7 @@ def test_clean_modified_on_example_data_with_plotting_hooks():
 	plot_set = PlotSet(
 		fig,
 		'clean modified step={self.n_frames}',
-		cadence=1,
+		cadence=10,
 		plots = [	
 			Histogram(
 				'residual', 
@@ -188,7 +193,7 @@ def test_clean_modified_on_example_data_with_plotting_hooks():
 			
 			Image(
 		 		'pixel choice metric',
-		 		axis_data_mappings = (AxisDataMapping('x',None), AxisDataMapping('y',None), AxisDataMapping('brightness', '_z_data', lim_sym_around_value)),
+		 		axis_data_mappings = (AxisDataMapping('x',None), AxisDataMapping('y',None), AxisDataMapping('brightness', '_z_data', LimSymAroundValue(0))),
 		 		plt_kwargs={'cmap':'bwr_oob'}
 			).attach(next(axes_iter), deconvolver, lambda x: x._px_choice_img_ptr.val),
 			

@@ -4,6 +4,8 @@ progress of algorithms.
 """
 from typing import Any, Callable
 import dataclasses as dc
+import copy
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -69,8 +71,26 @@ def figure_n_subplots(n, figure=None, fig_kwargs={}, sp_kwargs={}):
 	)
 
 
+@dc.dataclass
+class DiffClass:
+	initial : Any = np.nan
+	
+	_stored : Any = dc.field(default=None, init=False, repr=False, compare=False)
+	
+	def set_initial(self, value):
+		self.initial=value
+		return self
+	
+	def __call__(self, value):
+		prev = self._stored
+		self._stored = copy.copy(value)
+		return self.initial if prev is None else value - prev
+
+
 def lim(data):
-	return np.nanmin(data), np.nanmax(data)
+	a,b = np.nanmin(data), np.nanmax(data)
+	return None if np.isnan(a) else a, None if np.isnan(b) else b
+	
 
 @dc.dataclass
 class LimFixed:
@@ -95,18 +115,62 @@ class LimRememberExtremes:
 	
 	def __call__(self, data):
 		a,b = self.func(data)
-		if self._vmin is None or a < self._vmin: self._vmin = a
-		if self._vmax is None or b > self._vmax: self._vmax = b
+		if self._vmin is None or (a < self._vmin and a is not None): self._vmin = a
+		if self._vmax is None or (b > self._vmax and b is not None): self._vmax = b
 		return self._vmin, self._vmax
 
-def lim_sym_around_value(data, value=0):
-	farthest_from_value = np.nanmax(np.fabs(data-value))
-	return(-farthest_from_value + value, farthest_from_value + value)
+@dc.dataclass
+class LimRememberNExtremes:
+	n : int = 50
+	func : Callable[[Any],tuple[float,float]] = lim
+	
+	_i : int = 0
+	_vmin : tuple[int,float] = (0,None)
+	_vmax : tuple[int,float] = (0,None)
+	
+	def __call__(self, data):
+		#print(f'{data[-self.n:]=} {self._i=} {self.n=} {self._vmin=} {self._vmax=}')
+		a,b = self.func(data[-self.n:])
+		if a is not None and (self._vmin[0] < (self._i-self.n) or self._vmin[1] is None or a < self._vmin[1]): self._vmin = (self._i,a)
+		if b is not None and (self._vmax[0] < (self._i-self.n) or self._vmax[1] is None or b > self._vmax[1]): self._vmax = (self._i,b)
+		
+		self._i += 1
+		return self._vmin[1], self._vmax[1]
 
-def lim_around_extrema(data, factor=0.1):
-	dmin = np.nanmin(data)
-	dmax = np.nanmax(data)
-	return(dmin - np.fabs(dmin)*factor, dmax + np.fabs(dmax)*factor)
+@dc.dataclass
+class LimSymAroundCurrent:
+	min_diff : float = 1.0
+	func : Callable[[Any],tuple[float,float]] = lim
+	
+	def __call__(self, data):
+		a, b = self.func(data)
+		value = data[-1]
+		farthest_from_value = np.nanmax(np.fabs([0 if a is None else a-value, 0  if b is None else b-value]))
+		if farthest_from_value < self.min_diff:
+			farthest_from_value = self.min_diff
+		if np.isnan(farthest_from_value):
+			return None,None
+		return(None if a is None else -farthest_from_value + value, None if b is None else farthest_from_value + value)
+
+@dc.dataclass
+class LimSymAroundValue:
+	value : float = 0
+	
+	def __call__(self, data):
+		farthest_from_value = np.nanmax(np.fabs(data-self.value))
+		if np.isnan(farthest_from_value):
+			return None,None
+		return(-farthest_from_value + self.value, farthest_from_value + self.value)
+
+
+@dc.dataclass
+class LimAroundExtrema:
+	factor : float = 0.1
+	
+	def __call__(self, data):
+		dmin = np.nanmin(data)
+		dmax = np.nanmax(data)
+		return(dmin - np.fabs(dmin)*self.factor, dmax + np.fabs(dmax)*self.factor)	
 
 def remove_axes_ticks_and_labels(ax, state=False):
 	ax.xaxis.set_visible(state)

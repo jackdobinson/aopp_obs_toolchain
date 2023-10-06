@@ -3,7 +3,7 @@ Defines the public facing interface for plot classes
 """
 import dataclasses as dc
 from collections import namedtuple
-from typing import Any, Callable
+from typing import Any, Callable, ClassVar
 from functools import wraps
 
 import numpy as np
@@ -34,11 +34,14 @@ class Base:
 	
 	# Order corresponds to which axes they are associated with (0,1,2,..) -> (x,y,z,...)
 	axis_labels : tuple[str,...] = tuple()
-	axis_data_mappings : tuple[AxisDataMapping] = tuple() # (('ax1_label','ax1_attr'), ('ax2_label','ax2_attr'), ...)
+	axis_data_mappings : tuple[AxisDataMapping] = dc.field(default_factory= lambda :
+		tuple() # (('ax1_label','ax1_attr'), ('ax2_label','ax2_attr'), ...)
+	)
 	
 	static_frame : bool = True
 	plt_kwargs : dict = dc.field(default_factory=dict)
 	ax_funcs : list = dc.field(default_factory=list)
+	show_limits_in_title : dict = dc.field(default_factory=dict) #{0:False, 1:False, 2:False}, 0,1,2 are axis numbers (x,y,z)
 	
 	
 	# Internal attributes
@@ -52,6 +55,33 @@ class Base:
 	n_updates : int = dc.field(default=0, init=False)
 
 	
+	def get_axis_limits(self,ax_num):
+		match ax_num:
+			case 0:
+				return self.ax.get_xlim() if self.ax is not None else None
+			case 1:
+				return self.ax.get_ylim() if self.ax is not None else None
+			case 2:
+				return self.hdl.get_clim() if self.hdl is not None else None
+			case _:
+				raise RuntimeError(f'Plot {self.title=} does not have an axis of number {ax_num}')
+	
+	def get_axis_limits_str(self, ax_num):
+		al = self.get_axis_limits(ax_num)
+		if al is None:
+			return 'None'
+		return "{0:5.3g},{1:5.3g}".format(*al)
+	
+	def set_ax_title(self):
+		if self.title is not None:
+			axis_limit_strs = []
+			for ax_num, show_limits_flag in self.show_limits_in_title.items():
+				if show_limits_flag:
+					axis_limit_strs.append(f'{self.axis_data_mappings[ax_num].label}:[{self.get_axis_limits_str(ax_num)}]')
+			return self.ax.set_title(self.title
+				+ (('\n' + ' '.join(axis_limit_strs)) if len(axis_limit_strs)>0 else '')
+			)
+		return None
 	
 	def is_datasource_attached(self):
 		return hasattr(self, 'datasource') and self.datasource is not None
@@ -81,12 +111,10 @@ class Base:
 		"""
 		if not self.is_ax_attached():
 			raise RuntimeError(f'{self} does not have a "axes" attribute')
-		
 	
 	def attach_ax(self, ax):
 		self.ax = ax
-		if self.title is not None:
-			self.ax.set_title(self.title)
+		self.set_ax_title()
 		
 		for i, (set_axis_label, adm) in enumerate(zip((
 					self.ax.set_xlabel, 
@@ -139,11 +167,12 @@ class Base:
 				d = getattr(self, adm.attribute)
 				set_lims(*adm.get_limits(d))
 		
-		
-		if not self.static_frame and not self.ax.drawn:
-			for x in self.ax.get_children():
-				self.ax.draw_artist(x)
-			self.ax.drawn = True
+		if not self.static_frame:
+			self.set_ax_title()
+			if not self.ax.drawn:
+				for x in self.ax.get_children():
+					self.ax.draw_artist(x)
+				self.ax.drawn = True
 					
 		self.ax.draw_artist(self.hdl)
 		

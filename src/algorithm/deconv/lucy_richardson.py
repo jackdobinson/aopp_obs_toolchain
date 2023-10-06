@@ -22,8 +22,8 @@ class LucyRichardson(Base):
 	# Public attributes
 	nudge_factor 	: float = 1E-2 		# Fraction of maximum brightness to add to numerator and denominator to try and avoid numerical instability.
 	strength 		: float = 1E-1 		# Multiplier to the correction factors, if numerical insability is encountered decrease this.
-	cf_negative_fix : bool 	= True 		# Should we change negative correction factors in to close-to-zero correction factors?
-	cf_limit 		: float = np.inf 	# End iteration if the correction factors are larger than this limit
+	cf_negative_fix : bool 	= True 		# Should we change negative correction factors to close-to-zero correction factors?
+	cf_limit 		: float = np.inf 	# End iteration if the correction factors are larger than this limit.
 	cf_uclip 		: float = np.inf 	# Clip the correction factors to be no larger than this value
 	cf_lclip 		: float = -np.inf 	# Clip the correction factors to be no smaller than this value
 	offset_obs 		: bool 	= False 	# Should we offset the observation so there are no negative pixels?
@@ -50,7 +50,7 @@ class LucyRichardson(Base):
 
 	def _init_algorithm(self, obs, psf):
 		super(LucyRichardson, self)._init_algorithm(obs, psf)
-		self._nudge = self.nudge_factor*np.max(obs)
+		self._nudge = self.nudge_factor*np.max(obs) if self.nudge_factor > 0 else -self.nudge_factor
 
 		# Pad observation to avoid edge effects
 		self._obs_shape = obs.shape
@@ -58,7 +58,7 @@ class LucyRichardson(Base):
 		
 		# offset dirty_img if we want to allow -ve values in our results
 		# increase the value from 0 to allow more -ve values
-		self._offset = 0-np.nanmin(self.dirty_img) if self.offset_obs else 0
+		self._offset = 0-np.nanmin(self._dirty_img) if self.offset_obs else 0
 		self._dirty_img += self._offset
 
 		# initialise common arrays
