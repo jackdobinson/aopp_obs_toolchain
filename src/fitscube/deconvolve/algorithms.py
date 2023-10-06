@@ -1058,7 +1058,7 @@ class MaximumEntropy(BaseIterableAlgorithm):
 				rls_test_points[k] = self.regularised_least_squares(self.px_decent_delta+self.px_decent_dir+self.components)
 			
 			# take best step for a single pixel
-			i,j = ij_from_k(np.argmin(rls_test_poitns))
+			i,j = ij_from_k(np.argmin(rls_test_points))
 			self.px_decent_dir[i,j] += self.residual[i,j]*small_step_fac
 			
 			# add pixel to ignore list
