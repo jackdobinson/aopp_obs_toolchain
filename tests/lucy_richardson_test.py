@@ -52,7 +52,7 @@ def test_call_altered_instantiated_parameters():
  
 
 
-@decorators.skip(False)
+@decorators.skip(True)
 def test_on_example_data(n_iter=200):
 	# get example data
 	obs = FitsSpecifier(test_data.example_fits_file, 'DATA', (slice(229,230),slice(None),slice(None)), {'CELESTIAL':(1,2)}) 

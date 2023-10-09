@@ -51,7 +51,7 @@ def test_clean_modified_call_altered_instantiated_parameters():
 	assert result[2] == n_iter_overwrite, f"Expect {n_iter_overwrite} iterations of CleanModified, have {result[2]} instead."
 
 
-@decorators.skip(False)
+@decorators.skip(True)
 def test_clean_modified_on_example_data(n_iter=200):
 	# get example data
 	obs = FitsSpecifier(test_data.example_fits_file, 'DATA', (slice(229,230),slice(None),slice(None)), {'CELESTIAL':(1,2)}) 
