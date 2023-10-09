@@ -22,11 +22,11 @@ class CleanModified(Base):
 	"""
 	n_iter 				: int 	= 1000	# Number of iterations
 	loop_gain 			: float = 0.02	# Fraction of emission that could be accounted for by a PSF added to components each iteration. Higher values are faster, but unstable.
-	threshold 			: float = 0.3	# Fraction of maximum brightness above which pixels will be included in CLEAN step
+	threshold 			: float = 0.3	# Fraction of maximum brightness of residual above which pixels will be included in CLEAN step, if negative will use the maximum fractional difference otsu threshold. 0.3 is a  good default value, if stippling becomes an issue, reduce or set to a negative value. Lower positive numbers will require more iterations, but give a more "accurate" result.
 	n_positive_iter 	: int 	= 0		# Number of iterations to do that only "adds" emission, before switching to "adding and subtracting" emission
 	noise_std 			: float = 1E-2	# Estimate of the deviation of the noise present in the observation
-	rms_frac_threshold 	: float = 1E-1	# Fraction of original RMS of residual at which iteration is stopped
-	fabs_frac_threshold : float = 1E-1	# Fraction of original Absolute Brightest Pixel of residual at which iteration is stopped
+	rms_frac_threshold 	: float = 1E-1	# Fraction of original RMS of residual at which iteration is stopped, lower values continue iteration for longer.
+	fabs_frac_threshold : float = 1E-1	# Fraction of original Absolute Brightest Pixel of residual at which iteration is stopped, lower values continue iteration for longer.
 	
 	# private attributes
 	_residual_copy : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False)

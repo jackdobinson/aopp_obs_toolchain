@@ -20,19 +20,16 @@ class LucyRichardson(Base):
 	"""
 	
 	# Public attributes
-	nudge_factor 	: float = 1E-2 		# Fraction of maximum brightness to add to numerator and denominator to try and avoid numerical instability.
-	strength 		: float = 1E-1 		# Multiplier to the correction factors, if numerical insability is encountered decrease this.
-	cf_negative_fix : bool 	= True 		# Should we change negative correction factors to close-to-zero correction factors?
-	cf_limit 		: float = np.inf 	# End iteration if the correction factors are larger than this limit.
-	cf_uclip 		: float = np.inf 	# Clip the correction factors to be no larger than this value
-	cf_lclip 		: float = -np.inf 	# Clip the correction factors to be no smaller than this value
-	offset_obs 		: bool 	= False 	# Should we offset the observation so there are no negative pixels?
-										# Enables the algorithm to find -ve values (offset is reversed at the end)
+	nudge_factor 	: float = 1E-2 		# Fraction of maximum brightness to add to numerator and denominator to try and avoid numerical instability. This value should be in the range [0,1), and will usually be small. Larger values require more steps to give a solution, but suffer less numerical instability.
+	strength 		: float = 1E-1 		# Multiplier to the correction factors, if numerical insability is encountered decrease this. A more crude method of avoiding instability than `nudge_factor`, should be in the range (0,1].
+	cf_negative_fix : bool 	= True 		# Should we change negative correction factors to close-to-zero correction factors? Usually we should as we don't want any negative correction factors to flip-flop the end result.
+	cf_limit 		: float = np.inf 	# End iteration if the correction factors are larger than this limit. Large correction factors are a symptom of numerical instability.
+	cf_uclip 		: float = np.inf 	# Clip the correction factors to be no larger than this value. A crude method to control numerical instability.
+	cf_lclip 		: float = -np.inf 	# Clip the correction factors to be no smaller than this value. A crude method to control numerical instability.
+	offset_obs 		: bool 	= False 	# Should we offset the observation so there are no negative pixels? Enables the algorithm to find -ve values as the offset is reversed at the end.
 	threshold : \
-		Optional[float] = None	# Below this value LR will not be applied to pixels. This is useful as at low brightness LR has a tendency
-										# to fit itself to noise. If -ve will use |threshold|*brightest_pixel as threshold each step,
-										# If zero will use mean and standard deviation to work out a threshold, if None will not be used.
-	pad_observation : bool = True 		# Should we pad the input data with extra space to avoid edge effects?
+		Optional[float] = None	# Below this value LR will not be applied to pixels. This is useful as at low brightness LR has a tendency to fit itself to noise. If -ve will use |threshold|*brightest_pixel as threshold each step. If zero will use mean and standard deviation to work out a threshold, if None will not be used.
+	pad_observation : bool = True 		# Should we pad the input data with extra space to avoid edge effects? Padding will take the form of convolving the observation with the psf, but only keeping the edges of the convolved data. This will hopefully cause a smooth-ish drop-off at the edges instead of a hard cutoff, thus reducing insability.
 	
 	# Private attributes
 	#_example : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False)
