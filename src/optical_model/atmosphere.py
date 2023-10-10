@@ -7,16 +7,24 @@ import dataclasses as dc
 
 import numpy as np
 
-@dc.dataclass
+@dc.dataclass(slots=True)
 class TurbulenceModel:
+	def get_phase_psd(self):
+		raise NotImplementedError
+
+@dc.dataclass(slots=True)
+class KolmogorovTurbulence(TurbulenceModel):
 	"""
 	The turbulence in the atmosphere at the time of the observation influences 
 	the "wings" of the PSF.
+	TODO:
+		* Comments to describe parameters
 	"""
 	f_mag : np.ndarray
 	r0 : float
 	turbulence_ndim : float
 
+	_psd : np.ndarray = dc.field(default=None, init=False, repr=False, compare=False)
 
 	def get_phase_psd(self):
 		"""
@@ -39,5 +47,5 @@ class TurbulenceModel:
 		
 		# don't worry about "f_mag" divide by zero, we don't use that datapoint
 		# anyway.
-		self.psd = factor*(self.r0)**(r0_pow)*(self.f_mag)**(f_pow)
-		return(self.psd) 
+		self._psd = factor*(self.r0)**(r0_pow)*(self.f_mag)**(f_pow)
+		return(self._psd) 

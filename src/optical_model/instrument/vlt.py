@@ -6,6 +6,11 @@ import numpy as np
 from optical_model.instrument import OpticalInstrumentModel
 from geometry.shape import Circle
 
+# Idea: Maybe combine .../instrument package and adaptive_optics.py into a 
+# "optical_component" package that separates concerns better. Then, the 
+# "instrument" package would combine a set of optical components together
+# to represent a specific instrument.
+
 
 # TODO: Alter these classes so that they separate their concerns better. Want to
 # be able to obviously see how the instrument is constructed.

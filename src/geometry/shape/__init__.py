@@ -37,6 +37,10 @@ class Circle(PolyShape):
 	
 	def __contains__(self, p : np.ndarray) -> bool:
 		return self.metric(p,self.center) <= self.radius
+	
+	@property
+	def diameter(self) -> float:
+		return 2.0*self.radius
 
 @dc.dataclass(slots=True)
 class CompoundShape(GeoShape):
