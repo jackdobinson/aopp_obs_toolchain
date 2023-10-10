@@ -1,4 +1,16 @@
- 
+"""
+Runs discovers and runs tests in parent folder. Used as an alternative to pytest
+that is more configurable and I know how it works.
+
+TODO:
+	* Enable test discovery to be influenced by decorators, will need to make
+	the list of discovered tests a module scope variable. But the extra
+	configuration flexibility will be worth it.
+	* Turn this into it's own package, it's useful enough that it would be
+	useful, possible name "scientest"
+	* Move all of the text handling code into it's own module.
+"""
+
 import sys, os
 import importlib
 from pathlib import Path
