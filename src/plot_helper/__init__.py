@@ -65,7 +65,7 @@ def create_figure_with_subplots(nr, nc, nax=None ,size=6, squeeze=False, figure=
 def figure_n_subplots(n, figure=None, fig_kwargs={}, sp_kwargs={}):
 	return(create_figure_with_subplots(
 		*lowest_aspect_ratio_rectangle_of_at_least_area(n), 
-		nax=n, size=6, squeeze=False, figure=figure,
+		nax=n, size=6, squeeze=False, figure=figure, flatten=True,
 		fig_kwargs={},
 		sp_kwargs={})
 	)
@@ -155,12 +155,15 @@ class LimSymAroundCurrent:
 @dc.dataclass
 class LimSymAroundValue:
 	value : float = 0
+	pad : float = 0 # +ve numbers is a constant, -ve is a multiplier
 	
 	def __call__(self, data):
 		farthest_from_value = np.nanmax(np.fabs(data-self.value))
 		if np.isnan(farthest_from_value):
 			return None,None
-		return(-farthest_from_value + self.value, farthest_from_value + self.value)
+		if self.pad == 0: return(-farthest_from_value + self.value, farthest_from_value + self.value)
+		elif self.pad > 0: return(-farthest_from_value + self.value - self.pad, farthest_from_value + self.value + self.pad)
+		else: return((1+self.pad)*(-farthest_from_value + self.value), (1+self.pad)*(farthest_from_value + self.value))
 
 
 @dc.dataclass

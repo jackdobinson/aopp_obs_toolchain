@@ -41,6 +41,9 @@ class Circle(PolyShape):
 	@property
 	def diameter(self) -> float:
 		return 2.0*self.radius
+	
+	def __str__(self):
+		return f'{self.__class__.__name__.rsplit(".",1)[-1]}({self.radius})'
 
 @dc.dataclass(slots=True)
 class CompoundShape(GeoShape):
