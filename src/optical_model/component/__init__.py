@@ -9,6 +9,7 @@ from typing import Literal
 import numpy as np
 
 import numpy_helper as nph
+import numpy_helper.array
 from numpy_helper.array import S,N
 from geometry.shape import GeoShape, Circle
 		
@@ -149,6 +150,24 @@ class OpticalComponentSet:
 			x[2*i+1] = oc.position+delta
 		x[-1] = xmax
 		return x
+		
+	def pupil_function(self, shape=(101,101), extent=(1E-1,1E-1)):
+		x = self.get_evaluation_positions()
+		pf_pos = 0.5*(x[-1] + x[-2]) # position to evaluate pupil function at
+		pf_delta = x[-1] - pf_pos
+		# assume cylindrically symmetric
+		pf_rad = np.sqrt(np.sum(nph.array.offsets_from_point(shape, None, np.array(extent,dtype=float))**2, axis=0))
+		lbs = self.get_light_beam(LightBeam(0,0,np.inf,0,-1))
+	
+		w_a, w_b = lbs(pf_pos)
+		print(f'{w_a=} {w_b=}')
+		pf_val = np.zeros_like(pf_rad, dtype=float)
+		pf_val[pf_rad < (w_b/pf_delta)] = 1
+		pf_val[pf_rad < (w_a/pf_delta)] = 0
+		print(pf_rad)
+		print(pf_val)
+		return pf_val
+	
 	
 	def _component_name_present(self, name):
 		for oc in self._optical_path:

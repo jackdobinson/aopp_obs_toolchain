@@ -24,7 +24,7 @@ def test_constructing_optical_component_set():
 	
 	lbs = ocs.get_light_beam(LightBeam(0,0,10,0,-1))
 	#lbs = ocs.get_light_beam(LightBeam(0,0,0,1E-3,-10000))
-	#lbs = ocs.get_light_beam(LightBeam(0,0,0,5E-3,-2000))
+	#lbs = ocs.get_light_beam(LightBeam(0,0,0,0.5,-20))
 	#lbs = ocs.get_light_beam(LightBeam(0,-7E-2,10,-7E-2,-1))
 	
 	print_iterable(ocs._optical_path)
@@ -47,7 +47,8 @@ def test_constructing_optical_component_set():
 	#print(wb)
 	
 	
-	fig, ax = plot_helper.figure_n_subplots(1)
+	fig, ax = plot_helper.figure_n_subplots(3)
+	
 	ax[0].set_title('Geometrical optics approximation of light beam')
 	ax[0].set_xlabel('optical distance (m)')
 	ax[0].set_ylabel('radius from optical axis (m)')
@@ -65,6 +66,14 @@ def test_constructing_optical_component_set():
 		ax[0].axvline(oc.position, color='red', linestyle=':', alpha=0.3)
 		ax[0].text(oc.position + 0.01*(xmax-xmin), ymin + 0.01*(ymax-ymin), str(oc), rotation='vertical', fontsize='x-small')
 	ax[0].legend()
+	
+	
+	pf = ocs.pupil_function((501,501), (-2E-3,-2E-3))
+	ax[1].imshow(pf)
+	
+	pf_fft = np.fft.fftshift(np.fft.fft2(pf))
+	psf = (np.conj(pf_fft)*pf_fft).astype(float)
+	ax[2].imshow(psf)
 	
 	plt.show()
 	
