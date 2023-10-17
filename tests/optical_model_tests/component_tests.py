@@ -23,7 +23,9 @@ def test_constructing_optical_component_set():
 	])
 	
 	lbs = ocs.get_light_beam(LightBeam(0,0,10,0,-1))
-	
+	#lbs = ocs.get_light_beam(LightBeam(0,0,0,1E-3,-10000))
+	#lbs = ocs.get_light_beam(LightBeam(0,0,0,5E-3,-2000))
+	#lbs = ocs.get_light_beam(LightBeam(0,-7E-2,10,-7E-2,-1))
 	
 	print_iterable(ocs._optical_path)
 	print_iterable(lbs.light_beams)

@@ -17,38 +17,50 @@ def sign(a):
 	return -1 if a < 0 else 1
 
 # TODO: Move this to better location
-"""
 @dc.dataclass(slots=True)
 class LightBeam:
-	h_a : float = 0
-	nu_a : float = 0
-	h_b : float = 1
-	nu_b : float = 0
-	o : float = 0
+	"""
+	A beam of light defined by the two lines that limit the extent of the beam
+	w_a = c_a + o*m_a
+	w_b = c_b + o*m_b
 	
-	def w_a(self, optical_position):
-		return self.h_a*(1-self.nu_a*(optical_position-self.o))
+	w_a - The line that defines the beams "inner" edge, closest to the optical axis
+	w_b - The line that defines the beams "outer" edge, farthest from the optical axis
 	
-	def w_b(self, optical_position):
-		return self.h_b*(1-self.nu_b*(optical_position-self.o))
 	
-	def __call__(self, optical_position):
-		return self.w_a(optical_position), self.w_b(optical_position)
-"""
-
-@dc.dataclass(slots=True)
-class LightBeam:
-	c_a : float = 0
-	m_a : float = 0
-	c_b : float = 1
-	m_b : float = 0
-	o : float = 0
+	
+	
+	      |......................... w_b - outer edge of light beam
+	     /|
+	    / |
+	   /  |       _________________ w_a - iner edge of light beam
+	  /   |      X
+	 /    |      X
+	*-----|------X----------------- optical axis (o)
+	
+	             ^
+	             Obstruction
+	      ^
+	      Lens
+	^
+	Light Source
+	
+	
+	"""
+	c_a : float = 0 # y intercept of inner edge
+	m_a : float = 0 # gradient of inner edge
+	c_b : float = 1 # y intercept of outer edge
+	m_b : float = 0 # gradient of outer edge
+	o : float = 0 # starting point (on optical axis) of this light beam
 	
 	def w_a(self, optical_position):
 		return self.c_a + self.m_a*(optical_position-self.o)
 	
 	def w_b(self, optical_position):
 		return self.c_b + self.m_b*(optical_position-self.o)
+	
+	def is_null(self) -> bool:
+		return any(np.isnan(x) for x in (self.c_a, self.m_a, self.c_b, self.c_b, self.o))
 	
 	def __call__(self, optical_position):
 		return self.w_a(optical_position), self.w_b(optical_position)
@@ -205,9 +217,9 @@ class Refractor(OpticalComponent):
 		c_b = in_light_beam.w_b(self.position)
 		return LightBeam(
 			c_a, 
-			-c_a/self.focal_length, 
+			in_light_beam.m_a-c_a/self.focal_length, 
 			c_b, 
-			-c_b/self.focal_length, 
+			in_light_beam.m_b-c_b/self.focal_length, 
 			self.position
 		)
 	
@@ -222,17 +234,28 @@ class Aperture(OpticalComponent):
 		# high edge of the light beam should be adjusted to exclude the occluded region
 		# gradient of the high edge of the beam adjusted as it should focus in the
 		# same place as before.
+		w_a_pos = in_light_beam.w_a(self.position)
 		w_b_pos = in_light_beam.w_b(self.position)
-		c_b = min(abs(w_b_pos), self.shape.radius)*sign(w_b_pos)
-		if in_light_beam.m_b == 0:
-			m_b=0
-		else:
-			m_b = c_b*in_light_beam.m_b/(in_light_beam.c_b + (self.position - in_light_beam.o)*in_light_beam.m_b)
+		if (sign(w_a_pos)*w_a_pos) >= self.shape.radius and (sign(w_b_pos)*w_b_pos) >= self.shape.radius:
+			# We have no light that can get through the aperture, return null beam
+			return LightBeam(np.nan,np.nan,np.nan,np.nan,self.position)
+			
+		w_b_pos = in_light_beam.w_b(self.position)
+		w_pos = w_b_pos - w_a_pos
+		
+		c_b = min(sign(w_a_pos)*(w_b_pos), self.shape.radius)*sign(w_a_pos)
+		c_a = min(sign(w_a_pos)*(w_a_pos), self.shape.radius)*sign(w_a_pos)
+		w_b_pos_frac = (c_b-w_a_pos) / w_pos
+		w_a_pos_frac = (c_a-w_a_pos) / w_pos
+		
+		m_b_pos = (in_light_beam.m_b - in_light_beam.m_a)*w_b_pos_frac + in_light_beam.m_a
+		m_a_pos = (in_light_beam.m_b - in_light_beam.m_a)*w_a_pos_frac + in_light_beam.m_a
+		
 		lb= LightBeam(
-			in_light_beam.w_a(self.position), 
-			in_light_beam.m_a, 
+			c_a,
+			m_a_pos,
 			c_b, 
-			m_b,
+			m_b_pos,
 			self.position
 		)
 		print(f'{lb=}')
@@ -251,16 +274,27 @@ class Obstruction(OpticalComponent):
 		# the gradient of the low edge of the beam should be adjusted to
 		# ensure it still focuses at the same point as before
 		w_a_pos = in_light_beam.w_a(self.position)
-		c_a = max(abs(w_a_pos), self.shape.radius)*sign(w_a_pos)
-		if in_light_beam.m_a == 0:
-			m_a = 0
-		else:
-			m_a = c_a*in_light_beam.m_a/(in_light_beam.c_a + (self.position - in_light_beam.o)*in_light_beam.m_a)
+		w_b_pos = in_light_beam.w_b(self.position)
+		if (sign(w_b_pos)*w_a_pos) <= self.shape.radius and (sign(w_b_pos)*w_b_pos) <= self.shape.radius:
+			# We have no light that can get through the aperture, return null beam
+			return LightBeam(np.nan,np.nan,np.nan,np.nan,self.position)
+			
+		w_b_pos = in_light_beam.w_b(self.position)
+		w_pos = w_b_pos - w_a_pos
+		
+		c_b = max(sign(w_b_pos)*(w_b_pos), self.shape.radius)*sign(w_b_pos)
+		c_a = max(sign(w_b_pos)*(w_a_pos), self.shape.radius)*sign(w_b_pos)
+		w_b_pos_frac = (c_b-w_a_pos) / w_pos
+		w_a_pos_frac = (c_a-w_a_pos) / w_pos
+		
+		m_b_pos = (in_light_beam.m_b - in_light_beam.m_a)*w_b_pos_frac + in_light_beam.m_a
+		m_a_pos = (in_light_beam.m_b - in_light_beam.m_a)*w_a_pos_frac + in_light_beam.m_a
+		
 		return LightBeam(
 			c_a, 
-			m_a,
-			in_light_beam.w_b(self.position), 
-			in_light_beam.m_b,
+			m_a_pos,
+			c_b,
+			m_b_pos,
 			self.position
 		)
 	
