@@ -152,6 +152,8 @@ class OpticalComponentSet:
 		return x
 		
 	def pupil_function(self, shape=(101,101), extent=(1E-1,1E-1)):
+		# NOTE: This is not correct yet. The FOV of the telescope is not the same
+		# as the distances in the pupil function calculation.
 		x = self.get_evaluation_positions()
 		pf_pos = 0.5*(x[-1] + x[-2]) # position to evaluate pupil function at
 		pf_delta = x[-1] - pf_pos
@@ -168,6 +170,17 @@ class OpticalComponentSet:
 		print(pf_val)
 		return pf_val
 	
+	def psf(self, shape=(101,101), extent=(1E-1,1E-1)):
+		# NOTE: Not accounting for wavelength of light in working out the PSF
+		pf = self.pupil_function(self, shape, extent)
+		pf_fft = np.fft.fftshift(np.fft.fftn(pf))
+		psf = (np.conj(pf_fft)*pf_fft)
+		return psf
+	
+	def otf(self, shape=(101,101), extent=(1E-1,1E-1)):
+		psf = self.psf(shape, extent)
+		otf = np.fft.fftshift(np.fft.fftn(np.fft.ifftshift(psf)))
+		return otf
 	
 	def _component_name_present(self, name):
 		for oc in self._optical_path:

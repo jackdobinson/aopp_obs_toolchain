@@ -15,11 +15,37 @@ def print_iterable(iterable, prefix='[', sep='\n\t',suffix='\n]'):
 	print(suffix,end='')
 
 def test_constructing_optical_component_set():
+	
+	MUSE_NFM_delta_ang = 0.025*(1/3600)*(np.pi/180) # radians, (from 0.025 arcsec in Narrow Field Mode)
+	obj_diameter = 8 # meters
+	primary_mirror_focal_length = 120 # meters
+	primary_mirror_pos = 100 # meters
+	secondary_mirror_diameter_radians = 2.52/18 # radians
+	secondary_mirror_dist_from_primary =90 # meters
+	secondary_mirror_diameter_meters = (120 - secondary_mirror_dist_from_primary)*secondary_mirror_diameter_radians
+	
 	ocs = OpticalComponentSet.from_components([
-		Aperture(0, 'objective aperture', Circle.of_radius(7)), 
-		Obstruction(50, 'secondary mirror back', Circle.of_radius(2)), 
-		Refractor(100, 'primary mirror', Circle.of_radius(7), 120),
-		Aperture(150, 'secondary mirror front', Circle.of_radius(2))
+		Aperture(
+			0, 
+			'objective aperture', 
+			Circle.of_radius(obj_diameter/2)
+		), 
+		Obstruction(
+			primary_mirror_pos - secondary_mirror_dist_from_primary, 
+			'secondary mirror back', 
+			Circle.of_radius(secondary_mirror_diameter_meters/2)
+		), 
+		Refractor(
+			primary_mirror_pos, 
+			'primary mirror', 
+			Circle.of_radius(7), 
+			primary_mirror_focal_length
+		),
+		Aperture(
+			primary_mirror_pos + secondary_mirror_dist_from_primary, 
+			'secondary mirror front', 
+			Circle.of_radius(secondary_mirror_diameter_meters)
+		)
 	])
 	
 	lbs = ocs.get_light_beam(LightBeam(0,0,10,0,-1))
@@ -47,7 +73,7 @@ def test_constructing_optical_component_set():
 	#print(wb)
 	
 	
-	fig, ax = plot_helper.figure_n_subplots(3)
+	fig, ax = plot_helper.figure_n_subplots(4)
 	
 	ax[0].set_title('Geometrical optics approximation of light beam')
 	ax[0].set_xlabel('optical distance (m)')
@@ -68,12 +94,18 @@ def test_constructing_optical_component_set():
 	ax[0].legend()
 	
 	
-	pf = ocs.pupil_function((501,501), (-2E-3,-2E-3))
+	pf = ocs.pupil_function((501,501), (-MUSE_NFM_delta_ang,-MUSE_NFM_delta_ang))#(-2E-3,-2E-3))
+	ax[1].set_title('pupil function')
 	ax[1].imshow(pf)
 	
-	pf_fft = np.fft.fftshift(np.fft.fft2(pf))
-	psf = (np.conj(pf_fft)*pf_fft).astype(float)
-	ax[2].imshow(psf)
+	pf_fft = np.fft.fftshift(np.fft.fftn(pf))
+	psf = (np.conj(pf_fft)*pf_fft)
+	ax[2].set_title('point spread function')
+	ax[2].imshow(psf.astype(float))
+	
+	otf = np.fft.fftshift(np.fft.fftn(np.fft.ifftshift(psf)))
+	ax[3].set_title('optical transfer function')
+	ax[3].imshow(otf.astype(float))
 	
 	plt.show()
 	
