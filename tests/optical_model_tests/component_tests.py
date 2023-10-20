@@ -41,11 +41,11 @@ def test_constructing_optical_component_set():
 			Circle.of_radius(7), 
 			primary_mirror_focal_length
 		),
-		Aperture(
-			primary_mirror_pos + secondary_mirror_dist_from_primary, 
-			'secondary mirror front', 
-			Circle.of_radius(secondary_mirror_diameter_meters)
-		)
+		#Aperture(
+		#	primary_mirror_pos + secondary_mirror_dist_from_primary, 
+		#	'secondary mirror front', 
+		#	Circle.of_radius(secondary_mirror_diameter_meters)
+		#)
 	])
 	
 	lbs = ocs.get_light_beam(LightBeam(0,0,10,0,-1))
@@ -93,22 +93,36 @@ def test_constructing_optical_component_set():
 		ax[0].text(oc.position + 0.01*(xmax-xmin), ymin + 0.01*(ymax-ymin), str(oc), rotation='vertical', fontsize='x-small')
 	ax[0].legend()
 	
+	# TODO: Work out how the scale is changed as I alter the expansion and supersample factors
+	#       so I can get the PSF scaled correctly.
 	
-	pf_scale, pf = ocs.pupil_function((501,501), expansion_factor=10, supersample_factor=0.1)#, (MUSE_NFM_delta_ang*120,MUSE_NFM_delta_ang*120))#(-2E-3,-2E-3))
+	expansion_factor = 9
+	supersample_factor = 1/expansion_factor
+	pf_scale, pf = ocs.pupil_function((501,501), expansion_factor=expansion_factor, supersample_factor=supersample_factor)#, (MUSE_NFM_delta_ang*120,MUSE_NFM_delta_ang*120))#(-2E-3,-2E-3))
 	print(f'{pf_scale=}')
 	print(f'{pf.shape=}')
+	pf_extent = tuple(((-1)**i)*pf_scale[i//2] for i in range(2*len(pf_scale)))
 	ax[1].set_title(f'pupil function {pf_scale} meters')
-	ax[1].imshow(pf)
+	ax[1].imshow(pf, extent=pf_extent)
+	ax[1].set_xlabel('meters')
+	ax[1].set_ylabel('meters')
 	
 	pf_fft = np.fft.fftshift(np.fft.fftn(pf))
 	psf = (np.conj(pf_fft)*pf_fft)
-	wavelength = 1E-6 #1 um
+	wavelength = 5E-7 #500 nm
 	rad_to_arcsec = (180/np.pi)*3600
-	ax[2].set_title(f'point spread function {wavelength=} {tuple(wavelength*s*rad_to_arcsec for s in pf_scale)} arcsec')
-	ax[2].imshow(psf.astype(float))
+	psf_scale = tuple(wavelength*(supersample_factor*s/expansion_factor)*rad_to_arcsec for s in pf_scale)
+	#psf_scale = tuple(wavelength*s*rad_to_arcsec for s in pf_scale)
+	psf_extent = tuple(((-1)**i)*psf_scale[i//2] for i in range(2*len(psf_scale)))
+	
+	
+	ax[2].set_title(f'point spread function {wavelength=} {psf_scale} arcsec')
+	ax[2].imshow(psf.astype(float), extent=psf_extent)
+	ax[2].set_xlabel('arcsec')
+	ax[2].set_ylabel('arcsec')
 	
 	otf = np.fft.fftshift(np.fft.fftn(np.fft.ifftshift(psf)))
-	ax[3].set_title('optical transfer function')
+	ax[3].set_title(f'optical transfer function {otf.shape=}')
 	ax[3].imshow(otf.astype(float))
 	
 	plt.show()
