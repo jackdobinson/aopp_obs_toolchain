@@ -20,9 +20,11 @@ def test_constructing_optical_component_set():
 	obj_diameter = 8 # meters
 	primary_mirror_focal_length = 120 # meters
 	primary_mirror_pos = 100 # meters
-	secondary_mirror_diameter_radians = 2.52/18 # radians
-	secondary_mirror_dist_from_primary =90 # meters
-	secondary_mirror_diameter_meters = (120 - secondary_mirror_dist_from_primary)*secondary_mirror_diameter_radians
+	primary_mirror_diameter = 8
+	secondary_mirror_diameter_frac_of_beam = 2.52/18
+	secondary_mirror_dist_from_primary =50 # meters
+	primary_mirror_half_angular_size_from_focus = np.arctan((primary_mirror_diameter/2)/primary_mirror_focal_length)
+	secondary_mirror_diameter_meters = 2*np.tan(primary_mirror_half_angular_size_from_focus*(secondary_mirror_diameter_frac_of_beam/2))*(primary_mirror_focal_length - secondary_mirror_dist_from_primary)
 	
 	ocs = OpticalComponentSet.from_components([
 		Aperture(
@@ -38,7 +40,7 @@ def test_constructing_optical_component_set():
 		Refractor(
 			primary_mirror_pos, 
 			'primary mirror', 
-			Circle.of_radius(7), 
+			Circle.of_radius(primary_mirror_diameter/2), 
 			primary_mirror_focal_length
 		),
 		#Aperture(
@@ -96,7 +98,7 @@ def test_constructing_optical_component_set():
 	# TODO: Work out how the scale is changed as I alter the expansion and supersample factors
 	#       so I can get the PSF scaled correctly.
 	
-	expansion_factor = 9
+	expansion_factor = 5
 	supersample_factor = 1/expansion_factor
 	pf_scale, pf = ocs.pupil_function((501,501), expansion_factor=expansion_factor, supersample_factor=supersample_factor)#, (MUSE_NFM_delta_ang*120,MUSE_NFM_delta_ang*120))#(-2E-3,-2E-3))
 	print(f'{pf_scale=}')
