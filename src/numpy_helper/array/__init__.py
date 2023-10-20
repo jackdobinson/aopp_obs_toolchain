@@ -42,19 +42,19 @@ def ensure_odd_shape(a : np.ndarray[S[N],T]) -> np.ndarray[Q[N],T]:
 	return a[slices]
 
 
-def offsets_from_point(shape : S[N], point : np.ndarray[[N],T] = None, extent : S[N] = None) -> np.ndarray[S[N],T]:
+def offsets_from_point(shape : S[N], point : np.ndarray[[N],T] = None, scale : S[N] = None) -> np.ndarray[S[N],T]:
 	"""
 	For an array of shape `shape` get the offsets from a specific point in array coordinates.
 	"""
 	if point is None:
 		point = np.array([s//2 for s in shape]) # center
-	if extent is None:
-		extent = np.ones_like(point)
+	if scale is None:
+		scale = np.ones_like(point, dtype=float)
 	else:
 		# -ve values are cell sizes, +ve are array axis sizes.
-		extent = np.array([x/s if x > 0 else -x for x,s in zip(extent, shape)], dtype=float) 
-	print(f'{extent=}')
-	return np.moveaxis((np.moveaxis(np.indices(shape),0,-1) - point)*extent,-1,0)
+		scale = np.array([float(x)/s if x > 0 else -x for x,s in zip(scale, shape)], dtype=float) 
+	#print(f'{scale=}')
+	return np.moveaxis((np.moveaxis(np.indices(shape),0,-1) - point)*scale,-1,0)
 
 def indices_of_mask(m : np.ndarray[S[N],bool]) -> tuple[np.ndarray[[N],int],...]:
 	"""

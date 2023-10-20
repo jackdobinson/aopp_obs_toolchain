@@ -94,13 +94,17 @@ def test_constructing_optical_component_set():
 	ax[0].legend()
 	
 	
-	pf = ocs.pupil_function((501,501), (-MUSE_NFM_delta_ang,-MUSE_NFM_delta_ang))#(-2E-3,-2E-3))
-	ax[1].set_title('pupil function')
+	pf_scale, pf = ocs.pupil_function((501,501), expansion_factor=10, supersample_factor=0.1)#, (MUSE_NFM_delta_ang*120,MUSE_NFM_delta_ang*120))#(-2E-3,-2E-3))
+	print(f'{pf_scale=}')
+	print(f'{pf.shape=}')
+	ax[1].set_title(f'pupil function {pf_scale} meters')
 	ax[1].imshow(pf)
 	
 	pf_fft = np.fft.fftshift(np.fft.fftn(pf))
 	psf = (np.conj(pf_fft)*pf_fft)
-	ax[2].set_title('point spread function')
+	wavelength = 1E-6 #1 um
+	rad_to_arcsec = (180/np.pi)*3600
+	ax[2].set_title(f'point spread function {wavelength=} {tuple(wavelength*s*rad_to_arcsec for s in pf_scale)} arcsec')
 	ax[2].imshow(psf.astype(float))
 	
 	otf = np.fft.fftshift(np.fft.fftn(np.fft.ifftshift(psf)))

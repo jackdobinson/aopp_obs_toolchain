@@ -65,6 +65,12 @@ class LightBeam:
 	
 	def __call__(self, optical_position):
 		return self.w_a(optical_position), self.w_b(optical_position)
+	
+	def get_focal_length(self) -> float:
+		f_a =  self.c_a / self.m_a
+		f_b = self.c_b / self.m_b
+		assert f_a - f_b < 1E-6, f"Focal lengths of inner and outer edge of beam need to match to within tolerance {f_a=} {f_b=}"
+		return f_a
 
 
 @dc.dataclass(slots=True)
@@ -79,17 +85,27 @@ class LightBeamSet:
 			if lb.o > vmax: vmax = lb.o
 		return vmin, vmax
 	
-	
-	def __call__(self, optical_position):
-		# Assume that list is ordered by optical distance at this point
+	def get_light_beam_at_position(self, optical_position) -> LightBeam:
 		if optical_position <= self.light_beams[0].o:
-			return np.nan, np.nan
+			return None
 			
 		for i, lb in enumerate(self.light_beams):
 			if lb.o >= optical_position:
-				print(optical_position, i, lb.o)
-				return self.light_beams[i-1](optical_position)
-		return self.light_beams[-1](optical_position)
+				return self.light_beams[i-1]
+		return self.light_beams[-1]
+	
+	def __getitem__(self, idx):
+		return self.light_beams[idx]
+	
+	def __call__(self, optical_position):
+		"""
+		Get w_a, w_b for light beam that is part of the set at `optical_position`
+		"""
+		# Assume that list is ordered by optical distance at this point
+		lb = self.get_light_beam_at_position(optical_position)
+		if lb is None:
+			return np.nan, np.nan
+		return lb(optical_position)
 
 
 
@@ -150,37 +166,85 @@ class OpticalComponentSet:
 			x[2*i+1] = oc.position+delta
 		x[-1] = xmax
 		return x
+			
+	
+	def pupil_function(self, 
+			shape=(101,101), 
+			scale=None,
+			expansion_factor = 1.1,
+			supersample_factor = 1
+		):
+		"""
+		Calculates the pupil function at the last optical component.
 		
-	def pupil_function(self, shape=(101,101), extent=(1E-1,1E-1)):
+		Returned scale is in units of length (normally meters)
+		"""
 		# NOTE: This is not correct yet. The FOV of the telescope is not the same
 		# as the distances in the pupil function calculation.
-		x = self.get_evaluation_positions()
-		pf_pos = 0.5*(x[-1] + x[-2]) # position to evaluate pupil function at
-		pf_delta = x[-1] - pf_pos
-		# assume cylindrically symmetric
-		pf_rad = np.sqrt(np.sum(nph.array.offsets_from_point(shape, None, np.array(extent,dtype=float))**2, axis=0))
+		
+		
 		lbs = self.get_light_beam(LightBeam(0,0,np.inf,0,-1))
-	
-		w_a, w_b = lbs(pf_pos)
+		# get the final light beam
+		lb = lbs[-1]
+		print(f'{lb=}')
+		pf_pos = lb.o
+		if scale is None:
+			# find focal length of that beam
+			#focal_length = lb.get_focal_length()
+			# find maximal width of beam
+			w_max = max(abs(lb.c_a),abs(lb.c_b)) # this is a radius
+			scale = ((2*w_max)*expansion_factor, (2*w_max)*expansion_factor) # need a diameter
+		print(f'{scale=}')
+		
+		# assume cylindrically symmetric
+		center_offsets = nph.array.offsets_from_point(tuple(int(s*expansion_factor*supersample_factor) for s in shape), None, np.array(scale,dtype=float))
+		print(f'{center_offsets}')
+		pf_rad = np.sqrt(np.sum(center_offsets**2, axis=0))
+		
+		
+		lb = lbs.get_light_beam_at_position(pf_pos)	
+		w_a, w_b = lb(pf_pos) if lb is not None else (np.nan, np.nan)
+		
 		print(f'{w_a=} {w_b=}')
 		pf_val = np.zeros_like(pf_rad, dtype=float)
-		pf_val[pf_rad < (w_b/pf_delta)] = 1
-		pf_val[pf_rad < (w_a/pf_delta)] = 0
+		pf_val[pf_rad < (w_b)] = 1
+		pf_val[pf_rad < (w_a)] = 0
 		print(pf_rad)
 		print(pf_val)
-		return pf_val
+		return scale, pf_val
 	
-	def psf(self, shape=(101,101), extent=(1E-1,1E-1)):
+	def psf(self, 
+			shape=(101,101), 
+			scale = None,
+			expansion_factor = 1.1,
+			supersample_factor = 1
+		):
+		"""
+		Calculates the PSF.
+		
+		Returned scale is in radians/wavelength, multiply by light wavelength
+		to get the PSF in radians.
+		"""
 		# NOTE: Not accounting for wavelength of light in working out the PSF
-		pf = self.pupil_function(self, shape, extent)
+		scale, pf = self.pupil_function(self, shape, scale, expansion_factor, supersample_factor)
 		pf_fft = np.fft.fftshift(np.fft.fftn(pf))
 		psf = (np.conj(pf_fft)*pf_fft)
-		return psf
+		return scale, psf
 	
-	def otf(self, shape=(101,101), extent=(1E-1,1E-1)):
-		psf = self.psf(shape, extent)
+	def otf(self, 
+			shape=(101,101), 
+			scale=None,
+			expansion_factor = 1.1,
+			supersample_factor = 1
+		):
+		"""
+		Gets the optical transfer function.
+		
+		Returned scale is in
+		"""
+		scale, psf = self.psf(shape, scale, expansion_factor, supersample_factor)
 		otf = np.fft.fftshift(np.fft.fftn(np.fft.ifftshift(psf)))
-		return otf
+		return scale, otf
 	
 	def _component_name_present(self, name):
 		for oc in self._optical_path:
@@ -206,6 +270,28 @@ class OpticalComponentSet:
 				inserted=True
 		if not inserted:
 			self._do_insert(len(self._optical_path), oc)
+	
+	def get_component_before_pos(self, pos) -> OpticalComponent:
+		prev = None
+		for oc in self:
+			if oc.position < pos:
+				prev = oc
+			else:
+				break
+		if prev is not None:
+			return prev
+		raise RuntimeError(f'No optical components before position {pos}, first component is at position {self._optical_path[0]}')
+	
+	def get_component_index_before_pos(self, pos) -> int:
+		prev = None
+		for i, oc in enumerate(self):
+			if oc.position < pos:
+				prev = i
+			else:
+				break
+		if prev is not None:
+			return prev
+		raise RuntimeError(f'No optical components before position {pos}, first component is at position {self._optical_path[0]}')
 	
 	def get_components_by_class(self, aclass):
 		for oc in enumerate(self._optical_path):
