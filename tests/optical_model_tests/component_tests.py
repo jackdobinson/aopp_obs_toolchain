@@ -2,7 +2,7 @@
 import numpy as np
 
 from geometry.shape import Circle
-from optical_model.component import OpticalComponentSet, Aperture, Obstruction,Refractor,LightBeam,LightBeamSet
+from optical_model.optical_component import OpticalComponentSet, Aperture, Obstruction,Refractor,LightBeam,LightBeamSet
 
 import matplotlib.pyplot as plt
 import plot_helper
@@ -15,16 +15,19 @@ def print_iterable(iterable, prefix='[', sep='\n\t',suffix='\n]'):
 	print(suffix,end='')
 
 def test_constructing_optical_component_set():
+	"""
+	Test of creating an optical component set that can be used to get the 
+	pupil function, point spread function, an optical transfer function of the
+	optical system.
+	"""
 	
-	MUSE_NFM_delta_ang = 0.025*(1/3600)*(np.pi/180) # radians, (from 0.025 arcsec in Narrow Field Mode)
 	obj_diameter = 8 # meters
 	primary_mirror_focal_length = 120 # meters
 	primary_mirror_pos = 100 # meters
 	primary_mirror_diameter = 8
-	secondary_mirror_diameter_frac_of_beam = 2.52/18
+	secondary_mirror_diameter_frac_of_primary = 2.52/18
 	secondary_mirror_dist_from_primary =50 # meters
-	primary_mirror_half_angular_size_from_focus = np.arctan((primary_mirror_diameter/2)/primary_mirror_focal_length)
-	secondary_mirror_diameter_meters = 2*np.tan(primary_mirror_half_angular_size_from_focus*(secondary_mirror_diameter_frac_of_beam/2))*(primary_mirror_focal_length - secondary_mirror_dist_from_primary)
+	secondary_mirror_diameter_meters = primary_mirror_diameter*secondary_mirror_diameter_frac_of_primary
 	
 	ocs = OpticalComponentSet.from_components([
 		Aperture(
@@ -43,11 +46,6 @@ def test_constructing_optical_component_set():
 			Circle.of_radius(primary_mirror_diameter/2), 
 			primary_mirror_focal_length
 		),
-		#Aperture(
-		#	primary_mirror_pos + secondary_mirror_dist_from_primary, 
-		#	'secondary mirror front', 
-		#	Circle.of_radius(secondary_mirror_diameter_meters)
-		#)
 	])
 	
 	lbs = ocs.get_light_beam(LightBeam(0,0,10,0,-1))
@@ -98,7 +96,7 @@ def test_constructing_optical_component_set():
 	# TODO: Work out how the scale is changed as I alter the expansion and supersample factors
 	#       so I can get the PSF scaled correctly.
 	
-	expansion_factor = 5
+	expansion_factor = 10
 	supersample_factor = 1/expansion_factor
 	pf_scale, pf = ocs.pupil_function((501,501), expansion_factor=expansion_factor, supersample_factor=supersample_factor)#, (MUSE_NFM_delta_ang*120,MUSE_NFM_delta_ang*120))#(-2E-3,-2E-3))
 	print(f'{pf_scale=}')
