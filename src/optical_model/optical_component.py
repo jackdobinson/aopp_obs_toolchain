@@ -29,6 +29,8 @@ class OpticalComponent:
 	"""
 	position : float = 0 # in units of "optical distance of undeviated ray"
 	name : str = 'optical_component' # Name of this component
+	_is_aperture_stop : bool = dc.field(default=False, init=False, repr=False, compare=False)
+	
 	
 	def out_light_beam(self, in_light_beam : LightBeam) -> LightBeam:
 		"""
@@ -55,8 +57,19 @@ class Refractor(OpticalComponent):
 	def out_light_beam(self, in_light_beam : LightBeam) -> LightBeam:
 		# Gradient of the high and low edges of the beam are adjusted
 		# as they now focus to a new position.
-		c_a = in_light_beam.w_a(self.position)
-		c_b = in_light_beam.w_b(self.position)
+		w_a_pos = in_light_beam.w_a(self.position)
+		w_b_pos = in_light_beam.w_b(self.position)
+		
+		# Need to know if this aperture is the aperture stop or not
+		print(f'{self.shape=}')
+		if (sign(w_a_pos)*(w_b_pos)) <= (self.shape.radius):
+			self._is_aperture_stop=False
+			c_b = w_b_pos
+		else:
+			self._is_aperture_stop=True
+			c_b = sign(w_a_pos)*self.shape.radius
+			
+		c_a = min(sign(w_a_pos)*(w_a_pos), self.shape.radius)*sign(w_a_pos)
 		return LightBeam(
 			c_a, 
 			in_light_beam.m_a-c_a/self.focal_length, 
@@ -88,7 +101,14 @@ class Aperture(OpticalComponent):
 		w_b_pos = in_light_beam.w_b(self.position)
 		w_pos = w_b_pos - w_a_pos
 		
-		c_b = min(sign(w_a_pos)*(w_b_pos), self.shape.radius)*sign(w_a_pos)
+		# Need to know if this aperture is the aperture stop or not
+		if sign(w_a_pos)*(w_b_pos) <= self.shape.radius:
+			self._is_aperture_stop=False
+			c_b = w_b_pos
+		else:
+			self._is_aperture_stop=True
+			c_b = sign(w_a_pos)*self.shape.radius
+		
 		c_a = min(sign(w_a_pos)*(w_a_pos), self.shape.radius)*sign(w_a_pos)
 		w_b_pos_frac = (c_b-w_a_pos) / w_pos
 		w_a_pos_frac = (c_a-w_a_pos) / w_pos
@@ -162,6 +182,7 @@ class OpticalComponentSet:
 	as the same thing.
 	"""
 	_optical_path : list[OpticalComponent] = dc.field(default_factory=list, init=False, repr=False, compare=False) # the ordered list of components in the optical path, position is in terms of "optical distance of undeviated ray"
+	_aperture_stop_idx : int | None = None # index of the component that is the aperture stop of the system. If None, then aperture stop has not been determined
 
 	@classmethod
 	def from_components(cls, optical_components : list[OpticalComponent]):
@@ -207,8 +228,6 @@ class OpticalComponentSet:
 		
 		Returned scale is in units of length (normally meters)
 		"""
-		# NOTE: This is not correct yet. The FOV of the telescope is not the same
-		# as the distances in the pupil function calculation.
 		
 		
 		lbs = self.get_light_beam(LightBeam(0,0,np.inf,0,-1))
@@ -381,7 +400,15 @@ class OpticalComponentSet:
 		lb_list = [in_light_beam]
 		for i, oc in enumerate(self._optical_path):
 			lb_list.append(oc.out_light_beam(lb_list[i]))
+			
+			# Later aperture stops in the system replace earlier ones.
+			if oc._is_aperture_stop:
+				self._aperture_stop_idx = i
 		return LightBeamSet(lb_list)
 
+	def get_aperture_stop(self):
+		if self._aperture_stop_idx is None:
+			raise RuntimeError("Aperture stop has not been determined yet, run method 'self.get_light_beam(...)' first")
+		return self._optical_path[self._aperture_stop_idx]
 
  

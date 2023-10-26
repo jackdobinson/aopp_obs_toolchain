@@ -33,18 +33,18 @@ def test_constructing_optical_component_set():
 		Aperture(
 			0, 
 			'objective aperture', 
-			Circle.of_radius(obj_diameter/2)
+			shape=Circle.of_radius(obj_diameter/2)
 		), 
 		Obstruction(
 			primary_mirror_pos - secondary_mirror_dist_from_primary, 
 			'secondary mirror back', 
-			Circle.of_radius(secondary_mirror_diameter_meters/2)
+			shape=Circle.of_radius(secondary_mirror_diameter_meters/2)
 		), 
 		Refractor(
 			primary_mirror_pos, 
 			'primary mirror', 
-			Circle.of_radius(primary_mirror_diameter/2), 
-			primary_mirror_focal_length
+			shape=Circle.of_radius(primary_mirror_diameter/2), 
+			focal_length=primary_mirror_focal_length
 		),
 	])
 	
@@ -56,8 +56,6 @@ def test_constructing_optical_component_set():
 	print_iterable(ocs._optical_path)
 	print_iterable(lbs.light_beams)
 	
-	#o_min, o_max = lbs.get_optical_position_range()
-	#o = np.linspace(o_min, o_max+70, 200)
 	
 	o = ocs.get_evaluation_positions()
 	print(f'{o=}')
@@ -67,10 +65,6 @@ def test_constructing_optical_component_set():
 		wa_x, wb_x = lbs(x)
 		wa[i] = wa_x
 		wb[i] = wb_x
-		
-	#print(o)
-	#print(wa)
-	#print(wb)
 	
 	
 	fig, ax = plot_helper.figure_n_subplots(4)

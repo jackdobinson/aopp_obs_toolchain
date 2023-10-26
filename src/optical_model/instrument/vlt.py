@@ -4,12 +4,66 @@ Instrument model for VLT/MUSE
 import numpy as np
 
 from optical_model.instrument import OpticalInstrumentModel
+from optical_model.optical_component import OpticalComponentSet, Aperture, Obstruction,Refractor
 from geometry.shape import Circle
 
 # Idea: Maybe combine .../instrument package and adaptive_optics.py into a 
 # "optical_component" package that separates concerns better. Then, the 
 # "instrument" package would combine a set of optical components together
 # to represent a specific instrument.
+
+
+
+class VLT_MUSE(OpticalInstrumentModel):
+	def __init__(self, shape=(101,101), expansion_factor=1):
+		obj_diameter = 8 # meters
+		primary_mirror_focal_length = 120 # meters
+		primary_mirror_pos = 100 # meters
+		primary_mirror_diameter = 8
+		
+		# obstructions in terms of pupil exit diameter, For VLT secondary mirror has a diameter of 2.52/18*pupil_exit_diameter_in_angular_units. See: https://www.researchgate.net/profile/Marcel-Carbillet/publication/226258534_Apodized_Lyot_coronagraph_for_SPHEREVLT_II_Laboratory_tests_and_performance/links/5c66c092a6fdcc404eb2f530/Apodized-Lyot-coronagraph-for-SPHERE-VLT-II-Laboratory-tests-and-performance.pdf?origin=publication_detail
+		secondary_mirror_diameter_frac_of_primary = 2.52/18
+		
+		secondary_mirror_dist_from_primary =50 # meters
+		secondary_mirror_diameter_meters = primary_mirror_diameter*secondary_mirror_diameter_frac_of_primary
+		n_actuators = 24
+		
+		self.f_ao = n_actuators / (2*obj_diameter)
+		self._optical_component_set = OpticalComponentSet.from_components([
+			Aperture(
+				0, 
+				'objective aperture', 
+				shape=Circle.of_radius(obj_diameter/2)
+			), 
+			Obstruction(
+				primary_mirror_pos - secondary_mirror_dist_from_primary, 
+				'secondary mirror back', 
+				shape=Circle.of_radius(secondary_mirror_diameter_meters/2)
+			), 
+			Refractor(
+				primary_mirror_pos, 
+				'primary mirror', 
+				shape=Circle.of_radius(primary_mirror_diameter/2), 
+				focal_length=primary_mirror_focal_length
+			),
+		])
+			
+		self.pupil_function_scale, self.pupil_function = self._optical_component_set.pupil_function(
+			shape, 
+			expansion_factor=expansion_factor, 
+			supersample_factor=1/expansion_factor
+		)
+		
+		pf_fft = np.fft.fftshift(np.fft.fftn(self.pupil_function))
+		self.psf_rho_per_lambda = (np.conj(pf_fft)*pf_fft).real
+		
+		self.rho_per_lambda_axes=np.array([np.linspace(-scale/2,scale/2,s) for scale, s in zip(self.pupil_function_scale, shape)])
+		print(f'{self.rho_per_lambda_axes=}')
+		
+
+	def get_otf(self, wavelength):
+		return np.fft.fftn(np.fft.ifftshift(self.psf_rho_per_lambda)*wavelength)
+
 
 
 # TODO: Alter these classes so that they separate their concerns better. Want to
