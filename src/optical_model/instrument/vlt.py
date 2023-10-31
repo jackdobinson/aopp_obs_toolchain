@@ -15,7 +15,8 @@ from geometry.shape import Circle
 
 
 class VLT_MUSE(OpticalInstrumentModel):
-	def __init__(self, shape=(101,101), expansion_factor=1):
+	def __init__(self, shape=(101,101), expansion_factor=1, supersample_factor=None):
+		
 		obj_diameter = 8 # meters
 		primary_mirror_focal_length = 120 # meters
 		primary_mirror_pos = 100 # meters
@@ -27,6 +28,9 @@ class VLT_MUSE(OpticalInstrumentModel):
 		secondary_mirror_dist_from_primary =50 # meters
 		secondary_mirror_diameter_meters = primary_mirror_diameter*secondary_mirror_diameter_frac_of_primary
 		n_actuators = 24
+		
+		
+		if supersample_factor is None: supersample_factor = 1/expansion_factor
 		
 		self.f_ao = n_actuators / (2*obj_diameter)
 		self._optical_component_set = OpticalComponentSet.from_components([
@@ -51,17 +55,22 @@ class VLT_MUSE(OpticalInstrumentModel):
 		self.pupil_function_scale, self.pupil_function = self._optical_component_set.pupil_function(
 			shape, 
 			expansion_factor=expansion_factor, 
-			supersample_factor=1/expansion_factor
+			supersample_factor=supersample_factor
 		)
+		pf_scale_axes = np.array([np.linspace(-scale/2,scale/2,int(s*expansion_factor*supersample_factor)) for scale, s in zip(self.pupil_function_scale, shape)])
+		print(f'{pf_scale_axes=}')
+		
 		
 		pf_fft = np.fft.fftshift(np.fft.fftn(self.pupil_function))
 		self.psf_rho_per_lambda = (np.conj(pf_fft)*pf_fft).real
 		
-		self.rho_per_lambda_axes=np.array([np.linspace(-scale/2,scale/2,s) for scale, s in zip(self.pupil_function_scale, shape)])
+		self.rho_per_lambda_axes = np.array([np.fft.fftshift(np.fft.fftfreq(x.size, x[1]-x[0])) for x in pf_scale_axes])
 		print(f'{self.rho_per_lambda_axes=}')
 		
 
 	def get_otf(self, wavelength):
+		self.otf_axes = np.array([np.fft.fftshift(np.fft.fftfreq(x.size, wavelength*(x[1]-x[0]))) for x in self.rho_per_lambda_axes])
+		print(f'{self.otf_axes=}')
 		return np.fft.fftn(np.fft.ifftshift(self.psf_rho_per_lambda)*wavelength)
 
 

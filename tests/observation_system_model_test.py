@@ -22,13 +22,24 @@ def test_atmosphere_model():
 
 	ao_model = AdaptiveOpticsModel(
 		KolmogorovTurbulence,
-		VLT_MUSE
+		VLT_MUSE,
+		shape=(101,101),
+		supersample_factor=11
 	)
 
-	ao_otf_full = ao_model.get_otf_full(5E-7, 0.1)
+
+	moffat_params = dict(alpha=1, beta=2, A=1, C=1)
+	ao_otf_full = ao_model.get_otf_full(5E-7, 0.1, **moffat_params)
+
+	print(f'{ao_otf_full=}')
+
+	ao_psf = np.fft.fftshift(np.fft.fftn(np.fft.ifftshift(ao_otf_full)))
 
 	plt.figure()
-	plt.plot(ao_otf_full)
+	plt.imshow(np.abs(ao_otf_full))
+
+	plt.figure()
+	plt.imshow(np.abs(ao_psf))
 
 	plt.show()
 

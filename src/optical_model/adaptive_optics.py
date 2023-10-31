@@ -17,6 +17,13 @@ def moffat_function(x, alpha, beta, A):
 	return(A*((1+np.sum((x.T/alpha).T**2, axis=0))**(-beta)))
 
 
+# NOTE:
+# Want to turn this into a class where I give it the models for the instrument,
+# atmosphere, and adaptive optics. And it returns something I can call in an
+# optimisation routine. May need to bind model parameters to positional arguments
+# somehow, possibly by using a lambda or one of the routines from the 
+# `functools` module 
+
 # TODO: 
 # 1) do a better job of separating concerns in this class.
 # 2) Write a test for this class, complete with plots so I can tell if something went wrong.
@@ -39,7 +46,7 @@ class AdaptiveOpticsModel:
 		self.supersample_factor = supersample_factor
 		self.fov_shape = tuple(_s*self.supersample_factor for _s in self.shape)
 		
-		self.instrument = self.instrument_model_cls(self.shape, self.supersample_factor)
+		self.instrument = self.instrument_model_cls(self.shape, expansion_factor=self.supersample_factor, supersample_factor=1)
 		self.f_ao = self.instrument.f_ao
 		return
 
@@ -54,11 +61,14 @@ class AdaptiveOpticsModel:
 		Uses a moffat function to approximate the effect of AO on the
 		low-frequency part of the PSD
 		"""
+		assert beta != 1, "beta cannot be equal to one in this model"
+		
 		if type(alpha) is float:
 			alpha = np.ndarray([alpha]*2)
 		part1 = (beta - 1)/(np.pi*np.prod(alpha))
 		part2 = moffat_function(self.f, alpha, beta, A)
 		part3 = (1-(1+np.prod(self.f_ao/alpha))**(1-beta))**(-1)
+		print(f'{part1=} {part2=} {part3=}')
 		self.psd = part1*part2*part3 + C
 		return(self.psd)
 
