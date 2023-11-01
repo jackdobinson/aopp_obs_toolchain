@@ -40,7 +40,7 @@ def log_excepthook(type, value, traceback):
 sys.excepthook = log_excepthook
 
 
-def get_logger_at_level(name : str | types.ModuleType, level : logging.NOTSET) -> logging.Logger:
+def get_logger_at_level(name : str | types.ModuleType, level : str|int = logging.NOTSET) -> logging.Logger:
 	""":
 	Return the `name`d logger that reports `level` logs
 	"""
@@ -51,7 +51,7 @@ def get_logger_at_level(name : str | types.ModuleType, level : logging.NOTSET) -
 	_lgr.setLevel(level)
 	return _lgr
 
-def set_logger_at_level(name : str | types.ModuleType, level : logging.NOTSET) -> None:
+def set_logger_at_level(name : str | types.ModuleType, level : str|int = logging.NOTSET) -> None:
 	"""
 	Set the logger with `name` to report `level` logs
 	"""
