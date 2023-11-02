@@ -80,6 +80,7 @@ class BaseModel:
 	# Class level attributes
 	required_parameters : tuple[str] = tuple() # parameters that will be available in `self.run`, via `self.p`
 	required_models : tuple[str] = tuple() # model results that will be available in `self.run` via `self.m`
+	provides_results : tuple[str] = tuple() # this model provides these results in an object returned by the `self.run()` method
 	
 	
 	def __init__(self, params : dict[str, Parameter], sub_models : dict = {}) -> None:

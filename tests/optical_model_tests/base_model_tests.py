@@ -1,5 +1,7 @@
 
 
+from types import SimpleNamespace
+
 import numpy as np
 
 from optical_model.base import BaseModel, Parameter
@@ -8,24 +10,25 @@ from optical_model.base import BaseModel, Parameter
 
 class EquilateralTriangleModel(BaseModel):
 		required_parameters = ('center', 'size')
+		provides_results = ('vertices',)
 		offsets =  np.array([[0,2/np.sqrt(3)],[1,-1/np.sqrt(3)],[-1,-1/np.sqrt(3)]]) 
 
 		def run(self):
-			points = self.offsets*self.p.size + self.p.center
-			return points
+			vertices = self.offsets*self.p.size + self.p.center
+			return SimpleNamespace(vertices = vertices)
 
 
-class RotatedPointsModel(BaseModel):
+class RotatedShapeModel(BaseModel):
 		required_parameters = ('angle',)
-		required_models = ('points',)
+		required_models = ('shape',)
 		
 		def run(self):
 			rot_matrix = np.array([
 				[np.cos(self.p.angle), - np.sin(self.p.angle)],
 				[np.sin(self.p.angle), np.cos(self.p.angle)]
 			])
-			points = (rot_matrix @ self.m.points.T).T
-			return points
+			vertices = (rot_matrix @ self.m.shape.vertices.T).T
+			return SimpleNamespace(vertices = vertices)
 
 
 
@@ -52,19 +55,19 @@ def test_simple_model():
 		'size': Parameter(1, 'scale of the triangle')
 	})
 	
-	points_1 = model()
+	points_1 = model().vertices
 	e1 = np.array([[1, 1+2/np.sqrt(3)],[1+1, 1-1/np.sqrt(3)], [1-1, 1-1/np.sqrt(3)]])
 	print(f'{points_1=}')
 	
 	assert np.all(np.abs(points_1 - e1) < 1E-6), "Expect triangle model to line up with triangle points"
 	
-	points_2 = model(size=Parameter(7,'scale of the triangle'))
+	points_2 = model(size=Parameter(7,'scale of the triangle')).vertices
 	e2 = np.array([[1, 1+7*2/np.sqrt(3)],[1+7*1, 1-7*1/np.sqrt(3)], [1-7*1, 1-7*1/np.sqrt(3)]])
 	print(f'{points_2=}')
 	
 	assert np.all(np.abs(points_2 - e2) < 1E-6), "Expect triangle model to line up with triangle points"
 	
-	points_3 = model(np.array([0,0]), 1)
+	points_3 = model(np.array([0,0]), 1).vertices
 	e3 = np.array([[0, 0+1*2/np.sqrt(3)],[0+1*1, 0-1*1/np.sqrt(3)], [0-1*1, 0-1*1/np.sqrt(3)]])
 	print(f'{points_3=}')
 	
@@ -81,15 +84,15 @@ def test_model_composition():
 		}
 	)
 	
-	rot_model = RotatedPointsModel(
+	rot_model = RotatedShapeModel(
 		{	'angle' : Parameter(np.pi, 'angle to rotate points by'),
 		},
-		{	'points' : eq_tri_model,
+		{	'shape' : eq_tri_model,
 		}
 	)
 		
 	
-	p1 = rot_model()
+	p1 = rot_model().vertices
 	e1 = np.array([[-1, -(1+2/np.sqrt(3))],[-(1+1), -(1-1/np.sqrt(3))], [-(1-1), -(1-1/np.sqrt(3))]])
 	print(f'{p1=}')
 	
