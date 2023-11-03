@@ -4,7 +4,7 @@ into a set of optical components that describe an optical system.
 """
 
 import dataclasses as dc
-from typing import Literal
+from typing import Literal, Any
 
 import numpy as np
 
@@ -183,6 +183,8 @@ class OpticalComponentSet:
 	"""
 	_optical_path : list[OpticalComponent] = dc.field(default_factory=list, init=False, repr=False, compare=False) # the ordered list of components in the optical path, position is in terms of "optical distance of undeviated ray"
 	_aperture_stop_idx : int | None = None # index of the component that is the aperture stop of the system. If None, then aperture stop has not been determined
+	
+	_lbs : Any = dc.field(default=None, init=False, repr=False, compare=False)
 
 	@classmethod
 	def from_components(cls, optical_components : list[OpticalComponent]):
@@ -217,6 +219,19 @@ class OpticalComponentSet:
 		return x
 			
 	
+	def calc_full_light_beam(self):
+		if self._lbs is None:
+			self._lbs = self.get_light_beam(LightBeam(0,0,np.inf,0,-1))
+		
+	
+	
+	def get_pupil_function_scale(self, expansion_factor):
+		self.calc_full_light_beam()
+		lb = self._lbs[-1]
+		w_max = max(abs(lb.c_a),abs(lb.c_b)) # this is a radius
+		scale = ((2*w_max)*expansion_factor, (2*w_max)*expansion_factor) # need a diameter
+		return scale
+	
 	def pupil_function(self, 
 			shape=(101,101), 
 			scale=None,
@@ -230,26 +245,28 @@ class OpticalComponentSet:
 		"""
 		
 		
-		lbs = self.get_light_beam(LightBeam(0,0,np.inf,0,-1))
+		self.calc_full_light_beam()
 		# get the final light beam
-		lb = lbs[-1]
+		lb = self._lbs[-1]
 		print(f'{lb=}')
 		pf_pos = lb.o
 		if scale is None:
-			# find focal length of that beam
-			#focal_length = lb.get_focal_length()
-			# find maximal width of beam
-			w_max = max(abs(lb.c_a),abs(lb.c_b)) # this is a radius
-			scale = ((2*w_max)*expansion_factor, (2*w_max)*expansion_factor) # need a diameter
+			scale = self.get_pupil_function_scale(expansion_factor)
+		else:
+			scale = tuple(s*expansion_factor for s in scale)
 		print(f'{scale=}')
 		
 		# assume cylindrically symmetric
-		center_offsets = nph.array.offsets_from_point(tuple(int(s*expansion_factor*supersample_factor) for s in shape), None, np.array(scale,dtype=float))
+		center_offsets = nph.array.offsets_from_point(
+			tuple(int(s*expansion_factor*supersample_factor) for s in shape),
+			None, 
+			np.array(scale,dtype=float)
+		)
 		print(f'{center_offsets}')
 		pf_rad = np.sqrt(np.sum(center_offsets**2, axis=0))
 		
 		
-		lb = lbs.get_light_beam_at_position(pf_pos)	
+		lb = self._lbs.get_light_beam_at_position(pf_pos)	
 		w_a, w_b = lb(pf_pos) if lb is not None else (np.nan, np.nan)
 		
 		print(f'{w_a=} {w_b=}')
@@ -258,7 +275,7 @@ class OpticalComponentSet:
 		pf_val[pf_rad < (w_a)] = 0
 		print(pf_rad)
 		print(pf_val)
-		return scale, pf_val
+		return pf_val
 	
 	def psf(self, 
 			shape=(101,101), 
