@@ -1,7 +1,7 @@
 """
 Models the observation system in as much detail required to get a PSF.
 """
-
+import itertools as it
 import numpy as np
 
 from optical_model.optical_component import OpticalComponentSet
@@ -34,14 +34,41 @@ def pupil_function_axes_from_observation_params(
 
 
 
-class PupilFunction:
+class GeoArray:
+	"""
+	A Geometric Array. An array of data, along with coordinate axes that 
+	describe the position of the data.
+	"""
 	def __init__(self,
 			data : np.ndarray,
-			axes : np.ndarray
+			axes : np.ndarray | None,
 		):
-		self.data = data # transparancy of the pupil
-		self.axes = axes # physical size of the pupil (normally the same as objective lens)
+		self.data = data
+		if axes is None:
+			self.axes = np.array([np.linspace(-s/2, s/2, s) for s in self.data.shape()])
+		else:
+			self.axes = axes
+		
+		print(f'{self.data.ndim=} {self.data.shape=} {self.axes.ndim=} {self.axes.shape=}')
 	
+	def __array__(self):
+		return self.data
+	
+	def fft(self):
+		return GeoArray(np.fft.fftshift(np.fft.fftn(np.fft.ifftshift(self.data))), np.array([np.fft.fftshift(np.fft.fftfreq(x.size, x[1]-x[0])) for x in self.axes]))
+	
+	def ifft(self):
+		return GeoArray(
+			np.fft.fftshift(np.fft.ifftn(np.fft.ifftshift(self.data))),
+			np.array([np.fft.fftshift(np.fft.fftfreq(x.size, x[1]-x[0])) for x in self.axes])
+		)
+	
+	@property
+	def extent(self):
+		return tuple(it.chain.from_iterable((x[0],x[-1]) for x in self.axes))
+
+
+class PupilFunction(GeoArray):
 	@classmethod
 	def from_optical_component_set(cls,
 			ocs : OpticalComponentSet,
@@ -59,26 +86,18 @@ class PupilFunction:
 			)
 		)
 
-class PointSpreadFunction:
+class PointSpreadFunction(GeoArray):
 	"""
 	self.axes is in rho/wavelength
 	"""
-	
-	def __init__(self,
-			data,
-			axes
-		):
-		self.data = data/np.nansum(data) # response of system to a point source
-		self.axes = axes # angle from center of field divided by wavelength of light (rho/wavelength)
-	
 	@classmethod
 	def from_pupil_function(cls,
 			  pupil_function : PupilFunction
 		):
-		pf_fft = np.fft.fftshift(np.fft.fftn(pupil_function.data))
+		pf_fft = pupil_function.fft()
 		return cls(
-			np.abs(np.conj(pf_fft)*pf_fft),
-			np.array([np.fft.fftshift(np.fft.fftfreq(x.size, x[1]-x[0])) for x in pupil_function.axes])
+			np.abs(np.conj(pf_fft.data)*pf_fft.data),
+			pf_fft.axes
 		)
 
 	@classmethod
@@ -86,37 +105,29 @@ class PointSpreadFunction:
 			optical_transfer_function,
 			wavelength
 		):
+	
+		otf_ifft = optical_transfer_function.ifft()
+		
 		return cls(
-			np.fft.fftshift(np.fft.ifftn(np.fft.ifftshift(optical_transfer_function.data))),
-			np.array([np.fft.fftshift(np.fft.fftfreq(x.size, (x[1]-x[0])))/wavelength for x in optical_transfer_function.axes])
+			otf_ifft.data,
+			otf_ifft.axes#*wavelength
 		)
 		
 
-class OpticalTransferFunction:
-	def __init__(self,
-			data,
-			axes
-		):
-		self.data = data # frequency response of system
-		self.axes = axes # units of spatial frequency (f) as wavelength has been removed at this point
-	
+class OpticalTransferFunction(GeoArray):
 	@classmethod
 	def from_psf(cls, point_spread_function : PointSpreadFunction, wavelength : float):
 		"""
 		Assumes that point_spread_function.axes is in rho/wavelength
 		"""
+		psf_fft = point_spread_function.fft()
 		return cls(
-			np.fft.fftshift(np.fft.fftn(np.fft.ifftshift(point_spread_function.data))),
-			np.array([np.fft.fftshift(np.fft.fftfreq(x.size, (x[1]-x[0])*wavelength)) for x in point_spread_function.axes])
+			psf_fft.data,
+			psf_fft.axes#/wavelength
 		)
 
-class PhasePowerSpectralDensity:
-	def __init__(self,
-			data,
-			axes
-		):
-		self.data = data # power per frequency component
-		self.axes = axes # Units of frequency (f)
+class PhasePowerSpectralDensity(GeoArray):
+	pass
 	
 
 
@@ -128,6 +139,11 @@ if __name__=='__main__':
 	from geometry.shape import Circle
 	from optical_model.optical_component import OpticalComponentSet, Aperture, Obstruction,Refractor,LightBeam,LightBeamSet
 	from optical_model.atmosphere import KolmogorovTurbulence2
+	
+	
+	
+	
+	
 	
 	
 	obj_diameter = 8 # meters
@@ -166,21 +182,47 @@ if __name__=='__main__':
 	print(f'{pf_scale=}')
 	
 	
+	
+	
 	# diffration limited telescope optics
 	pupil_function = PupilFunction.from_optical_component_set(ocs, obs_shape, pf_scale, expansion_factor=7, supersample_factor=1)
 	print(pupil_function.data)
 	print(f'{pupil_function.axes.shape=}')
-	plt.imshow(pupil_function.data)
+	plt.title('pupil_function')
+	plt.imshow(pupil_function, extent=pupil_function.extent)
 	plt.show()
+	
+	
+	"""
+	geo_array = GeoArray(pupil_function.data, pupil_function.axes)
+	print(f'{geo_array.axes}')
+	print(f'{geo_array.extent=}')
+	plt.title('geo_array')
+	plt.imshow(geo_array, extent=geo_array.extent)
+	plt.show()
+	
+	print(f'{geo_array.fft().axes}')
+	plt.title('geo_array.fft()')
+	plt.imshow(np.abs(geo_array.fft()), extent=geo_array.fft().extent)
+	plt.show()
+	
+	print(f'{geo_array.fft().ifft().axes}')
+	plt.title('geo_array.fft().ifft()')
+	plt.imshow(np.abs(geo_array.fft().ifft()), extent=geo_array.fft().ifft().extent)
+	plt.show()
+	"""
+	
 	
 	psf = PointSpreadFunction.from_pupil_function(pupil_function)
 	print(f'{psf.axes.shape}')
-	plt.imshow(psf.data)
+	plt.title('psf')
+	plt.imshow(psf, extent=psf.extent)
 	plt.show()
 	
 	otf = OpticalTransferFunction.from_psf(psf, obs_wavelength)
 	print(f'{otf.axes.shape=} {otf.axes=}')
-	plt.imshow(otf.data.real)
+	plt.title('otf')
+	plt.imshow(np.abs(otf), extent=otf.extent)
 	plt.show()
 	
 	
@@ -194,9 +236,18 @@ if __name__=='__main__':
 		psd = factor*(r0)**(r0_pow)*(f_mag)**(f_pow)
 		return PhasePowerSpectralDensity(psd, f_axes)
 	
-	atm_psd = atmosphere_psd(0.1, 2, otf.axes)
-	plt.imshow(atm_psd.data)
+	atm_psd = atmosphere_psd(
+		0.17, #1, 
+		2, 
+		otf.axes
+	)
+	plt.title('atm_psd')
+	plt.imshow(np.log(atm_psd), extent=atm_psd.extent)
 	plt.show()
+	
+	plt.plot(atm_psd.axes[1], np.log(atm_psd.data[atm_psd.data.shape[0]//2, :]))
+	plt.show()
+	
 	
 	
 	# adaptive optics corrections
@@ -233,11 +284,98 @@ if __name__=='__main__':
 	ao_model_psd = ao_phase_psd_model(
 		otf.axes,
 		f_ao,
-		np.array([1,1]),
-		2,
-		1,
-		1
+		np.array([5E-2,5E-2]),
+		1.6,
+		2E-3,
+		0.05
 	)
 	print(f'{f_ao=} {ao_model_psd.axes=}')
-	plt.imshow(ao_model_psd.data)
+	plt.title('ao_model_psd')
+	plt.imshow(np.log(ao_model_psd), extent=ao_model_psd.extent)
+	plt.show()
+	
+	plt.plot(ao_model_psd.axes[1], np.log(ao_model_psd.data[ao_model_psd.data.shape[0]//2, :]))
+	ax = plt.gca()
+	ylim = ax.get_ylim()
+	plt.plot(atm_psd.axes[1], np.log(atm_psd.data[atm_psd.data.shape[0]//2, :]))
+	ax.set_ylim(*ylim)
+	plt.show()
+	
+	def ao_correction(
+			f_axes,
+			f_ao,
+			atm_psd,
+			ao_model_psd
+		):
+	
+		f_mesh = axes_to_mesh(f_axes)
+		f_mag = np.sqrt(np.sum(f_mesh**2, axis=0))
+		f_ao_correct = f_mag <= f_ao
+		ao_corrected_psd = GeoArray(atm_psd.data, atm_psd.axes)
+		ao_corrected_psd.data[f_ao_correct] = ao_model_psd.data[f_ao_correct]
+		return ao_corrected_psd
+		
+	ao_corrected_psd = ao_correction(otf.axes, f_ao, atm_psd, ao_model_psd)
+	plt.title('ao_corrected_psd')
+	plt.imshow(np.log(ao_corrected_psd), extent=ao_corrected_psd.extent)
+	plt.show()
+	
+	
+	plt.plot(ao_corrected_psd.axes[1], np.log(ao_corrected_psd.data[ao_corrected_psd.data.shape[0]//2, :]))
+	plt.show()
+	
+	
+	"""
+	self.get_phase_psd(r0, turbulence_ndim, **kwargs)
+		self.phase_autocorr = np.fft.fftshift(np.fft.ifftn(np.fft.ifftshift(self.psd)))
+
+		if mode == 'classic':
+			center_point = tuple(_s//2 for _s in self.phase_autocorr.shape)
+			self.otf_ao = np.exp(self.phase_autocorr - self.phase_autocorr[center_point])
+		elif mode ==  'adjust':
+			self.otf_ao = self.phase_autocorr
+		return(self.otf_ao)
+	"""
+	
+	phase_autocorr = ao_corrected_psd.ifft()
+	
+	mode = "adjust"
+	match mode:
+		case "classic":
+			center_point = tuple(_s//2 for _s in phase_autocorr.data.shape)
+			otf_atm_ao_corrected = GeoArray(np.exp(phase_autocorr.data - phase_autocorr.data[center_point]), phase_autocorr.axes)
+		case "adjust":
+			otf_atm_ao_corrected = GeoArray(np.abs(phase_autocorr.data), phase_autocorr.axes)
+	
+	plt.title('otf_atm_ao_corrected')
+	plt.imshow(np.log(np.abs(otf_atm_ao_corrected)), extent=otf_atm_ao_corrected.extent)
+	plt.show()
+	
+	
+	plt.plot(otf_atm_ao_corrected.axes[1], np.log(np.abs(otf_atm_ao_corrected.data)[otf_atm_ao_corrected.data.shape[0]//2, :]))
+	plt.show()
+	
+	
+	
+	otf_full = GeoArray(otf_atm_ao_corrected.data * otf.data, otf.axes)
+	
+	plt.title('otf_full')
+	plt.imshow(np.log(np.abs(otf_full)), extent=otf_full.extent)
+	plt.show()
+	
+	plt.plot(otf_full.axes[1], np.log(np.abs(otf_full.data)[otf_full.data.shape[0]//2, :]))
+	plt.show()
+	
+	
+	
+	
+	psf_full = otf_full.ifft() # in units of rho/lambda
+	
+	plt.title('psf_full')
+	#plt.imshow(np.abs(psf_full), extent=psf_full.extent)
+	plt.imshow(np.log(np.abs(psf_full)), extent=psf_full.extent)
+	plt.show()
+	
+	#plt.plot(psf_full.axes[1], np.abs(psf_full.data)[psf_full.data.shape[0]//2, :])
+	plt.plot(psf_full.axes[1], np.log(np.abs(psf_full.data)[psf_full.data.shape[0]//2, :]))
 	plt.show()
