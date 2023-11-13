@@ -2,10 +2,18 @@
 Models the observation system in as much detail required to get a PSF.
 """
 import itertools as it
+from typing import Callable
+
 import numpy as np
+import scipy as sp
+import scipy.ndimage
+import matplotlib
+import matplotlib.figure, matplotlib.axes
 
 from optical_model.optical_component import OpticalComponentSet
+import cfg.logs
 
+_lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 def axes_to_scale(axes : np.ndarray) -> tuple[float,...]:
 	return tuple(x[-1]-x[0] for x in axes)
@@ -66,6 +74,49 @@ class GeoArray:
 	@property
 	def extent(self):
 		return tuple(it.chain.from_iterable((x[0],x[-1]) for x in self.axes))
+	
+	def plot(self,
+				fig : matplotlib.figure.Figure, 
+				data_mutator : Callable[[np.ndarray], np.ndarray] = lambda x: x, 
+				axes_mutator : Callable[[np.ndarray], np.ndarray] = lambda x: x,
+				data_units : str | None = None,
+				axes_units : tuple[str,...] | None = None,
+			) -> np.ndarray[matplotlib.axes.Axes]:
+		"""
+		Plot the array as an image. Only works for 2d arrays at present. Will call
+		a mutator on the data before plotting. Returns a numpy array of the axes
+		created for the plot
+		"""
+		if self.data.ndim != 2:
+			raise NotImplementedError("Geometric array plotting only works for 2d arrays at present.")
+		
+		a = fig.subplots(2,2,squeeze=True).flatten()
+		a[-1].remove()
+		
+		center_idx = tuple(s//2 for s in self.data.shape)
+		
+		m_data = data_mutator(self.data)
+		m_axes = axes_mutator(self.axes)
+		
+		a[0].set_title('array data')
+		a[0].imshow(m_data, extent=self.extent)
+		a[0].set_xlabel(axes_units[0])
+		a[0].set_ylabel(axes_units[1])
+		
+		a[1].set_title('x=constant centerline')
+		a[1].plot(m_data[:, center_idx[1]], m_axes[1])
+		a[1].set_xlabel(data_units)
+		a[1].set_ylabel(axes_units[1])
+		
+		a[2].set_title('y=constant centerline')
+		a[2].plot(m_axes[0], m_data[center_idx[0], :])
+		a[2].set_xlabel(axes_units[0])
+		a[2].set_ylabel(data_units)
+		
+		return a
+		
+		
+		
 
 
 class PupilFunction(GeoArray):
@@ -78,11 +129,13 @@ class PupilFunction(GeoArray):
 			supersample_factor = 1/7
 		):
 		
-		if scale is None: scale = ocs.get_pupil_function_scale(expansion_factor)
+		if scale is None: 
+			scale = ocs.get_pupil_function_scale(expansion_factor)
+		_lgr.debug(f'{scale=}')
 		return cls(
 			ocs.pupil_function(shape, scale, expansion_factor, supersample_factor),
 			np.array(
-				[np.linspace(-scale/2,scale/2,s*expansion_factor*supersample_factor) for scale, s in zip(scale, shape)]
+				[np.linspace(-scale*expansion_factor/2,scale*expansion_factor/2,s*expansion_factor*supersample_factor) for scale, s in zip(scale, shape)]
 			)
 		)
 
@@ -182,51 +235,50 @@ if __name__=='__main__':
 	print(f'{pf_scale=}')
 	
 	
+	# These are not propagated through the calcuations correctly at the moment
+	expansion_factor = 3
+	supersample_factor=3
 	
 	
 	# diffration limited telescope optics
-	pupil_function = PupilFunction.from_optical_component_set(ocs, obs_shape, pf_scale, expansion_factor=7, supersample_factor=1)
+	pupil_function = PupilFunction.from_optical_component_set(
+		ocs, 
+		obs_shape, 
+		pf_scale, 
+		expansion_factor=expansion_factor, 
+		supersample_factor=supersample_factor
+	)
 	print(pupil_function.data)
 	print(f'{pupil_function.axes.shape=}')
-	plt.title('pupil_function')
-	plt.imshow(pupil_function, extent=pupil_function.extent)
+	f = plt.gcf()
+	f.suptitle('pupil_function')
+	pupil_function.plot(f, data_mutator=lambda x : np.abs(x), data_units='arbitrary units', axes_units=('meters', 'meters'))
 	plt.show()
 	
 	
-	"""
-	geo_array = GeoArray(pupil_function.data, pupil_function.axes)
-	print(f'{geo_array.axes}')
-	print(f'{geo_array.extent=}')
-	plt.title('geo_array')
-	plt.imshow(geo_array, extent=geo_array.extent)
-	plt.show()
 	
-	print(f'{geo_array.fft().axes}')
-	plt.title('geo_array.fft()')
-	plt.imshow(np.abs(geo_array.fft()), extent=geo_array.fft().extent)
-	plt.show()
-	
-	print(f'{geo_array.fft().ifft().axes}')
-	plt.title('geo_array.fft().ifft()')
-	plt.imshow(np.abs(geo_array.fft().ifft()), extent=geo_array.fft().ifft().extent)
-	plt.show()
-	"""
 	
 	
 	psf = PointSpreadFunction.from_pupil_function(pupil_function)
 	print(f'{psf.axes.shape}')
-	plt.title('psf')
-	plt.imshow(psf, extent=psf.extent)
+	plt.clf()
+	f = plt.gcf()
+	f.suptitle('psf')
+	psf.plot(f, data_mutator=lambda x : np.abs(x), data_units='arbitrary units', axes_units=('rho/wavelength', 'rho/wavelength'))
 	plt.show()
 	
 	otf = OpticalTransferFunction.from_psf(psf, obs_wavelength)
 	print(f'{otf.axes.shape=} {otf.axes=}')
-	plt.title('otf')
-	plt.imshow(np.abs(otf), extent=otf.extent)
+	
+	plt.clf()
+	f = plt.gcf()
+	f.suptitle('otf')
+	otf.plot(f, data_mutator=lambda x : np.abs(x), data_units='arbitrary units', axes_units=('wavelength/rho', 'wavelength/rho'))
 	plt.show()
 	
 	
-	# Atmospheric blurring
+	
+	# Atmospheric blurring of phase power spectral density
 	def atmosphere_psd(r0, turbulence_ndim, f_axes):
 		f_mesh = axes_to_mesh(f_axes)
 		f_mag = np.sqrt(np.sum(f_mesh**2, axis=0))
@@ -241,16 +293,16 @@ if __name__=='__main__':
 		2, 
 		otf.axes
 	)
-	plt.title('atm_psd')
-	plt.imshow(np.log(atm_psd), extent=atm_psd.extent)
+	
+	plt.clf()
+	f = plt.gcf()
+	f.suptitle('atm_psd')
+	atm_psd.plot(f, data_mutator=lambda x : np.log(x), data_units='arbitrary units', axes_units=('wavelength/rho', 'wavelength/rho'))
 	plt.show()
 	
-	plt.plot(atm_psd.axes[1], np.log(atm_psd.data[atm_psd.data.shape[0]//2, :]))
-	plt.show()
 	
 	
-	
-	# adaptive optics corrections
+	# adaptive optics corrections to atmosphere phase power spectral density
 	n_actuators = 24
 	f_ao = n_actuators / (2*obj_diameter)
 	
@@ -290,17 +342,14 @@ if __name__=='__main__':
 		0.05
 	)
 	print(f'{f_ao=} {ao_model_psd.axes=}')
-	plt.title('ao_model_psd')
-	plt.imshow(np.log(ao_model_psd), extent=ao_model_psd.extent)
+	
+	plt.clf()
+	f = plt.gcf()
+	f.suptitle('ao_model_psd')
+	ao_model_psd.plot(f, data_mutator=lambda x : np.log(x), data_units='arbitrary units', axes_units=('wavelength/rho', 'wavelength/rho'))
 	plt.show()
 	
-	plt.plot(ao_model_psd.axes[1], np.log(ao_model_psd.data[ao_model_psd.data.shape[0]//2, :]))
-	ax = plt.gca()
-	ylim = ax.get_ylim()
-	plt.plot(atm_psd.axes[1], np.log(atm_psd.data[atm_psd.data.shape[0]//2, :]))
-	ax.set_ylim(*ylim)
-	plt.show()
-	
+	# Model adaptive optics correction to phase power spectral density
 	def ao_correction(
 			f_axes,
 			f_ao,
@@ -314,56 +363,62 @@ if __name__=='__main__':
 		ao_corrected_psd = GeoArray(atm_psd.data, atm_psd.axes)
 		ao_corrected_psd.data[f_ao_correct] = ao_model_psd.data[f_ao_correct]
 		return ao_corrected_psd
-		
+	
 	ao_corrected_psd = ao_correction(otf.axes, f_ao, atm_psd, ao_model_psd)
-	plt.title('ao_corrected_psd')
-	plt.imshow(np.log(ao_corrected_psd), extent=ao_corrected_psd.extent)
+	
+	plt.clf()
+	f = plt.gcf()
+	f.suptitle('ao_corrected_psd')
+	ao_corrected_psd.plot(f, data_mutator=lambda x : np.log(x), data_units='arbitrary units', axes_units=('wavelength/rho', 'wavelength/rho'))
 	plt.show()
 	
-	
-	plt.plot(ao_corrected_psd.axes[1], np.log(ao_corrected_psd.data[ao_corrected_psd.data.shape[0]//2, :]))
-	plt.show()
-	
-	
-	"""
-	self.get_phase_psd(r0, turbulence_ndim, **kwargs)
-		self.phase_autocorr = np.fft.fftshift(np.fft.ifftn(np.fft.ifftshift(self.psd)))
-
-		if mode == 'classic':
-			center_point = tuple(_s//2 for _s in self.phase_autocorr.shape)
-			self.otf_ao = np.exp(self.phase_autocorr - self.phase_autocorr[center_point])
-		elif mode ==  'adjust':
-			self.otf_ao = self.phase_autocorr
-		return(self.otf_ao)
-	"""
-	
+	# The axes units are a bit funky here. I am not sure I have got them correct.
 	phase_autocorr = ao_corrected_psd.ifft()
+	#phase_autocorr.data = np.abs(phase_autocorr.data)
 	
-	mode = "adjust"
+	mode = "classic"
 	match mode:
 		case "classic":
 			center_point = tuple(_s//2 for _s in phase_autocorr.data.shape)
 			otf_atm_ao_corrected = GeoArray(np.exp(phase_autocorr.data - phase_autocorr.data[center_point]), phase_autocorr.axes)
+
+			print(f'{otf_atm_ao_corrected.data[center_point]=}')
+			
+			"""
+			ndim = otf_atm_ao_corrected.data.ndim
+			counter = 0
+			accumulator = 0
+			for i in range(ndim):
+				for j in (-1,1):
+					delta = tuple(0 if i!=k else j for k in range(ndim))
+					accumulator += otf_atm_ao_corrected.data[tuple(c+d for c,d in zip(center_point, delta))]
+					counter += 1
+			print(f'{ndim=} {counter=} {accumulator=}')
+			otf_atm_ao_corrected.data[center_point] = accumulator / counter
+			"""
+			
+			#otf_atm_ao_corrected.data = sp.ndimage.gaussian_filter(otf_atm_ao_corrected.data, sigma=1)
+			#otf_atm_ao_corrected.data = sp.ndimage.minimum_filter(np.abs(otf_atm_ao_corrected.data), size=3)
+			#otf_atm_ao_corrected.data[center_point] = 0
+			print(f'{otf_atm_ao_corrected.data[center_point]=}')
 		case "adjust":
 			otf_atm_ao_corrected = GeoArray(np.abs(phase_autocorr.data), phase_autocorr.axes)
 	
-	plt.title('otf_atm_ao_corrected')
-	plt.imshow(np.log(np.abs(otf_atm_ao_corrected)), extent=otf_atm_ao_corrected.extent)
+	plt.clf()
+	f = plt.gcf()
+	f.suptitle('otf_atm_ao_corrected')
+	otf_atm_ao_corrected.plot(f, data_mutator=lambda x : np.log(np.abs(x)), data_units='arbitrary units', axes_units=('wavelength/rho', 'wavelength/rho'))
 	plt.show()
 	
 	
-	plt.plot(otf_atm_ao_corrected.axes[1], np.log(np.abs(otf_atm_ao_corrected.data)[otf_atm_ao_corrected.data.shape[0]//2, :]))
-	plt.show()
 	
-	
-	
+	# Combination of diffraction-limited optics, atmospheric effects, AO correction to atmospheric effects
 	otf_full = GeoArray(otf_atm_ao_corrected.data * otf.data, otf.axes)
 	
-	plt.title('otf_full')
-	plt.imshow(np.log(np.abs(otf_full)), extent=otf_full.extent)
-	plt.show()
-	
-	plt.plot(otf_full.axes[1], np.log(np.abs(otf_full.data)[otf_full.data.shape[0]//2, :]))
+	plt.clf()
+	f = plt.gcf()
+	f.suptitle('otf_full')
+	otf_full.plot(f,data_mutator=lambda x : np.log(np.abs(x)), data_units='arbitrary units', axes_units=('wavelength/rho', 'wavelength/rho'))
 	plt.show()
 	
 	
@@ -371,11 +426,34 @@ if __name__=='__main__':
 	
 	psf_full = otf_full.ifft() # in units of rho/lambda
 	
-	plt.title('psf_full')
-	#plt.imshow(np.abs(psf_full), extent=psf_full.extent)
-	plt.imshow(np.log(np.abs(psf_full)), extent=psf_full.extent)
+	plt.clf()
+	f = plt.gcf()
+	f.suptitle('psf_full')
+	psf_full.plot(f, data_mutator=lambda x : np.log(np.abs(x)), data_units='arbitrary units', axes_units=('rho/wavelength', 'rho/wavelength'))
 	plt.show()
 	
-	#plt.plot(psf_full.axes[1], np.abs(psf_full.data)[psf_full.data.shape[0]//2, :])
-	plt.plot(psf_full.axes[1], np.log(np.abs(psf_full.data)[psf_full.data.shape[0]//2, :]))
+	
+	#psf_full_filtered = GeoArray(sp.ndimage.gaussian_filter(np.abs(psf_full.data), sigma=9), psf_full.axes)
+	psf_full_min_filtered = GeoArray(sp.ndimage.minimum_filter(np.abs(psf_full.data), size=9), psf_full.axes)
+	
+	plt.clf()
+	f = plt.gcf()
+	f.suptitle('psf_full_min_filtered')
+	psf_full_min_filtered.plot(f, data_mutator=lambda x : np.log(np.abs(x)), data_units='arbitrary units', axes_units=('rho/wavelength', 'rho/wavelength'))
+	plt.show()
+	
+	psf_full_max_filtered = GeoArray(sp.ndimage.maximum_filter(np.abs(psf_full.data), size=9), psf_full.axes)
+	
+	plt.clf()
+	f = plt.gcf()
+	f.suptitle('psf_full_max_filtered')
+	psf_full_max_filtered.plot(f, data_mutator=lambda x : np.log(np.abs(x)), data_units='arbitrary units', axes_units=('rho/wavelength', 'rho/wavelength'))
+	plt.show()
+	
+	psf_full_uni_filtered = GeoArray(sp.ndimage.uniform_filter(np.abs(psf_full.data), size=9), psf_full.axes)
+	
+	plt.clf()
+	f = plt.gcf()
+	f.suptitle('psf_full_uni_filtered')
+	psf_full_uni_filtered.plot(f, data_mutator=lambda x : np.log(np.abs(x)), data_units='arbitrary units', axes_units=('rho/wavelength', 'rho/wavelength'))
 	plt.show()
