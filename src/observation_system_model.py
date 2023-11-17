@@ -12,6 +12,8 @@ import matplotlib.figure, matplotlib.axes
 
 from optical_model.optical_component import OpticalComponentSet
 import cfg.logs
+import numpy_helper as nph
+import numpy_helper.array
 
 _lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
@@ -39,7 +41,13 @@ def pupil_function_axes_from_observation_params(
 	pupil_function_axes = np.array([np.fft.fftshift(np.fft.fftfreq(x.size, x[1]-x[0])) for x in obs_axes])
 	return pupil_function_axes
 
-
+def moffat_function(x, alpha, beta, A):
+	"""
+	Used to model the phase corrections of adaptive optics systems
+	
+	Alpha has a similar effect to beta on the modelling side, they do different things, but they are fairly degenerate.
+	"""
+	return(A*((1+np.sum((x.T/alpha).T**2, axis=0))**(-beta)))
 
 
 class GeoArray:
@@ -59,16 +67,22 @@ class GeoArray:
 		
 		print(f'{self.data.ndim=} {self.data.shape=} {self.axes.ndim=} {self.axes.shape=}')
 	
+	def copy(self):
+		return GeoArray(np.array(self.data), np.array(self.axes))
+	
 	def __array__(self):
 		return self.data
 	
 	def fft(self):
-		return GeoArray(np.fft.fftshift(np.fft.fftn(np.fft.ifftshift(self.data))), np.array([np.fft.fftshift(np.fft.fftfreq(x.size, x[1]-x[0])) for x in self.axes]))
+		return GeoArray(
+			np.fft.fftshift(np.fft.fftn(np.fft.ifftshift(self.data))),
+			np.array([np.fft.fftshift(np.fft.fftfreq(x.size, x[1]-x[0])) for x in self.axes]),
+		)
 	
 	def ifft(self):
 		return GeoArray(
 			np.fft.fftshift(np.fft.ifftn(np.fft.ifftshift(self.data))),
-			np.array([np.fft.fftshift(np.fft.fftfreq(x.size, x[1]-x[0])) for x in self.axes])
+			np.array([np.fft.fftshift(np.fft.fftfreq(x.size, x[1]-x[0])) for x in self.axes]),
 		)
 	
 	@property
@@ -91,7 +105,6 @@ class GeoArray:
 			raise NotImplementedError("Geometric array plotting only works for 2d arrays at present.")
 		
 		a = fig.subplots(2,2,squeeze=True).flatten()
-		a[-1].remove()
 		
 		center_idx = tuple(s//2 for s in self.data.shape)
 		
@@ -112,6 +125,11 @@ class GeoArray:
 		a[2].plot(m_axes[0], m_data[center_idx[0], :])
 		a[2].set_xlabel(axes_units[0])
 		a[2].set_ylabel(data_units)
+		
+		a[3].set_title('array data unmutated')
+		a[3].imshow(self.data if self.data.dtype!=np.dtype(complex) else np.abs(self.data), extent=self.extent)
+		a[3].set_xlabel(axes_units[0])
+		a[3].set_ylabel(axes_units[1])
 		
 		return a
 		
@@ -135,8 +153,8 @@ class PupilFunction(GeoArray):
 		return cls(
 			ocs.pupil_function(shape, scale, expansion_factor, supersample_factor),
 			np.array(
-				[np.linspace(-scale*expansion_factor/2,scale*expansion_factor/2,s*expansion_factor*supersample_factor) for scale, s in zip(scale, shape)]
-			)
+				[np.linspace(-scale*expansion_factor/2,scale*expansion_factor/2,int(s*expansion_factor*supersample_factor)) for scale, s in zip(scale, shape)]
+			),
 		)
 
 class PointSpreadFunction(GeoArray):
@@ -149,8 +167,8 @@ class PointSpreadFunction(GeoArray):
 		):
 		pf_fft = pupil_function.fft()
 		return cls(
-			np.abs(np.conj(pf_fft.data)*pf_fft.data),
-			pf_fft.axes
+			np.conj(pf_fft.data)*pf_fft.data,
+			pf_fft.axes,
 		)
 
 	@classmethod
@@ -163,7 +181,7 @@ class PointSpreadFunction(GeoArray):
 		
 		return cls(
 			otf_ifft.data,
-			otf_ifft.axes#*wavelength
+			otf_ifft.axes,#*wavelength
 		)
 		
 
@@ -176,12 +194,74 @@ class OpticalTransferFunction(GeoArray):
 		psf_fft = point_spread_function.fft()
 		return cls(
 			psf_fft.data,
-			psf_fft.axes#/wavelength
+			psf_fft.axes,#/wavelength
 		)
 
 class PhasePowerSpectralDensity(GeoArray):
-	pass
+	@classmethod
+	def of_von_karman_turbulence(cls,
+			f_axes, 
+			r0, 
+			turbulence_ndim,
+			L0
+		):
+		"""
+		Von Karman turbulence is the same as Kolmogorov, but with the extra "L0"
+		term. L0 -> infinity gives Kolmogorov turbulence.
+		"""
+		f_mesh = axes_to_mesh(f_axes)
+		f_sq = np.sum(f_mesh**2, axis=0)
+		r0_pow = -5/3
+		f_pow = -(2+turbulence_ndim*3)/6
+		factor = 0.000023*10**(turbulence_ndim)
+		psd = factor*(r0)**(r0_pow)*(1/L0**2 + f_sq)**(f_pow)
+		center_idx = tuple(s//2 for s in psd.shape)
+		psd[center_idx] = 0 # stop infinity at f==0
+		return cls(psd, f_axes)
 	
+	@classmethod
+	def of_adaptive_optics_moffat_function_model(cls,
+			f_axes,
+			f_ao,
+			alpha : np.ndarray,
+			beta : float,
+			C : float,
+			A : float,
+		):
+		"""
+		Uses a moffat function to approximate the effect of AO on the
+		low-frequency part of the PSD
+		"""
+		assert beta != 1, "beta cannot be equal to one in this model"
+		f_mesh = axes_to_mesh(f_axes)
+		
+		if type(alpha) is float:
+			alpha = np.ndarray([alpha]*2)
+		part1 = (beta - 1)/(np.pi*np.prod(alpha))
+		part2 = moffat_function(f_mesh, alpha, beta, A)
+		part3 = (1-(1+np.prod(f_ao/alpha))**(1-beta))**(-1)
+		print(f'{part1=} {part2=} {part3=}')
+		psd = part1*part2*part3 + C
+		return cls(data=psd, axes=f_axes)
+	
+	@classmethod
+	def from_atmospheric_phase_psd_with_adaptive_optics_corrections(cls,
+			f_axes : np.ndarray, # frequency axes over which to evaluate the corrections.
+			f_ao : float, # highest frequency that the adaptive optics can adjust for, below this value the corrected PSD will be from adaptive optics, above this value the PSD will from the atmosphere.
+			atm_psd : GeoArray, # power spectral density of the atmosphere's influence on the phase of light going into the telescope
+			ao_model_psd : GeoArray # power spectral density of the corrections the adaptive optics system performs
+		):
+		"""
+		Note: if have differing axes for atm_psd and ao_model_psd, will need
+		to interpolate to a common f_axes.
+		"""
+		if ao_model_psd is None: return atm_psd.copy()
+		f_mesh = axes_to_mesh(f_axes)
+		f_mag = np.sqrt(np.sum(f_mesh**2, axis=0))
+		f_ao_correct = f_mag <= f_ao
+		ao_corrected_psd = np.array(atm_psd.data)
+		ao_corrected_psd[f_ao_correct] = ao_model_psd.data[f_ao_correct]
+		return cls(ao_corrected_psd, f_axes)
 
 
 
@@ -227,7 +307,7 @@ if __name__=='__main__':
 	
 	
 	# Pretend we have an observation we are fitting to
-	obs_shape = (101,101)
+	obs_shape = (201,201)
 	obs_wavelength = 5E-7 #meters
 	obs_pixel_size = 0.0125 / (60*60) *np.pi/180 # 0.025 arcsec in radians
 	pf_axes = pupil_function_axes_from_observation_params(obs_wavelength, obs_shape, obs_pixel_size)
@@ -236,8 +316,8 @@ if __name__=='__main__':
 	
 	
 	# These are not propagated through the calcuations correctly at the moment
-	expansion_factor = 3
-	supersample_factor=3
+	expansion_factor = 3 # increasing this one gives best results normally
+	supersample_factor=1
 	
 	
 	# diffration limited telescope optics
@@ -250,6 +330,8 @@ if __name__=='__main__':
 	)
 	print(pupil_function.data)
 	print(f'{pupil_function.axes.shape=}')
+	
+	
 	f = plt.gcf()
 	f.suptitle('pupil_function')
 	pupil_function.plot(f, data_mutator=lambda x : np.abs(x), data_units='arbitrary units', axes_units=('meters', 'meters'))
@@ -264,10 +346,26 @@ if __name__=='__main__':
 	plt.clf()
 	f = plt.gcf()
 	f.suptitle('psf')
-	psf.plot(f, data_mutator=lambda x : np.abs(x), data_units='arbitrary units', axes_units=('rho/wavelength', 'rho/wavelength'))
+	psf.plot(f, data_mutator=lambda x : np.log(np.abs(x)), data_units='arbitrary units', axes_units=('rho/wavelength', 'rho/wavelength'))
 	plt.show()
 	
+	f = plt.gcf()
+	f.suptitle('psf centering investigation')
+	plt.plot(psf.axes[0], psf.data[:,psf.data.shape[1]//2])
+	x = np.zeros_like(psf.data)
+	x[tuple(s//2 for s in x.shape)] = 1
+	x *= np.max(psf.data) - np.min(psf.data)
+	x += np.min(psf.data)
+	plt.plot(psf.axes[0], psf.data[:,psf.data.shape[1]//2])
+	plt.plot(psf.axes[0], x[:,x.shape[1]//2])
+	plt.show()
+	
+	
+	
+	
+	
 	otf = OpticalTransferFunction.from_psf(psf, obs_wavelength)
+	otf.data /= np.nansum(otf.data)
 	print(f'{otf.axes.shape=} {otf.axes=}')
 	
 	plt.clf()
@@ -277,21 +375,25 @@ if __name__=='__main__':
 	plt.show()
 	
 	
+	otf_copy = GeoArray(otf.data, otf.axes)
+	psf_copy = otf_copy.ifft()
+	plt.clf()
+	f = plt.gcf()
+	f.suptitle('psf_from_otf')
+	psf_copy.plot(f, data_mutator=lambda x : np.log(np.abs(x)), data_units='arbitrary units', axes_units=('rho/wavelength', 'rho/wavelength'))
+	plt.show()
+	
+	
+	
+	# Phase power spectral density axes
+	f_axes = psf.axes
 	
 	# Atmospheric blurring of phase power spectral density
-	def atmosphere_psd(r0, turbulence_ndim, f_axes):
-		f_mesh = axes_to_mesh(f_axes)
-		f_mag = np.sqrt(np.sum(f_mesh**2, axis=0))
-		r0_pow = -5/3
-		f_pow = -(2+turbulence_ndim*3)/3
-		factor = 0.000023*10**(turbulence_ndim)
-		psd = factor*(r0)**(r0_pow)*(f_mag)**(f_pow)
-		return PhasePowerSpectralDensity(psd, f_axes)
-	
-	atm_psd = atmosphere_psd(
-		0.17, #1, 
-		2, 
-		otf.axes
+	atm_psd = PhasePowerSpectralDensity.of_von_karman_turbulence(
+		f_axes,
+		0.17, 
+		2,
+		8
 	)
 	
 	plt.clf()
@@ -306,101 +408,77 @@ if __name__=='__main__':
 	n_actuators = 24
 	f_ao = n_actuators / (2*obj_diameter)
 	
-	def moffat_function(x, alpha, beta, A):
-		return(A*((1+np.sum((x.T/alpha).T**2, axis=0))**(-beta)))
-	
-	def ao_phase_psd_model(
-			f_axes,
-			f_ao,
-			alpha : np.ndarray,
-			beta : float,
-			C : float,
-			A : float,
-		):
-		"""
-		Uses a moffat function to approximate the effect of AO on the
-		low-frequency part of the PSD
-		"""
-		assert beta != 1, "beta cannot be equal to one in this model"
-		f_mesh = axes_to_mesh(f_axes)
-		
-		if type(alpha) is float:
-			alpha = np.ndarray([alpha]*2)
-		part1 = (beta - 1)/(np.pi*np.prod(alpha))
-		part2 = moffat_function(f_mesh, alpha, beta, A)
-		part3 = (1-(1+np.prod(f_ao/alpha))**(1-beta))**(-1)
-		print(f'{part1=} {part2=} {part3=}')
-		psd = part1*part2*part3 + C
-		return PhasePowerSpectralDensity(data=psd, axes=f_axes)
-	
-	ao_model_psd = ao_phase_psd_model(
-		otf.axes,
+	ao_model_psd = PhasePowerSpectralDensity.of_adaptive_optics_moffat_function_model(
+		f_axes,
 		f_ao,
-		np.array([5E-2,5E-2]),
-		1.6,
-		2E-3,
-		0.05
+		np.array([5E-2,5E-2]),#np.array([5E-2,5E-2]),
+		1.6,#1.6
+		2E-3,#2E-3
+		0.05#0.05
 	)
+	
 	print(f'{f_ao=} {ao_model_psd.axes=}')
 	
 	plt.clf()
 	f = plt.gcf()
 	f.suptitle('ao_model_psd')
-	ao_model_psd.plot(f, data_mutator=lambda x : np.log(x), data_units='arbitrary units', axes_units=('wavelength/rho', 'wavelength/rho'))
+	ao_model_psd.plot(f, data_mutator=lambda x : np.log(x), data_units='arbitrary units', axes_units=('rho/wavelength', 'rho/wavelength'))
 	plt.show()
 	
-	# Model adaptive optics correction to phase power spectral density
-	def ao_correction(
-			f_axes,
-			f_ao,
-			atm_psd,
-			ao_model_psd
-		):
 	
-		f_mesh = axes_to_mesh(f_axes)
-		f_mag = np.sqrt(np.sum(f_mesh**2, axis=0))
-		f_ao_correct = f_mag <= f_ao
-		ao_corrected_psd = GeoArray(atm_psd.data, atm_psd.axes)
-		ao_corrected_psd.data[f_ao_correct] = ao_model_psd.data[f_ao_correct]
-		return ao_corrected_psd
-	
-	ao_corrected_psd = ao_correction(otf.axes, f_ao, atm_psd, ao_model_psd)
+	ao_corrected_psd = PhasePowerSpectralDensity.from_atmospheric_phase_psd_with_adaptive_optics_corrections(
+		f_axes, 
+		f_ao, 
+		atm_psd, 
+		ao_model_psd
+	)
 	
 	plt.clf()
 	f = plt.gcf()
 	f.suptitle('ao_corrected_psd')
-	ao_corrected_psd.plot(f, data_mutator=lambda x : np.log(x), data_units='arbitrary units', axes_units=('wavelength/rho', 'wavelength/rho'))
+	ao_corrected_psd.plot(f, data_mutator=lambda x : np.log(x), data_units='arbitrary units', axes_units=('rho/wavelength', 'rho/wavelength'))
 	plt.show()
 	
-	# The axes units are a bit funky here. I am not sure I have got them correct.
+	# Get the autocorrelation of the phase adjustements from the atmosphere + adaptive optics corrections
 	phase_autocorr = ao_corrected_psd.ifft()
-	#phase_autocorr.data = np.abs(phase_autocorr.data)
+	_lgr.debug(f'{phase_autocorr.data=}')
+	phase_autocorr.data = phase_autocorr.data.real
+	plt.clf()
+	f = plt.gcf()
+	f.suptitle('phase_autocorr 1')
+	phase_autocorr.plot(f, data_mutator=lambda x : np.log(x), data_units='arbitrary units', axes_units=('wavelength/rho', 'wavelength/rho'))
+	plt.show()
+	#phase_autocorr.data /= np.nansum(phase_autocorr.data)
+	
+	plt.clf()
+	f = plt.gcf()
+	f.suptitle('phase_autocorr 2')
+	phase_autocorr.plot(f, data_mutator=lambda x : np.log(x), data_units='arbitrary units', axes_units=('wavelength/rho', 'wavelength/rho'))
+	plt.show()
 	
 	mode = "classic"
 	match mode:
 		case "classic":
 			center_point = tuple(_s//2 for _s in phase_autocorr.data.shape)
-			otf_atm_ao_corrected = GeoArray(np.exp(phase_autocorr.data - phase_autocorr.data[center_point]), phase_autocorr.axes)
+			otf_atm_ao_corrected_data = np.exp(phase_autocorr.data - phase_autocorr.data[center_point])
+			
+			# This attenuates the 'spike' that results in an airy disk pattern
+			s_factor = 0#1E-3
+			
+			# Work out the offset from zero of the OTF
+			center_idx_offsets = nph.array.offsets_from_point(otf_atm_ao_corrected_data.shape)
+			center_idx_dist = np.sqrt(np.sum(center_idx_offsets**2, axis=0))
+			outer_region_mask = center_idx_dist > (center_idx_dist.shape[0]//2)*0.9
+			otf_atm_ao_corrected_data_offset_from_zero = np.sum(otf_atm_ao_corrected_data[outer_region_mask])/np.count_nonzero(outer_region_mask)
+			
+			_lgr.debug(f'{otf_atm_ao_corrected_data_offset_from_zero=}')
+			# Subtract the offset to remove the delta-function spike
+			otf_atm_ao_corrected_data -= otf_atm_ao_corrected_data_offset_from_zero 
+			# If required, add back on a fraction of the maximum to add part of the spike back in.
+			otf_atm_ao_corrected_data += s_factor*np.max(otf_atm_ao_corrected_data)
+			
+			otf_atm_ao_corrected = GeoArray(otf_atm_ao_corrected_data, phase_autocorr.axes)
 
-			print(f'{otf_atm_ao_corrected.data[center_point]=}')
-			
-			"""
-			ndim = otf_atm_ao_corrected.data.ndim
-			counter = 0
-			accumulator = 0
-			for i in range(ndim):
-				for j in (-1,1):
-					delta = tuple(0 if i!=k else j for k in range(ndim))
-					accumulator += otf_atm_ao_corrected.data[tuple(c+d for c,d in zip(center_point, delta))]
-					counter += 1
-			print(f'{ndim=} {counter=} {accumulator=}')
-			otf_atm_ao_corrected.data[center_point] = accumulator / counter
-			"""
-			
-			#otf_atm_ao_corrected.data = sp.ndimage.gaussian_filter(otf_atm_ao_corrected.data, sigma=1)
-			#otf_atm_ao_corrected.data = sp.ndimage.minimum_filter(np.abs(otf_atm_ao_corrected.data), size=3)
-			#otf_atm_ao_corrected.data[center_point] = 0
-			print(f'{otf_atm_ao_corrected.data[center_point]=}')
 		case "adjust":
 			otf_atm_ao_corrected = GeoArray(np.abs(phase_autocorr.data), phase_autocorr.axes)
 	
@@ -410,10 +488,76 @@ if __name__=='__main__':
 	otf_atm_ao_corrected.plot(f, data_mutator=lambda x : np.log(np.abs(x)), data_units='arbitrary units', axes_units=('wavelength/rho', 'wavelength/rho'))
 	plt.show()
 	
+	# plot ifft of otf_atm_ao_corrected to diagnose problems
+	otf_atm_ao_corrected_ifft = otf_atm_ao_corrected.ifft()
+
+	center_idx = tuple(s//2 for s in otf_atm_ao_corrected_ifft.data.shape)
+	d = 5
+	aslice = tuple(slice(i-d , i+d+ s%2) for i, s in zip(center_idx, otf_atm_ao_corrected_ifft.data.shape))
+	center_offsets = nph.array.offsets_from_point(otf_atm_ao_corrected_ifft.data.shape)
+	mask = np.sum(center_offsets**2, axis=0) < 0
+	otf_atm_ao_corrected_ifft.data[mask]=0
+
+	otf_atm_ao_corrected_ifft.data = np.array(np.abs(otf_atm_ao_corrected_ifft.data), dtype=float)
+	otf_atm_ao_corrected_ifft.data = otf_atm_ao_corrected_ifft.data - np.min(otf_atm_ao_corrected_ifft.data)
+	otf_atm_ao_corrected_ifft.data /= np.max(otf_atm_ao_corrected_ifft.data)
+	otf_atm_ao_corrected_ifft.data[mask]=1
+	#otf_atm_ao_corrected_ifft.data += 1
+	_lgr.debug(f'{np.min(otf_atm_ao_corrected_ifft.data)=}')
+	_lgr.debug(f'{np.max(otf_atm_ao_corrected_ifft.data)=}')
 	
+	plt.clf()
+	f = plt.gcf()
+	f.suptitle('otf_atm_ao_corrected_ifft')
+	otf_atm_ao_corrected_ifft.plot(f, data_mutator=lambda x : np.log(x), data_units='arbitrary units', axes_units=('rho/wavelength', 'rho/wavelength'))
+	plt.show()
+	
+	
+	# Can I use a non-fft way to get the correct OTF?
+	# Need to put both lines on the same graph, it's hard to compare this way
+	_lgr.debug(f'{np.min(ao_corrected_psd.data)=}')
+	ao_corrected_psd.data = (ao_corrected_psd.data)**1
+	ao_corrected_psd.data = ao_corrected_psd.data - np.min(ao_corrected_psd.data)
+	ao_corrected_psd.data /= np.max(ao_corrected_psd.data)
+	_lgr.debug(f'{np.min(ao_corrected_psd.data)=}')
+	_lgr.debug(f'{np.max(ao_corrected_psd.data)=}')
+	plt.clf()
+	f = plt.gcf()
+	f.suptitle('ao_corrected_psd')
+	ao_corrected_psd.plot(f, data_mutator=lambda x : np.log(x), data_units='arbitrary units', axes_units=('rho/wavelength', 'rho/wavelength'))
+	plt.show()
+	
+	plt.clf()
+	f.suptitle('otf_atm_ao_corrected_ifft vs ao_corrected_psd')
+	plt.plot(otf_atm_ao_corrected_ifft.axes[0], np.log(otf_atm_ao_corrected_ifft.data[:,otf_atm_ao_corrected_ifft.data.shape[1]//2]))
+	plt.plot(ao_corrected_psd.axes[0], np.log(ao_corrected_psd.data[:,ao_corrected_psd.data.shape[1]//2]))
+	plt.show()
+	
+	
+	#otf_atm_ao_corrected = otf_atm_ao_corrected_ifft.fft()
 	
 	# Combination of diffraction-limited optics, atmospheric effects, AO correction to atmospheric effects
 	otf_full = GeoArray(otf_atm_ao_corrected.data * otf.data, otf.axes)
+	
+	plt.clf()
+	f = plt.gcf()
+	ax = f.subplots(3,3, squeeze=True).flatten()
+	ax[0].imshow(np.log(otf.data.real))
+	ax[1].imshow(np.log(otf.data.imag))
+	ax[2].imshow(np.log(np.abs(otf.data)))
+	
+	ax[3].imshow(np.log(otf_atm_ao_corrected.data.real))
+	ax[4].imshow(np.log(otf_atm_ao_corrected.data.imag))
+	ax[5].imshow(np.log(np.abs(otf_atm_ao_corrected.data)))
+	
+	ax[6].imshow(np.log((otf_full.data).real))
+	ax[7].imshow(np.log((otf_full.data).imag))
+	ax[8].imshow(np.log(np.abs(otf_full.data)))
+	
+	plt.show()
+	
+	
+	
 	
 	plt.clf()
 	f = plt.gcf()
@@ -450,7 +594,8 @@ if __name__=='__main__':
 	psf_full_max_filtered.plot(f, data_mutator=lambda x : np.log(np.abs(x)), data_units='arbitrary units', axes_units=('rho/wavelength', 'rho/wavelength'))
 	plt.show()
 	
-	psf_full_uni_filtered = GeoArray(sp.ndimage.uniform_filter(np.abs(psf_full.data), size=9), psf_full.axes)
+	lump = int(expansion_factor*supersample_factor)
+	psf_full_uni_filtered = GeoArray(sp.ndimage.uniform_filter(np.abs(psf_full.data), size=lump)[lump//2::lump,lump//2::lump], psf_full.axes[:,lump//2::lump])
 	
 	plt.clf()
 	f = plt.gcf()
