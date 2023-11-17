@@ -462,7 +462,7 @@ if __name__=='__main__':
 			center_point = tuple(_s//2 for _s in phase_autocorr.data.shape)
 			otf_atm_ao_corrected_data = np.exp(phase_autocorr.data - phase_autocorr.data[center_point])
 			
-			# This attenuates the 'spike' that results in an airy disk pattern
+			# This attenuates the 'spike' that results in an airy disk pattern.
 			s_factor = 0#1E-3
 			
 			# Work out the offset from zero of the OTF
