@@ -12,7 +12,7 @@ import numpy_helper as nph
 import numpy_helper.array
 from numpy_helper.array import S,N
 from geometry.shape import GeoShape, Circle
-from optical_model.light_beam import LightBeam, LightBeamSet
+from optics.geometric.light_beam import LightBeam, LightBeamSet
 
 def sign(a):
 	return -1 if a < 0 else 1

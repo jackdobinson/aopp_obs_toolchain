@@ -24,7 +24,6 @@ import subprocess as sp
 import logging
 
 from decorators import TestSkippedException
-import test_data
 
 terminal_wrapper = textwrap.TextWrapper(
 	expand_tabs = True,
@@ -286,9 +285,9 @@ def run_tests(test_discovery_data, continue_on_fail=True, live_output=False):
 
 def main(
 		test_dir = None, # Top of directory tree to search for tests, if None use parent directory of this file
-		continue_on_fail=False, # Should we continue executing tests if one fails?
+		continue_on_fail=True, # Should we continue executing tests if one fails?
 		only_report_failures = True, # If true, will only show result details when failures happen.
-		live_output=True, # If true, will output to terminal as the tests are run.
+		live_output=False, # If true, will output to terminal as the tests are run.
 
 		 # If this is true, directory will be included in test search
 		directory_search_predicate = \

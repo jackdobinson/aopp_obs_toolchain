@@ -2,7 +2,7 @@
 import numpy as np
 
 from geometry.shape import Circle
-from optical_model.optical_component import OpticalComponentSet, Aperture, Obstruction,Refractor,LightBeam,LightBeamSet
+from optics.geometric.optical_component import OpticalComponentSet, Aperture, Obstruction,Refractor,LightBeam,LightBeamSet
 
 import matplotlib.pyplot as plt
 import plot_helper
@@ -92,7 +92,9 @@ def test_constructing_optical_component_set():
 	
 	expansion_factor = 10
 	supersample_factor = 1/expansion_factor
-	pf_scale, pf = ocs.pupil_function((501,501), expansion_factor=expansion_factor, supersample_factor=supersample_factor)#, (MUSE_NFM_delta_ang*120,MUSE_NFM_delta_ang*120))#(-2E-3,-2E-3))
+	pf = ocs.pupil_function((501,501), expansion_factor=expansion_factor, supersample_factor=supersample_factor)
+	pf_scale = ocs.get_pupil_function_scale(expansion_factor)
+	
 	print(f'{pf_scale=}')
 	print(f'{pf.shape=}')
 	pf_extent = tuple(((-1)**i)*pf_scale[i//2] for i in range(2*len(pf_scale)))
@@ -120,9 +122,5 @@ def test_constructing_optical_component_set():
 	ax[3].imshow(otf.astype(float))
 	
 	plt.show()
-	
-	
-	
-	
-	
-	assert False, 'TESTING'
+
+	assert True, "should always get here if nothing goes wrong"
