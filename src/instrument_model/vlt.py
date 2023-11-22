@@ -1,11 +1,15 @@
 
 import numpy as np
 
+from instrument_model.instrument_base import InstrumentBase
 from geometry.shape import Circle
 from optics.geometric.optical_component import OpticalComponentSet, Aperture, Obstruction, Refractor
 from optics.telescope_model import optical_transfer_function_of_optical_component_set
 
-class VLT:
+class VLT(InstrumentBase):
+	"""
+	Instrument description for very large telescope.
+	"""
 	n_actuators = 24
 	obj_diameter = 8 # meters
 	f_ao = n_actuators / (2*obj_diameter)
@@ -34,15 +38,6 @@ class VLT:
 		),
 	])
 	
-	def __init__(self,
-			obs_shape,
-			obs_scale,
-			ref_wavelength
-		):
-		self.obs_shape = obs_shape
-		self.obs_scale = obs_scale
-		self.ref_wavelength = ref_wavelength
-	
 	
 	@classmethod
 	def muse(cls,
@@ -50,15 +45,10 @@ class VLT:
 		  obs_pixel_size = 0.0125 / (60*60) *np.pi/180,
 		  ref_wavelength = 5E-7
 		):
+		"""
+		Description of MUSE instrument on the VLT telescope
+		"""
 		obs_scale = np.array(obs_shape)*np.array(obs_pixel_size)/ref_wavelength
 		return cls(obs_shape, obs_scale, ref_wavelength)
-	
-	
-	def optical_transfer_function(self, 
-			expansion_factor : float, 
-			supersample_factor : float
-		):
-		self.expansion_factor = expansion_factor
-		self.supersample_factor= supersample_factor
-		return optical_transfer_function_of_optical_component_set(self.obs_shape, expansion_factor, supersample_factor, self.ocs, self.obs_scale)
+
 
