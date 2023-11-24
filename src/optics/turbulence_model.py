@@ -14,7 +14,7 @@ def phase_psd_von_karman_turbulence(
 	Von Karman turbulence is the same as Kolmogorov, but with the extra "L0"
 	term. L0 -> infinity gives Kolmogorov turbulence.
 	"""
-	f_mesh = np.array(np.meshgrid(*f_axes))
+	f_mesh = np.array(np.meshgrid(*f_axes[::-1]))
 	f_sq = np.sum(f_mesh**2, axis=0)
 	r0_pow = -5/3
 	f_pow = -(2+turbulence_ndim*3)/6

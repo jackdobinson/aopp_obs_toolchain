@@ -33,12 +33,14 @@ def apply_offset(a : np.ndarray[S[N],T], offset : np.ndarray[[N],int]) -> np.nda
 	return	np.roll(a, offset, tuple(range(a.ndim)))
 
 
-def ensure_odd_shape(a : np.ndarray[S[N],T]) -> np.ndarray[Q[N],T]:
+def ensure_odd_shape(a : np.ndarray[S[N],T], axes : tuple[int,...] | None = None) -> np.ndarray[Q[N],T]:
 	"""
 	Get a slice of array `a` such that each axis has an odd number of entries.
 	The resulting slice is always the same size or smaller than `a`
 	"""
-	slices = tuple(slice(s-1+s%2) for s in a.shape)
+	if axes is None:
+		axes = tuple(range(a.ndim))
+	slices = tuple(slice(s-1+s%2) if i in axes else slice(None) for i, s in enumerate(a.shape))
 	return a[slices]
 
 

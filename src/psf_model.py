@@ -8,7 +8,6 @@ import scipy as sp
 import scipy.ndimage
 import scipy.interpolate
 
-from optics.geometric.optical_component import OpticalComponentSet
 import cfg.logs
 import numpy_helper as nph
 import numpy_helper.array
@@ -16,7 +15,7 @@ import numpy_helper.array
 from geo_array import GeoArray, plot_ga
 from optics.function import PointSpreadFunction, OpticalTransferFunction, PhasePowerSpectralDensity
 
-_lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = cfg.logs.get_logger_at_level(__name__, 'WARN')
 
 
 
@@ -128,10 +127,13 @@ class PSFModel:
 		if self.telescope_otf_model is not None:
 			self.telescope_otf = self.telescope_otf_model(shape, expansion_factor, supersample_factor, *telescope_otf_model_args)
 		
+		_lgr.debug(f'{self.telescope_otf.data.shape=} {tuple(x.size for x in self.telescope_otf.axes)=}')
+		
 		if plots: plot_ga(self.telescope_otf, lambda x: np.log(np.abs(x)), 'diffraction limited otf', 'arbitrary units', 'wavelength/rho')
 		if plots: plot_ga(self.telescope_otf.ifft(), lambda x: np.log(np.abs(x)), 'diffraction limited psf', 'arbitrary units', 'rho/wavelength')
 		
 		f_axes = self.telescope_otf.ifft().axes
+		_lgr.debug(f'{tuple(x.size for x in f_axes)=}')
 		
 		# Get the atmospheric phase power spectral density
 		if self.atmospheric_turbulence_psd_model is not None:
@@ -149,6 +151,8 @@ class PSFModel:
 		
 		ao_corrected_otf = self.optical_transfer_fuction_from_phase_psd(ao_corrected_atm_phase_psd, mode, s_factor)
 		
+		_lgr.debug(f'{ao_corrected_otf.data.shape=} {self.telescope_otf.data.shape=}')
+		
 		# Combination of diffraction-limited optics, atmospheric effects, AO correction to atmospheric effects
 		otf_full = GeoArray(ao_corrected_otf.data * self.telescope_otf.data, self.telescope_otf.axes)
 		if plots: plot_ga(otf_full, lambda x: np.log(np.abs(x)), 'otf full', 'arbitrary units', 'wavelength/rho')
@@ -158,14 +162,14 @@ class PSFModel:
 		
 		self.psf_full = PointSpreadFunction(np.abs(psf_full.data), psf_full.axes)
 		
-		return self.psf_full
+		return self
 	
 	def at(self, scale, wavelength, plots=True):
 		"""
 		Calculate psf for a given angular scale and wavelength, i.e. convert
 		from rho/wavelength units to rho units.
 		"""
-		output_axes = np.array([np.linspace(-z/2,z/2,s) for z,s in zip(scale,self.shape)])
+		output_axes = tuple(np.linspace(-z/2,z/2,s) for z,s in zip(scale,self.shape))
 		_lgr.debug(f'{output_axes=}')
 		
 		rho_axes = tuple(a*wavelength for a in self.psf_full.axes)

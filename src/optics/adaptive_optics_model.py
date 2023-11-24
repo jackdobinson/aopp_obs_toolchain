@@ -29,13 +29,13 @@ def phase_psd_fetick_2019_moffat_function(
 	low-frequency part of the PSD
 	"""
 	assert beta != 1, "beta cannot be equal to one in this model"
-	f_mesh = np.array(np.meshgrid(*f_axes))
+	f_mesh = np.array(np.meshgrid(*f_axes[::-1]))
 	
 	if type(alpha) is float:
 		alpha = np.ndarray([alpha]*2)
 	part1 = (beta - 1)/(np.pi*np.prod(alpha))
 	part2 = moffat_function(f_mesh, alpha, beta, A)
 	part3 = (1-(1+np.prod(f_ao/alpha))**(1-beta))**(-1)
-	print(f'{part1=} {part2=} {part3=}')
+	#print(f'{part1=} {part2=} {part3=}')
 	psd = part1*part2*part3 + C
 	return PhasePowerSpectralDensity(data=psd, axes=f_axes)

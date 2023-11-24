@@ -15,16 +15,15 @@ class GeoArray:
 		):
 		self.data = data
 		if axes is None:
-			self.axes = np.array([np.linspace(-s/2, s/2, s) for s in self.data.shape()])
+			self.axes = tuple(np.linspace(-s/2, s/2, s) for s in self.data.shape())
 		else:
 			self.axes = axes
 		
-		print(f'{self.data.ndim=} {self.data.shape=} {self.axes.ndim=} {self.axes.shape=}')
-	
+		
 	@classmethod
 	def scale_to_axes(scale : tuple[float,...], shape : tuple[int,...], center : float = 0) -> np.ndarray:
-		return np.array(
-			[np.linspace(center-scale/2,center+scale/2,s) for scale, s in zip(scale,shape)]
+		return tuple(
+			np.linspace(center-scale/2,center+scale/2,s) for scale, s in zip(scale,shape)
 		)
 	
 	def copy(self):
@@ -36,13 +35,13 @@ class GeoArray:
 	def fft(self):
 		return GeoArray(
 			np.fft.fftshift(np.fft.fftn(np.fft.ifftshift(self.data))),
-			np.array([np.fft.fftshift(np.fft.fftfreq(x.size, x[1]-x[0])) for x in self.axes]),
+			tuple(np.fft.fftshift(np.fft.fftfreq(x.size, x[1]-x[0])) for x in self.axes),
 		)
 	
 	def ifft(self):
 		return GeoArray(
 			np.fft.fftshift(np.fft.ifftn(np.fft.ifftshift(self.data))),
-			np.array([np.fft.fftshift(np.fft.fftfreq(x.size, x[1]-x[0])) for x in self.axes]),
+			tuple(np.fft.fftshift(np.fft.fftfreq(x.size, x[1]-x[0])) for x in self.axes),
 		)
 	
 	@property
@@ -55,7 +54,7 @@ class GeoArray:
 
 	@property
 	def mesh(self) -> np.ndarray:
-		return np.array(np.meshgrid(*self.axes))
+		return np.array(np.meshgrid(*self.axes[::-1]))
 
 
 
@@ -95,13 +94,13 @@ def plot_ga(
 	a[0].set_ylabel(axes_units[1])
 	
 	a[1].set_title('x=constant centerline')
-	a[1].plot(m_data[:, center_idx[1]], m_axes[1])
+	a[1].plot(m_data[:, center_idx[1]], m_axes[0])
 	a[1].set_xlabel(data_units)
-	a[1].set_ylabel(axes_units[1])
+	a[1].set_ylabel(axes_units[0])
 	
 	a[2].set_title('y=constant centerline')
-	a[2].plot(m_axes[0], m_data[center_idx[0], :])
-	a[2].set_xlabel(axes_units[0])
+	a[2].plot(m_axes[1], m_data[center_idx[0], :])
+	a[2].set_xlabel(axes_units[1])
 	a[2].set_ylabel(data_units)
 	
 	a[3].set_title('array data unmutated')

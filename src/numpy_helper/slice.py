@@ -45,12 +45,12 @@ def get_indices(
 		If True will return an `a.ndim` length tuple, otherwise will return a numpy array.
 	"""
 	
+	if slice_tuple is None:
+		slice_tuple = tuple([slice(None)]*a.ndim)
+	
 	print(f'BEFORE {slice_tuple=}')
 	slice_tuple = unsqueeze(slice_tuple) # want a.ndim == a[sliced_idxs].ndim
 	print(f'AFTER {slice_tuple=}')
-	
-	if slice_tuple is None:
-		slice_tuple = tuple([slice(None)]*a.ndim)
 	
 	slice_idxs = np.indices(a.shape)[(slice(None),*slice_tuple)] 
 	
@@ -59,7 +59,7 @@ def get_indices(
 
 def iter_indices(
 		a : np.ndarray, 
-		slice_tuple : tuple[slice|int,...] | np.ndarray[int] | None,
+		slice_tuple : tuple[slice|int,...] | np.ndarray[int] | None = None,
 		group : tuple[int,...] = tuple(),
 		squeeze=True
 	) -> Iterator[tuple[np.ndarray]]:

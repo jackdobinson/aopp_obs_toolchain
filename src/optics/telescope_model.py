@@ -4,6 +4,10 @@ import numpy as np
 from optics.function import PupilFunction, PointSpreadFunction, OpticalTransferFunction 
 from optics.geometric.optical_component import OpticalComponentSet
 
+import cfg.logs
+_lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+
+
 def pupil_function_of_optical_component_set(
 		shape : tuple[int,...],
 		expansion_factor : float,
@@ -18,9 +22,7 @@ def pupil_function_of_optical_component_set(
 		scale = ocs.get_pupil_function_scale(expansion_factor)
 	return PupilFunction(
 		ocs.pupil_function(shape, scale, expansion_factor, supersample_factor),
-		np.array(
-			[np.linspace(-scale*expansion_factor/2,scale*expansion_factor/2,int(s*expansion_factor*supersample_factor)) for scale, s in zip(scale, shape)]
-		),
+		tuple(np.linspace(-scale*expansion_factor/2,scale*expansion_factor/2,int(s*expansion_factor*supersample_factor)) for scale, s in zip(scale, shape)),
 	)
 
 
@@ -31,7 +33,8 @@ def optical_transfer_function_of_optical_component_set(
 		ocs : OpticalComponentSet,
 		scale : tuple[float,...],
 	):
-	pupil_function_axes = np.array([np.fft.fftshift(np.fft.fftfreq(shape, scale/shape)) for shape, scale in zip(shape,scale)])
+	_lgr.debug(f'{shape=} {scale=}')
+	pupil_function_axes = tuple(np.fft.fftshift(np.fft.fftfreq(sh, sc/sh)) for sh, sc in zip(shape,scale))
 	pupil_function_scale = np.array([x[-1] - x[0] for x in pupil_function_axes])
 	
 	pupil_function = pupil_function_of_optical_component_set(
