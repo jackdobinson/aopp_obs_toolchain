@@ -24,9 +24,18 @@ import plot_helper
 import cfg.logs
 _lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
-def normalise_psf(data : np.ndarray, axes : tuple[int,...] | None=None, cutout_shape : tuple[int,...] | None = None):
+def normalise_psf(
+		data : np.ndarray, 
+		axes : tuple[int,...] | None=None, 
+		cutout_shape : tuple[int,...] | None = None
+	) -> np.ndarray:
 	"""
-	Center and
+	Ensure an array of data fufils the following conditions:
+	
+	* odd shape, to ensure a center pixel exists
+	* center array on brightest pixel
+	* ensure array sums to 1
+	* optionally, cut out a region around the center to remove unneeded data.
 	"""
 	if axes is None:
 		axes = tuple(range(data.ndim))
@@ -35,9 +44,9 @@ def normalise_psf(data : np.ndarray, axes : tuple[int,...] | None=None, cutout_s
 	
 	
 	for idx in nph.slice.iter_indices(data, group=axes):
-			bp_offset = nph.array.get_center_offset_brightest_pixel(data[idx])
-			data[idx] = nph.array.apply_offset(data[idx], bp_offset)
-			data[idx] /= np.nansum(data[idx])
+		bp_offset = nph.array.get_center_offset_brightest_pixel(data[idx])
+		data[idx] = nph.array.apply_offset(data[idx], bp_offset)
+		data[idx] /= np.nansum(data[idx])
 			
 	if cutout_shape is not None:
 		center_slices = nph.slice.around_center(data.shape[axes], cutout_shape)
@@ -49,7 +58,10 @@ def normalise_psf(data : np.ndarray, axes : tuple[int,...] | None=None, cutout_s
 	return data
 
 
-def from_unit_range_to(unit_range, vmin, vmax):
+def from_unit_range_to(unit_range : float, vmin : float, vmax : float):
+	"""
+	Transform a value between (0,1) to between (vmin, vmax)
+	"""
 	return unit_range*(vmax-vmin)+vmin
 
 def psf_model_prior_transform(cube):
@@ -130,16 +142,13 @@ if __name__=='__main__':
 	
 	with fits.open(psf.path) as psf_hdul:	
 		with nph.axes.to_end(psf_hdul[psf.ext].data, psf.axes['CELESTIAL']) as psf_data:
-			psf_data = nph.array.ensure_odd_shape(psf_data)
+			
 			
 			#plt.title(psf.path)
 			#plt.imshow(np.log(psf_data[psf_data.shape[0]//2]))
 			#plt.show()
 			
-			for idx in nph.slice.iter_indices(psf_data, group=psf.axes['CELESTIAL']):
-				psf_data[idx] = normalise_psf(psf_data[idx])
-			center_slices = nph.slice.around_center(psf_data.shape[1:], (101,101))
-			psf_data = psf_data[(slice(None),*center_slices)]
+			psf_data = normalise_psf(psf_data, axes=psf.axes['CELESTIAL'], cutout_shape=(101,101))
 			
 			#plt.title(str(psf.path) + ' normalised')
 			#plt.imshow(np.log(psf_data[psf_data.shape[0]//2]))
