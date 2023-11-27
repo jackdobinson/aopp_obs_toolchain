@@ -1,5 +1,6 @@
 
 
+import math
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -49,11 +50,15 @@ def normalise_psf(
 		data[idx] /= np.nansum(data[idx])
 			
 	if cutout_shape is not None:
-		center_slices = nph.slice.around_center(data.shape[axes], cutout_shape)
+		_lgr.debug(f'{tuple(data.shape[x] for x in axes)=} {cutout_shape=}')
+		center_slices = nph.slice.around_center(tuple(data.shape[x] for x in axes), cutout_shape)
+		_lgr.debug(f'{center_slices=}')
 		slices = [slice(None) for s in data.shape]
 		for i, center_slice in zip(axes, center_slices):
 			slices[i] = center_slice
-		data = data[center_slices]
+		_lgr.debug(f'{slices=}')
+		data = data[tuple(slices)]
+		
 	
 	return data
 
@@ -71,25 +76,27 @@ def psf_model_prior_transform(cube):
 	params = cube.copy()
 	
 	# r0
-	params[0] = from_unit_range_to(cube[0], 0.1, 0.1)
+	params[0] = from_unit_range_to(cube[0], 0.1, 1)
 	
 	# turb_ndim
-	params[1] = from_unit_range_to(cube[1], 1,3)
+	params[1] = from_unit_range_to(cube[1], 1,2)
 	
 	# L0
-	params[2] = from_unit_range_to(cube[2], 1, 10)
+	params[2] = from_unit_range_to(cube[2], 8, 8)
 	
 	# sigma
-	params[3] = from_unit_range_to(cube[3], 1E-2, 1E-1)
+	params[3] = from_unit_range_to(cube[3], 1E-2, 1E-0)
 	
 	# beta
-	params[4] = from_unit_range_to(cube[4], 1.001, 10) # remember to remove values of 1
+	params[4] = from_unit_range_to(cube[4], 0.1, 3) # remember to remove values of 1
+	if params[4]==1:
+		params[4] == math.nextafter(params[4], math.inf)
 	
 	# C
-	params[5] = from_unit_range_to(cube[5], 1E-3, 1E-1)
+	params[5] = from_unit_range_to(cube[5], 5E-3, 5E-2)
 	
 	# A
-	params[6] = from_unit_range_to(cube[6], 0, 1E-2)
+	params[6] = from_unit_range_to(cube[6], 5E-3, 5E-2)
 
 	return params
 
@@ -203,8 +210,9 @@ if __name__=='__main__':
 			)
 			
 			result = sampler.run(
+				max_iters=2000, # maximum number of integration interations
 				min_num_live_points=400,
-				dlogz=0.5, # desired accuracy on logz
+				dlogz=100, # desired accuracy on logz
 				min_ess=400, # number of effective samples
 				update_interval_volume_fraction=0.4, # how often to update region
 				max_num_improvement_loops=3, # how many times to go back and improve
