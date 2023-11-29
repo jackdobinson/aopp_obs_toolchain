@@ -57,7 +57,7 @@ class PSFModel:
 			self.adaptive_optics_psd = adaptive_optics_psd_model
 	
 	
-	def ao_corrections_to_phase_psd(self, phase_psd, ao_phase_psd, f_ao):
+	def ao_corrections_to_phase_psd(self, phase_psd, ao_phase_psd, f_ao, ao_correction_amplitude=1, ao_correction_frac_offset=0):
 		"""
 		Apply adaptive optics corrections to the phase power spectrum distribution of the atmosphere
 		"""
@@ -66,8 +66,14 @@ class PSFModel:
 		f_mesh = phase_psd.mesh
 		f_mag = np.sqrt(np.sum(f_mesh**2, axis=0))
 		f_ao_correct = f_mag <= f_ao
+		f_ao_continuity_region = ((f_ao-0.5) < f_mag) & (f_mag <= (f_ao+0.5))
+		f_ao_continuity_factor = np.mean(phase_psd.data[f_ao_continuity_region])
+		f_ao_correction_offset = np.mean(ao_phase_psd.data[f_ao_continuity_region])
 		ao_corrected_psd = np.array(phase_psd.data)
-		ao_corrected_psd[f_ao_correct] = ao_phase_psd.data[f_ao_correct]
+		ao_corrected_psd[f_ao_correct] = (
+			ao_correction_amplitude*(ao_phase_psd.data[f_ao_correct] - f_ao_correction_offset)
+			+ np.exp(ao_correction_frac_offset)
+		)*f_ao_continuity_factor
 		return PhasePowerSpectralDensity(ao_corrected_psd, phase_psd.axes)
 	
 	
@@ -106,10 +112,12 @@ class PSFModel:
 			shape,
 			expansion_factor,
 			supersample_factor,
-			f_ao,
 			telescope_otf_model_args,
 			atmospheric_turbulence_psd_model_args,
 			adaptive_optics_psd_model_args,
+			f_ao,
+			ao_correction_amplitude=1,
+			ao_correction_frac_offset=0,
 			s_factor=0,
 			mode='classic',
 			plots=True
@@ -146,7 +154,13 @@ class PSFModel:
 		if plots: plot_ga(self.adaptive_optics_psd, lambda x: np.log(np.abs(x)), 'adaptive_optics_psd', 'arbitrary units', 'rho/wavelength')
 		
 		# Apply the adapative optics phase power spectral density corrections to the atmospheric phase power spectral density
-		ao_corrected_atm_phase_psd = self.ao_corrections_to_phase_psd(self.atmospheric_turbulence_psd, self.adaptive_optics_psd, f_ao)
+		ao_corrected_atm_phase_psd = self.ao_corrections_to_phase_psd(
+			self.atmospheric_turbulence_psd, 
+			self.adaptive_optics_psd, 
+			f_ao,
+			ao_correction_amplitude,
+			ao_correction_frac_offset
+		)
 		if plots: plot_ga(ao_corrected_atm_phase_psd, lambda x: np.log(np.abs(x)), 'ao_corrected_atm_phase_psd', 'arbitrary units', 'rho/wavelength')
 		
 		ao_corrected_otf = self.optical_transfer_fuction_from_phase_psd(ao_corrected_atm_phase_psd, mode, s_factor)
@@ -174,6 +188,11 @@ class PSFModel:
 		
 		rho_axes = tuple(a*wavelength for a in self.psf_full.axes)
 		_lgr.debug(f'{rho_axes=}')
+		
+		# swap output and rho axes to see if it makes a difference
+		#temp = output_axes
+		#output_axes = rho_axes
+		#rho_axes = temp
 				
 		interp = sp.interpolate.RegularGridInterpolator(rho_axes, self.psf_full.data,method='linear', bounds_error=False, fill_value=np.min(self.psf_full.data))
 		
