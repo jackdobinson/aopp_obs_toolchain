@@ -94,6 +94,30 @@ def to_end(a : np.ndarray, axes : tuple[int,...]):
 	# as np.moveaxis returns a view of `a` we don't have to clean up anything
 
 
+
+def iter_axes_group(
+		a : np.ndarray,
+		axes : tuple[int,...]
+	):
+	
+	with to_end(a, axes) as b:
+		n = b.ndim - len(axes)
+		shape = (*b.shape[:-len(axes)],1)
+		size = np.product(shape)
+		strides = tuple(np.cumprod(shape[::-1])[:-1][::-1])
+		steps = [0]*n
+		#print(f'{n=} {strides=} {steps=}')
+		for i in range(size):
+			for j, stride in enumerate(strides):
+				#print(f'{i=}')
+				step = i//stride
+				steps[j] = step
+				i -= step*stride
+				#print(f'{j=} {step=} {steps=} {i=}')
+			yield (tuple(steps), b)
+				
+
+
 def reverse(a : np.ndarray):
 	print(a.ndim)
 	axes = tuple(range(a.ndim))

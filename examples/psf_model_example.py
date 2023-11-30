@@ -9,6 +9,8 @@ import ultranest
 import ultranest.plot
 import scipy as sp
 import scipy.stats
+import scipy.interpolate
+import scipy.ndimage
 
 import numpy_helper as nph
 import astropy_helper as aph
@@ -30,7 +32,7 @@ _lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 def normalise_psf(
 		data : np.ndarray, 
 		axes : tuple[int,...] | None=None, 
-		cutout_shape : tuple[int,...] | None = None
+		cutout_shape : tuple[int,...] | None = None,
 	) -> np.ndarray:
 	"""
 	Ensure an array of data fufils the following conditions:
@@ -42,15 +44,19 @@ def normalise_psf(
 	"""
 	if axes is None:
 		axes = tuple(range(data.ndim))
-		
+	
 	data = nph.array.ensure_odd_shape(data, axes)
 	
 	
+	# center around brightest pixel
 	for idx in nph.slice.iter_indices(data, group=axes):
 		bp_offset = nph.array.get_center_offset_brightest_pixel(data[idx])
 		data[idx] = nph.array.apply_offset(data[idx], bp_offset)
 		data[idx] /= np.nansum(data[idx])
-			
+	
+	# cutout region around the center of the image if desired,
+	# this is pretty important when adjusting for center of mass, as long
+	# as the COM should be close to the brightest pixel
 	if cutout_shape is not None:
 		_lgr.debug(f'{tuple(data.shape[x] for x in axes)=} {cutout_shape=}')
 		center_slices = nph.slice.around_center(tuple(data.shape[x] for x in axes), cutout_shape)
@@ -60,8 +66,42 @@ def normalise_psf(
 			slices[i] = center_slice
 		_lgr.debug(f'{slices=}')
 		data = data[tuple(slices)]
-		
 	
+	
+	
+	# move center of mass to middle of image
+	indices = np.indices(tuple(data.shape[i] for i in axes))
+	com_idxs = np.moveaxis(np.array([np.nansum(data*ii, axis=axes)/np.nansum(data, axis=axes) for ii in indices]), 0, -1)
+	_lgr.debug(f'{com_idxs.shape=}')
+	for _i, (idx, gdata) in enumerate(nph.axes.iter_axes_group(data, axes)):
+		if _i < 25: continue # DEBUGGING
+		if _i > 26: break # DEBUGGING
+		_lgr.debug(f'{_i=}')
+		_lgr.debug(f'{idx=}')
+		# calculate center of mass
+		#com_idxs = tuple(np.nansum(data[idx]*indices)/np.nansum(data[idx]) for indices in np.indices(data[idx].shape))
+		center_to_com_offset = np.array([s//2 - com_i for s, com_i in zip(gdata[idx].shape, com_idxs[idx])])
+		_lgr.debug(f'{idx=} {com_idxs[idx]=} {center_to_com_offset=}')
+		_lgr.debug(f'{sp.ndimage.center_of_mass(np.nan_to_num(gdata[idx]))=}')
+		
+		# regrid so that center of mass lies on an exact pixel
+		old_points = tuple(np.linspace(0,s-1,s) for s in gdata[idx].shape)
+		interp = sp.interpolate.RegularGridInterpolator(
+			old_points, 
+			gdata[idx], 
+			method='linear', 
+			bounds_error=False, 
+			fill_value=0
+		)
+	
+		# have to reverse center_to_com_offset here
+		new_points = tuple(p-center_to_com_offset[::-1][i] for i,p in enumerate(old_points))
+		_lgr.debug(f'{[s.size for s in new_points]=}')
+		new_points = np.moveaxis(np.array(np.meshgrid(*new_points[::-1])), 0,-1)
+		_lgr.debug(f'{[s.size for s in old_points]=} {gdata[idx].shape=} {new_points.shape=}')
+		gdata[idx] = interp(new_points)
+	
+
 	return data
 
 
@@ -98,13 +138,13 @@ def psf_model_prior_transform(cube):
 	params[5] = from_unit_range_to(cube[5], -1, 1)
 	
 	# ao_correction_amplitude
-	params[6] = from_unit_range_to(cube[6], 0, 25)
+	params[6] = from_unit_range_to(cube[6], 15, 40)
 	
 	# factor
 	params[7] = from_unit_range_to(cube[7], 0.7, 1.3)
 
 	#s_factor
-	#params[8] = from_unit_range_to(cube[8], 0, 1)
+	params[8] = from_unit_range_to(cube[8], 0, 0.1)
 
 	return params
 
@@ -121,7 +161,7 @@ def create_psf_model_callable(psf_model_obj, instrument):
 		instrument.f_ao,
 		args[6],
 		args[5],
-		#s_factor=args[7],
+		s_factor=args[7],
 		plots=False
 	)
 
@@ -139,7 +179,8 @@ def create_psf_model_likelihood_callable(psf_model_callable, data, wavelength_id
    			beta, 
    			ao_correction_frac_offset, 
    			ao_correction_amplitude, 
-   			factor
+   			factor,
+   			s_factor
 		) = params
 		
 		specific_model = psf_model_callable(
@@ -149,7 +190,8 @@ def create_psf_model_likelihood_callable(psf_model_callable, data, wavelength_id
 			np.array([sigma, sigma]), 
 			beta, 
 			ao_correction_frac_offset, 
-			ao_correction_amplitude
+			ao_correction_amplitude,
+			s_factor
 		)
 		
 		data_scale = tuple(s*x for s,x in zip(data.shape[1:], (0.025*(1/3600)*(3.142/180), 0.025*(1/3600)*(3.142/180))))#(0.5*1.212E-7, 0.5*1.212E-7)))
@@ -231,7 +273,7 @@ if __name__=='__main__':
 	psf = FitsSpecifier(example_data_loader.example_standard_star_file, 'DATA', (slice(None),slice(None),slice(None)), {'CELESTIAL':(1,2)}) 
 	
 	
-	param_names = ['r0','turb_ndim', 'L0', 'sigma', 'beta', 'ao_correction_frac_offset', 'ao_correction_amplitude', 'factor']
+	param_names = ['r0','turb_ndim', 'L0', 'sigma', 'beta', 'ao_correction_frac_offset', 'ao_correction_amplitude', 'factor', 's_factor']
 	
 		
 	
@@ -278,7 +320,7 @@ if __name__=='__main__':
 					-0.1, # ao_correction_frac_offset
 					12, # ao_correction_amplitude
 					1.0,#np.exp(25.85), # factor
-					#0.0, #s_factor
+					0.0, #s_factor
 				),
 				True
 			)
