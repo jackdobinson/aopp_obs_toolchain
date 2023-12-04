@@ -41,14 +41,17 @@ class VLT(InstrumentBase):
 	
 	@classmethod
 	def muse(cls,
-		  obs_shape = (201,201),
-		  obs_pixel_size = 0.0125 / (60*60) *np.pi/180,
-		  ref_wavelength = 5E-7
+			expansion_factor,
+			supersample_factor,
+			obs_shape = (301,301),
+			obs_pixel_size = 0.025 / (3600) *np.pi/180,
+			ref_wavelength = 5E-7
 		):
 		"""
 		Description of MUSE instrument on the VLT telescope
 		"""
+		
 		obs_scale = np.array(obs_shape)*np.array(obs_pixel_size)/ref_wavelength
-		return cls(obs_shape, obs_scale, ref_wavelength)
+		return cls(obs_shape, obs_scale, ref_wavelength, expansion_factor, supersample_factor)
 
 

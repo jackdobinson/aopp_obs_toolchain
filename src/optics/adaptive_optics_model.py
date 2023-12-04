@@ -29,6 +29,6 @@ def phase_psd_fetick_2019_moffat_function(
 	f_mesh = np.array(np.meshgrid(*f_axes[::-1]))
 	
 	if type(alpha) is float:
-		alpha = np.ndarray([alpha]*2)
+		alpha = np.array([alpha]*2)
 	psd = moffat_function(f_mesh, alpha, beta)
 	return PhasePowerSpectralDensity(data=psd, axes=f_axes)

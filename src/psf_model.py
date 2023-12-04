@@ -14,6 +14,8 @@ import numpy_helper.array
 
 from geo_array import GeoArray, plot_ga
 from optics.function import PointSpreadFunction, OpticalTransferFunction, PhasePowerSpectralDensity
+from instrument_model.instrument_base import InstrumentBase
+
 
 _lgr = cfg.logs.get_logger_at_level(__name__, 'WARN')
 
@@ -33,6 +35,7 @@ class PSFModel:
 			adaptive_optics_psd_model : 
 				Callable[[np.ndarray, ...], PhasePowerSpectralDensity]
 				| PhasePowerSpectralDensity, # takes in spatial scale axis, returns phase PSD
+			instrument : InstrumentBase # instrument used to take observation, defines certain scale parameters
 		):
 	
 		if callable(telescope_otf_model):
@@ -55,6 +58,8 @@ class PSFModel:
 		else:
 			self.adaptive_optics_psd_model=None
 			self.adaptive_optics_psd = adaptive_optics_psd_model
+		
+		self.instrument = instrument
 	
 	
 	def ao_corrections_to_phase_psd(self, phase_psd, ao_phase_psd, f_ao, ao_correction_amplitude=1, ao_correction_frac_offset=0):
@@ -71,7 +76,7 @@ class PSFModel:
 		f_ao_correction_offset = np.mean(ao_phase_psd.data[f_ao_continuity_region])
 		ao_corrected_psd = np.array(phase_psd.data)
 		ao_corrected_psd[f_ao_correct] = (
-			ao_correction_amplitude*(ao_phase_psd.data[f_ao_correct] - f_ao_correction_offset)
+			np.exp(ao_correction_amplitude)*(ao_phase_psd.data[f_ao_correct] - f_ao_correction_offset)
 			+ np.exp(ao_correction_frac_offset)
 		)*f_ao_continuity_factor
 		return PhasePowerSpectralDensity(ao_corrected_psd, phase_psd.axes)
@@ -109,9 +114,6 @@ class PSFModel:
 
 
 	def __call__(self,
-			shape,
-			expansion_factor,
-			supersample_factor,
 			telescope_otf_model_args,
 			atmospheric_turbulence_psd_model_args,
 			adaptive_optics_psd_model_args,
@@ -127,13 +129,13 @@ class PSFModel:
 		We are making an implicit assumption that all of the calculations can be
 		done in rho/wavelength units.
 		"""
-		self.shape = shape
-		self.expansion_factor = expansion_factor
-		self.supersample_factor = supersample_factor
+		self.shape = self.instrument.obs_shape
+		self.expansion_factor = self.instrument.expansion_factor
+		self.supersample_factor = self.instrument.supersample_factor
 		
 		# Get the telescope optical transfer function
 		if self.telescope_otf_model is not None:
-			self.telescope_otf = self.telescope_otf_model(shape, expansion_factor, supersample_factor, *telescope_otf_model_args)
+			self.telescope_otf = self.telescope_otf_model(self.shape, self.expansion_factor, self.supersample_factor, *telescope_otf_model_args)
 		
 		_lgr.debug(f'{self.telescope_otf.data.shape=} {tuple(x.size for x in self.telescope_otf.axes)=}')
 		
@@ -178,12 +180,12 @@ class PSFModel:
 		
 		return self
 	
-	def at(self, scale, wavelength, plots=True):
+	def at(self, wavelength, plots=True):
 		"""
 		Calculate psf for a given angular scale and wavelength, i.e. convert
 		from rho/wavelength units to rho units.
 		"""
-		output_axes = tuple(np.linspace(-z/2,z/2,s) for z,s in zip(scale,self.shape))
+		output_axes = tuple(np.linspace(-z/2,z/2,s) for z,s in zip(self.instrument.obs_scale*self.instrument.ref_wavelength,self.shape))
 		_lgr.debug(f'{output_axes=}')
 		
 		rho_axes = tuple(a*wavelength for a in self.psf_full.axes)

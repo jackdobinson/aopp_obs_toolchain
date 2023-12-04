@@ -93,6 +93,15 @@ def to_end(a : np.ndarray, axes : tuple[int,...]):
 	
 	# as np.moveaxis returns a view of `a` we don't have to clean up anything
 
+@contextmanager
+def to_start(a : np.ndarray, axes : tuple[int,...]):
+	"""
+	Reorders the axes of 'a' so the axes specified in the 'axes' tuple are
+	at the start (lhs) of the ordering for slicing and indexing
+	"""
+	axes_dest = tuple(range(len(axes)))
+	
+	yield np.moveaxis(a, axes, axes_dest), axes_dest
 
 
 def iter_axes_group(

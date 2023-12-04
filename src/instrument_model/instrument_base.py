@@ -14,18 +14,18 @@ class InstrumentBase:
 	def __init__(self,
 			obs_shape,
 			obs_scale,
-			ref_wavelength
+			ref_wavelength,
+			expansion_factor : float, 
+			supersample_factor : float
 		):
 		self.obs_shape = obs_shape
 		self.obs_scale = obs_scale
 		self.ref_wavelength = ref_wavelength
-	
-	def optical_transfer_function(self, 
-			expansion_factor : float, 
-			supersample_factor : float
-		):
 		self.expansion_factor = expansion_factor
 		self.supersample_factor= supersample_factor
+	
+	def optical_transfer_function(self):
+		
 		return optical_transfer_function_of_optical_component_set(
 			self.obs_shape, 
 			self.expansion_factor, 
