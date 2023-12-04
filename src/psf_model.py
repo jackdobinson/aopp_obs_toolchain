@@ -7,6 +7,7 @@ import numpy as np
 import scipy as sp
 import scipy.ndimage
 import scipy.interpolate
+import scipy.signal
 
 import cfg.logs
 import numpy_helper as nph
@@ -18,6 +19,10 @@ from instrument_model.instrument_base import InstrumentBase
 
 
 _lgr = cfg.logs.get_logger_at_level(__name__, 'WARN')
+
+
+def downsample(a, s):
+	return sp.signal.convolve(a, np.ones([s]*a.ndim)/(s**a.ndim), mode='valid')[tuple(slice(None,None,s) for _ in a.shape)]
 
 
 
