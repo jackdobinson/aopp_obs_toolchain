@@ -1,4 +1,7 @@
+"""
+Very hacky way to get matplotlib to write plots to the test folder instead of wherever it would normally do it.
 
+"""
 
 from pathlib import Path
 
