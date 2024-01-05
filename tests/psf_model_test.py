@@ -16,38 +16,37 @@ def test_psf_model_produces_plots():
 	
 	
 	
-	instrument = VLT.muse()
+	instrument = VLT.muse(
+		expansion_factor=3,
+		supersample_factor=2
+	)
+	
 	
 	test_psf_model = psf_model.PSFModel(
-		instrument.optical_transfer_function(3,1),
+		instrument.optical_transfer_function(),
 		phase_psd_von_karman_turbulence,
 		phase_psd_fetick_2019_moffat_function,
+		instrument
 	)
 	
 	
-	test_psf_model(
-		instrument.obs_shape, 
-		instrument.expansion_factor, 
-		instrument.supersample_factor, 
-		instrument.f_ao, 
-		None, 
-		(	0.17, 
-			2, 
-			8
-		), 
-		(	instrument.f_ao,
-			np.array([5E-2,5E-2]),#np.array([5E-2,5E-2]),
-			1.6,#1.6
-			2E-2,#2E-3
-			0.05,#0.05
-		),
-		plots=False
+	specific_test_psf_model = test_psf_model(
+		None, # telescope_otf_model_args,
+		(0.17, 2, 8), # atmospheric_turbulence_psd_model_args,
+		(5E-2, 1.6), # adaptive_optics_psd_model_args,
+		42, #f_ao,
+		2, # ao_correction_amplitude=1,
+		0, # ao_correction_frac_offset=0,
+		0 # s_factor=0
 	)
 	
-	test_psf_model.at(tuple(101*x for x in (1.212E-7, 1.212E-7)), 5E-7)
-	test_psf_model.at(tuple(101*x for x in (1.212E-7, 1.212E-7)), 6E-7)
-	test_psf_model.at(tuple(101*x for x in (1.212E-7, 1.212E-7)), 7E-7)
-	test_psf_model.at(tuple(101*x for x in (1.212E-7, 1.212E-7)), 8E-7)
+	
+	r1 = specific_test_psf_model.at(5E-7)
+	r2 = specific_test_psf_model.at(6E-7)
+	r3 = specific_test_psf_model.at(7E-7)
+	r4 = specific_test_psf_model.at(8E-7)
+	
+	_lgr.debug(f'{r1=} {r2=} {r3=} {r4=}')
 	
 
 

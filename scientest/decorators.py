@@ -1,9 +1,12 @@
+"""
+Contains decorators for use in tests
+"""
+
 from typing import Any
 from functools import wraps, update_wrapper, partial
 import itertools as it
 import inspect
 
-import test_data
 
 def decorator(f : callable):
 	@wraps(f)

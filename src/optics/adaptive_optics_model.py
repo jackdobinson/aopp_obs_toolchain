@@ -18,7 +18,7 @@ def moffat_function(x, alpha, beta):
 
 def phase_psd_fetick_2019_moffat_function(
 		f_axes,
-		alpha : np.ndarray,
+		alpha : np.ndarray | float,
 		beta : float,
 	):
 	"""

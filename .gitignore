@@ -4,6 +4,7 @@
 *.swp
 __pycache__/
 output/
+test_output/
 /example_data
 ultranest_logs/
 plots/

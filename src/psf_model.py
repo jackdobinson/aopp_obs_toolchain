@@ -9,6 +9,8 @@ import scipy.ndimage
 import scipy.interpolate
 import scipy.signal
 
+import matplotlib.pyplot as plt
+
 import cfg.logs
 import numpy_helper as nph
 import numpy_helper.array
@@ -18,7 +20,7 @@ from optics.function import PointSpreadFunction, OpticalTransferFunction, PhaseP
 from instrument_model.instrument_base import InstrumentBase
 
 
-_lgr = cfg.logs.get_logger_at_level(__name__, 'WARN')
+_lgr = cfg.logs.get_logger_at_level(__name__, 'INFO')
 
 
 def downsample(a, s):
@@ -73,12 +75,21 @@ class PSFModel:
 		"""
 		if ao_phase_psd is None: 
 			return phase_psd.copy()
+		f_delta = 1.5
+		_lgr.debug(f'{phase_psd.data=} {ao_phase_psd.data=} {f_ao=} {ao_correction_amplitude=} {ao_correction_frac_offset=}')
+		_lgr.debug(f'{f_ao=} {ao_correction_amplitude=} {ao_correction_frac_offset=}')
 		f_mesh = phase_psd.mesh
 		f_mag = np.sqrt(np.sum(f_mesh**2, axis=0))
+		_lgr.debug(f'{np.max(f_mag)=}')
+		_lgr.debug(f'{np.count_nonzero(np.isnan(f_mesh))=} {np.count_nonzero(np.isnan(f_mag))=}')
 		f_ao_correct = f_mag <= f_ao
-		f_ao_continuity_region = ((f_ao-0.5) < f_mag) & (f_mag <= (f_ao+0.5))
-		f_ao_continuity_factor = np.mean(phase_psd.data[f_ao_continuity_region])
-		f_ao_correction_offset = np.mean(ao_phase_psd.data[f_ao_continuity_region])
+		f_ao_continuity_region = ((f_ao-f_delta) < f_mag) & (f_mag <= (f_ao+f_delta))
+		_lgr.debug(f'{np.count_nonzero(f_ao_continuity_region)=} {np.sum(f_ao_continuity_region)=}')
+		
+		f_ao_continuity_factor = np.nanmean(phase_psd.data[f_ao_continuity_region])
+		f_ao_correction_offset = np.nanmean(ao_phase_psd.data[f_ao_continuity_region])
+		
+		_lgr.debug(f'{f_ao_continuity_factor=} {f_ao_correction_offset=}')
 		ao_corrected_psd = np.array(phase_psd.data)
 		ao_corrected_psd[f_ao_correct] = (
 			np.exp(ao_correction_amplitude)*(ao_phase_psd.data[f_ao_correct] - f_ao_correction_offset)
@@ -126,7 +137,7 @@ class PSFModel:
 			ao_correction_amplitude=1,
 			ao_correction_frac_offset=0,
 			s_factor=0,
-			mode='classic',
+			mode='adjust',
 			plots=True
 		):
 		"""
@@ -137,63 +148,120 @@ class PSFModel:
 		self.shape = self.instrument.obs_shape
 		self.expansion_factor = self.instrument.expansion_factor
 		self.supersample_factor = self.instrument.supersample_factor
+		self.adaptive_optics_psd_model_args = adaptive_optics_psd_model_args
 		
-		# Get the telescope optical transfer function
-		if self.telescope_otf_model is not None:
-			self.telescope_otf = self.telescope_otf_model(self.shape, self.expansion_factor, self.supersample_factor, *telescope_otf_model_args)
 		
-		_lgr.debug(f'{self.telescope_otf.data.shape=} {tuple(x.size for x in self.telescope_otf.axes)=}')
-		
-		if plots: plot_ga(self.telescope_otf, lambda x: np.log(np.abs(x)), 'diffraction limited otf', 'arbitrary units', 'wavelength/rho')
-		if plots: plot_ga(self.telescope_otf.ifft(), lambda x: np.log(np.abs(x)), 'diffraction limited psf', 'arbitrary units', 'rho/wavelength')
-		
-		f_axes = self.telescope_otf.ifft().axes
-		_lgr.debug(f'{tuple(x.size for x in f_axes)=}')
-		
-		# Get the atmospheric phase power spectral density
-		if self.atmospheric_turbulence_psd_model is not None:
-			self.atmospheric_turbulence_psd = self.atmospheric_turbulence_psd_model(f_axes, *atmospheric_turbulence_psd_model_args)
-		if plots: plot_ga(self.atmospheric_turbulence_psd, lambda x: np.log(np.abs(x)), 'atmospheric_turbulence_psd', 'arbitrary units', 'rho/wavelength')
-		
-		# Get the adaptive optics phase power spectral density
-		if self.adaptive_optics_psd_model is not None:
-			self.adaptive_optics_psd = self.adaptive_optics_psd_model(f_axes, *adaptive_optics_psd_model_args)
-		if plots: plot_ga(self.adaptive_optics_psd, lambda x: np.log(np.abs(x)), 'adaptive_optics_psd', 'arbitrary units', 'rho/wavelength')
-		
-		# Apply the adapative optics phase power spectral density corrections to the atmospheric phase power spectral density
-		ao_corrected_atm_phase_psd = self.ao_corrections_to_phase_psd(
-			self.atmospheric_turbulence_psd, 
-			self.adaptive_optics_psd, 
-			f_ao,
-			ao_correction_amplitude,
-			ao_correction_frac_offset
-		)
-		if plots: plot_ga(ao_corrected_atm_phase_psd, lambda x: np.log(np.abs(x)), 'ao_corrected_atm_phase_psd', 'arbitrary units', 'rho/wavelength')
-		
-		ao_corrected_otf = self.optical_transfer_fuction_from_phase_psd(ao_corrected_atm_phase_psd, mode, s_factor)
-		
-		_lgr.debug(f'{ao_corrected_otf.data.shape=} {self.telescope_otf.data.shape=}')
-		
-		# Combination of diffraction-limited optics, atmospheric effects, AO correction to atmospheric effects
-		otf_full = GeoArray(ao_corrected_otf.data * self.telescope_otf.data, self.telescope_otf.axes)
-		if plots: plot_ga(otf_full, lambda x: np.log(np.abs(x)), 'otf full', 'arbitrary units', 'wavelength/rho')
-		
-		psf_full = otf_full.ifft()
-		if plots: plot_ga(psf_full, lambda x: np.log(np.abs(x)), 'psf full', 'arbitrary units', 'rho/wavelength')
-		
-		self.psf_full = PointSpreadFunction(np.abs(psf_full.data), psf_full.axes)
-		
+		self.telescope_otf_model_args = telescope_otf_model_args
+		self.atmospheric_turbulence_psd_model_args = atmospheric_turbulence_psd_model_args
+		self.f_ao = f_ao
+		self.ao_correction_amplitude = ao_correction_amplitude
+		self.ao_correction_frac_offset = ao_correction_frac_offset
+		self.mode= mode
+		self.s_factor = s_factor
 		return self
+	
+	
 	
 	def at(self, wavelength, plots=True):
 		"""
 		Calculate psf for a given angular scale and wavelength, i.e. convert
 		from rho/wavelength units to rho units.
 		"""
-		output_axes = tuple(np.linspace(-z/2,z/2,s) for z,s in zip(self.instrument.obs_scale*self.instrument.ref_wavelength,self.shape))
+		wav_factor = (wavelength/self.instrument.ref_wavelength)
+		ang_wav_factor = (self.instrument.obs_pixel_size/wavelength)
+		_lgr.debug(f'{wav_factor=} {ang_wav_factor=}')
+		
+		# Get the telescope optical transfer function
+		if self.telescope_otf_model is not None:
+			self.telescope_otf = self.telescope_otf_model(self.shape, self.expansion_factor, self.supersample_factor, *self.telescope_otf_model_args)
+		
+		telescope_otf = self.telescope_otf#GeoArray(self.telescope_otf.data, tuple(a*ang_wav_factor for a in self.telescope_otf.axes))
+				
+		_lgr.debug(f'{telescope_otf.data.shape=} {tuple(x.size for x in telescope_otf.axes)=}')
+		_lgr.debug(f'{telescope_otf.axes=}')
+		
+		if plots: plot_ga(telescope_otf, lambda x: np.log(np.abs(x)), 'diffraction limited otf', 'arbitrary units', 'wavelength/rho')
+		if plots: plot_ga(telescope_otf.ifft(), lambda x: np.log(np.abs(x)), 'diffraction limited psf', 'arbitrary units', 'rho/wavelength')
+		
+		_lgr.debug(f'{self.instrument.obs_scale=} {self.instrument.obs_shape=}')
+		
+		f_axes = telescope_otf.ifft().axes
+		#f_axes = tuple(a/self.instrument.obs_pixel_size for a,sc,sh in zip(self.telescope_otf.ifft().axes,self.instrument.obs_scale,self.instrument.obs_shape))
+		
+		_lgr.debug(f'{tuple(x.size for x in f_axes)=}')
+		_lgr.debug(f'{f_axes=}')
+		
+		# Get the atmospheric phase power spectral density
+		if self.atmospheric_turbulence_psd_model is not None:
+			self.atmospheric_turbulence_psd = self.atmospheric_turbulence_psd_model(f_axes, *self.atmospheric_turbulence_psd_model_args)
+		if plots: plot_ga(self.atmospheric_turbulence_psd, lambda x: np.log(np.abs(x)), 'atmospheric_turbulence_psd', 'arbitrary units', 'rho/wavelength')
+		
+		# Get the adaptive optics phase power spectral density
+		if self.adaptive_optics_psd_model is not None:
+			self.adaptive_optics_psd = self.adaptive_optics_psd_model(f_axes, *self.adaptive_optics_psd_model_args)
+		if plots: plot_ga(self.adaptive_optics_psd, lambda x: np.log(np.abs(x)), 'adaptive_optics_psd', 'arbitrary units', 'rho/wavelength')
+		_lgr.debug(f'{self.atmospheric_turbulence_psd.data=}')
+		_lgr.debug(f'{self.adaptive_optics_psd.data=}')
+		
+		
+		
+		
+		
+		# Apply the adapative optics phase power spectral density corrections to the atmospheric phase power spectral density
+		ao_corrected_atm_phase_psd = self.ao_corrections_to_phase_psd(
+			self.atmospheric_turbulence_psd, 
+			self.adaptive_optics_psd, 
+			self.f_ao,#*wav_factor,
+			self.ao_correction_amplitude,#*wav_factor,
+			self.ao_correction_frac_offset
+		)
+		if plots: plot_ga(ao_corrected_atm_phase_psd, lambda x: np.log(np.abs(x)), 'ao_corrected_atm_phase_psd', 'arbitrary units', 'rho/wavelength')
+		
+		ao_corrected_otf = self.optical_transfer_fuction_from_phase_psd(ao_corrected_atm_phase_psd, self.mode, self.s_factor)
+		if plots: plot_ga(ao_corrected_otf, lambda x: np.log(np.abs(x)), 'ao_corrected_otf', 'arbitrary units', 'wavelength/rho')
+		if plots: plot_ga(ao_corrected_otf.ifft(), lambda x: np.log(np.abs(x)), 'ao_corrected_psf', 'arbitrary units', 'rho/wavelength')
+		
+		_lgr.debug(f'{ao_corrected_otf.data.shape=} {telescope_otf.data.shape=}')
+		_lgr.debug(f'{ao_corrected_otf.data=}')
+		_lgr.debug(f'{telescope_otf.data=}')
+		
+		"""
+		t_otf_wav_axes = tuple(a/ang_wav_factor for a in self.telescope_otf.axes)
+		interp = sp.interpolate.RegularGridInterpolator(
+			self.telescope_otf.axes, 
+			self.telescope_otf.data,method='linear',
+			bounds_error=False, 
+			fill_value=np.min(self.telescope_otf.data)
+		)
+		points = np.swapaxes(np.array(np.meshgrid(*t_otf_wav_axes)), 0,-1)
+		t_otf_wav = GeoArray(np.array(interp(points)), t_otf_wav_axes)
+		if plots: plot_ga(t_otf_wav, lambda x: np.log(np.abs(x)), 't_otf_wav', 'arbitrary units', '1/rho')
+		if plots: plot_ga(t_otf_wav.ifft(), lambda x: np.log(np.abs(x)), 't_psf_wav', 'arbitrary units', 'rho')
+		"""
+		
+		
+		# Combination of diffraction-limited optics, atmospheric effects, AO correction to atmospheric effects
+		otf_full = GeoArray(
+			ao_corrected_otf.data * telescope_otf.data, 
+			#(ao_corrected_otf.data/np.nansum(ao_corrected_otf.data)) * (self.telescope_otf.data/np.nansum(self.telescope_otf.data)), 
+			telescope_otf.axes
+		)
+		if plots: plot_ga(otf_full, lambda x: np.log(np.abs(x)), 'otf full', 'arbitrary units', 'wavelength/rho')
+		
+		psf_full = otf_full.ifft()
+		if plots: plot_ga(psf_full, lambda x: np.log(np.abs(x)), 'psf full', 'arbitrary units', 'rho/wavelength')
+		
+		psf_full = PointSpreadFunction(np.abs(psf_full.data), psf_full.axes)
+		_lgr.debug(f'{psf_full.data=}')
+		
+
+		
+		output_axes = tuple(np.linspace(-s/2*ang_wav_factor,s/2*ang_wav_factor,s*self.instrument.supersample_factor) for s in self.shape)
+		
+		#output_axes = tuple(np.linspace(-z/2,z/2,s) for z,s in zip(self.instrument.obs_scale*self.instrument.ref_wavelength,self.psf_full.data.shape))
 		_lgr.debug(f'{output_axes=}')
 		
-		rho_axes = tuple(a*wavelength for a in self.psf_full.axes)
+		rho_axes = psf_full.axes#tuple(a*wavelength for a in self.psf_full.axes)
 		_lgr.debug(f'{rho_axes=}')
 		
 		# swap output and rho axes to see if it makes a difference
@@ -201,11 +269,21 @@ class PSFModel:
 		#output_axes = rho_axes
 		#rho_axes = temp
 				
-		interp = sp.interpolate.RegularGridInterpolator(rho_axes, self.psf_full.data,method='linear', bounds_error=False, fill_value=np.min(self.psf_full.data))
+		interp = sp.interpolate.RegularGridInterpolator(rho_axes, psf_full.data,method='linear', bounds_error=False, fill_value=np.min(psf_full.data))
 		
 		points = np.swapaxes(np.array(np.meshgrid(*output_axes)), 0,-1)
 		
-		result = GeoArray(np.array(interp(points)), output_axes)
+		
+		
+		sample_size = tuple(s1/(self.instrument.expansion_factor*s2) for s1,s2 in zip(psf_full.data.shape, self.shape))
+		assert all([s==int(sample_size[0]) for s in sample_size]), "Should have a constant integer factor"
+		sample_size = int(sample_size[0])
+		_lgr.debug(f'{sample_size=}')
+		
+		result = GeoArray(downsample(np.array(interp(points)), sample_size), tuple(a[::sample_size] for a in output_axes))
+		
+		
+		#result = GeoArray(downsample(self.psf_full.data, sample_size), tuple(wav_factor*a[::sample_size] for a in self.psf_full.axes))
 		_lgr.debug(f'{result.data.shape=}')
 		
 		_lgr.debug(f'{result.data=}')

@@ -25,7 +25,8 @@ from plot_helper.base import AxisDataMapping
 
 
 import test_data
-import decorators
+import scientest.decorators
+import scientest.cfg.settings
 
 algo_basic_test_data = SimpleNamespace(
 	n_iter = 10,
@@ -52,7 +53,7 @@ def test_call_altered_instantiated_parameters():
  
 
 
-@decorators.skip(True)
+@scientest.decorators.skip(True)
 def test_on_example_data(n_iter=200):
 	# get example data
 	obs = FitsSpecifier(test_data.example_fits_file, 'DATA', (slice(229,230),slice(None),slice(None)), {'CELESTIAL':(1,2)}) 
@@ -136,7 +137,7 @@ def test_on_example_data(n_iter=200):
 
 
 
-@decorators.skip(True)
+@scientest.decorators.skip(True)
 def test_on_example_data_with_plotting_hooks(n_iter=200):
 	# get example data
 	obs = FitsSpecifier(test_data.example_fits_file, 'DATA', (slice(229,230),slice(None),slice(None)), {'CELESTIAL':(1,2)}) 

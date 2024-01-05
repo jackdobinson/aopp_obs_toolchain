@@ -1,9 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-import decorators
+import scientest.decorators
 
-decorators.skip(True)
+@scientest.decorators.skip(True)
 def test_fft_conjugate_variable_scaling():
 	n = 101*20
 	x_min, x_max = 0, 1*20

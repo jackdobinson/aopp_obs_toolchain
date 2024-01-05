@@ -14,12 +14,14 @@ class InstrumentBase:
 	def __init__(self,
 			obs_shape,
 			obs_scale,
+			obs_pixel_size,
 			ref_wavelength,
 			expansion_factor : float, 
 			supersample_factor : float
 		):
 		self.obs_shape = obs_shape
 		self.obs_scale = obs_scale
+		self.obs_pixel_size = obs_pixel_size
 		self.ref_wavelength = ref_wavelength
 		self.expansion_factor = expansion_factor
 		self.supersample_factor= supersample_factor

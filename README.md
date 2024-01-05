@@ -30,7 +30,7 @@ Placeholders:
 
 ## Running Tests ##
 
-The tests are in the directory `<REPO_DIR>/tests`, there is a special file `<REPO_DIR>/tests/run.py` which will search for tests and run them one by one. It tries to ensure that tests do not have side-effects. 
+The tests are in the directory `<REPO_DIR>/tests`, there is a package `<REPO_DIR>/scientest` which is a testing tool. The module `<REPO_DIR>/scientest/run.py` will search for tests and run them one by one. It tries to ensure that tests do not have side-effects. 
 
 Folders are searched if:
 	* They **do not**  begin with double underscores (`__`).
@@ -44,6 +44,5 @@ Steps to run tests:
 	* Open a terminal window.
 	* Ensure you are in the repository directory via `cd <REPO_DIR>`
 	* Activate the virtual environment with `source <VENV_DIR>/bin/activate`
-	* Run the tests (includes test discovery) via `python3 ./tests/run.py`.
+	* Run the tests (includes test discovery) via `python3 -m scientest.run ./tests`.
 
-* 

@@ -1,10 +1,12 @@
 
 import os
+from pathlib import Path
 import math
 from collections import namedtuple
 import inspect
 import dataclasses as dc
 from typing import Callable
+import json
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -188,7 +190,10 @@ class PriorParamSet:
 				self.const_param_examples.append(p.example_value)
 				j+=1
 		return
-		
+	
+	def get_const_params(self):
+		return dict(zip(self.const_param_names, self.const_param_transforms))
+	
 	def __getitem__(self, k):
 		return self.prior_params[self._pp_map[k]]
 	
@@ -254,7 +259,7 @@ class PriorParamSet:
 		return ultranest_model_callable
 
 
-def create_psf_model_callable(psf_model_obj):
+def create_psf_model_callable(psf_model_obj, show_plots=False):
 	"""
 	Create a callable that accepts the parameters we care about.
 	"""
@@ -279,7 +284,7 @@ def create_psf_model_callable(psf_model_obj):
 			ao_correction_amplitude,
 			ao_correction_frac_offset,
 			s_factor,
-			plots=False
+			plots=show_plots # DEBUGGING
 		)
 		specific_model.factor = factor
 		
@@ -289,8 +294,26 @@ def create_psf_model_callable(psf_model_obj):
 
 
 
+def psf_model_result_factory(psf_model_callable, wavelength, show_plots=False):
+	"""
+	Factory function that creates a function that returns the result of a specific model
+	"""
+	
+	def model_result_callable(params):
+		specific_model = psf_model_callable(params)
+		result = specific_model.at(wavelength, plots=show_plots).data
+		result /= np.nansum(result)
+		result *= specific_model.factor
+		
+		return result
 
-def create_psf_model_likelihood_callable(psf_model_callable, data, err, wavelength):
+	return model_result_callable
+
+
+
+
+
+def create_psf_model_likelihood_callable(psf_model_callable, data, err, wavelength, show_plots=False):
 	"""
 	Use the callable to work out the likelihood. This is what's actually called
 	by ultranest
@@ -302,7 +325,7 @@ def create_psf_model_likelihood_callable(psf_model_callable, data, err, waveleng
 		#_lgr.debug(f'{data.shape=} {data_scale=}')
 
 		nan_mask = np.isnan(data)
-		result = specific_model.at(wavelength, plots=False).data
+		result = specific_model.at(wavelength, plots=show_plots).data
 		result /= np.nansum(result) # normalise model result
 		
 		result *= specific_model.factor
@@ -336,6 +359,170 @@ def get_error(data, frac, low_limit, hi_limit, sigma):
 		vrange_center
 	)
 	return err
+
+
+
+
+class UltranestResultSet:
+	
+	metadata_file : str = 'result_set_metadata.json'
+	
+	def __init__(self, result_set_directory : Path | str):
+		self.directory = Path(result_set_directory)
+		self.metadata = dict()
+		self.metadata_path = self.directory / self.metadata_file
+		if self.metadata_path.exists():
+			self.load_metadata()
+	
+	def __repr__(self):
+		return f'UltransetResultSet({self.directory.absolute()})'
+	
+	def load_metadata(self):
+		with open(self.metadata_path, 'r') as f:
+			self.metadata.update(json.load(f))
+	
+	def save_metadata(self):
+		with open(self.metadata_path, 'w') as f:
+			json.dump(self.metadata, f)
+
+	def clear_metadata(self):
+		self.metadata = dict()
+
+	def get_result_data_path(self, idx):
+		"""
+		Ultranest has "result_set_directory/run[INT]" to hold data for each run
+		"""
+		return self.directory / f'run{idx}'
+		
+	def get_result_data_from_path(self, result_data_path : Path):
+		fname = result_data_path / 'info' / 'results.json'
+		
+		with open(fname, 'r') as f:
+			rdata = json.load(f)
+		
+		return {
+			'param_names': rdata['paramnames'],
+			'best_point' : rdata['maximum_likelihood']['point'],
+			'stats' : rdata['posterior']
+		}
+
+
+	def get_params_vs_wavelength(self) -> tuple[np.array, dict[str,np.array]]:
+		
+		wavs = np.array([w for w,idx in self.metadata['wavelength_idxs']])
+		idxs = np.array([idx for w,idx in self.metadata['wavelength_idxs']])
+		
+		param_values = {}
+		for i, (wavelength, idx) in enumerate(self.metadata['wavelength_idxs']):
+		
+			result = self.get_result_data_from_path(self.get_result_data_path(idx))
+			for j, pname in enumerate(result['param_names']):
+				if pname not in param_values:
+					param_values[pname] = np.full_like(wavs, np.nan)
+				param_values[pname][i] = result['best_point'][j]
+		
+		sort_indices = np.argsort(wavs)
+		wavs = wavs[sort_indices]
+		idxs = idxs[sort_indices]
+		param_values = dict((k,v[sort_indices]) for k,v in param_values.items())
+		
+		return wavs, idxs, param_values
+
+	def plot_params_vs_wavelength(self, show=False, save=True):
+		fname = 'params_vs_wavelength.png'
+		wavs, _, param_values = self.get_params_vs_wavelength()
+		
+		f, a = plot_helper.figure_n_subplots(len(param_values))
+		#f.tight_layout(pad=16, w_pad=8, h_pad=4)
+		f.set_layout_engine('constrained')
+		
+		f.suptitle('Parameters vs Wavelength')
+		for i, pname in enumerate(param_values):
+			a[i].set_title(pname)
+			a[i].set_xlabel('wavelength')
+			a[i].set_ylabel(pname)
+			a[i].plot(wavs, param_values[pname], 'bo-')
+		
+		if save: plt.savefig(self.directory / fname)
+		if show: plt.show()
+	
+	
+	def plot_results(self, 
+			model_callable_factory : Callable[[float],Callable[[float,...],np.ndarray]], 
+			ref_data : np.ndarray, 
+			show=False, 
+			save=True
+		):
+		log_plot_fname_fmt = 'log_result_{idx}.png'
+		linear_plot_fname_fmt = 'linear_result_{idx}.png'
+		
+		wavs, idxs, param_values = self.get_params_vs_wavelength()
+		
+		
+		for i, (wav, idx) in enumerate(zip(wavs, idxs)):
+			
+			
+			params = tuple(param_values[pname][i] for pname in param_values)
+			result = model_callable_factory(wav)(params)
+			
+			
+			data = ref_data[idx]
+			log_data = np.log(data)
+			log_data[np.isinf(log_data)] = np.nan
+			
+			
+			
+			
+			# plot log of result vs reference data
+			f, a = plot_helper.figure_n_subplots(4)
+			f.set_layout_engine('constrained')
+			f.suptitle(f'log results {wav=} {idx=}')
+			vmin, vmax = np.nanmin(log_data), np.nanmax(log_data)
+			
+			a[0].set_title(f'log data [{vmin}, {vmax}]')
+			a[0].imshow(log_data, vmin=vmin, vmax=vmax)
+			
+			a[1].set_title(f'log result [{vmin}, {vmax}]')
+			a[1].imshow(np.log(result), vmin=vmin, vmax=vmax)
+			
+			a[2].set_title(f'log residual [{vmin}, {vmax}]')
+			a[2].imshow(np.log(data-result), vmin=vmin, vmax=vmax)
+			
+			log_abs_residual = np.log(np.abs(data-result))
+			a[3].set_title(f'log abs residual [{np.nanmin(log_abs_residual)}, {np.nanmax(log_abs_residual)}]')
+			a[3].imshow(log_abs_residual)
+			
+			if save: plt.savefig(self.directory / log_plot_fname_fmt.format(idx=idx))
+			if show: plt.show()
+			
+			
+			# plot result vs reference data
+			f, a = plot_helper.figure_n_subplots(4)
+			f.set_layout_engine('constrained')
+			f.suptitle(f'linear results {wav=} {idx=}')
+			
+			vmin, vmax = np.nanmin(data), np.nanmax(data)
+			
+			a[0].set_title(f'data [{vmin}, {vmax}]')
+			a[0].imshow(data, vmin=vmin, vmax=vmax)
+			
+			a[1].set_title(f'result [{vmin}, {vmax}]')
+			a[1].imshow(result, vmin=vmin, vmax=vmax)
+			
+			a[2].set_title(f'residual [{vmin}, {vmax}]')
+			a[2].imshow(data-result, vmin=vmin, vmax=vmax)
+			
+			frac_residual = np.abs(data-result)/data
+			fr_sorted = np.sort(frac_residual.flatten())
+			vmin=fr_sorted[fr_sorted.size//4]
+			vmax = fr_sorted[3*fr_sorted.size//4]
+			a[3].set_title(f'frac residual [{vmin}, {vmax}]')
+			a[3].imshow(frac_residual, vmin=vmin, vmax=vmax)
+			
+			if save: plt.savefig(self.directory / linear_plot_fname_fmt.format(idx=idx))
+			if show: plt.show()
+			
+			
 
 
 if __name__=='__main__':
@@ -389,7 +576,6 @@ if __name__=='__main__':
 	
 	
 	
-	
 	with fits.open(psf.path) as psf_hdul:	
 		with nph.axes.to_end(psf_hdul[psf.ext].data, psf.axes['CELESTIAL']) as psf_data:
 			
@@ -407,7 +593,11 @@ if __name__=='__main__':
 
 	
 			_lgr.debug(f'{psf_data.shape[-2:]=}')
-			instrument = VLT.muse(3,3,obs_shape=psf_data.shape[-2:])
+			instrument = VLT.muse(
+				expansion_factor = 3,
+				supersample_factor = 2,
+				obs_shape=psf_data.shape[-2:]
+			)
 		
 			params = PriorParamSet((
 				PriorParam('r0', 
@@ -424,11 +614,11 @@ if __name__=='__main__':
 				),
 				PriorParam('alpha', 
 					unit_range_to(0.1, 3), 
-					1.5
+					0.7
 				),
 				PriorParam('beta', 
 					unit_range_to(1.01, 10), 
-					6
+					1.6
 				),
 				PriorParam('ao_correction_frac_offset', 
 					unit_range_to(-1,1), 
@@ -436,7 +626,7 @@ if __name__=='__main__':
 				),
 				PriorParam('ao_correction_amplitude', 
 					unit_range_to(0,5), 
-					2.48
+					2.2
 				),
 				PriorParam('factor', 
 					unit_range_to(0.7,1.3), 
@@ -447,7 +637,7 @@ if __name__=='__main__':
 					0
 				),
 				PriorParam('f_ao',
-					instrument.f_ao,
+					unit_range_to(24.0/(2*instrument.obj_diameter),52.0/(2*instrument.obj_diameter)),#instrument.f_ao,
 					instrument.f_ao
 				)
 			))
@@ -461,21 +651,45 @@ if __name__=='__main__':
 				instrument
 			)
 			
-			psf_model_callable = create_psf_model_callable(test_psf_model)
+			
+			wavelength_idxs = (
+				(4.903E-7, 16),
+				(5E-7, 26),
+				(5.24469E-7, 50),
+				(5.644E-7, 90),
+				(6.06E-7, 134),
+				(6.244E-7, 150),
+				(6.64E-7, 190),
+				(7E-7,226),
+				(7.244E-7, 250),
+				(7.644E-7, 290),
+				(8E-7, 326),
+				(8.244E-7, 350),
+				(8.64E-7, 390),
+				(9E-7,426),
+				(9.244E-7, 450),
+			)
+			nested_sampling_stop_fraction = 0.01
+			nested_sampling_max_iterations = 2000
+			show_plots = False
+			update_params_search_region = False
+			result_set_directory = Path('ultranest_logs')
+			
+			
+			psf_model_callable = create_psf_model_callable(test_psf_model, show_plots=show_plots)
 			
 			
 			model_callable = params.get_ultranest_model_callable(psf_model_callable)
 			_lgr.debug(f'{model_callable=}')
 			
-			
-			wavelength_idxs = ((5E-7, 26), (6.06E-7, 134), (7E-7,226), (8E-7, 326), (9E-7,426))
-			nested_sampling_stop_fraction = 0.01
-			nested_sampling_max_iterations = 2000
-			show_plots = False
-			update_params_search_region = False
+			result_set = UltranestResultSet(Path(result_set_directory))
+			result_set.metadata['wavelength_idxs'] = wavelength_idxs
+			result_set.metadata['constant_parameters'] = params.get_const_params()
+			result_set.save_metadata()
 			
 			
 			final_result = None
+			
 			for wavelength, idx in wavelength_idxs:
 				
 				if update_params_search_region and (final_result is not None):
@@ -491,7 +705,8 @@ if __name__=='__main__':
 					model_callable,
 					psf_data[idx],
 					psf_err[idx],
-					wavelength
+					wavelength,
+					show_plots=show_plots
 				)
 				
 				# Debugging
@@ -509,7 +724,7 @@ if __name__=='__main__':
 					params.model_param_names, 
 					psf_model_likelihood_callable,
 					params.get_ultranest_prior_param_transform(),
-					log_dir='ultranest_logs',
+					log_dir=result_set_directory,
 					resume='subfolder',
 					run_num=idx,
 					#warmstart_max_tau=0.5,
@@ -532,53 +747,14 @@ if __name__=='__main__':
 				for k, v in final_result.items():
 					_lgr.debug(f'{k} = {v}')
 	
-				
-				# DEBUGGING
-				result = psf_model_likelihood_callable(
-					tuple(final_result['maximum_likelihood']['point']),
-					True
-				)
 			
-				# Debugging
-				os.makedirs('./plots', exist_ok=True)
-				log_data = np.log(psf_data[idx])
-				log_data[np.isinf(log_data)] = np.nan
-				vmin, vmax = np.nanmin(log_data), np.nanmax(log_data)
-				_lgr.debug(f'{vmin=} {vmax=}')
-				f, a = plot_helper.figure_n_subplots(4)
-				a[0].set_title(f'log data [{vmin}, {vmax}]')
-				a[0].imshow(log_data, vmin=vmin, vmax=vmax)
-				
-				a[1].set_title(f'log result [{vmin}, {vmax}]')
-				a[1].imshow(np.log(result), vmin=vmin, vmax=vmax)
-				
-				a[2].set_title(f'log residual [{vmin}, {vmax}]')
-				a[2].imshow(np.log(psf_data[idx]-result), vmin=vmin, vmax=vmax)
-				
-				log_abs_residual = np.log(np.abs(psf_data[idx]-result))
-				a[3].set_title(f'log abs residual [{np.min(log_abs_residual)}, {np.max(log_abs_residual)}]')
-				a[3].imshow(log_abs_residual)
-				plt.savefig(f'./plots/log_ultranest_result_{idx}.png')
-				if show_plots: plt.show()
-				
-				
-				vmin, vmax = np.nanmin(psf_data[idx]), np.nanmax(psf_data[idx])
-				f, a = plot_helper.figure_n_subplots(4)
-				a[0].set_title(f'data [{vmin}, {vmax}]')
-				a[0].imshow(psf_data[idx], vmin=vmin, vmax=vmax)
-				
-				a[1].set_title(f'result [{vmin}, {vmax}]')
-				a[1].imshow(result, vmin=vmin, vmax=vmax)
-				
-				a[2].set_title(f'residual [{vmin}, {vmax}]')
-				a[2].imshow(psf_data[idx]-result, vmin=vmin, vmax=vmax)
-				
-				frac_residual = np.abs(psf_data[idx]-result)/psf_data[idx]
-				fr_sorted = np.sort(frac_residual.flatten())
-				vmin=fr_sorted[fr_sorted.size//4]
-				vmax = fr_sorted[3*fr_sorted.size//4]
-				a[3].set_title(f'frac residual [{vmin}, {vmax}]')
-				a[3].imshow(frac_residual, vmin=vmin, vmax=vmax)
-				plt.savefig(f'./plots/ultranest_result_{idx}.png')
-				if show_plots: plt.show()
+			
+			result_set.plot_params_vs_wavelength(show=False, save=True)
+			result_set.plot_results(
+				lambda wav: psf_model_result_factory(model_callable, wav),
+				psf_data,
+				show=False,
+				save=True
+			)
+	
 			

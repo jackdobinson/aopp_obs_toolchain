@@ -2,6 +2,13 @@
 Runs discovers and runs tests in parent folder. Used as an alternative to pytest
 that is more configurable and I know how it works.
 
+## Magic Variables ##
+
+scientest.test_output_dir
+	A directory to store test output in. A new output directory is created for each run
+	based off of the time the run is started. They all live in the "test_output" folder
+	that is created in the current working directory by default.
+
 TODO:
 	* Enable test discovery to be influenced by decorators, will need to make
 	the list of discovered tests a module scope variable. But the extra
@@ -21,78 +28,44 @@ from io import StringIO
 import textwrap
 import shutil
 import subprocess as sp
+import datetime as dt
+from typing import Callable
 import logging
+import random
 
-from decorators import TestSkippedException
+import scientest.cfg.logs
+import scientest.cfg.settings
 
-terminal_wrapper = textwrap.TextWrapper(
-	expand_tabs = True,
-	tabsize = 8,
-	replace_whitespace= False,
-	drop_whitespace= False,
-	fix_sentence_endings= False,
-	break_long_words= True,
-	break_on_hyphens=True,
-	initial_indent='',
-	subsequent_indent=''
+_lgr = scientest.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+
+
+from scientest.term_output import terminal_right, terminal_left, terminal_center, terminal_wrap #,terminal_fill, 
+import scientest.discover
+
+
+from scientest.decorators import TestSkippedException
+from scientest.output_directory import TestsOutputDirectory
+
+import scientest.intercepts.matplotlib
+
+
+def dict_diff(a : dict, b : dict) -> tuple[set,set,set]:
+	'''
+	Accepts two dictionaries: `a` and `b`
 	
-)
-
-
-def get_indent(text):
-	return text[:-len(text.lstrip())]
-
-def terminal_wrap(text, indent_level, indent_str='\t', d=0):
-	indent = indent_level*indent_str
-	terminal_wrapper.width = shutil.get_terminal_size().columns - terminal_wrapper.tabsize*indent_level + d
-	#terminal_wrapper.width = 60 - terminal_wrapper.tabsize*indent_level
+	Returns:
 	
-	wrapped_text_lines = []
-	for line in text.splitlines(False):
-		wls = terminal_wrapper.wrap(line)
-		if len(wls) > 1:
-			windent = get_indent(wls[0])
-			wls[1:] = [windent+x for x in wls[1:]]
-		wrapped_text_lines += wls
-	return(indent + ('\n'+indent).join(wrapped_text_lines))
-
-def terminal_fill(text, d=0):
-	assert len(text) > 0, "must have some amount of text to repeat"
-	c = shutil.get_terminal_size().columns + d
-	n = c // len(text)
-	r = c % len(text)
-	return(text*n + text[:r])
-
-def terminal_center(text, fill, d=0):
-	assert len(text) > 0
-	assert len(fill) > 0
-	c = shutil.get_terminal_size().columns + d
-	x = (c - len(text))
-	h = x//2
-	b = x%2
-	n = h // len(fill)
-	r = h % len(fill)
-	return(fill*n + fill[:r] + text + fill[:b] + fill*n + fill[:r])
-
-def terminal_left(text, fill, d=0):
-	assert len(text) > 0
-	assert len(fill) > 0
-	c = shutil.get_terminal_size().columns + d
-	x = (c - len(text))
-	n = x // len(fill)
-	r = x % len(fill)
-	return(text + fill*n + fill[:r])
+	tuple(ak, bk, ck)
 	
-def terminal_right(text, fill, d=0):
-	assert len(text) > 0
-	assert len(fill) > 0
-	c = shutil.get_terminal_size().columns + d
-	x = (c - len(text))
-	n = x // len(fill)
-	r = x % len(fill)
-	return(fill*n + fill[:r] + text)
-
-def dict_diff(a, b):
+	ak : set
+		Keys *only* in `a`
+		
+	bk : set
+		Keys *only* in `b`
+	
+	ck : set
+		Keys *changed* from `a` to `b`
+	'''
 	ak = set(a.keys())
 	bk = set(b.keys())
 	uk = ak & bk
@@ -107,75 +80,7 @@ def dict_diff(a, b):
 	return(ak, bk, ck)
 
 
-def discover_tests(
-		test_dir : str, # directory to start searching for tests in
 
-		 # If this is true, directory will be included in test search
-		directory_search_predicate = \
-			lambda adir: \
-				not adir.startswith('__'),		
-		
-		# if this is true, modulefile will be included in test search
-		modulefile_search_predicate = \
-			lambda mf: \
-				(not mf.startswith('__')) \
-					and mf.endswith('.py') \
-					and ('test' in mf), 
-		
-		# if this is true, the member of the module is a test and will be run
-		member_search_predicate = \
-			lambda m: \
-				inspect.isfunction(m) \
-					and ('test' in m.__name__),
-	):
-
-	test_discovery_data = {}
-
-	# Perform test discovery
-	print(terminal_center(f' Starting test discovery from folder "{test_dir}" ', '='))
-	
-	for prefix, dirs, files in os.walk(test_dir, topdown=True):
-		print(f'{dirs=}')
-		print(f'{files=}')
-		dirs[:] = list(filter(directory_search_predicate, dirs))
-		files[:] = list(filter(modulefile_search_predicate, files))
-		
-		for item in files:
-			package_file = Path(prefix).relative_to(test_dir)
-			#module_file = (Path(prefix) / item).relative_to(test_dir)
-			module_file = Path(item)
-			print(f'Searching "{package_file}/{module_file}", discovering tests:')
-			
-			
-			package_name = str(package_file)
-			#if not package_name.startswith('.'):
-			#	package_name = '.'+package_name
-			#module_name = str(module_file).replace(os.sep, '.')
-			module_name = str(module_file)
-			
-			if module_name.endswith('.py'): 
-				module_name = module_name[:-3]
-			
-			#print(f'{Path(prefix)=} {test_dir=}')
-			#print(f'{package_name=} {module_name=}')
-			
-			if Path(prefix) != test_dir:
-				module = importlib.import_module('.'.join((package_name,module_name)))
-				full_module_name = '.'.join((package_name, module_name))
-			else:
-				module = importlib.import_module(module_name)
-				full_module_name = module_name
-			
-			
-			test_discovery_data[full_module_name] = {}
-			
-			for test_name, test_member_callable in inspect.getmembers(module, member_search_predicate):
-				print(f'    "{test_name}"')
-				tid = f"{full_module_name}::{test_name}"
-				
-				test_discovery_data[full_module_name][tid] = {'callable':test_member_callable,'name':test_name}
-
-	return test_discovery_data
 
 @contextmanager
 def redirect_logging(stream, old_handler : logging.Handler = None):
@@ -195,7 +100,16 @@ def redirect_logging(stream, old_handler : logging.Handler = None):
 
 
 def run_tests(test_discovery_data, continue_on_fail=True, live_output=False):
+	"""
+	Run discovered tests
+	"""
+	
+	# Hacky way to get scientest module on path for now
+	#sys.path.append(Path(__file__).parent.parent)
+	
 	test_results = {}
+	
+	
 	for full_module_name, test_data in test_discovery_data.items():
 		for tid, td in test_data.items():
 			if not live_output:
@@ -208,6 +122,13 @@ def run_tests(test_discovery_data, continue_on_fail=True, live_output=False):
 			# Enable output capture
 			test_results[tid]['stdout'] = StringIO() if not live_output else sys.stdout
 			
+			
+			module_full_name, test_callable_name = tid.split('::')
+			scientest.test_output_dir = TestsOutputDirectory(
+				scientest.cfg.settings.root_test_output_dir / module_full_name.replace('.',os.sep),
+				dir_fmt="{test_callable_name}",
+				format_parameter_providers = {"test_callable_name":lambda : test_callable_name}
+			)
 			
 			# Run the test
 			try:
@@ -316,7 +237,7 @@ def main(
 	#print(f'{sys.path=}')
 
 
-	test_discovery_data = discover_tests(test_dir, directory_search_predicate, modulefile_search_predicate, member_search_predicate)
+	test_discovery_data = scientest.discover.discover_tests(test_dir, directory_search_predicate, modulefile_search_predicate, member_search_predicate)
 
 	print()
 	print(terminal_center(' Discovery Summary ', '='))
@@ -362,4 +283,4 @@ def main(
 
 
 if __name__=='__main__':
-	main()
+	main(sys.argv[1])

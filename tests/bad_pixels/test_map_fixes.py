@@ -1,8 +1,10 @@
 
-import decorators
 import numpy as np
 import algorithm.bad_pixels as bp
 import random
+
+import scientest.decorators
+
 
 random.seed(0) # ensure repeatable values
 
@@ -31,8 +33,8 @@ gen_random_arg_set = lambda i, n, ndim=2: (
 	np.sqrt((np.indices(tuple(i for _ in range(ndim)))**2).sum(axis=0))
 )
 
-@decorators.pass_args(*arg_set_1)
-@decorators.pass_arg_sets(gen_random_arg_set(i,6) for i in range(7,10))
+@scientest.decorators.pass_args(*arg_set_1)
+@scientest.decorators.pass_arg_sets(gen_random_arg_set(i,6) for i in range(7,10))
 def test_bp_map_simple_fix(nans, infs, array : np.ndarray[[...],float]):
 	a = array
 	print(nans)
@@ -62,9 +64,9 @@ def test_bp_map_simple_fix(nans, infs, array : np.ndarray[[...],float]):
 
 
 
-@decorators.pass_args(*arg_set_1)
-@decorators.pass_arg_sets(gen_random_arg_set(i, 6) for i in range(7,10))
-@decorators.pass_arg_sets(gen_random_arg_set(i, 9, 3) for i in range(4,8))
+@scientest.decorators.pass_args(*arg_set_1)
+@scientest.decorators.pass_arg_sets(gen_random_arg_set(i, 6) for i in range(7,10))
+@scientest.decorators.pass_arg_sets(gen_random_arg_set(i, 9, 3) for i in range(4,8))
 def test_bp_map_mean_fix(nans, infs, a):
 	print(f'{a=} {nans=} {infs=}')
 	a_old = np.array(a)
@@ -88,14 +90,6 @@ def test_bp_map_mean_fix(nans, infs, a):
 		bp.fix(a, bp_map, 'mean', window=1, boundary='const',const=1),
 		#bp.fix(a_old, bp_map, 'mean', window_shape=5) # testing
 	]
-	
-	#import matplotlib.pyplot as plt
-	#import plot_helper as ph
-	#fig, ax = ph.figure_n_subplots(3)
-	#ax[0].imshow(a_old)
-	#ax[1].imshow(bp_map)
-	#ax[2].imshow(a)
-	#plt.show()
 	
 	for i, ar in enumerate(a_results):
 		assert np.all(~np.isnan(ar)) and np.all(~np.isinf(ar)), \
