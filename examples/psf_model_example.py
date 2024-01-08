@@ -443,8 +443,11 @@ class UltranestResultSet:
 			a[i].set_ylabel(pname)
 			a[i].plot(wavs, param_values[pname], 'bo-')
 		
-		if save: plt.savefig(self.directory / fname)
-		if show: plt.show()
+		
+		plot_helper.output(
+			show, 
+			None if save is None else plt.savefig(self.directory / fname)
+		)
 	
 	
 	def plot_results(self, 
@@ -492,8 +495,10 @@ class UltranestResultSet:
 			a[3].set_title(f'log abs residual [{np.nanmin(log_abs_residual)}, {np.nanmax(log_abs_residual)}]')
 			a[3].imshow(log_abs_residual)
 			
-			if save: plt.savefig(self.directory / log_plot_fname_fmt.format(idx=idx))
-			if show: plt.show()
+			plot_helper.output(
+				show, 
+				None if save is None else plt.savefig(self.directory / log_plot_fname_fmt.format(idx=idx))
+			)
 			
 			
 			# plot result vs reference data
@@ -519,8 +524,10 @@ class UltranestResultSet:
 			a[3].set_title(f'frac residual [{vmin}, {vmax}]')
 			a[3].imshow(frac_residual, vmin=vmin, vmax=vmax)
 			
-			if save: plt.savefig(self.directory / linear_plot_fname_fmt.format(idx=idx))
-			if show: plt.show()
+			plot_helper.output(
+				show, 
+				None if save is None else plt.savefig(self.directory / linear_plot_fname_fmt.format(idx=idx))
+			)
 			
 			
 
@@ -569,7 +576,7 @@ if __name__=='__main__':
 		a[5].plot(r[:-1], psf_radial_data)
 		a[5].plot(r[:-1], result_radial_data)
 		
-		plt.show()
+		plot_helper.output(True)
 	
 	
 	

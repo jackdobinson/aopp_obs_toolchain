@@ -5,9 +5,30 @@ progress of algorithms.
 from typing import Any, Callable
 import dataclasses as dc
 import copy
+from pathlib import Path
 
 import numpy as np
+import matplotlib as mpl
+import matplotlib.figure
 import matplotlib.pyplot as plt
+
+def output(
+		show : bool = False, # Should we show the figure?
+		fname : str | Path | None = None, # If not None, save the figure to this file
+		figure : mpl.figure.Figure | str | int | None = None, # The figure to operate on, default is current figure
+		block : bool | None = None, # should showing the figure block? (see plt.show(...))
+		**kwargs # arguments to pass when saving figure, see plt.savefig(...)
+	):
+	if figure is not None:
+		plt.figure(figure)
+		
+	if fname is not None:
+		plt.savefig(fname, **kwargs)
+	if show:
+		plt.show(block)
+		
+	plt.close(figure)
+
 
 def lowest_aspect_ratio_rectangle_of_at_least_area(x):
 	sqrt_x = np.sqrt(x)
