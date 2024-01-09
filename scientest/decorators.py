@@ -2,7 +2,7 @@
 Contains decorators for use in tests
 """
 
-from typing import Any
+from typing import Any, Callable
 from functools import wraps, update_wrapper, partial
 import itertools as it
 import inspect
@@ -106,11 +106,18 @@ class TestSkippedException(Exception):
 # also alter other wrappers to preserve the attributes of the function so that
 # the skip is propagated correctly.
 @decorator
-def skip(func, do_skip : bool = True):
+def skip(func, 
+		do_skip : bool = True, 
+		predicate : Callable[[],bool] = lambda : True, 
+		message : str | None = None
+	):
+	"""
+	Marks test for skipping
+	"""
 	@wraps(func)
 	def __wrapper__(*args, **kwargs):
-		if do_skip:
-			raise TestSkippedException
+		if do_skip and predicate():
+			raise TestSkippedException(message)
 		func(*args, **kwargs)
 	return __wrapper__
 

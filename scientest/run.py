@@ -183,6 +183,7 @@ def run_tests(test_discovery_data, continue_on_fail=True, live_output=False):
 					
 			except TestSkippedException as e:
 				print(' Skipped')
+				if str(e) != 'None': print(terminal_right(str(e), ' '))
 				test_results[tid]['success'] = True
 				test_results[tid]['exception'] = e
 				if not live_output:

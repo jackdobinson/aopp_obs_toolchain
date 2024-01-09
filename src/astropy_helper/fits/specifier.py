@@ -2,6 +2,7 @@
 Routine for parsing a string containing the path, extension, slices, and axes
 of a FITS file that we want to operate on.
 """
+import os
 from collections import namedtuple 
 
 from astropy.io import fits
@@ -184,21 +185,22 @@ def parse(specifier : str, axes_types : list[str]):
 	
 	# get path
 	path = specifier
+	
+	if not os.path.isfile(path):
+		raise FileNotFoundError(f'file "{path}" not found')
 
 	if slices is None or axes is None:
-		hdr = fits.getheader(path,ext=ext if type(ext) is int else (ext,1))
-		if slices is None:
-			slices = tuple(slice(None) for _ in range(hdr['NAXIS']))
-		if axes is None:
-			axes = {}
-			for ax_name in axes_types:
-				axes[ax_name] = axes_type_info[ax_name].default_callable(hdr)
+		try:
+			hdr = fits.getheader(path,ext=ext if type(ext) is int else (ext,1))
+		except Exception as e:
+			pass
+		else:
+			if slices is None:
+				slices = tuple(slice(None) for _ in range(hdr['NAXIS']))
+			if axes is None:
+				axes = {}
+				for ax_name in axes_types:
+					axes[ax_name] = axes_type_info[ax_name].default_callable(hdr)
 
 
 	return FitsSpecifier(path, ext, slices, axes)
-	
-		
-		
-		
-		
-		
