@@ -697,8 +697,8 @@ if __name__=='__main__':
 			
 			
 			final_result = None
-			
-			for wavelength, idx in wavelength_idxs:
+			idx_0_median_noise_factor = None
+			for wavelength, idx in wavelength_idxs[-3:]:
 				
 				if update_params_search_region and (final_result is not None):
 					# Assume next results will be similar to previous ones
@@ -709,10 +709,20 @@ if __name__=='__main__':
 						params[n].transform = unit_range_to(m-2*s, m+2*s)
 					params.recalc()
 				
+				
+				
+				if idx_0_median_noise_factor is None:
+					idx_0_median_noise = np.std(np.nan_to_num(psf_data[wavelength_idxs[0][1]]) - sp.ndimage.median_filter(np.nan_to_num(psf_data[wavelength_idxs[0][1]]),size=5))
+				
+				median_noise = np.std(np.nan_to_num(psf_data[idx]) - sp.ndimage.median_filter(np.nan_to_num(psf_data[idx]),size=5))
+				
+				# Want to adjust for the increased variance on long-wavelength results, otherwise a lot of effort is spent fitting long-wavelengths more exactly than required
+				median_noise_correction_factor = np.sqrt(idx_0_median_noise / median_noise)
+				
 				psf_model_likelihood_callable = create_psf_model_likelihood_callable(
 					model_callable,
 					psf_data[idx],
-					psf_err[idx],
+					psf_err[idx]*median_noise_correction_factor,
 					wavelength,
 					show_plots=show_plots
 				)
@@ -737,7 +747,11 @@ if __name__=='__main__':
 					run_num=idx,
 					#warmstart_max_tau=0.5,
 				)
-			
+				
+				
+				
+				
+				
 				final_result = None
 				
 				# Note: Reducing the number of points used dramatically speeds up the algorithm. However it will be less accurate.
@@ -747,7 +761,7 @@ if __name__=='__main__':
 						cluster_num_live_points=1, #40
 						dlogz=100,
 						min_ess=1, #40
-						update_interval_volume_fraction=0.4, #0.8
+						update_interval_volume_fraction=0.99, #0.8
 						max_num_improvement_loops=3,
 						frac_remain=nested_sampling_stop_fraction
 					):
