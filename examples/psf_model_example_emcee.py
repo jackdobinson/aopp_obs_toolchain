@@ -14,6 +14,8 @@ from astropy.io import fits
 import ultranest
 import ultranest.plot
 
+# TESTING
+import emcee
 
 import scipy as sp
 import scipy.stats
@@ -728,6 +730,24 @@ if __name__=='__main__':
 				)
 				
 				
+				
+				
+				ndim, nwalkers = len(params.model_param_names), 2*len(params.model_param_names)
+				
+				
+				sampler = emcee.EnsembleSampler(
+					nwalkers, 
+					ndim, 
+					psf_model_likelihood_callable
+				)
+				
+				p0 = np.random.randn(nwalkers,ndim)
+				
+				state = sampler.run_mcmc(p0, 100, progress=True)
+				
+				print(f'{state=}')
+				
+				"""
 				sampler = ultranest.ReactiveNestedSampler(
 					params.model_param_names, 
 					psf_model_likelihood_callable,
@@ -737,24 +757,25 @@ if __name__=='__main__':
 					run_num=idx,
 					#warmstart_max_tau=0.5,
 				)
+				
 			
 				final_result = None
-				
-				# Note: Reducing the number of points used dramatically speeds up the algorithm. However it will be less accurate.
 				for result in sampler.run_iter(
 						max_iters=nested_sampling_max_iterations,
-						min_num_live_points=10, #80
-						cluster_num_live_points=1, #40
+						min_num_live_points=80,
 						dlogz=100,
-						min_ess=1, #40
-						update_interval_volume_fraction=0.4, #0.8
+						min_ess=40,
+						update_interval_volume_fraction=0.8,
 						max_num_improvement_loops=3,
 						frac_remain=nested_sampling_stop_fraction
 					):
 					sampler.print_results()
 					sampler.plot()
 					final_result=result
-	
+				"""
+				
+				
+				
 				for k, v in final_result.items():
 					_lgr.debug(f'{k} = {v}')
 	
