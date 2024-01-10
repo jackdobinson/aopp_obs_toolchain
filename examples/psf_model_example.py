@@ -591,7 +591,9 @@ if __name__=='__main__':
 				median_noise = np.std(np.nan_to_num(psf_data[idx]) - sp.ndimage.median_filter(np.nan_to_num(psf_data[idx]),size=5))
 				
 				# Want to adjust for the increased variance on long-wavelength results, otherwise a lot of effort is spent fitting long-wavelengths more exactly than required
-				median_noise_correction_factor = np.sqrt(idx_0_median_noise / median_noise)
+				median_noise_correction_factor = median_noise/ idx_0_median_noise
+				_lgr.debug(f'{median_noise=} {median_noise_correction_factor=}')
+				
 				
 				psf_model_likelihood_callable = create_psf_model_likelihood_callable(
 					model_callable,
@@ -631,13 +633,15 @@ if __name__=='__main__':
 				# Note: Reducing the number of points used dramatically speeds up the algorithm. However it will be less accurate.
 				for result in sampler.run_iter(
 						max_iters=nested_sampling_max_iterations,
+						max_ncalls=5000,
+						frac_remain=nested_sampling_stop_fraction,
+						Lepsilon = 0.1,
 						min_num_live_points=10, #80
 						cluster_num_live_points=1, #40
 						dlogz=100,
 						min_ess=1, #40
 						update_interval_volume_fraction=0.99, #0.8
 						max_num_improvement_loops=3,
-						frac_remain=nested_sampling_stop_fraction,
 						widen_before_initial_plateau_num_warn = 15,
 						widen_before_initial_plateau_num_max =20
 					):
