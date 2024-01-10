@@ -33,6 +33,8 @@ from optics.adaptive_optics_model import phase_psd_fetick_2019_moffat_function
 from instrument_model.vlt import VLT
 import plot_helper
 
+from optimise_compat import PriorParam, PriorParamSet
+
 
 import cfg.logs
 _lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
@@ -40,10 +42,6 @@ _lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 def logistic_function(x, left_limit=0, right_limit=1, transition_scale=1, center=0):
 	return (right_limit-left_limit)/(1+np.exp(-(np.e/transition_scale)*(x-center))) + left_limit
-
-
-def unit_range_to(vmin, vmax):
-	return lambda unit: unit*(vmax-vmin)+vmin
 
 
 def normalise_psf(
@@ -131,135 +129,6 @@ def normalise_psf(
 		gdata[idx] = interp(new_points)
 		
 	return data
-
-
-@dc.dataclass(slots=True)
-class PriorParam:
-	"""
-	Class that holds parameter information.
-	
-	name : str
-		String used to identify the parameter
-	transform : callable[[float],float] | float
-		Callable that transforms the unit range [0,1] to the actual range of the parameter, OR a constant value
-	example_value : float
-		A value to use for example plots
-	"""
-	name : str # string used to identify parameter
-	transform : Callable[[float],float] | float # callable that transforms from unit range [0,1] to actual range, OR a constant
-	example_value : float # value to use for example plots
-
-
-class PriorParamSet:
-	"""
-	A collection of PriorParam instances
-	"""
-	def __init__(self, prior_params : tuple[PriorParam]):
-		self.prior_params = prior_params
-		self._pp_map = {}
-		for i, p in enumerate(self.prior_params):
-			self._pp_map[p.name] = i
-		
-		self.recalc()
-		
-		return
-	
-	def recalc(self):
-		# Split into model params and const params, model params should
-		# vary, const params always have the same value.
-		self.model_param_idxs = []
-		self.model_param_names = []
-		self.model_param_transforms = []
-		self.model_param_examples = []
-	
-		self.const_param_idxs = []
-		self.const_param_names = []
-		self.const_param_transforms = []
-		self.const_param_examples = []
-	
-		i=0
-		j=0
-		for p in self.prior_params:
-			if callable(p.transform):
-				self.model_param_idxs.append(i)
-				self.model_param_names.append(p.name)
-				self.model_param_transforms.append(p.transform)
-				self.model_param_examples.append(p.example_value)
-				i+=1
-			else:
-				self.const_param_idxs.append(j)
-				self.const_param_names.append(p.name)
-				self.const_param_transforms.append(p.transform)
-				self.const_param_examples.append(p.example_value)
-				j+=1
-		return
-	
-	def get_const_params(self):
-		return dict(zip(self.const_param_names, self.const_param_transforms))
-	
-	def __getitem__(self, k):
-		return self.prior_params[self._pp_map[k]]
-	
-	def append(self, p : PriorParam):
-		self._pp_map[p.name] = len(self.prior_params)
-		self.prior_params.append(p)
-	
-	def get_ultranest_prior_param_transform(self):
-		"""
-		Generate a function that takes in intervals on [0,1], and applies the
-		transforms in self.model_param_transforms
-		"""
-		def prior_transform(cube):
-			params = cube.copy()
-			for i, transform in zip(self.model_param_idxs, self.model_param_transforms):
-				params[i] = transform(cube[i])
-			return params
-		return prior_transform
-		
-	
-	def get_ultranest_model_callable(self,
-			model_callable, # callable that computes the model, e.g. psf_model(r0, turb_ndim, L0, sigma)
-			arg_from_param_name_mapping : dict[str,str] | None= None, # maps the name of the name of the arguments in `model_callable` to the names in self.prior_params
-		):
-		"""
-		From a callable that looks like `model_callable(arg1, arg2, arg3,...)`, create an equivalent
-		callable that takes parameters defined in this object's self.model_param_names attribute as a
-		single argument. E.g. maps params = (p1, p2,...) in `ultranest_model_callable(params)` to
-		arg1, arg2, etc. by name.
-		"""
-		if arg_from_param_name_mapping is None:
-			ap_name_map = lambda x: x
-		else:
-			ap_name_map = lambda x: arg_from_param_name_mapping.get(x,x)
-		
-		sig = inspect.signature(model_callable)
-		
-		arg_names = list(sig.parameters.keys())
-		
-		# [0,1,3,4,6]
-		param_to_arg_ordering = [arg_names.index(ap_name_map(model_param_name)) for model_param_name in self.model_param_names]
-		
-		# [2,5]
-		const_to_arg_ordering = [arg_names.index(ap_name_map(const_param_name)) for const_param_name in self.const_param_names]
-		
-		# [None,None,None,None,None,None,None]
-		args = [None]*len(arg_names)
-		
-		# [None,None,c1,None,None,c2,None]
-		for i, j in enumerate(const_to_arg_ordering):
-			args[j] = self.const_param_transforms[i]
-		
-		
-		def ultranest_model_callable(params):
-			#_lgr.debug(f'{params=}')
-			# [p1,p2,c1,p3,p4,c2,p5]
-			for i, j in enumerate(param_to_arg_ordering):
-				args[j] = params[i]
-			
-			return model_callable(
-				*args
-			)
-		return ultranest_model_callable
 
 
 def create_psf_model_callable(psf_model_obj, show_plots=False) -> Callable[[Any,...], Callable[[Any,...],Any]]:
@@ -607,48 +476,58 @@ if __name__=='__main__':
 				obs_shape=psf_data.shape[-2:]
 			)
 		
-			params = PriorParamSet((
+			params = PriorParamSet(
 				PriorParam('r0', 
-					0.15,#unit_range_to(0.1,0.2), 
+					(0,np.inf),
+					True,
 					0.15
 				),
 				PriorParam('turb_ndim', 
-					unit_range_to(1,2), 
+					(1,2),
+					False,
 					1.3
 				),
 				PriorParam('L0', 
-					8,#unit_range_to(7.5, 8.5), 
+					(0,np.inf),
+					True,
 					8
 				),
 				PriorParam('alpha', 
-					unit_range_to(0.1, 3), 
+					(0.1, 3),
+					False,
 					0.7
 				),
 				PriorParam('beta', 
-					unit_range_to(1.01, 10), 
+					(1.01, 10),
+					False,
 					1.6
 				),
 				PriorParam('ao_correction_frac_offset', 
-					unit_range_to(-1,1), 
+					(-1,1),
+					False,
 					0
 				),
 				PriorParam('ao_correction_amplitude', 
-					unit_range_to(0,5), 
+					(0,5),
+					False,
 					2.2
 				),
 				PriorParam('factor', 
-					unit_range_to(0.7,1.3), 
+					(0.7,1.3),
+					False,
 					1
 				),
 				PriorParam('s_factor', 
-					0, 
+					(0,np.inf),
+					True, 
 					0
 				),
 				PriorParam('f_ao',
-					unit_range_to(24.0/(2*instrument.obj_diameter),52.0/(2*instrument.obj_diameter)),#instrument.f_ao,
+					(24.0/(2*instrument.obj_diameter),52.0/(2*instrument.obj_diameter)),#instrument.f_ao,
+					False,
 					instrument.f_ao
 				)
-			))
+			)
 	
 	
 	
@@ -687,27 +566,22 @@ if __name__=='__main__':
 			psf_model_callable = create_psf_model_callable(test_psf_model, show_plots=show_plots)
 			
 			
-			model_callable = params.get_ultranest_model_callable(psf_model_callable)
+			model_callable, var_param_name_order, const_var_param_name_order = params.wrap_callable_for_scipy_parameter_order(psf_model_callable)
 			_lgr.debug(f'{model_callable=}')
+			_lgr.debug(f'{var_param_name_order=}')
 			
 			result_set = UltranestResultSet(Path(result_set_directory))
 			result_set.metadata['wavelength_idxs'] = wavelength_idxs
-			result_set.metadata['constant_parameters'] = params.get_const_params()
+			result_set.metadata['constant_parameters'] = [p.to_dict() for p in params.constant_params]
 			result_set.save_metadata()
 			
 			
 			final_result = None
 			idx_0_median_noise_factor = None
-			for wavelength, idx in wavelength_idxs[-3:]:
+			for wavelength, idx in wavelength_idxs:
 				
 				if update_params_search_region and (final_result is not None):
-					# Assume next results will be similar to previous ones
-					pn = final_result['paramnames']
-					pm = final_result['posterior']['mean']
-					ps = final_result['posterior']['stdev']
-					for n, m, s in zip(pn, pm, ps):
-						params[n].transform = unit_range_to(m-2*s, m+2*s)
-					params.recalc()
+					raise NotImplementedError('Updating the parameter search region is not implemented yet')
 				
 				
 				
@@ -730,7 +604,7 @@ if __name__=='__main__':
 				# Debugging
 				plot_example_result(
 					psf_model_likelihood_callable(
-						params.model_param_examples,
+						tuple(params[p_name].const_value for p_name in var_param_name_order),
 						give_result=True
 					),
 					psf_data[idx], 
@@ -739,9 +613,9 @@ if __name__=='__main__':
 				
 				
 				sampler = ultranest.ReactiveNestedSampler(
-					params.model_param_names, 
+					var_param_name_order, 
 					psf_model_likelihood_callable,
-					params.get_ultranest_prior_param_transform(),
+					params.get_linear_transform_to_domain(var_param_name_order, (0,1)),
 					log_dir=result_set_directory,
 					resume='subfolder',
 					run_num=idx,
@@ -763,7 +637,9 @@ if __name__=='__main__':
 						min_ess=1, #40
 						update_interval_volume_fraction=0.99, #0.8
 						max_num_improvement_loops=3,
-						frac_remain=nested_sampling_stop_fraction
+						frac_remain=nested_sampling_stop_fraction,
+						widen_before_initial_plateau_num_warn = 15,
+						widen_before_initial_plateau_num_max =20
 					):
 					sampler.print_results()
 					sampler.plot()

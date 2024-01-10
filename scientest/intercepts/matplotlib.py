@@ -2,6 +2,10 @@
 Very hacky way to get matplotlib to write plots to the test folder instead of wherever it would normally do it.
 
 """
+import os
+
+if os.environ['DISPLAY'] is None or os.environ['DISPLAY'] == '':
+	raise RuntimeError('DISPLAY environment variable not set, if you are using WSL have you started an X-server? If not, start one and restart the terminal.')
 
 from pathlib import Path
 

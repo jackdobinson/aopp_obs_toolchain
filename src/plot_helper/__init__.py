@@ -16,7 +16,6 @@ def output(
 		show : bool = False, # Should we show the figure?
 		fname : str | Path | None = None, # If not None, save the figure to this file
 		figure : mpl.figure.Figure | str | int | None = None, # The figure to operate on, default is current figure
-		block : bool | None = None, # should showing the figure block? (see plt.show(...))
 		**kwargs # arguments to pass when saving figure, see plt.savefig(...)
 	):
 	if figure is not None:
@@ -25,7 +24,7 @@ def output(
 	if fname is not None:
 		plt.savefig(fname, **kwargs)
 	if show:
-		plt.show(block)
+		plt.show()
 		
 	plt.close(figure)
 
