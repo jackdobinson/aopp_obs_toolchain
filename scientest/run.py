@@ -188,6 +188,9 @@ def run_tests(test_discovery_data, continue_on_fail=True, live_output=False):
 				test_results[tid]['exception'] = e
 				if not live_output:
 					del test_results[tid]['stdout'] # delete cached output on skip
+			except KeyboardInterrupt as e:
+				print('\nKeyboard Interrupt, stopping tests...')
+				sys.exit()
 			except BaseException as e:
 				print(' Failed')
 				test_results[tid]['success'] = False

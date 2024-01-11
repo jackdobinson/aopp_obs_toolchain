@@ -3,3 +3,5 @@ numpy
 astropy
 scipy
 matplotlib
+ultranest
+h5py
