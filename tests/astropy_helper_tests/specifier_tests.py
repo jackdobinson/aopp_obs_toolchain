@@ -1,14 +1,19 @@
 
 
 
-
+import os
 
 import astropy_helper as aph
 import astropy_helper.fits.specifier
 
 import test_data
 
+import scientest.decorators
 
+@scientest.decorators.skip(
+	predicate = lambda : not os.path.exists(test_data.example_fits_file),
+	message=f"Skipped as '{test_data.example_fits_file}' cannot be found"
+)
 def test_specifier_completes_parsing():
 	examples = (
 		f"{test_data.example_fits_file}"+"{PRIMARY}[100:200](1,2)",
