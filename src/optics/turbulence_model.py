@@ -1,14 +1,16 @@
 
 
+from typing import Annotated
+
 from optics.function import PhasePowerSpectralDensity
 
 import numpy as np
 
 def phase_psd_von_karman_turbulence(
-		f_axes, 
-		r0, 
-		turbulence_ndim,
-		L0
+		f_axes : Annotated[np.ndarray, 'ModelInputData'], 
+		r0 : Annotated[float, 'ModelParameter'],
+		turbulence_ndim : Annotated[float,'ModelParameter'],
+		L0 : Annotated[float,'ModelParameter']
 	):
 	"""
 	Von Karman turbulence is the same as Kolmogorov, but with the extra "L0"

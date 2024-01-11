@@ -5,7 +5,7 @@ import math
 from collections import namedtuple
 import inspect
 import dataclasses as dc
-from typing import Callable, Any
+from typing import ParamSpec, TypeVar, TypeVarTuple, Concatenate, Callable, Any
 import json
 
 import matplotlib.pyplot as plt
@@ -32,111 +32,60 @@ from optics.turbulence_model import phase_psd_von_karman_turbulence
 from optics.adaptive_optics_model import phase_psd_fetick_2019_moffat_function
 from instrument_model.vlt import VLT
 import plot_helper
+import mfunc
+import psf_data_ops
 
 from optimise_compat import PriorParam, PriorParamSet
-
+from optimise_compat.ultranest import UltranestResultSet, model_likelihood_callable_factory
 
 import cfg.logs
 _lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
+T = TypeVar('T')
+SpecificPSFModel = TypeVar('SpecificPSFModel', bound=psf_model.PSFModel) # An instance of PSFModel that has had it's parameters set by invoking it's PSFModel.__call__(...) method
+JumbledParameters = ParamSpec('JumbledParameters') # Parameters that can be in nested lists/tuples etc. i.e. someFunc(p1, [p2,p3,[p4]], p5, p6)
+FlattenedParameters = ParamSpec('FlattenedParameters') # Parameters that are not in nested lists/tuples. i.e. someFunc(p1, p2, p3, p4, p5, p6)
+TupleParameters = Concatenate[TypeVarTuple('TupleParameters'),...] # Parameters that are all in one tuple as the first argument. i.e. someFunc( (p1,p2,p3,p4,p5,p6) ), this is how scipy likes it's objective functions to be formatted.
+P1 = ParamSpec('P1')
+P2 = ParamSpec('P2')
 
-def logistic_function(x, left_limit=0, right_limit=1, transition_scale=1, center=0):
-	return (right_limit-left_limit)/(1+np.exp(-(np.e/transition_scale)*(x-center))) + left_limit
 
-
-def normalise_psf(
-		data : np.ndarray, 
-		axes : tuple[int,...] | None=None, 
-		cutout_shape : tuple[int,...] | None = None,
-	) -> np.ndarray:
+def psf_model_flattened_callable_factory(
+		psf_model_obj : Callable[JumbledParameters,SpecificPSFModel], 
+	) -> Callable[FlattenedParameters,SpecificPSFModel]:
 	"""
-	Ensure an array of data fufils the following conditions:
+	Take in an instance of PSFModel, return a callable where all the parameters we want to vary
+	are passed directly.
 	
-	* odd shape, to ensure a center pixel exists
-	* center array on brightest pixel
-	* ensure array sums to 1
-	* cut out a region around the center to remove unneeded data.
-	"""
-	if axes is None:
-		axes = tuple(range(data.ndim))
+	If we change how the PSFModel instance `psf_model_obj` is called, we will need to change this function.
 	
-	data[np.isinf(data)] = np.nan # ignore infinities
-	data = nph.array.ensure_odd_shape(data, axes)
-	
-	
-	# center around brightest pixel
-	for idx in nph.slice.iter_indices(data, group=axes):
-		bp_offset = nph.array.get_center_offset_brightest_pixel(data[idx])
-		data[idx] = nph.array.apply_offset(data[idx], bp_offset)
-		data[idx] /= np.nansum(data[idx])
-	
-	
-	# cutout region around the center of the image if desired,
-	# this is pretty important when adjusting for center of mass, as long
-	# as the COM should be close to the brightest pixel
-	if cutout_shape is not None:
-		_lgr.debug(f'{tuple(data.shape[x] for x in axes)=} {cutout_shape=}')
-		center_slices = nph.slice.around_center(tuple(data.shape[x] for x in axes), cutout_shape)
-		_lgr.debug(f'{center_slices=}')
-		slices = [slice(None) for s in data.shape]
-		for i, center_slice in zip(axes, center_slices):
-			slices[i] = center_slice
-		_lgr.debug(f'{slices=}')
-		data = data[tuple(slices)]
-	
-	
-	
-	# move center of mass to middle of image
-	# threshold
-	threshold = 1E-3
-	with nph.axes.to_start(data, axes) as (gdata, gaxes):
-		t_mask = (gdata > threshold*np.nanmax(gdata, axis=gaxes))
-		_lgr.debug(f'{t_mask.shape=}')
-		indices = np.indices(gdata.shape)
-		_lgr.debug(f'{indices.shape=}')
-		com_idxs = (np.nansum(indices*gdata*t_mask, axis=tuple(a+1 for a in gaxes))/np.nansum(gdata*t_mask, axis=gaxes))[:len(gaxes)].T
-		_lgr.debug(f'{com_idxs.shape=}')
-	
-	_lgr.debug(f'{data.shape=}')
-	
-	for _i, (idx, gdata) in enumerate(nph.axes.iter_axes_group(data, axes)):
-		_lgr.debug(f'{_i=}')
-		_lgr.debug(f'{idx=}')
-		_lgr.debug(f'{gdata[idx].shape=}')
-		
-		
-		# calculate center of mass
-		#com_idxs = tuple(np.nansum(data[idx]*indices)/np.nansum(data[idx]) for indices in np.indices(data[idx].shape))
-		center_to_com_offset = np.array([com_i - s/2 for s, com_i in zip(gdata[idx].shape, com_idxs[idx][::-1])])
-		_lgr.debug(f'{idx=} {com_idxs[idx]=} {center_to_com_offset=}')
-		_lgr.debug(f'{sp.ndimage.center_of_mass(np.nan_to_num(gdata[idx]*(gdata[idx] > threshold*np.nanmax(gdata[idx]))))=}')
-		
-		# regrid so that center of mass lies on an exact pixel
-		old_points = tuple(np.linspace(0,s-1,s) for s in gdata[idx].shape)
-		interp = sp.interpolate.RegularGridInterpolator(
-			old_points, 
-			gdata[idx], 
-			method='linear', 
-			bounds_error=False, 
-			fill_value=0
-		)
-	
-		# have to reverse center_to_com_offset here
-		new_points = tuple(p-center_to_com_offset[i] for i,p in enumerate(old_points))
-		_lgr.debug(f'{[s.size for s in new_points]=}')
-		new_points = np.array(np.meshgrid(*new_points)).T
-		_lgr.debug(f'{[s.size for s in old_points]=} {gdata[idx].shape=} {new_points.shape=}')
-		gdata[idx] = interp(new_points)
-		
-	return data
-
-
-def create_psf_model_callable(psf_model_obj, show_plots=False) -> Callable[[Any,...], Callable[[Any,...],Any]]:
-	"""
-	Create a callable that only accepts the parameters we care about for optimisation purposes.
-	
-	I.e. if the arguments of `psf_model_obj` are not in a form that an optimisation package likes,
+	I.e. if the arguments of `psf_model_obj.__call__` are not in a form that an optimisation package likes,
 	this function should return a wrapper that does take arguments nicely.
+	
+	Note:
+		PSFModel has two calls that need to be made get a result from it.
+		1) PSFModel.__call__(...) that sets the model parameters, no computation happens yet.
+		2) PSFModel.at(wavelength) that computes the PSF at a specific wavelength for the model parameters, all the computation happens here.
+		
+		The reason for the split is that conceptually, much of the computation could be moved to (1), however that has not happened yet.
+	
+	# ARGUMENTS #
+	
+		psf_model_obj
+			An instance of PSFModel that will have it's arguments to __call__(...) flattened.
+	
+	# RETURNS #
+	
+		psf_model_callable
+			A function which, when called, sets the model parameters of `psf_model_obj`
+			(i.e. does step (1) in Note), and returns`psf_model_obj` ready to have it's `.at(...)`
+			method called (i.e. ready to have step (2) in Note done to it).
+		
+			Note: 
+				see `optimise_compat.PriorParamSet.wrap_callable_for_scipy_parameter_order(...)` for
+				how to change this (a flattened callable) into a callable that accepts a tuple of parameters 
+				(i.e. one that scipy likes to use as objective functions).
+	
 	"""
 	def psf_model_callable(
 			r0, 
@@ -158,8 +107,7 @@ def create_psf_model_callable(psf_model_obj, show_plots=False) -> Callable[[Any,
 			f_ao,
 			ao_correction_amplitude,
 			ao_correction_frac_offset,
-			s_factor,
-			plots=show_plots # DEBUGGING
+			s_factor
 		)
 		specific_model.factor = factor
 		
@@ -168,51 +116,54 @@ def create_psf_model_callable(psf_model_obj, show_plots=False) -> Callable[[Any,
 	return psf_model_callable
 
 
-def psf_model_result_factory(psf_model_callable, wavelength, show_plots=False):
+def psf_model_result_callable_factory(
+		psf_model_scipyCompat_callable : Callable[TupleParameters,SpecificPSFModel], 
+		wavelength : float, 
+		show_plots : bool = False
+	):
 	"""
-	Factory function that creates a function that returns the result of a specific model
+	Take in a "callable that accepts a single tuple of parameters and returns an instance of PSFModel that has had it's model parameters set" (i.e. a specific_model),
+	and return a "callable that returns the result of the specific model" (i.e. a result_callable).
+	
+	If we change how PSFModel.at(...) works, we need to change this function.
+	
+	Note:
+		PSFModel has two calls that need to be made get a result from it.
+		1) PSFModel.__call__(...) that sets the model parameters, no computation happens yet.
+		2) PSFModel.at(wavelength) that computes the PSF at a specific wavelength for the model parameters, all the computation happens here.
+		
+		The reason for the split is that conceptually, much of the computation could be moved to (1), however that has not happened yet.
+	
+	# ARGUMENTS #
+	
+		psf_model_scipyCompat_callable
+			A callable that accepts a single tuple of parameters and returns a specific model, 
+			see `optimise_compat.PriorParamSet.wrap_callable_for_scipy_parameter_order(...)` for
+			how to get a callable that accepts a tuple of parameters from a flattened callable.
+		
+		wavelength
+			The wavelength to compute the result of the specific model at
+		
+		show_plots
+			A flag to pass through to PSFModel.at(...), if True will show plots for the model.
+	
+	# RETURNS #
+	
+		model_result_callable
+			A callable that accepts a single tuple of parameters and returns the result of the model with those parameters at `wavelength`.
+	
 	"""
 	
-	def model_result_callable(params):
-		specific_model = psf_model_callable(params)
+	def model_result_scipyCompat_callable(params):
+		specific_model = psf_model_scipyCompat_callable(params)
 		result = specific_model.at(wavelength, plots=show_plots).data
 		result /= np.nansum(result)
 		result *= specific_model.factor
 		
 		return result
 
-	return model_result_callable
+	return model_result_scipyCompat_callable
 
-
-def create_psf_model_likelihood_callable(psf_model_callable, data, err, wavelength, show_plots=False):
-	"""
-	Use the callable to work out the likelihood. This is what's actually called
-	by ultranest
-	"""
-	def likelihood_callable(params, give_result=False):
-		#_lgr.debug(f'{params=}')
-		specific_model = psf_model_callable(params)
-		
-		#_lgr.debug(f'{data.shape=} {data_scale=}')
-
-		nan_mask = np.isnan(data)
-		result = specific_model.at(wavelength, plots=show_plots).data
-		result /= np.nansum(result) # normalise model result
-		
-		result *= specific_model.factor
-		
-		if give_result : return result
-		residual = data - result
-		
-		# err can be pre-computed
-		# assume residual is gaussian distributed, with a sigma on each pixel and a flat value
-		z = residual[~nan_mask]/err[~nan_mask]
-		#likelihood = np.exp(-(z*z)/2)/np.sqrt(2*np.pi)
-		likelihood = -(z*z)/2 # want the log of the pdf
-		
-		return likelihood.mean()
-	
-	return likelihood_callable
 
 
 def get_error(data, frac, low_limit, hi_limit, sigma):
@@ -223,7 +174,7 @@ def get_error(data, frac, low_limit, hi_limit, sigma):
 	vmin, vmax = np.nanmin(v), np.nanmax(v)
 	vrange = vmax - vmin
 	vrange_center = 0.5*(vmax+vmin)
-	err = logistic_function(
+	err = mfunc.logistic_function(
 		v,
 		low_limit if low_limit > 0 else (-low_limit)*vmin,
 		hi_limit if hi_limit > 0 else (-hi_limit)*vmax,
@@ -232,174 +183,6 @@ def get_error(data, frac, low_limit, hi_limit, sigma):
 	)
 	return err
 
-
-class UltranestResultSet:
-	
-	metadata_file : str = 'result_set_metadata.json'
-	
-	def __init__(self, result_set_directory : Path | str):
-		self.directory = Path(result_set_directory)
-		self.metadata = dict()
-		self.metadata_path = self.directory / self.metadata_file
-		if self.metadata_path.exists():
-			self.load_metadata()
-	
-	def __repr__(self):
-		return f'UltransetResultSet({self.directory.absolute()})'
-	
-	def load_metadata(self):
-		with open(self.metadata_path, 'r') as f:
-			self.metadata.update(json.load(f))
-	
-	def save_metadata(self, make_parent_dirs=True):
-		if make_parent_dirs:
-			self.metadata_path.parent.mkdir(parents=True, exist_ok=True)
-		with open(self.metadata_path, 'w') as f:
-			json.dump(self.metadata, f)
-
-	def clear_metadata(self):
-		self.metadata = dict()
-
-	def get_result_data_path(self, idx):
-		"""
-		Ultranest has "result_set_directory/run[INT]" to hold data for each run
-		"""
-		return self.directory / f'run{idx}'
-		
-	def get_result_data_from_path(self, result_data_path : Path):
-		fname = result_data_path / 'info' / 'results.json'
-		
-		with open(fname, 'r') as f:
-			rdata = json.load(f)
-		
-		return {
-			'param_names': rdata['paramnames'],
-			'best_point' : rdata['maximum_likelihood']['point'],
-			'stats' : rdata['posterior']
-		}
-
-
-	def get_params_vs_wavelength(self) -> tuple[np.array, dict[str,np.array]]:
-		
-		wavs = np.array([w for w,idx in self.metadata['wavelength_idxs']])
-		idxs = np.array([idx for w,idx in self.metadata['wavelength_idxs']])
-		
-		param_values = {}
-		for i, (wavelength, idx) in enumerate(self.metadata['wavelength_idxs']):
-		
-			result = self.get_result_data_from_path(self.get_result_data_path(idx))
-			for j, pname in enumerate(result['param_names']):
-				if pname not in param_values:
-					param_values[pname] = np.full_like(wavs, np.nan)
-				param_values[pname][i] = result['best_point'][j]
-		
-		sort_indices = np.argsort(wavs)
-		wavs = wavs[sort_indices]
-		idxs = idxs[sort_indices]
-		param_values = dict((k,v[sort_indices]) for k,v in param_values.items())
-		
-		return wavs, idxs, param_values
-
-	def plot_params_vs_wavelength(self, show=False, save=True):
-		fname = 'params_vs_wavelength.png'
-		wavs, _, param_values = self.get_params_vs_wavelength()
-		
-		f, a = plot_helper.figure_n_subplots(len(param_values))
-		#f.tight_layout(pad=16, w_pad=8, h_pad=4)
-		f.set_layout_engine('constrained')
-		
-		f.suptitle('Parameters vs Wavelength')
-		for i, pname in enumerate(param_values):
-			a[i].set_title(pname)
-			a[i].set_xlabel('wavelength')
-			a[i].set_ylabel(pname)
-			a[i].plot(wavs, param_values[pname], 'bo-')
-		
-		
-		plot_helper.output(
-			show, 
-			None if save is None else plt.savefig(self.directory / fname)
-		)
-	
-	
-	def plot_results(self, 
-			model_callable_factory : Callable[[float],Callable[[float,...],np.ndarray]], 
-			ref_data : np.ndarray, 
-			show=False, 
-			save=True
-		):
-		log_plot_fname_fmt = 'log_result_{idx}.png'
-		linear_plot_fname_fmt = 'linear_result_{idx}.png'
-		
-		wavs, idxs, param_values = self.get_params_vs_wavelength()
-		
-		
-		for i, (wav, idx) in enumerate(zip(wavs, idxs)):
-			
-			
-			params = tuple(param_values[pname][i] for pname in param_values)
-			result = model_callable_factory(wav)(params)
-			
-			
-			data = ref_data[idx]
-			log_data = np.log(data)
-			log_data[np.isinf(log_data)] = np.nan
-			
-			
-			
-			
-			# plot log of result vs reference data
-			f, a = plot_helper.figure_n_subplots(4)
-			f.set_layout_engine('constrained')
-			f.suptitle(f'log results {wav=} {idx=}')
-			vmin, vmax = np.nanmin(log_data), np.nanmax(log_data)
-			
-			a[0].set_title(f'log data [{vmin}, {vmax}]')
-			a[0].imshow(log_data, vmin=vmin, vmax=vmax)
-			
-			a[1].set_title(f'log result [{vmin}, {vmax}]')
-			a[1].imshow(np.log(result), vmin=vmin, vmax=vmax)
-			
-			a[2].set_title(f'log residual [{vmin}, {vmax}]')
-			a[2].imshow(np.log(data-result), vmin=vmin, vmax=vmax)
-			
-			log_abs_residual = np.log(np.abs(data-result))
-			a[3].set_title(f'log abs residual [{np.nanmin(log_abs_residual)}, {np.nanmax(log_abs_residual)}]')
-			a[3].imshow(log_abs_residual)
-			
-			plot_helper.output(
-				show, 
-				None if save is None else plt.savefig(self.directory / log_plot_fname_fmt.format(idx=idx))
-			)
-			
-			
-			# plot result vs reference data
-			f, a = plot_helper.figure_n_subplots(4)
-			f.set_layout_engine('constrained')
-			f.suptitle(f'linear results {wav=} {idx=}')
-			
-			vmin, vmax = np.nanmin(data), np.nanmax(data)
-			
-			a[0].set_title(f'data [{vmin}, {vmax}]')
-			a[0].imshow(data, vmin=vmin, vmax=vmax)
-			
-			a[1].set_title(f'result [{vmin}, {vmax}]')
-			a[1].imshow(result, vmin=vmin, vmax=vmax)
-			
-			a[2].set_title(f'residual [{vmin}, {vmax}]')
-			a[2].imshow(data-result, vmin=vmin, vmax=vmax)
-			
-			frac_residual = np.abs(data-result)/data
-			fr_sorted = np.sort(frac_residual.flatten())
-			vmin=fr_sorted[fr_sorted.size//4]
-			vmax = fr_sorted[3*fr_sorted.size//4]
-			a[3].set_title(f'frac residual [{vmin}, {vmax}]')
-			a[3].imshow(frac_residual, vmin=vmin, vmax=vmax)
-			
-			plot_helper.output(
-				show, 
-				None if save is None else plt.savefig(self.directory / linear_plot_fname_fmt.format(idx=idx))
-			)
 
 
 if __name__=='__main__':
@@ -461,7 +244,7 @@ if __name__=='__main__':
 			#plt.imshow(np.log(psf_data[psf_data.shape[0]//2]))
 			#plt.show()
 			
-			psf_data = normalise_psf(psf_data, axes=psf.axes['CELESTIAL'], cutout_shape=(101,101))
+			psf_data = psf_data_ops.normalise(psf_data, axes=psf.axes['CELESTIAL'], cutout_shape=(101,101))
 			psf_err = get_error(psf_data, 0.01, -1E1, -1E-1, -0.9)
 			
 			#plt.title(str(psf.path) + ' normalised')
@@ -475,7 +258,9 @@ if __name__=='__main__':
 				supersample_factor = 2,
 				obs_shape=psf_data.shape[-2:]
 			)
-		
+			
+			# Define parameters that are used by the psf_model
+			# ERROR: These are not getting sent in the correct order to the class!!
 			params = PriorParamSet(
 				PriorParam('r0', 
 					(0,np.inf),
@@ -523,8 +308,8 @@ if __name__=='__main__':
 					0
 				),
 				PriorParam('f_ao',
-					(24.0/(2*instrument.obj_diameter),52.0/(2*instrument.obj_diameter)),#instrument.f_ao,
-					False,
+					(24.0/(2*instrument.obj_diameter),52.0/(2*instrument.obj_diameter)),
+					True,#False,
 					instrument.f_ao
 				)
 			)
@@ -563,11 +348,11 @@ if __name__=='__main__':
 			result_set_directory = Path('ultranest_logs')
 			
 			
-			psf_model_callable = create_psf_model_callable(test_psf_model, show_plots=show_plots)
+			psf_model_flattened_callable = psf_model_flattened_callable_factory(test_psf_model)
 			
 			
-			model_callable, var_param_name_order, const_var_param_name_order = params.wrap_callable_for_scipy_parameter_order(psf_model_callable)
-			_lgr.debug(f'{model_callable=}')
+			model_scipyCompat_callable, var_param_name_order, const_var_param_name_order = params.wrap_callable_for_scipy_parameter_order(psf_model_flattened_callable)
+			_lgr.debug(f'{model_scipyCompat_callable=}')
 			_lgr.debug(f'{var_param_name_order=}')
 			
 			result_set = UltranestResultSet(Path(result_set_directory))
@@ -594,29 +379,25 @@ if __name__=='__main__':
 				median_noise_correction_factor = median_noise/ idx_0_median_noise
 				_lgr.debug(f'{median_noise=} {median_noise_correction_factor=}')
 				
+				model_result_scipyCompat_callable = psf_model_result_callable_factory(model_scipyCompat_callable, wavelength, show_plots=show_plots)
 				
-				psf_model_likelihood_callable = create_psf_model_likelihood_callable(
-					model_callable,
+				psf_model_likelihood_scipyCompat_callable = model_likelihood_callable_factory(
+					model_result_scipyCompat_callable,
 					psf_data[idx],
-					psf_err[idx]*median_noise_correction_factor,
-					wavelength,
-					show_plots=show_plots
+					psf_err[idx]*median_noise_correction_factor
 				)
 				
 				# Debugging
 				plot_example_result(
-					psf_model_likelihood_callable(
-						tuple(params[p_name].const_value for p_name in var_param_name_order),
-						give_result=True
-					),
+					model_result_scipyCompat_callable(tuple(params[p_name].const_value for p_name in var_param_name_order)),
 					psf_data[idx], 
-					show=show_plots
+					show=True#show_plots
 				)
 				
 				
 				sampler = ultranest.ReactiveNestedSampler(
 					var_param_name_order, 
-					psf_model_likelihood_callable,
+					psf_model_likelihood_scipyCompat_callable,
 					params.get_linear_transform_to_domain(var_param_name_order, (0,1)),
 					log_dir=result_set_directory,
 					resume='subfolder',
@@ -656,7 +437,7 @@ if __name__=='__main__':
 			
 			result_set.plot_params_vs_wavelength(show=False, save=True)
 			result_set.plot_results(
-				lambda wav: psf_model_result_factory(model_callable, wav),
+				lambda wav: psf_model_result_callable_factory(model_callable, wav),
 				psf_data,
 				show=False,
 				save=True
