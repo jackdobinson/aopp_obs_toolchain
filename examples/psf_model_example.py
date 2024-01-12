@@ -591,7 +591,7 @@ if __name__=='__main__':
 				median_noise = np.std(np.nan_to_num(psf_data[idx]) - sp.ndimage.median_filter(np.nan_to_num(psf_data[idx]),size=5))
 				
 				# Want to adjust for the increased variance on long-wavelength results, otherwise a lot of effort is spent fitting long-wavelengths more exactly than required
-				median_noise_correction_factor = median_noise/ idx_0_median_noise
+				median_noise_correction_factor = np.sqrt(median_noise/ idx_0_median_noise)
 				_lgr.debug(f'{median_noise=} {median_noise_correction_factor=}')
 				
 				
