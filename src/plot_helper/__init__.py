@@ -13,7 +13,7 @@ import matplotlib.figure
 import matplotlib.pyplot as plt
 
 def output(
-		show : bool = False, # Should we show the figure?
+		show : bool | float = False, # Should we show the figure? If a number, then display figure for this number of seconds before moving onwards
 		fname : str | Path | None = None, # If not None, save the figure to this file
 		figure : mpl.figure.Figure | str | int | None = None, # The figure to operate on, default is current figure
 		**kwargs # arguments to pass when saving figure, see plt.savefig(...)
@@ -23,8 +23,10 @@ def output(
 		
 	if fname is not None:
 		plt.savefig(fname, **kwargs)
-	if show:
+	if type(show) is bool and show:
 		plt.show()
+	elif type(show) in (int,float):
+		plt.pause(show)
 		
 	plt.close(figure)
 

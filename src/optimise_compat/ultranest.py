@@ -1,6 +1,7 @@
 """
 Contains classes and functions that aid compatibility with the ultranest package
 """
+import sys
 import json
 from typing import ParamSpec, TypeVar, Callable, Any
 from pathlib import Path
@@ -8,6 +9,9 @@ from pathlib import Path
 import numpy as np
 
 import plot_helper
+import cfg.logs
+
+_lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 T = TypeVar('T')
 P = ParamSpec('P')
@@ -40,7 +44,7 @@ def model_likelihood_callable_factory(
 			A callable that returns the likelihood of the model result for given input parameters.
 	"""
 	def likelihood_callable(*args, **kwargs):
-		
+	
 		result = model_result_callable(*args, **kwargs)
 		residual = data - result
 
@@ -55,7 +59,27 @@ def model_likelihood_callable_factory(
 	
 	return likelihood_callable
 
+def model_fractional_likelihood_callable_factory(
+		model_result_callable : Callable[P,T], 
+		data : T, 
+		err : T
+	) -> Callable[P,float]:
+	
+	def fractional_likelihood_callable(*args, **kwargs):
+		
+		result = model_result_callable(*args, **kwargs)
+		residual = data - result
 
+		nan_mask = np.isnan(data)
+		
+		# err can be pre-computed
+		# assume residual is gaussian distributed, with a sigma on each pixel and a flat value
+		z = residual[~nan_mask]/((data[~nan_mask]+1E-3)*err[~nan_mask])
+		likelihood = -(z*z)/2 # want the log of the pdf
+		
+		return likelihood.mean()
+	
+	return fractional_likelihood_callable
 
 
 class UltranestResultSet:
@@ -110,6 +134,7 @@ class UltranestResultSet:
 		idxs = np.array([idx for w,idx in self.metadata['wavelength_idxs']])
 		
 		param_values = {}
+		_lgr.debug(f'{wavs=} {idxs=} {param_values=}')
 		for i, (wavelength, idx) in enumerate(self.metadata['wavelength_idxs']):
 		
 			result = self.get_result_data_from_path(self.get_result_data_path(idx))
@@ -122,6 +147,8 @@ class UltranestResultSet:
 		wavs = wavs[sort_indices]
 		idxs = idxs[sort_indices]
 		param_values = dict((k,v[sort_indices]) for k,v in param_values.items())
+		
+		_lgr.debug(f'{wavs=} {idxs=} {param_values=}')
 		
 		return wavs, idxs, param_values
 
@@ -157,13 +184,15 @@ class UltranestResultSet:
 		linear_plot_fname_fmt = 'linear_result_{idx}.png'
 		
 		wavs, idxs, param_values = self.get_params_vs_wavelength()
-		
+		_lgr.debug(f'{wavs=} {idxs=} {param_values=}')
 		
 		for i, (wav, idx) in enumerate(zip(wavs, idxs)):
-			
+			_lgr.debug(f'{i=} {wav=} {idx=}')
 			
 			params = tuple(param_values[pname][i] for pname in param_values)
-			result = model_callable_factory(wav)(params)
+			_lgr.debug(f'{params=}')
+			model_callable = model_callable_factory(wav)
+			result = model_callable(params)
 			
 			
 			data = ref_data[idx]

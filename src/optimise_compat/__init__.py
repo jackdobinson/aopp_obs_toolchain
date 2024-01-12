@@ -9,6 +9,9 @@ import numpy as np
 
 from data_structures import BiDirectionalMap
 
+import cfg.logs
+_lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+
 def linear_transform_factory(
 		in_domain : tuple[float,float], 
 		out_domain : tuple[float,float]
@@ -68,18 +71,18 @@ class PriorParamSet:
 	def __init__(self, *prior_params):
 		self.prior_params = list(prior_params)
 		self.param_name_index_map = BiDirectionalMap()
-		self.variable_param_index_map = BiDirectionalMap()
-		self.constant_param_index_map = BiDirectionalMap()
+		self.all_param_index_to_variable_param_index_map = BiDirectionalMap()
+		self.all_param_index_to_constant_param_index_map = BiDirectionalMap()
 		
 		i=0
 		j=0
 		for k, p in enumerate(self.prior_params):
 			self.param_name_index_map[p.name] = k
 			if not p.is_const:
-				self.variable_param_index_map[k] = i
+				self.all_param_index_to_variable_param_index_map[k] = i
 				i+=1
 			else:
-				self.constant_param_index_map[k] = j
+				self.all_param_index_to_constant_param_index_map[k] = j
 				j+=1
 		return
 	
@@ -101,11 +104,11 @@ class PriorParamSet:
 	
 	@property
 	def variable_params(self):
-		return tuple(self.prior_params[i] for i in self.variable_param_index_map.keys())
+		return tuple(self.prior_params[i] for i in self.all_param_index_to_variable_param_index_map.keys())
 		
 	@property
 	def constant_params(self):
-		return tuple(self.prior_params[i] for i in self.constant_param_index_map.keys())
+		return tuple(self.prior_params[i] for i in self.all_param_index_to_constant_param_index_map.keys())
 	
 	def __getitem__(self, k : str | int):
 		if type(k) == str:
@@ -116,15 +119,15 @@ class PriorParamSet:
 			raise IndexError(f'Unknown index type {type(k)} to PriorParamSet')
 	
 	def append(self, p : PriorParam):
-		i = len(self.variable_param_index_map)
-		j = len(self.constant_param_index_map)
+		i = len(self.all_param_index_to_variable_param_index_map)
+		j = len(self.all_param_index_to_constant_param_index_map)
 		k = len(self.prior_params)
 		self.prior_params.append(p)
 		self.param_name_index_map[p.name] = k
 		if not p.is_const:
-			self.variable_param_index_map[k] = i
+			self.all_param_index_to_variable_param_index_map[k] = i
 		else:
-			self.constant_param_index_map[k] = j
+			self.all_param_index_to_constant_param_index_map[k] = j
 		return
 	
 	def wrap_callable_for_scipy_parameter_order(self, 
@@ -150,8 +153,14 @@ class PriorParamSet:
 			const_params
 				A list of the constant parameters that make up the rest of the arguments to `new_callable`, in the order they are present in the argument list.
 		"""
+		_lgr.debug(f'self.prior_params={tuple(p.name for p in self.prior_params)}')
+		_lgr.debug(f'{self.param_name_index_map=}')
+		_lgr.debug(f'{self.all_param_index_to_variable_param_index_map=}')
+		_lgr.debug(f'{self.all_param_index_to_constant_param_index_map=}')
+		
 		# acallable example: some_function(carg1, varg2, carg3, varg4)
 		sig = inspect.signature(acallable)
+		_lgr.debug(f'{sig=}')
 		
 		# prior_params example: [pc3, pc1, pv4, pv2]
 		# param_name_index_map: {pc3:0, pc1:1, pv4:2, pv2:3}
@@ -162,39 +171,49 @@ class PriorParamSet:
 		
 		#[carg1, varg2, carg3, varg4]
 		arg_names = list(sig.parameters.keys())
+		_lgr.debug(f'{arg_names=}')
 		
 		n_args = len(arg_names)
+		_lgr.debug(f'{n_args=}')
 		
 		# {0:1, 1:3, 2:0, 3:2}
 		arg_to_param_ordering = BiDirectionalMap(dict((i,self.param_name_index_map[arg_to_param_name_map.get(arg_name,arg_name)]) for i, arg_name in enumerate(arg_names)))
+		_lgr.debug(f'{arg_to_param_ordering=}')
 		
 		# {0:3, 1:4}
-		variable_param_to_arg_ordering = dict((self.variable_param_index_map[all_param_index], arg_index) for arg_index, all_param_index in arg_to_param_ordering.items() if all_param_index in self.variable_param_index_map)
+		variable_param_order_to_arg_order = dict((self.all_param_index_to_variable_param_index_map[all_param_index], arg_index) for arg_index, all_param_index in arg_to_param_ordering.items() if all_param_index in self.all_param_index_to_variable_param_index_map)
+		_lgr.debug(f'{variable_param_order_to_arg_order=}')
+		_lgr.debug(f'variable_param_names={tuple(self.param_name_index_map.backward[self.all_param_index_to_variable_param_index_map.backward[var_param_index]] for var_param_index, argument_index in sorted(variable_param_order_to_arg_order.items(), key=lambda x:x[0]))}')
 		
 		# {0:2, 1:0}
-		constant_param_to_arg_ordering = dict((self.constant_param_index_map[all_param_index], arg_index) for arg_index, all_param_index in arg_to_param_ordering.items() if all_param_index in self.constant_param_index_map)
+		constant_param_order_to_arg_order = dict((self.all_param_index_to_constant_param_index_map[all_param_index], arg_index) for arg_index, all_param_index in arg_to_param_ordering.items() if all_param_index in self.all_param_index_to_constant_param_index_map)
+		_lgr.debug(f'{constant_param_order_to_arg_order=}')
+		_lgr.debug(f'constant_param_names={tuple(self.param_name_index_map.backward[self.all_param_index_to_constant_param_index_map.backward[const_param_index]] for const_param_index, argument_index in sorted(constant_param_order_to_arg_order.items(), key=lambda x:x[0]))}')
 		
+		# Pack information for quick retrieval
+		variable_arg_order_array = np.array(tuple(arg_index for var_param_index, arg_index in sorted(variable_param_order_to_arg_order.items(), key=lambda x:x[0])))
+		const_arg_order_array = np.array(tuple(arg_index for const_param_index, arg_index in sorted(constant_param_order_to_arg_order.items(), key=lambda x:x[0])))
 		
 		def new_callable(one_var_arg, *one_const_arg):
 			args = [None]*n_args
-			for i, j in variable_param_to_arg_ordering.items():
+			for i, j in enumerate(variable_arg_order_array):
 				args[j] = one_var_arg[i]
-			for i,j in constant_param_to_arg_ordering.items():
+			for i,j in enumerate(const_arg_order_array):
 				if i < len(one_const_arg):
 					args[j] = one_const_arg[i]
 				else:
 					args[j] = new_callable.__defaults__[i - len(one_const_arg)]
-			
 			return acallable(*args)
 		
 		if constant_params_as_defaults:
-			new_callable.__defaults__ = tuple(self[k].const_value for k in constant_param_to_arg_ordering)
+			new_callable.__defaults__ = tuple(self[self.all_param_index_to_constant_param_index_map.backward[const_param_index]].const_value for const_param_index, argument_index in sorted(constant_param_order_to_arg_order.items(), key=lambda x: x[0]))
+		_lgr.debug(f'{new_callable.__defaults__=}')
 		
 		# wrapper function, variable parameter names in order packed into wrapper first arg, constant parameter names in order of rest of wrapper args
 		return (
 			new_callable, 
-			list(self.param_name_index_map.backward[self.variable_param_index_map.backward[k]] for k,v in sorted(variable_param_to_arg_ordering.items(), key=lambda x:x[0])), 
-			list(self.param_name_index_map.backward[self.constant_param_index_map.backward[k]] for k,v in sorted(constant_param_to_arg_ordering.items(), key=lambda x:x[0]))
+			list(self.param_name_index_map.backward[self.all_param_index_to_variable_param_index_map.backward[k]] for k,v in sorted(variable_param_order_to_arg_order.items(), key=lambda x:x[0])), 
+			list(self.param_name_index_map.backward[self.all_param_index_to_constant_param_index_map.backward[k]] for k,v in sorted(constant_param_order_to_arg_order.items(), key=lambda x:x[0]))
 		)
 		
 	def wrap_callable_for_ultranest_parameter_order(self, 
