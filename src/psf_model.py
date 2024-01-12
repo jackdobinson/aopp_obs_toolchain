@@ -1,6 +1,9 @@
 """
 Models the observation system in as much detail required to get a PSF.
 """
+import sys
+
+import typing
 from typing import Callable
 
 import numpy as np
@@ -8,6 +11,7 @@ import scipy as sp
 import scipy.ndimage
 import scipy.interpolate
 import scipy.signal
+import inspect
 
 import matplotlib.pyplot as plt
 
@@ -20,11 +24,13 @@ from optics.function import PointSpreadFunction, OpticalTransferFunction, PhaseP
 from instrument_model.instrument_base import InstrumentBase
 
 
-_lgr = cfg.logs.get_logger_at_level(__name__, 'INFO')
+_lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
 def downsample(a, s):
 	return sp.signal.convolve(a, np.ones([s]*a.ndim)/(s**a.ndim), mode='valid')[tuple(slice(None,None,s) for _ in a.shape)]
+
+
 
 
 
@@ -45,6 +51,7 @@ class PSFModel:
 			instrument : InstrumentBase # instrument used to take observation, defines certain scale parameters
 		):
 	
+		
 		if callable(telescope_otf_model):
 			self.telescope_otf_model = telescope_otf_model
 			self.telescope_otf = None
@@ -66,9 +73,11 @@ class PSFModel:
 			self.adaptive_optics_psd_model=None
 			self.adaptive_optics_psd = adaptive_optics_psd_model
 		
+		
 		self.instrument = instrument
-	
-	
+		self.specific_model_ready = False
+		
+		
 	def ao_corrections_to_phase_psd(self, phase_psd, ao_phase_psd, f_ao, ao_correction_amplitude=1, ao_correction_frac_offset=0):
 		"""
 		Apply adaptive optics corrections to the phase power spectrum distribution of the atmosphere
@@ -137,14 +146,23 @@ class PSFModel:
 			ao_correction_amplitude=1,
 			ao_correction_frac_offset=0,
 			s_factor=0,
-			mode='adjust',
-			plots=True
+			mode='adjust'
 		):
 		"""
 		Calculate psf in terms of rho/wavelength for given parameters. 
 		We are making an implicit assumption that all of the calculations can be
 		done in rho/wavelength units.
 		"""
+		
+		_lgr.debug(f'{telescope_otf_model_args=}')
+		_lgr.debug(f'{atmospheric_turbulence_psd_model_args=}')
+		_lgr.debug(f'{adaptive_optics_psd_model_args=}')
+		_lgr.debug(f'{f_ao=}')
+		_lgr.debug(f'{ao_correction_amplitude=}')
+		_lgr.debug(f'{ao_correction_frac_offset=}')
+		_lgr.debug(f'{s_factor=}')
+		_lgr.debug(f'{mode=}')
+		
 		self.shape = self.instrument.obs_shape
 		self.expansion_factor = self.instrument.expansion_factor
 		self.supersample_factor = self.instrument.supersample_factor
@@ -158,6 +176,8 @@ class PSFModel:
 		self.ao_correction_frac_offset = ao_correction_frac_offset
 		self.mode= mode
 		self.s_factor = s_factor
+		
+		self.specific_model_ready = True
 		return self
 	
 	
@@ -167,6 +187,9 @@ class PSFModel:
 		Calculate psf for a given angular scale and wavelength, i.e. convert
 		from rho/wavelength units to rho units.
 		"""
+		if not self.specific_model_ready:
+			raise RuntimeError(f'{type(self).__name__}.at({wavelength}) cannot be called yet. You need to specify model parameters with {type(self).__name__}.__call__(...) first.')
+		
 		wav_factor = (wavelength/self.instrument.ref_wavelength)
 		ang_wav_factor = (self.instrument.obs_pixel_size/wavelength)
 		_lgr.debug(f'{wav_factor=} {ang_wav_factor=}')
