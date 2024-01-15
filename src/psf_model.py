@@ -24,7 +24,7 @@ from optics.function import PointSpreadFunction, OpticalTransferFunction, PhaseP
 from instrument_model.instrument_base import InstrumentBase
 
 
-_lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = cfg.logs.get_logger_at_level(__name__, 'INFO')
 
 
 def downsample(a, s):
@@ -78,32 +78,48 @@ class PSFModel:
 		self.specific_model_ready = False
 		
 		
-	def ao_corrections_to_phase_psd(self, phase_psd, ao_phase_psd, f_ao, ao_correction_amplitude=1, ao_correction_frac_offset=0):
+	def ao_corrections_to_phase_psd(self, 
+			phase_psd, 
+			ao_phase_psd, 
+			f_ao, 
+			ao_correction_amplitude=1, 
+			ao_correction_frac_offset=0
+		):
 		"""
 		Apply adaptive optics corrections to the phase power spectrum distribution of the atmosphere
 		"""
 		if ao_phase_psd is None: 
 			return phase_psd.copy()
+		
+		
 		f_delta = 1.5
-		_lgr.debug(f'{phase_psd.data=} {ao_phase_psd.data=} {f_ao=} {ao_correction_amplitude=} {ao_correction_frac_offset=}')
+		
+		_lgr.debug(f'{phase_psd.data=} {ao_phase_psd.data=}')
 		_lgr.debug(f'{f_ao=} {ao_correction_amplitude=} {ao_correction_frac_offset=}')
+		
 		f_mesh = phase_psd.mesh
 		f_mag = np.sqrt(np.sum(f_mesh**2, axis=0))
+		
 		_lgr.debug(f'{np.max(f_mag)=}')
 		_lgr.debug(f'{np.count_nonzero(np.isnan(f_mesh))=} {np.count_nonzero(np.isnan(f_mag))=}')
+		
 		f_ao_correct = f_mag <= f_ao
-		f_ao_continuity_region = ((f_ao-f_delta) < f_mag) & (f_mag <= (f_ao+f_delta))
+		f_ao_continuity_region = ((f_ao-f_delta) <= f_mag) & (f_mag < (f_ao+f_delta))
+		
 		_lgr.debug(f'{np.count_nonzero(f_ao_continuity_region)=} {np.sum(f_ao_continuity_region)=}')
 		
 		f_ao_continuity_factor = np.nanmean(phase_psd.data[f_ao_continuity_region])
 		f_ao_correction_offset = np.nanmean(ao_phase_psd.data[f_ao_continuity_region])
 		
 		_lgr.debug(f'{f_ao_continuity_factor=} {f_ao_correction_offset=}')
+		
+		
 		ao_corrected_psd = np.array(phase_psd.data)
 		ao_corrected_psd[f_ao_correct] = (
 			np.exp(ao_correction_amplitude)*(ao_phase_psd.data[f_ao_correct] - f_ao_correction_offset)
 			+ np.exp(ao_correction_frac_offset)
 		)*f_ao_continuity_factor
+		
 		return PhasePowerSpectralDensity(ao_corrected_psd, phase_psd.axes)
 	
 	
@@ -208,7 +224,8 @@ class PSFModel:
 		
 		_lgr.debug(f'{self.instrument.obs_scale=} {self.instrument.obs_shape=}')
 		
-		f_axes = telescope_otf.ifft().axes
+		#f_axes = telescope_otf.ifft().axes
+		f_axes = tuple(x/wav_factor for x in telescope_otf.ifft().axes) # TEST THIS
 		#f_axes = tuple(a/self.instrument.obs_pixel_size for a,sc,sh in zip(self.telescope_otf.ifft().axes,self.instrument.obs_scale,self.instrument.obs_shape))
 		
 		_lgr.debug(f'{tuple(x.size for x in f_axes)=}')
@@ -216,12 +233,19 @@ class PSFModel:
 		
 		# Get the atmospheric phase power spectral density
 		if self.atmospheric_turbulence_psd_model is not None:
-			self.atmospheric_turbulence_psd = self.atmospheric_turbulence_psd_model(f_axes, *self.atmospheric_turbulence_psd_model_args)
+			self.atmospheric_turbulence_psd = self.atmospheric_turbulence_psd_model(
+				f_axes,
+				wavelength,
+				*self.atmospheric_turbulence_psd_model_args
+			)
 		if plots: plot_ga(self.atmospheric_turbulence_psd, lambda x: np.log(np.abs(x)), 'atmospheric_turbulence_psd', 'arbitrary units', 'rho/wavelength')
 		
 		# Get the adaptive optics phase power spectral density
 		if self.adaptive_optics_psd_model is not None:
-			self.adaptive_optics_psd = self.adaptive_optics_psd_model(f_axes, *self.adaptive_optics_psd_model_args)
+			self.adaptive_optics_psd = self.adaptive_optics_psd_model(
+				f_axes, 
+				*self.adaptive_optics_psd_model_args
+			)
 		if plots: plot_ga(self.adaptive_optics_psd, lambda x: np.log(np.abs(x)), 'adaptive_optics_psd', 'arbitrary units', 'rho/wavelength')
 		_lgr.debug(f'{self.atmospheric_turbulence_psd.data=}')
 		_lgr.debug(f'{self.adaptive_optics_psd.data=}')
@@ -234,8 +258,8 @@ class PSFModel:
 		ao_corrected_atm_phase_psd = self.ao_corrections_to_phase_psd(
 			self.atmospheric_turbulence_psd, 
 			self.adaptive_optics_psd, 
-			self.f_ao,#*wav_factor,
-			self.ao_correction_amplitude,#*wav_factor,
+			self.f_ao,#*wav_factor, # TEST THIS
+			self.ao_correction_amplitude,#*wav_factor, # TEST THIS
 			self.ao_correction_frac_offset
 		)
 		if plots: plot_ga(ao_corrected_atm_phase_psd, lambda x: np.log(np.abs(x)), 'ao_corrected_atm_phase_psd', 'arbitrary units', 'rho/wavelength')

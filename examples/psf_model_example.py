@@ -36,7 +36,7 @@ import mfunc
 import psf_data_ops
 
 from optimise_compat import PriorParam, PriorParamSet
-from optimise_compat.ultranest import UltranestResultSet, model_likelihood_callable_factory
+from optimise_compat.ultranest import UltranestResultSet, model_likelihood_callable_factory, model_fractional_likelihood_callable_factory
 
 import cfg.logs
 _lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
@@ -153,7 +153,6 @@ def psf_model_result_callable_factory(
 			A callable that accepts a single tuple of parameters and returns the result of the model with those parameters at `wavelength`.
 	
 	"""
-	
 	def model_result_scipyCompat_callable(params):
 		specific_model = psf_model_scipyCompat_callable(params)
 		result = specific_model.at(wavelength, plots=show_plots).data
@@ -192,26 +191,37 @@ if __name__=='__main__':
 	
 	
 	
-	def plot_example_result(result, psf_data, show=True):
+	def plot_example_result(result, psf_data, suptitle=None, show=True):
 		if not show: return
-		f, a = plot_helper.figure_n_subplots(6)
-		a[0].set_title('data')
+	
+		residual = psf_data-result
+		
+		f, a = plot_helper.figure_n_subplots(7)
+		
+		a[0].set_title(f'data sum={np.nansum(psf_data)}')
 		a[0].imshow(np.log(psf_data))
 		a[0].plot([psf_data.shape[0]/2],[psf_data.shape[1]/2], 'r.')
 		
-		a[1].set_title('result')
+		a[1].set_title(f'result sum={np.nansum(result)}')
 		a[1].imshow(np.log(result))
+		a[1].plot([result.shape[0]/2],[result.shape[1]/2], 'r.')
 		
-		a[2].set_title('residual')
-		a[2].imshow(np.log(psf_data-result))
+		a[2].set_title(f'residual sum={np.nansum(residual)}')
+		a[2].imshow(np.log(residual))
 		
+		a[3].set_title(f'residual_squared sqrt(sum)={np.sqrt(np.nansum(residual**2))}')
+		a[3].imshow(np.log((residual)**2))
 		
-		a[3].set_title('residual_squared')
-		a[3].imshow(np.log((psf_data-result)**2))
-		
-		a[4].set_title('data and result slice')
+		a[4].set_title('data and result slice (horizontal)')
 		a[4].plot(np.log(psf_data[psf_data.shape[0]//2,:]).flatten())
 		a[4].plot(np.log(result[result.shape[0]//2,:]).flatten())
+		a[4].axvline(result.shape[0]//2, color='red', ls='--')
+
+		
+		a[5].set_title('data and result slice (vertical)')
+		a[5].plot(np.log(psf_data[:,psf_data.shape[1]//2]).flatten())
+		a[5].plot(np.log(result[:,result.shape[1]//2]).flatten())
+		a[5].axvline(result.shape[1]//2, color='red', ls='--')
 		
 		offsets_from_center = nph.array.offsets_from_point(psf_data.shape)
 		offsets_from_center = (offsets_from_center.T - np.array([0.0,0.5])).T
@@ -225,11 +235,13 @@ if __name__=='__main__':
 		r = np.linspace(0,np.max(r_idx2),30)
 		result_radial_data = np.array([np.nansum(result[(r_min <= r_idx2) & (r_idx2 < r_max) ]) for r_min, r_max in zip(r[:-1], r[1:])])
 		
-		a[5].set_title('radial data and result')
-		a[5].plot(r[:-1], psf_radial_data)
-		a[5].plot(r[:-1], result_radial_data)
+		a[6].set_title('radial data and result')
+		a[6].plot(r[:-1], psf_radial_data)
+		a[6].plot(r[:-1], result_radial_data)
 		
-		plot_helper.output(True)
+		f.suptitle(suptitle)
+		
+		plot_helper.output(show)
 	
 	
 	
@@ -269,22 +281,22 @@ if __name__=='__main__':
 				),
 				PriorParam('turb_ndim', 
 					(1,2),
-					False,
+					True,
 					1.3
 				),
 				PriorParam('L0', 
-					(0,np.inf),
-					True,
-					8
+					(0,10),
+					False,
+					1.5
 				),
 				PriorParam('alpha', 
 					(0.1, 3),
 					False,
-					0.7
+					0.4#0.7
 				),
 				PriorParam('beta', 
 					(1.01, 10),
-					False,
+					True,
 					1.6
 				),
 				PriorParam('ao_correction_frac_offset', 
@@ -342,7 +354,8 @@ if __name__=='__main__':
 				(9.244E-7, 450),
 			)
 			nested_sampling_stop_fraction = 0.01
-			nested_sampling_max_iterations = 2000
+			nested_sampling_max_iterations = 100 #2000
+			min_live_points = 20
 			show_plots = False
 			update_params_search_region = False
 			result_set_directory = Path('ultranest_logs')
@@ -365,6 +378,9 @@ if __name__=='__main__':
 			idx_0_median_noise_factor = None
 			for wavelength, idx in wavelength_idxs:
 				
+				_lgr.info(f'{idx=} {wavelength=}')
+				
+				
 				if update_params_search_region and (final_result is not None):
 					raise NotImplementedError('Updating the parameter search region is not implemented yet')
 				
@@ -376,12 +392,13 @@ if __name__=='__main__':
 				median_noise = np.std(np.nan_to_num(psf_data[idx]) - sp.ndimage.median_filter(np.nan_to_num(psf_data[idx]),size=5))
 				
 				# Want to adjust for the increased variance on long-wavelength results, otherwise a lot of effort is spent fitting long-wavelengths more exactly than required
-				median_noise_correction_factor = median_noise/ idx_0_median_noise
+				median_noise_correction_factor = np.sqrt(median_noise/ idx_0_median_noise)
 				_lgr.debug(f'{median_noise=} {median_noise_correction_factor=}')
 				
 				model_result_scipyCompat_callable = psf_model_result_callable_factory(model_scipyCompat_callable, wavelength, show_plots=show_plots)
 				
 				psf_model_likelihood_scipyCompat_callable = model_likelihood_callable_factory(
+				#psf_model_likelihood_scipyCompat_callable = model_fractional_likelihood_callable_factory(
 					model_result_scipyCompat_callable,
 					psf_data[idx],
 					psf_err[idx]*median_noise_correction_factor
@@ -390,9 +407,11 @@ if __name__=='__main__':
 				# Debugging
 				plot_example_result(
 					model_result_scipyCompat_callable(tuple(params[p_name].const_value for p_name in var_param_name_order)),
-					psf_data[idx], 
-					show=True#show_plots
+					psf_data[idx],
+					suptitle=f'{wavelength=}',
+					show=show_plots
 				)
+				#continue # DEBUGGING
 				
 				
 				sampler = ultranest.ReactiveNestedSampler(
@@ -417,14 +436,14 @@ if __name__=='__main__':
 						max_ncalls=5000,
 						frac_remain=nested_sampling_stop_fraction,
 						Lepsilon = 0.1,
-						min_num_live_points=10, #80
+						min_num_live_points=min_live_points, #80
 						cluster_num_live_points=1, #40
 						dlogz=100,
 						min_ess=1, #40
 						update_interval_volume_fraction=0.99, #0.8
-						max_num_improvement_loops=3,
-						widen_before_initial_plateau_num_warn = 15,
-						widen_before_initial_plateau_num_max =20
+						max_num_improvement_loops=1,
+						widen_before_initial_plateau_num_warn = 1.5*min_live_points,
+						widen_before_initial_plateau_num_max = 2*min_live_points
 					):
 					sampler.print_results()
 					sampler.plot()
@@ -432,12 +451,11 @@ if __name__=='__main__':
 	
 				for k, v in final_result.items():
 					_lgr.debug(f'{k} = {v}')
-	
 			
 			
 			result_set.plot_params_vs_wavelength(show=False, save=True)
 			result_set.plot_results(
-				lambda wav: psf_model_result_callable_factory(model_callable, wav),
+				lambda wav: psf_model_result_callable_factory(model_scipyCompat_callable, wav, show_plots=show_plots),
 				psf_data,
 				show=False,
 				save=True

@@ -15,6 +15,7 @@ def normalise(
 		data : np.ndarray, 
 		axes : tuple[int,...] | None=None, 
 		cutout_shape : tuple[int,...] | None = None,
+		recenter_around_center_of_mass = False
 	) -> np.ndarray:
 	"""
 	Ensure an array of data fufils the following conditions:
@@ -35,7 +36,7 @@ def normalise(
 	for idx in nph.slice.iter_indices(data, group=axes):
 		bp_offset = nph.array.get_center_offset_brightest_pixel(data[idx])
 		data[idx] = nph.array.apply_offset(data[idx], bp_offset)
-		data[idx] /= np.nansum(data[idx])
+		data[idx] /= np.nansum(data[idx]) # normalise
 	
 	
 	# cutout region around the center of the image if desired,
@@ -52,47 +53,51 @@ def normalise(
 		data = data[tuple(slices)]
 	
 	
-	
-	# move center of mass to middle of image
-	# threshold
-	threshold = 1E-3
-	with nph.axes.to_start(data, axes) as (gdata, gaxes):
-		t_mask = (gdata > threshold*np.nanmax(gdata, axis=gaxes))
-		_lgr.debug(f'{t_mask.shape=}')
-		indices = np.indices(gdata.shape)
-		_lgr.debug(f'{indices.shape=}')
-		com_idxs = (np.nansum(indices*gdata*t_mask, axis=tuple(a+1 for a in gaxes))/np.nansum(gdata*t_mask, axis=gaxes))[:len(gaxes)].T
-		_lgr.debug(f'{com_idxs.shape=}')
-	
-	_lgr.debug(f'{data.shape=}')
-	
-	for _i, (idx, gdata) in enumerate(nph.axes.iter_axes_group(data, axes)):
-		_lgr.debug(f'{_i=}')
-		_lgr.debug(f'{idx=}')
-		_lgr.debug(f'{gdata[idx].shape=}')
+	if recenter_around_center_of_mass:
+		# move center of mass to middle of image
+		# threshold
+		threshold = 1E-2
+		with nph.axes.to_start(data, axes) as (gdata, gaxes):
+			t_mask = (gdata > threshold*np.nanmax(gdata, axis=gaxes))
+			_lgr.debug(f'{t_mask.shape=}')
+			indices = np.indices(gdata.shape)
+			_lgr.debug(f'{indices.shape=}')
+			com_idxs = (np.nansum(indices*gdata*t_mask, axis=tuple(a+1 for a in gaxes))/np.nansum(gdata*t_mask, axis=gaxes))[:len(gaxes)].T
+			_lgr.debug(f'{com_idxs.shape=}')
 		
+		_lgr.debug(f'{data.shape=}')
 		
-		# calculate center of mass
-		#com_idxs = tuple(np.nansum(data[idx]*indices)/np.nansum(data[idx]) for indices in np.indices(data[idx].shape))
-		center_to_com_offset = np.array([com_i - s/2 for s, com_i in zip(gdata[idx].shape, com_idxs[idx][::-1])])
-		_lgr.debug(f'{idx=} {com_idxs[idx]=} {center_to_com_offset=}')
-		_lgr.debug(f'{sp.ndimage.center_of_mass(np.nan_to_num(gdata[idx]*(gdata[idx] > threshold*np.nanmax(gdata[idx]))))=}')
+		for _i, (idx, gdata) in enumerate(nph.axes.iter_axes_group(data, axes)):
+			_lgr.debug(f'{_i=}')
+			_lgr.debug(f'{idx=}')
+			_lgr.debug(f'{gdata[idx].shape=}')
+			
+			
+			# calculate center of mass
+			#com_idxs = tuple(np.nansum(data[idx]*indices)/np.nansum(data[idx]) for indices in np.indices(data[idx].shape))
+			center_to_com_offset = np.array([com_i - s/2 for s, com_i in zip(gdata[idx].shape, com_idxs[idx][::-1])])
+			_lgr.debug(f'{idx=} {com_idxs[idx]=} {center_to_com_offset=}')
+			_lgr.debug(f'{sp.ndimage.center_of_mass(np.nan_to_num(gdata[idx]*(gdata[idx] > threshold*np.nanmax(gdata[idx]))))=}')
+			
+			# regrid so that center of mass lies on an exact pixel
+			old_points = tuple(np.linspace(0,s-1,s) for s in gdata[idx].shape)
+			interp = sp.interpolate.RegularGridInterpolator(
+				old_points, 
+				gdata[idx], 
+				method='linear', 
+				bounds_error=False, 
+				fill_value=0
+			)
 		
-		# regrid so that center of mass lies on an exact pixel
-		old_points = tuple(np.linspace(0,s-1,s) for s in gdata[idx].shape)
-		interp = sp.interpolate.RegularGridInterpolator(
-			old_points, 
-			gdata[idx], 
-			method='linear', 
-			bounds_error=False, 
-			fill_value=0
-		)
+			# have to reverse center_to_com_offset here
+			new_points = tuple(p-center_to_com_offset[i] for i,p in enumerate(old_points))
+			_lgr.debug(f'{[s.size for s in new_points]=}')
+			new_points = np.array(np.meshgrid(*new_points)).T
+			_lgr.debug(f'{[s.size for s in old_points]=} {gdata[idx].shape=} {new_points.shape=}')
+			gdata[idx] = interp(new_points)
 	
-		# have to reverse center_to_com_offset here
-		new_points = tuple(p-center_to_com_offset[i] for i,p in enumerate(old_points))
-		_lgr.debug(f'{[s.size for s in new_points]=}')
-		new_points = np.array(np.meshgrid(*new_points)).T
-		_lgr.debug(f'{[s.size for s in old_points]=} {gdata[idx].shape=} {new_points.shape=}')
-		gdata[idx] = interp(new_points)
-		
+	# Normalise again
+	#for idx in nph.slice.iter_indices(data, group=axes):
+	#	data[idx] /= np.nansum(data[idx])
+	
 	return data
