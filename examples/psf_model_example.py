@@ -354,7 +354,7 @@ if __name__=='__main__':
 				(9.244E-7, 450),
 			)
 			nested_sampling_stop_fraction = 0.01
-			nested_sampling_max_iterations = 100 #2000
+			nested_sampling_max_iterations = 200 #2000
 			min_live_points = 20
 			show_plots = False
 			update_params_search_region = False
