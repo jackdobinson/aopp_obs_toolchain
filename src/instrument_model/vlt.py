@@ -10,7 +10,7 @@ class VLT(InstrumentBase):
 	"""
 	Instrument description for very large telescope.
 	"""
-	n_actuators = 24#42
+	n_actuators = 24#42 # fiddle with this, somewhere between 24 and 42 seems likely
 	obj_diameter = 8 # meters
 	f_ao = n_actuators / (2*obj_diameter)
 	primary_mirror_focal_length = 120 # meters
