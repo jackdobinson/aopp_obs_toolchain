@@ -15,7 +15,8 @@ def normalise(
 		data : np.ndarray, 
 		axes : tuple[int,...] | None=None, 
 		cutout_shape : tuple[int,...] | None = None,
-		recenter_around_center_of_mass = False
+		recenter_around_center_of_mass = False,
+		remove_background = True
 	) -> np.ndarray:
 	"""
 	Ensure an array of data fufils the following conditions:
@@ -37,6 +38,13 @@ def normalise(
 		bp_offset = nph.array.get_center_offset_brightest_pixel(data[idx])
 		data[idx] = nph.array.apply_offset(data[idx], bp_offset)
 		data[idx] /= np.nansum(data[idx]) # normalise
+	
+	if remove_background:
+		# assume that the bottom-left corner is all background
+		bg_region_slice = tuple(slice(0,data.shape[a]//10) for a in axes)
+		for idx in nph.slice.iter_indices(data, group=axes):
+			data[idx] -= np.median(data[idx][*bg_region_slice])
+			data[idx] /= np.nansum(data[idx]) # normalise
 	
 	
 	# cutout region around the center of the image if desired,
