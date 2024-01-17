@@ -18,5 +18,8 @@ example_standard_star_file = example_data_dir / "test_standard_star.fits"
 def get_amateur_data_set_directory(index : int):
 	return example_data_dir / "amateur_data" / f"set_{index}"
 
+def get_amateur_data_set_output_directory(index : int):
+	return example_data_dir / "amateur_data" / f"set_{index}" / "output"
+
 def get_amateur_data_set(index : int):
-	return glob.glob(str(example_data_dir / "amateur_data" / f"set_{index}" / "*.tif"))
+	return glob.glob(str(example_data_dir / "amateur_data" / f"set_{index}" / "*nm.tif"))

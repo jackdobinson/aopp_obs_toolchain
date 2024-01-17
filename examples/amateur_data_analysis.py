@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import sys, os
+import os.path
 import dataclasses as dc
 from typing import Any, TypeVar, TypeVarTuple, Generic
+import datetime as dt
 
 import numpy as np
 import scipy as sp
@@ -27,6 +29,10 @@ from geometry.bounding_box import BoundingBox
 from gaussian_psf_model import GaussianPSFModel
 from optimise_compat import PriorParam, PriorParamSet
 from algorithm.deconv.clean_modified import CleanModified
+
+import cfg.logs
+
+_lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 IntVar = TypeVar('IntVar', bound=int)
 T = TypeVar('T')
@@ -134,11 +140,10 @@ def plot_source_regions(
 		params : dict[str,Any],
 		output_file
 	):
-	
 	noise_estimate = np.median(data[labels==0])
-
 	nplots = len(source_bounding_boxes)+2
 	nr, nc = int(nplots // np.sqrt(nplots)), int(np.ceil(nplots/(nplots//np.sqrt(nplots))))
+	
 	f,ax = plt.subplots(nr, nc, squeeze=False, figsize=(12,8))
 	f.suptitle(f'Regions: S/N >= {params["signal_noise_ratio"]}; n_pixels >= {params["smallest_obj_area_px"]}')
 
@@ -154,7 +159,6 @@ def plot_source_regions(
 	ax[1].imshow(labels)
 
 	for i, bbox in enumerate(bboxes):
-		
 		rect = mpl.patches.Rectangle(*bbox.to_mpl_rect(),edgecolor='r', facecolor='none', lw=1)
 		text = f'region {i}'
 
@@ -167,7 +171,6 @@ def plot_source_regions(
 		ax[0].text(*bbox.mpl_min_corner, text, color='r', horizontalalignment='left', verticalalignment='top')
 		ax[i+2].imshow(region_data)
 		ax[i+2].set_title(f'{text}: S/N={region_sig_noise:0.2g} {"x".join(str(x) for x in bbox.extent)}')
-
 
 	plt.savefig(output_file)
 
@@ -186,6 +189,33 @@ def model_badness_of_fit_callable_factory(model_flattened_callable, data, err):
 	
 	return model_badness_of_fit_callable
 
+def save_array_as_tif(data_in, path, nan='zero', ninf='zero', pinf='zero', scale='false'):
+	data = np.array(data_in) # copy input data
+	type = np.uint16
+	
+	nan_mask = np.isnan(data)
+	ninf_mask = np.isneginf(data)
+	pinf_mask = np.isposinf(data)
+	
+	ignore_mask = nan_mask | ninf_mask | pinf_mask
+	
+	if scale:
+		data = (data - np.min(data[~ignore_mask]))/np.max(data[~ignore_mask]) * np.iinfo(type).max
+	
+	for mode, mask in ((nan,nan_mask),(ninf,ninf_mask),(pinf,pinf_mask)):
+		match mode:
+			case 'zero':
+				data[mask] = 0
+			case 'max':
+				data[mask] = np.iinfo(type).max
+			case 'min':
+				data[mask] = np.iinfo(type).min
+	PIL.Image.fromarray(((deconv_components-np.nanmin(deconv_components))/np.nanmax(deconv_components))*np.iinfo(type).max, mode='I;16')
+	
+	
+	PIL.Image.fromarray(data.astype(type), mode='I;16').save(path, 'tiff')
+	
+		
 
 if __name__=='__main__':
 
@@ -202,34 +232,40 @@ if __name__=='__main__':
 	psf_label = 3
 
 
+	mpl.rc('image', cmap='gray')
+
+
 	for file in files:
-		print(f'Operating on {file}')
+		_lgr.debug(f'Operating on {file}')
 		with PIL.Image.open(file) as image:
 			data = np.array(image)
 
+		output_dir = example_data_loader.get_amateur_data_set_output_directory(0)
+		fname = os.path.splitext(os.path.split(file)[1])[0]
+
 		source_labels, source_bounding_boxes, parameters = get_source_regions(data, name=file.split(os.sep)[-1])
+		_lgr.debug(f'{len(source_bounding_boxes)=}')
+		
 		plot_source_regions(
 			data, 
 			source_labels, 
 			source_bounding_boxes, 
 			parameters, 
-			output_file= example_data_loader.get_amateur_data_set_directory(0) / ('.'.join((file.split(os.sep)[-1]).split('.')[:-1])+'_source_regions.png')
+			output_file= output_dir / (fname+'_source_regions.png')
 		)
 		
-		print(f'{parameters=}')
+		
+		_lgr.debug(f'{parameters=}')
+		_lgr.debug(f'{len(source_bounding_boxes)=}')
 		
 		
-		target_data = data[source_bounding_boxes[target_label-1].to_slices()].astype(float)
-		# subtract background emission
-		bg_region_slice = (s//10 for s in target_data.shape)
-		target_data -= np.median(target_data[*bg_region_slice])
-		
+		# Get PSF data
 		psf_data = data[source_bounding_boxes[psf_label-1].to_slices()].astype(float)
 		
 		psf_data = psf_data_ops.normalise(psf_data)
-		psf_model = GaussianPSFModel(psf_data.shape, float)
 		
-		flattened_psf_model_callable = model_flattened_callable_factory(psf_model)
+		# Define and fit PSF model
+		psf_model = GaussianPSFModel(psf_data.shape, float)
 		
 		params = PriorParamSet(
 			PriorParam(
@@ -264,6 +300,7 @@ if __name__=='__main__':
 			)
 		)
 		
+		flattened_psf_model_callable = model_flattened_callable_factory(psf_model)
 		model_scipyCompat_callable, var_param_name_order, const_var_param_name_order = params.wrap_callable_for_scipy_parameter_order(flattened_psf_model_callable)
 		
 		test_result = model_scipyCompat_callable(tuple(params[p_name].const_value for p_name in var_param_name_order))
@@ -273,13 +310,12 @@ if __name__=='__main__':
 		
 		model_badness_of_fit_callable = model_badness_of_fit_callable_factory(model_scipyCompat_callable, psf_data, np.nanmax(psf_data)*1E-3)
 		
-		
+		# callback for sp.optminize.minimise to track progress
 		def callback(intermediate_result=None):
 			print(f'{intermediate_result.x}')
 			print(f'{intermediate_result.fun}')
 		
-		
-		
+		# Do PSF fitting
 		result = sp.optimize.minimize(
 			model_badness_of_fit_callable,
 			tuple(params[p_name].const_value for p_name in var_param_name_order),
@@ -293,62 +329,157 @@ if __name__=='__main__':
 		
 		fitted_psf = model_scipyCompat_callable(result.x)
 		
-		if False:
-			f, ax = plt.subplots(2,2,squeeze=False)
+		if True:
+			psf_residual = psf_data - fitted_psf
+		
+			f, ax = plt.subplots(2,2,squeeze=False,figsize=(12,8))
 			ax = ax.flatten()
-		
-			ax[0].imshow(psf_data)
-			ax[1].imshow(fitted_psf)
-			ax[2].imshow((psf_data - fitted_psf)**2)
-			ax[3].imshow(np.log((psf_data - fitted_psf)**2))
 			
+			f.suptitle(f'{dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f%z")}\n'+fname + f' PSF region={psf_label}')
+		
+			im0 = ax[0].imshow(psf_data)
+			vmin, vmax = im0.get_clim()
+			ax[0].set_title(f'Original PSF [{vmin:0.2g}, {vmax:0.2g}]')
 			
-			plt.show()
+			im1 = ax[1].imshow(fitted_psf)
+			vmin, vmax = im1.get_clim()
+			ax[1].set_title(f'Fitted PSF [{vmin:0.2g}, {vmax:0.2g}]')
+			
+			im2 = ax[2].imshow(psf_residual)
+			vmin, vmax = im2.get_clim()
+			ax[2].set_title(f'Residual [{vmin:0.2g}, {vmax:0.2g}]')
+			
+			im3 = ax[3].imshow(np.log(np.abs(psf_residual)))
+			vmin, vmax = im3.get_clim()
+			ax[3].set_title(f'Log(|Residual|) [{vmin:0.2g}, {vmax:0.2g}]')
+			
+			for a in ax:
+				a.xaxis.set_visible(False)
+				a.yaxis.set_visible(False)
+			
+			plt.savefig(output_dir / (fname+'_psf_plot.png'))
 		
 		
-		deconvolver = CleanModified()
-		deconvolver(
-			target_data, 
-			fitted_psf,
-			n_iter=2000,
-			threshold = 0.3 if '890' not in file else -1,
-			rms_frac_threshold = 5E-3 if '890' not in file else 1E-2,
-			fabs_frac_threshold = 5E-3 if '890' not in file else 1E-2
-		)
+		# PSF is fitted at this point
 		
-		deconv_components = deconvolver.get_components()
-		deconv_residual = deconvolver.get_residual()
-		
-		f, ax = plt.subplots(2,2,squeeze=False,figsize=(12,8))
-		ax = ax.flatten()
-		
-		vmin, vmax = np.nanmin(target_data), np.nanmax(target_data)
-	
-		f.suptitle(file)
-	
-		ax[0].set_title(f'target ({vmin:0.2g}, {vmax:0.2g})')
-		ax[0].imshow(target_data, vmin=vmin, vmax=vmax)
-		
-		ax[1].set_title(f'deconvolved target ({vmin:0.2g}, {vmax:0.2g})')
-		ax[1].imshow(deconv_components, vmin=vmin, vmax=vmax)
-		
-		
-		im2 = ax[2].imshow((deconv_residual))
-		vmin, vmax = im2.get_clim()
-		ax[2].set_title(f'residual ({vmin:0.2g}, {vmax:0.2g})')
-		
-		
-		im3 = ax[3].imshow(np.log(np.abs(deconv_residual)))
-		vmin, vmax = im3.get_clim()
-		ax[3].set_title(f'log(residual) ({vmin:0.2g}, {vmax:0.2g})')
-		
-		for a in ax:
-			a.xaxis.set_visible(False)
-			a.yaxis.set_visible(False)
-		
-		
-		#plt.show()
-		plt.savefig(example_data_loader.get_amateur_data_set_directory(0) / ('.'.join((file.split(os.sep)[-1]).split('.')[:-1])+'deconv_test.png'))
+		for psf_type in ('fitted','original'):
+			match psf_type:
+				case 'fitted':
+					psf_for_deconv = fitted_psf
+				case 'original':
+					psf_for_deconv = psf_data
+				case _:
+					raise NotImplementedError
+			
+			# Get and deconvolve target data
+			for region_label in range(1,len(source_bounding_boxes)+1):
+				
+				output_file_fmt = "{fname}_region_{region_label}_psf_{psf_type}_test_deconv_{tag}.{ext}"
+				
+			
+				target_data = data[source_bounding_boxes[region_label-1].to_slices()].astype(float)
+				# subtract background emission
+				bg_region_slice = (s//10 for s in target_data.shape)
+				target_data -= np.median(target_data[*bg_region_slice])
+				
+				n_iter = 10000#5000
+				threshold = 0.1 #0.3
+				loop_gain = 0.2 #0.02
+				max_stat_increase = 1E-3
+				rms_frac_threshold = 1E-3#3E-3
+				fabs_frac_threshold = 1E-3#3E-3
+				
+				if '890' in fname:
+					threshold = 0.1#-1
+					loop_gain=0.2
+					#rms_frac_threshold = 5E-2
+					#fabs_frac_threshold = 5E-2
+				
+				elif region_label in (2,3):
+					rms_frac_threshold = 2E-2
+					fabs_frac_threshold = 2E-2
+					
+				if psf_type == 'original':
+					rms_frac_threshold /= 2
+					fabs_frac_threshold /= 2
+				
+				deconvolver = CleanModified()
+				deconvolver(
+					target_data, 
+					psf_for_deconv,
+					n_iter=n_iter,
+					threshold = threshold,
+					loop_gain = loop_gain,
+					max_stat_increase=max_stat_increase,
+					rms_frac_threshold = rms_frac_threshold,
+					fabs_frac_threshold = fabs_frac_threshold
+				)
+				
+				n_iters = deconvolver.get_iters()
+				iter_stat_names = deconvolver._iter_stat_names
+				iter_stats = deconvolver._iter_stat_record
+				
+				deconv_components = deconvolver.get_components()
+				deconv_residual = deconvolver.get_residual()
+				
+				# Save the data
+				save_array_as_tif(deconv_components, output_dir / output_file_fmt.format(fname=fname, region_label=region_label, psf_type=psf_type, tag='components', ext='tif'))
+				save_array_as_tif(deconv_residual, output_dir / output_file_fmt.format(fname=fname, region_label=region_label, psf_type=psf_type, tag='residual', ext='tif'))
+				
+				# Plot data
+				f, ax = plt.subplots(2,2,squeeze=False,figsize=(12,8))
+				ax = ax.flatten()
+				
+				f.suptitle(f'{dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f%z")}\n'+fname+f'\n{n_iters=}')
+			
+				im0 = ax[0].imshow(target_data)
+				vmin, vmax = im0.get_clim()
+				ax[0].set_title(f'target ({vmin:0.2g}, {vmax:0.2g})')
+			
+				if ('890' in fname 
+						or ('750' in fname and '1957' in fname and region_label == 2)
+					):
+					sorted_components = np.sort(deconv_components, axis=None)
+					fmin, fmax = int(0.005*sorted_components.size), int(0.995*sorted_components.size)
+					im1 = ax[1].imshow(deconv_components, vmin=sorted_components[fmin], vmax=sorted_components[fmax])
+				else:
+					im1 = ax[1].imshow(deconv_components)
+				vmin, vmax = im1.get_clim()
+				ax[1].set_title(f'deconvolved target ({vmin:0.2g}, {vmax:0.2g})')
+				
+				
+				im2 = ax[2].imshow(deconv_residual)
+				vmin, vmax = im2.get_clim()
+				ax[2].set_title(f'residual ({vmin:0.2g}, {vmax:0.2g})')
+				
+				
+				im3 = ax[3].imshow(np.log(np.abs(deconv_residual)))
+				vmin, vmax = im3.get_clim()
+				ax[3].set_title(f'log(|residual|) ({vmin:0.2g}, {vmax:0.2g})')
+				
+				for a in ax:
+					a.xaxis.set_visible(False)
+					a.yaxis.set_visible(False)
+				
+				plt.savefig(output_dir / output_file_fmt.format(fname=fname, region_label=region_label, psf_type=psf_type, tag=f'plot', ext='png'))
+				
+				# Plot iteration statistics
+				f, ax = plt.subplots(1,3,squeeze=False,figsize=(18,9))
+				ax = ax.flatten()
+				
+				f.suptitle(f'{dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f%z")}\n'+fname+f'\n{n_iters=} {fabs_frac_threshold=} {rms_frac_threshold=} {threshold=} {loop_gain=}')
+				
+				x = range(n_iters)
+				j = 0
+				for i, stat_name in enumerate(iter_stat_names):
+					if stat_name == 'UNUSED': continue
+					
+					ax[j].plot(x, iter_stats[:n_iters,i])
+					ax[j].set_title(stat_name)
+					ax[j].set_yscale('log')
+					j+=1
+				
+				plt.savefig(output_dir / output_file_fmt.format(fname=fname, region_label=region_label, psf_type=psf_type, tag=f'plot_deconv_stats', ext='png'))
 		
 		
 		

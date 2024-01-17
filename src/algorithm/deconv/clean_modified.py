@@ -27,8 +27,11 @@ class CleanModified(Base):
 	noise_std 			: float = 1E-2	# Estimate of the deviation of the noise present in the observation
 	rms_frac_threshold 	: float = 1E-1	# Fraction of original RMS of residual at which iteration is stopped, lower values continue iteration for longer.
 	fabs_frac_threshold : float = 1E-1	# Fraction of original Absolute Brightest Pixel of residual at which iteration is stopped, lower values continue iteration for longer.
+	max_stat_increase	: float = np.inf# Maximum fractional increase of a statistic before terminating
 	
 	# private attributes
+	_obs : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False)
+	_psf : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False)
 	_residual_copy : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False)
 	_iter_stat_record : Any = dc.field(init=False, repr=False, hash=False, compare=False)
 	_iter_stat_names : tuple[str,...] = dc.field(init=False, repr=False, hash=False, compare=False)
@@ -46,16 +49,29 @@ class CleanModified(Base):
 	_get_pixel_threshold : Any = dc.field(init=False, repr=False, hash=False, compare=False)
 	_fabs_threshold : float = dc.field(init=False, repr=False, hash=False, compare=False)
 	_rms_threshold : float = dc.field(init=False, repr=False, hash=False, compare=False)
-
+	_components_best : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False)
+	_stats_best : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False)
+	_i_best : int = dc.field(init=False, repr=False, hash=False, compare=False)
+	
 	def get_components(self) -> np.ndarray:
-		return(self._components)
+		#return(self._components)
+		return(self._components_best)
 	def get_residual(self) -> np.ndarray:
-		return(self._residual)
-
+		#return(self._residual)
+		return self._obs - sp.signal.fftconvolve(self._components_best, self._psf, mode='same')/self._flux_correction_factor
+	def get_iters(self):
+		return(self._i_best)
+	
+	
 	def _init_algorithm(self, obs, psf) -> None:
 		super(CleanModified, self)._init_algorithm(obs, psf)
 		# initialise arrays
+		self._obs = obs
+		self._psf = psf
 		self._components = np.zeros_like(obs)
+		self._components_best = np.zeros_like(obs)
+		self._stats_best = np.full((8,),np.inf)
+		self._i_best = 0
 		self._residual = np.array(obs)
 		self._residual_copy = np.array(self._residual)
 		self._iter_stat_record = np.full((self.n_iter, 8), fill_value=np.nan)
@@ -142,6 +158,22 @@ class CleanModified(Base):
 			np.nan, #unused slot
 			np.nan, #unused slot
 		)
+		
+		new_best = True
+		for name, this_stat, best_stat in zip(self._iter_stat_names, self._iter_stat_record[self._i], self._stats_best):
+			if name != 'UNUSED':
+				print(f'TESTING: {new_best=} {this_stat=} {best_stat=}')
+				new_best &= this_stat <= best_stat
+		
+		if new_best:
+			self._components_best[...] = self._components
+			self._i_best = self._i
+			self._stats_best = self._iter_stat_record[self._i]
+		else:
+			max_increase_frac = np.nanmax((self._iter_stat_record[self._i] - self._stats_best)/self._stats_best)
+			print(f'TESTING: {max_increase_frac=}')
+			if max_increase_frac >= self.max_stat_increase:
+				return False
 		
 		if (self._iter_stat_record[self._i,1] < self._rms_threshold)  or (self._iter_stat_record[self._i,0] < self._fabs_threshold):
 			return(False)
