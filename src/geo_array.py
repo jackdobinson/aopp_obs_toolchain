@@ -20,7 +20,7 @@ class GeoArray:
 			self.axes = axes
 		
 		
-	@classmethod
+	@staticmethod
 	def scale_to_axes(scale : tuple[float,...], shape : tuple[int,...], center : float = 0) -> np.ndarray:
 		return tuple(
 			np.linspace(center-scale/2,center+scale/2,s) for scale, s in zip(scale,shape)

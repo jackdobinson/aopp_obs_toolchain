@@ -1,0 +1,79 @@
+
+from typing import Any, TypeVar, TypeVarTuple, ParamSpec, Generic, Annotated, NewType, Callable
+
+import numpy as np
+
+IntVar = TypeVar('IntVar', bound=int)
+T = TypeVar('T')
+U = TypeVar('T')
+Ts = TypeVarTuple('Ts')
+class S(Generic[IntVar]): pass
+class S1(Generic[IntVar]): pass
+N = TypeVar('N',bound=int)
+M = TypeVar('N',bound=int)
+P = ParamSpec('P')
+
+import matplotlib.pyplot as plt
+
+from optics.function import PhasePowerSpectralDensity
+
+import cfg.logs
+
+_lgr = cfg.logs.get_logger_at_level(__name__, 'INFO')
+
+class CCDSensor:
+	def __init__(self,
+			shape : S[N],
+			px_transform : np.ndarray[[M,M]] # M = N + 1
+		):
+		self.shape = shape
+		self.px_transform = px_transform
+	
+	@classmethod
+	def from_shape_and_pixel_size(cls, shape, px_size):
+		n = len(shape)
+		px_transform = np.eye(n+1,n+1)
+		px_transform[:n,:n] *= px_size
+		px_transform[:n, n] = np.array([-s/2 for s in shape])
+		return cls(shape, px_transform)
+
+	def px_axis(self):
+		return tuple(np.linspace(0+t, s+t, s) for s, t in zip(self.shape, self.px_transform[:-1,-1]))
+		
+class SimpleTelescope:
+	def __init__(self,
+			objective_diameter : float,
+			effective_focal_length : float,
+			ccd_sensor : CCDSensor
+		):
+		self.objective_diameter = objective_diameter
+		self.effective_focal_length = effective_focal_length
+		self.ccd_sensor = ccd_sensor
+	
+	
+	def f_axis(self, wavelength):
+		_lgr.debug(f'{self.ccd_sensor.px_transform=}')
+		_lgr.debug(f'{self.ccd_sensor.px_axis()=}')
+		return tuple(ax*t/(self.effective_focal_length*wavelength) for ax,t in zip(self.ccd_sensor.px_axis(), np.diag(self.ccd_sensor.px_transform[:-1,:-1])))
+	
+	def f_mesh(self, wavelength):
+		return (self.ccd_sensor.px_transform @ np.indices(self.ccd_sensor.shape))/(self.effective_focal_length * wavelength) 
+		
+
+class TurbulencePSFModel:
+	def __init__(self,
+			telescope_model : SimpleTelescope,
+			turbulence_model : Callable[P, PhasePowerSpectralDensity],
+		):
+		self.turbulence_model = turbulence_model
+		self.telescope_model = telescope_model
+	
+	def __call__(self, wavelength, *args):
+		f_axis = self.telescope_model.f_axis(wavelength)
+		_lgr.debug(f'{f_axis=}')
+		_lgr.debug(f'{args=}')
+		result = self.turbulence_model(f_axis, wavelength, *args).data
+		return result / np.nansum(result)
+	
+	
+	
