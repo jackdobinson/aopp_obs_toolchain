@@ -1,6 +1,8 @@
 """
 Module containing routines that operate on point spread function data
 """
+from typing import Callable, TypeVar, Generic, ParamSpec, TypeVarTuple, Any
+import functools
 import numpy as np
 import numpy_helper as nph
 import numpy_helper.array
@@ -8,8 +10,22 @@ import numpy_helper.slice
 import scipy as sp
 import scipy.ndimage
 
+from optimise_compat import PriorParamSet
+
 import cfg.logs
 _lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+
+
+IntVar = TypeVar('IntVar', bound=int)
+T = TypeVar('T')
+Ts = TypeVarTuple('Ts')
+P = ParamSpec('P')
+Q = ParamSpec('Q')
+class S(Generic[IntVar]): pass
+class S1(Generic[IntVar]): pass
+N = TypeVar('N',bound=int)
+M = TypeVar('N',bound=int)
+
 
 def normalise(
 		data : np.ndarray, 
@@ -109,3 +125,93 @@ def normalise(
 	#	data[idx] /= np.nansum(data[idx])
 	
 	return data
+
+
+
+
+def objective_function_factory(model_flattened_callable, data, err, mode='minimise'):
+	
+	match mode:
+		case 'minimise':
+			def model_badness_of_fit_callable(*args, **kwargs):
+				residual = model_flattened_callable(*args, **kwargs) - data
+				result = np.nansum((residual/err)**2)
+				return np.log(result)
+			return model_badness_of_fit_callable
+		
+		case 'maximise':
+			def model_likelihood_callable(*args, **kwargs):
+				residual = model_flattened_callable(*args, **kwargs) - data
+				result = np.nansum((residual/err)**2)
+				return -np.log(result)
+			
+			return model_likelihood_callable
+		
+		case _:
+			raise NotImplementedError
+	return
+
+def scipy_fitting_function_factory(scipy_func):
+	
+	def scipy_fitting_function(params, objective_function, var_param_name_order, const_param_name_order):
+		result = scipy_func(
+			objective_function,
+			tuple(params[p_name].const_value for p_name in var_param_name_order),
+			bounds = tuple(params[p_name].domain for p_name in var_param_name_order)
+		)
+		return result.x
+
+	return scipy_fitting_function
+
+def fit_to_data(
+		params : PriorParamSet,
+		flattened_psf_model_callable : Callable[P, np.ndarray[S[N],T]],
+		psf_data : np.ndarray[S[N],T],
+		psf_err : np.ndarray[S[N],T],
+		fitting_function : Callable[[PriorParamSet, Callable[Q,float]], Q],
+		objective_function_factory : Callable[[Callable[P,np.ndarray[S[N],T]], np.ndarray[S[N],T], np.ndarray[S[N],T]], Callable[Q,float]] = functools.partial(objective_function_factory, mode='minimise'),
+		plot_mode : str | bool | None = None
+	) -> tuple[np.ndarray[S[N],T], dict[str,Any], dict[str,Any]]:
+	
+	model_scipyCompat_callable, var_param_name_order, const_param_name_order = params.wrap_callable_for_scipy_parameter_order(
+		flattened_psf_model_callable, 
+		arg_names=flattened_psf_model_callable.arg_names if hasattr(flattened_psf_model_callable,'arg_names') else None
+	)
+	
+	# Possibly take this plotting code out
+	if plot_mode is not None:
+		import matplotlib.pyplot as plt
+		plt.close()
+		test_result = model_scipyCompat_callable(tuple(params[p_name].const_value for p_name in var_param_name_order))
+		
+		f, ax = plt.subplots(2,2,squeeze=False,figsize=(12,8))
+		ax = ax.flatten()
+		
+		f.suptitle(f'Example Plot\nvariables {dict((p.name,p.const_value) for p in params.variable_params)}\n constants {dict((p.name,p.const_value) for p in params.constant_params)}')
+		
+		ax[0].imshow(test_result)
+		ax[0].set_title('example psf')
+		
+		ax[1].plot( test_result[:,test_result.shape[1]//2], np.arange(test_result.shape[0]),)
+		ax[1].set_xscale('log')
+		ax[1].set_title('y marginalisation')
+		
+		ax[2].plot(np.arange(test_result.shape[1]), test_result[test_result.shape[0]//2,:])
+		ax[2].set_yscale('log')
+		ax[2].set_title('x marginalisation')
+		
+		ax[3].remove()
+		
+		plt.show()
+	
+	
+	objective_function = objective_function_factory(model_scipyCompat_callable, psf_data, psf_err)
+	
+	
+	fitted_params = fitting_function(params, objective_function, var_param_name_order, const_param_name_order)
+	
+	return (
+		model_scipyCompat_callable(fitted_params), 
+		dict((k,v) for k,v in zip(var_param_name_order, fitted_params)), 
+		dict((p.name,p.const_value) for p in params.constant_params)
+	)

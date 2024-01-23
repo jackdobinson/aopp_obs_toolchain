@@ -7,6 +7,7 @@ import os.path
 import dataclasses as dc
 from typing import Any, TypeVar, TypeVarTuple, Generic
 import datetime as dt
+import functools
 
 import numpy as np
 import scipy as sp
@@ -301,33 +302,17 @@ if __name__=='__main__':
 		)
 		
 		flattened_psf_model_callable = model_flattened_callable_factory(psf_model)
-		model_scipyCompat_callable, var_param_name_order, const_var_param_name_order = params.wrap_callable_for_scipy_parameter_order(flattened_psf_model_callable)
-		
-		test_result = model_scipyCompat_callable(tuple(params[p_name].const_value for p_name in var_param_name_order))
-		if False:
-			plt.imshow(test_result)
-			plt.show()
-		
-		model_badness_of_fit_callable = model_badness_of_fit_callable_factory(model_scipyCompat_callable, psf_data, np.nanmax(psf_data)*1E-3)
-		
-		# callback for sp.optminize.minimise to track progress
-		def callback(intermediate_result=None):
-			print(f'{intermediate_result.x}')
-			print(f'{intermediate_result.fun}')
-		
-		# Do PSF fitting
-		result = sp.optimize.minimize(
-			model_badness_of_fit_callable,
-			tuple(params[p_name].const_value for p_name in var_param_name_order),
-			method=None,
-			callback=callback
+		fitted_psf, fitted_vars, consts = psf_data_ops.fit_to_data(
+			params, 
+			flattened_psf_model_callable, 
+			psf_data, 
+			np.ones_like(psf_data)*np.nanmax(psf_data)*1E-3, 
+			psf_data_ops.scipy_fitting_function_factory(sp.optimize.minimize),
+			functools.partial(psf_data_ops.objective_function_factory, mode='minimise'),
+			plot_mode=None
 		)
-		
-		print(f'{result.success=}')
-		print(f'{result.x=}')
-		print(f'{result.message=}')
-		
-		fitted_psf = model_scipyCompat_callable(result.x)
+		_lgr.debug(f'{fitted_vars=}')
+		_lgr.debug(f'{consts=}')
 		
 		if True:
 			psf_residual = psf_data - fitted_psf
@@ -357,8 +342,9 @@ if __name__=='__main__':
 				a.xaxis.set_visible(False)
 				a.yaxis.set_visible(False)
 			
-			plt.savefig(output_dir / (fname+'_psf_plot.png'))
-		
+			plt.show()
+			#plt.savefig(output_dir / (fname+'_psf_plot.png'))
+		continue # DEBUGGING
 		
 		# PSF is fitted at this point
 		

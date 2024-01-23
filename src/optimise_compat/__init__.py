@@ -132,8 +132,10 @@ class PriorParamSet:
 	
 	def wrap_callable_for_scipy_parameter_order(self, 
 			acallable, 
+			*,
 			arg_to_param_name_map : dict[str,str] = {},
-			constant_params_as_defaults=True
+			constant_params_as_defaults=True,
+			arg_names : list[str,...] | None = None # names of the arguments to `acallable`, in the correct order as if from inspect.signature(acallable).parameters.keys()
 		):
 		"""
 		Put in a callable with some arguments `callable(arg1, arg2, arg3,...)`, returns a callable 
@@ -159,8 +161,9 @@ class PriorParamSet:
 		_lgr.debug(f'{self.all_param_index_to_constant_param_index_map=}')
 		
 		# acallable example: some_function(carg1, varg2, carg3, varg4)
-		sig = inspect.signature(acallable)
-		_lgr.debug(f'{sig=}')
+		if arg_names is None:
+			sig = inspect.signature(acallable)
+			_lgr.debug(f'{sig=}')
 		
 		# prior_params example: [pc3, pc1, pv4, pv2]
 		# param_name_index_map: {pc3:0, pc1:1, pv4:2, pv2:3}
@@ -170,14 +173,20 @@ class PriorParamSet:
 		# arg_to_param_name_map_example: {pc1 : carg1, pv2 : varg2, pc3 : carg3, pv4 : varg4}
 		
 		#[carg1, varg2, carg3, varg4]
-		arg_names = list(sig.parameters.keys())
+		if arg_names is None:
+			arg_names = list(sig.parameters.keys())
 		_lgr.debug(f'{arg_names=}')
 		
 		n_args = len(arg_names)
 		_lgr.debug(f'{n_args=}')
 		
 		# {0:1, 1:3, 2:0, 3:2}
-		arg_to_param_ordering = BiDirectionalMap(dict((i,self.param_name_index_map[arg_to_param_name_map.get(arg_name,arg_name)]) for i, arg_name in enumerate(arg_names)))
+		try:
+			arg_to_param_ordering = BiDirectionalMap(dict((i,self.param_name_index_map[arg_to_param_name_map.get(arg_name,arg_name)]) for i, arg_name in enumerate(arg_names)))
+		except KeyError as e:
+			e.add_note(f'NOTE: Could not match up arguments of {acallable.__class__.__name__ if hasattr(acallable,"__call__") else acallable.__name__}({", ".join(arg_names)}), with parameter names {[p.name for p in self.prior_params]} subject to map {arg_to_param_name_map}')
+			raise
+		
 		_lgr.debug(f'{arg_to_param_ordering=}')
 		
 		# {0:3, 1:4}

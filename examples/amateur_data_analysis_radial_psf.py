@@ -33,6 +33,9 @@ from algorithm.deconv.clean_modified import CleanModified
 from optics.turbulence_model import phase_psd_von_karman_turbulence
 from turbulence_psf_model import TurbulencePSFModel, SimpleTelescope, CCDSensor
 
+from radial_psf_model import RadialPSFModel
+
+
 import psf_data_ops
 
 
@@ -267,40 +270,29 @@ if __name__=='__main__':
 		psf_data = psf_data_ops.normalise(psf_data)
 		
 		# Define and fit PSF model
-		psf_model = TurbulencePSFModel(
-			SimpleTelescope(
-				8, 
-				200, 
-				CCDSensor.from_shape_and_pixel_size(psf_data.shape, 2.5E-6)
-			),
-			phase_psd_von_karman_turbulence
+		psf_model = RadialPSFModel(
+			psf_data
 		)
 		
 		
 		params = PriorParamSet(
 			PriorParam(
-				'wavelength',
+				'x',
+				(0, psf_data.shape[0]),
+				False,
+				psf_data.shape[0]//2
+			),
+			PriorParam(
+				'y',
+				(0, psf_data.shape[1]),
+				False,
+				psf_data.shape[1]//2
+			),
+			PriorParam(
+				'nbins',
 				(0, np.inf),
 				True,
-				750E-9
-			),
-			PriorParam(
-				'r0',
-				(0, 1),
-				True,
-				0.1
-			),
-			PriorParam(
-				'turbulence_ndim',
-				(0, 3),
-				False,
-				1.5
-			),
-			PriorParam(
-				'L0',
-				(0, 50),
-				False,
-				8
+				50
 			)
 		)
 		
@@ -322,6 +314,8 @@ if __name__=='__main__':
 		_lgr.debug(f'{fitted_vars=}')
 		_lgr.debug(f'{consts=}')
 		
+		#fitted_psf = psf_model.centered_result
+		#sys.exit()
 		
 		if True:
 			psf_residual = psf_data - fitted_psf
@@ -353,6 +347,7 @@ if __name__=='__main__':
 			
 			plt.savefig(output_dir / (fname+'_psf_plot.png'))
 
+		#continue # DEBUGGING
 		
 		# PSF is fitted at this point
 		
@@ -382,6 +377,8 @@ if __name__=='__main__':
 				max_stat_increase = 1E-3
 				rms_frac_threshold = 1E-3#3E-3
 				fabs_frac_threshold = 1E-3#3E-3
+				rms_min_delta = 1E-3
+				fabs_min_delta = 1E-3
 				
 				if '890' in fname:
 					threshold = 0.1#-1
@@ -406,7 +403,9 @@ if __name__=='__main__':
 					loop_gain = loop_gain,
 					max_stat_increase=max_stat_increase,
 					rms_frac_threshold = rms_frac_threshold,
-					fabs_frac_threshold = fabs_frac_threshold
+					fabs_frac_threshold = fabs_frac_threshold,
+					rms_min_delta = rms_min_delta,
+					fabs_min_delta = fabs_min_delta
 				)
 				
 				n_iters = deconvolver.get_iters()

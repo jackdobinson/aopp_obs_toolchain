@@ -28,6 +28,8 @@ class CleanModified(Base):
 	rms_frac_threshold 	: float = 1E-1	# Fraction of original RMS of residual at which iteration is stopped, lower values continue iteration for longer.
 	fabs_frac_threshold : float = 1E-1	# Fraction of original Absolute Brightest Pixel of residual at which iteration is stopped, lower values continue iteration for longer.
 	max_stat_increase	: float = np.inf# Maximum fractional increase of a statistic before terminating
+	fabs_min_delta 		: float = 1E-2 	# Minimum change in absolute brightest pixel before terminating
+	rms_min_delta 		: float = 1E-2 	# Minimum change in rms before terminating
 	
 	# private attributes
 	_obs : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False)
@@ -52,6 +54,10 @@ class CleanModified(Base):
 	_components_best : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False)
 	_stats_best : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False)
 	_i_best : int = dc.field(init=False, repr=False, hash=False, compare=False)
+	_recency_weighted_rms_delta : float = dc.field(init=False, repr=False, hash=False, compare=False)
+	_recency_weighted_fabs_delta : float = dc.field(init=False, repr=False, hash=False, compare=False)
+	_fabs_min_delta : float = dc.field(init=False, repr=False, hash=False, compare=False)
+	_rms_min_delta : float = dc.field(init=False, repr=False, hash=False, compare=False)
 	
 	def get_components(self) -> np.ndarray:
 		#return(self._components)
@@ -83,6 +89,8 @@ class CleanModified(Base):
 		self._current_convolved = np.zeros_like(obs)
 		self._current_cleaned = np.zeros_like(obs)
 		self._tmp_r = np.zeros_like(obs)
+		self._recency_weighted_rms_delta = 0
+		self._recency_weighted_fabs_delta = 0
 		
 		# this variable should only ever reference another array variable
 		# and not have a value of it's own. We use it to change how we
@@ -99,8 +107,12 @@ class CleanModified(Base):
 		#self.choose_update_pixels = self.choose_residual_extrema_reject_entropy
 		
 		# set variable values
-		self._fabs_threshold = np.nanmax(np.fabs(self._residual))*self.fabs_frac_threshold
-		self._rms_threshold = np.sqrt(np.nansum(self._residual**2)/self._residual.size)*self.rms_frac_threshold
+		fabs = np.nanmax(np.fabs(self._residual))
+		rms = np.sqrt(np.nansum(self._residual**2)/self._residual.size)
+		self._fabs_threshold = fabs*self.fabs_frac_threshold
+		self._rms_threshold = rms*self.rms_frac_threshold
+		self._fabs_min_delta = fabs*self.fabs_min_delta
+		self._rms_min_delta = rms*self.rms_min_delta
 
 		# ensure that PSF is centered and an odd number in shape
 		#slices = tuple(slice(s-s%2) for s in psf.shape)
@@ -177,6 +189,18 @@ class CleanModified(Base):
 		
 		if (self._iter_stat_record[self._i,1] < self._rms_threshold)  or (self._iter_stat_record[self._i,0] < self._fabs_threshold):
 			return(False)
+		
+		
+		n_lookback = 10
+		if self._i >=n_lookback :
+			a = 0.2
+			self._recency_weighted_rms_delta = (1-a)*self._recency_weighted_rms_delta + a*np.abs(self._iter_stat_record[self._i,1] - self._iter_stat_record[self._i-n_lookback,1])
+			b = 0.2
+			self._recency_weighted_fabs_delta = (1-b)*self._recency_weighted_fabs_delta + b*np.abs(self._iter_stat_record[self._i,0] - self._iter_stat_record[self._i-n_lookback,0])
+			print(f'TESTING: {self._recency_weighted_rms_delta=}')
+			print(f'TESTING: {self._recency_weighted_fabs_delta=}')
+			if (self._recency_weighted_rms_delta < self._rms_min_delta) or (self._recency_weighted_fabs_delta < self._fabs_min_delta):
+				return False
 		return(True)
 
 

@@ -1,5 +1,6 @@
 
 from typing import Any, TypeVar, TypeVarTuple, ParamSpec, Generic, Annotated, NewType, Callable
+import inspect
 
 import numpy as np
 
@@ -67,12 +68,19 @@ class TurbulencePSFModel:
 		):
 		self.turbulence_model = turbulence_model
 		self.telescope_model = telescope_model
-	
+		
+		# Ensure we have the argument names from the turbulence model
+		# remove `f_axes`
+		# ensure `wavelength` is first
+		self.arg_names = list(inspect.signature(self.turbulence_model).parameters.keys())
+		self.arg_names.remove('f_axes')
+		assert self.arg_names[0] == 'wavelength'
+		
 	def __call__(self, wavelength, *args):
-		f_axis = self.telescope_model.f_axis(wavelength)
-		_lgr.debug(f'{f_axis=}')
+		f_axes = self.telescope_model.f_axis(wavelength)
+		_lgr.debug(f'{f_axes=}')
 		_lgr.debug(f'{args=}')
-		result = self.turbulence_model(f_axis, wavelength, *args).data
+		result = self.turbulence_model(f_axes, wavelength, *args).data
 		return result / np.nansum(result)
 	
 	
