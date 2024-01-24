@@ -23,7 +23,7 @@ _lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 def load_image_as_numpy_array(fpath):
 	with PIL.Image.open(fpath) as image:
-		array = np.array(image)
+		array = np.array(image).astype(float)
 	return array
 
 
@@ -109,7 +109,30 @@ if __name__=='__main__':
 	
 	plt.show()
 	
-	# Plot residuals
+	
+	# Plot residuals before convolving with psf
+	f, ax = plt.subplots(2,int(1+np.ceil(len(comp_deconv_dataset)/2)),squeeze=False,figsize=(12,8))
+	ax = ax.flatten()
+	f.suptitle('residuals before convolving with psf')
+	
+	ax[0].imshow(obs_data-obs_data)
+	ax[0].set_title(f'obs_data - obs_data')
+	
+	ax[1].imshow(deconv_data-obs_data)
+	ax[1].set_title(f'MC deconv - obs_data')
+	
+	
+	for i in range(len(comp_deconv_dataset)):
+		ax[2+i].imshow(comp_deconv_dataset[i]-obs_data)
+		ax[2+i].set_title(f'comparison deconv {i} - obs_data')
+	
+	set_same_limits(ax, lambda x: x.get_images()[0].get_clim(), lambda x, a, b: x.get_images()[0].set_clim(a,b))
+	
+	plt.show()
+	
+	
+	
+	# Plot residuals after convolving with psf
 	f, ax = plt.subplots(2,int(1+np.ceil(len(comp_deconv_dataset)/2)),squeeze=False,figsize=(12,8))
 	ax = ax.flatten()
 	f.suptitle('residuals after convolving with psf')
