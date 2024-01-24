@@ -203,12 +203,7 @@ def save_array_as_tif(data_in, path, nan='zero', ninf='zero', pinf='zero', neg='
 	ninf_mask = np.isneginf(data)
 	pinf_mask = np.isposinf(data)
 	
-	_lgr.debug(f'{np.sum(nan_mask)=}')
-	_lgr.debug(f'{np.sum(ninf_mask)=}')
-	_lgr.debug(f'{np.sum(pinf_mask)=}')
-	
 	ignore_mask = nan_mask | ninf_mask | pinf_mask
-	_lgr.debug(f'{np.sum(ignore_mask)=}')
 	
 	# see: https://www.awaresystems.be/imaging/tiff/tifftags/baseline.html
 	tiff_info = {
@@ -414,22 +409,6 @@ if __name__=='__main__':
 				rms_frac_threshold = 1E-5#1E-3
 				fabs_frac_threshold = 1E-5#1E-3
 				min_frac_stat_delta = 1E-2#1E-2
-				
-				"""
-				if '890' in fname:
-					threshold = 0.1#-1
-					loop_gain=0.2
-					#rms_frac_threshold = 5E-2
-					#fabs_frac_threshold = 5E-2
-				
-				elif region_label in (2,3):
-					rms_frac_threshold = 2E-2
-					fabs_frac_threshold = 2E-2
-					
-				if psf_type == 'original':
-					rms_frac_threshold /= 2
-					fabs_frac_threshold /= 2
-				"""
 				
 				deconvolver = CleanModified()
 				deconvolver(
