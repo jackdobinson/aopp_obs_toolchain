@@ -12,7 +12,9 @@ import fitscube.deconvolve.helpers
 import image_processing as im_proc
 import image_processing.otsu_thresholding
 
+import cfg.logs
 
+_lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
 @dc.dataclass(slots=True,repr=False)
@@ -28,8 +30,7 @@ class CleanModified(Base):
 	rms_frac_threshold 	: float = 1E-1	# Fraction of original RMS of residual at which iteration is stopped, lower values continue iteration for longer.
 	fabs_frac_threshold : float = 1E-1	# Fraction of original Absolute Brightest Pixel of residual at which iteration is stopped, lower values continue iteration for longer.
 	max_stat_increase	: float = np.inf# Maximum fractional increase of a statistic before terminating
-	fabs_min_delta 		: float = 1E-2 	# Minimum change in absolute brightest pixel before terminating
-	rms_min_delta 		: float = 1E-2 	# Minimum change in rms before terminating
+	min_frac_stat_delta	: float = 1E-2 	# Minimum fractional standard deviation of statistics before assuming no progress is being made and terminating iteration
 	
 	# private attributes
 	_obs : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False)
@@ -54,11 +55,8 @@ class CleanModified(Base):
 	_components_best : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False)
 	_stats_best : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False)
 	_i_best : int = dc.field(init=False, repr=False, hash=False, compare=False)
-	_recency_weighted_rms_delta : float = dc.field(init=False, repr=False, hash=False, compare=False)
-	_recency_weighted_fabs_delta : float = dc.field(init=False, repr=False, hash=False, compare=False)
-	_fabs_min_delta : float = dc.field(init=False, repr=False, hash=False, compare=False)
-	_rms_min_delta : float = dc.field(init=False, repr=False, hash=False, compare=False)
-	
+	_stats_delta : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False)
+
 	def get_components(self) -> np.ndarray:
 		#return(self._components)
 		return(self._components_best)
@@ -76,12 +74,18 @@ class CleanModified(Base):
 		self._psf = psf
 		self._components = np.zeros_like(obs)
 		self._components_best = np.zeros_like(obs)
-		self._stats_best = np.full((8,),np.inf)
+		
 		self._i_best = 0
 		self._residual = np.array(obs)
 		self._residual_copy = np.array(self._residual)
-		self._iter_stat_record = np.full((self.n_iter, 8), fill_value=np.nan)
-		self._iter_stat_names = ('fabs', 'rms', 'UNUSED', 'UNUSED', 'UNUSED','generalised_least_squares', 'UNUSED', 'UNUSED')
+		
+		#self._iter_stat_names = ('fabs', 'rms', 'UNUSED', 'UNUSED', 'UNUSED','generalised_least_squares', 'UNUSED', 'UNUSED')
+		#self._iter_stat_record = np.full((self.n_iter, 8), fill_value=np.nan)
+		
+		self._iter_stat_names = ('fabs', 'rms', 'generalised_least_squares')
+		self._iter_stat_record = np.full((self.n_iter, len(self._iter_stat_names)), fill_value=np.nan)
+		self._stats_best = np.full((len(self._iter_stat_names),),np.inf)
+		
 		self._selected_px = np.zeros_like(obs)
 		self._selected_map = np.zeros_like(obs, dtype=bool)
 		self._current_cleaned = np.zeros_like(obs)
@@ -89,8 +93,10 @@ class CleanModified(Base):
 		self._current_convolved = np.zeros_like(obs)
 		self._current_cleaned = np.zeros_like(obs)
 		self._tmp_r = np.zeros_like(obs)
-		self._recency_weighted_rms_delta = 0
-		self._recency_weighted_fabs_delta = 0
+		
+		self._stats_delta = np.zeros((len(self._iter_stat_names),))
+		#self._recency_weighted_rms_delta = 0
+		#self._recency_weighted_fabs_delta = 0
 		
 		# this variable should only ever reference another array variable
 		# and not have a value of it's own. We use it to change how we
@@ -111,8 +117,8 @@ class CleanModified(Base):
 		rms = np.sqrt(np.nansum(self._residual**2)/self._residual.size)
 		self._fabs_threshold = fabs*self.fabs_frac_threshold
 		self._rms_threshold = rms*self.rms_frac_threshold
-		self._fabs_min_delta = fabs*self.fabs_min_delta
-		self._rms_min_delta = rms*self.rms_min_delta
+		#self._fabs_min_delta = fabs*self.fabs_min_delta
+		#self._rms_min_delta = rms*self.rms_min_delta
 
 		# ensure that PSF is centered and an odd number in shape
 		#slices = tuple(slice(s-s%2) for s in psf.shape)
@@ -129,6 +135,54 @@ class CleanModified(Base):
 			self._get_pixel_threshold = lambda : self.threshold*np.nanmax(self._px_choice_img_ptr.val)
 
 		return
+	
+	
+	
+	def _stopping_criteria(self):
+	
+		# Check thresholds
+		_lgr.debug(f'{self._rms_threshold=:0.3g} rms = {self._iter_stat_record[self._i,1]:0.3g}')
+		_lgr.debug(f'{self._fabs_threshold=:0.3g} fabs = {self._iter_stat_record[self._i,0]:0.3g}')
+		if (self._iter_stat_record[self._i,1] < self._rms_threshold)  or (self._iter_stat_record[self._i,0] < self._fabs_threshold):
+			self.stop_reason = "Absolute brightest pixel, or root mean squared statistic have dropped below set threshold"
+			return(False)
+	
+	
+		# Check each statistic is better than the previously saved values
+		new_best = True
+		for name, this_stat, best_stat in zip(self._iter_stat_names, self._iter_stat_record[self._i], self._stats_best):
+			if name != 'UNUSED':
+				_lgr.debug(f'{new_best=} {this_stat=} {best_stat=}')
+				new_best &= this_stat <= best_stat
+		# If saved statistics are better, save the current state. 
+		# Else, work out the maximum fractional increase . If it's 
+		# larger than a threshold terminate iteration and return the best saved result
+		if new_best:
+			self._components_best[...] = self._components
+			self._i_best = self._i
+			self._stats_best = self._iter_stat_record[self._i]
+		else:
+			max_increase_frac = np.nanmax((self._iter_stat_record[self._i] - self._stats_best)/self._stats_best)
+			_lgr.debug(f'{max_increase_frac=}')
+			if max_increase_frac >= self.max_stat_increase:
+				self.stop_reason = "A statistic has increased from the best seen statistic beyond set threshold"
+				return False
+		
+		
+		
+		# Check the stability of the statistics. If they have all stopped evolving, terminate iteration
+		n_lookback = 10
+		if self._i >=n_lookback :
+			for j, name in enumerate(self._iter_stat_names):
+				if name != 'UNUSED':
+					self._stats_delta[j] = np.std(self._iter_stat_record[self._i-n_lookback:self._i,j])/self._iter_stat_record[self._i,j]
+					_lgr.debug(f'{name} fractional standard deviation {self._stats_delta[j]}')
+			_lgr.debug(f'{self.min_frac_stat_delta=}')
+			if all([_std < self.min_frac_stat_delta for j, _std in enumerate(self._stats_delta) if self._iter_stat_names[j] != 'UNUSED']):
+				self.stop_reason = f"Standard deviation of statistics in last {n_lookback} steps are all below minimum fraction"
+				return False
+				
+		return True
 	
 	def _iter(self, obs, psf) -> bool:
 		if not super(CleanModified, self)._iter(obs, psf): return(False)
@@ -158,50 +212,15 @@ class CleanModified(Base):
 		self._iter_stat_record[self._i] = (	
 			np.nanmax(np.fabs(self._residual)), # fabs
 			np.sqrt(np.nansum(self._residual**2)/self._residual.size), # rms
-			np.nan, #unused slot
-			np.nan, #unused slot
-			np.nan, #unused slot
-			np.nansum(
+			np.nansum( # generalised_least_squares
 				0.5*fitscube.deconvolve.helpers.generalised_least_squares(
 					self._components,
 					obs, self.noise_std, psf
 				)
 			),
-			np.nan, #unused slot
-			np.nan, #unused slot
 		)
 		
-		new_best = True
-		for name, this_stat, best_stat in zip(self._iter_stat_names, self._iter_stat_record[self._i], self._stats_best):
-			if name != 'UNUSED':
-				print(f'TESTING: {new_best=} {this_stat=} {best_stat=}')
-				new_best &= this_stat <= best_stat
-		
-		if new_best:
-			self._components_best[...] = self._components
-			self._i_best = self._i
-			self._stats_best = self._iter_stat_record[self._i]
-		else:
-			max_increase_frac = np.nanmax((self._iter_stat_record[self._i] - self._stats_best)/self._stats_best)
-			print(f'TESTING: {max_increase_frac=}')
-			if max_increase_frac >= self.max_stat_increase:
-				return False
-		
-		if (self._iter_stat_record[self._i,1] < self._rms_threshold)  or (self._iter_stat_record[self._i,0] < self._fabs_threshold):
-			return(False)
-		
-		
-		n_lookback = 10
-		if self._i >=n_lookback :
-			a = 0.2
-			self._recency_weighted_rms_delta = (1-a)*self._recency_weighted_rms_delta + a*np.abs(self._iter_stat_record[self._i,1] - self._iter_stat_record[self._i-n_lookback,1])
-			b = 0.2
-			self._recency_weighted_fabs_delta = (1-b)*self._recency_weighted_fabs_delta + b*np.abs(self._iter_stat_record[self._i,0] - self._iter_stat_record[self._i-n_lookback,0])
-			print(f'TESTING: {self._recency_weighted_rms_delta=}')
-			print(f'TESTING: {self._recency_weighted_fabs_delta=}')
-			if (self._recency_weighted_rms_delta < self._rms_min_delta) or (self._recency_weighted_fabs_delta < self._fabs_min_delta):
-				return False
-		return(True)
+		return self._stopping_criteria()
 
 
 	def choose_residual_extrema(self):
