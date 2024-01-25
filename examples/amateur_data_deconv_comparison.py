@@ -27,17 +27,6 @@ def load_image_as_numpy_array(fpath):
 	return array
 
 
-
-
-"""
-	ymin, ymax = np.inf, -np.inf
-	for a in ax:
-		ylo, yhi = a.get_ylim()
-		if ylo < ymin: ymin = ylo
-		if yhi > ymax: ymax = yhi
-	for a in ax:
-		a.set_ylim(ymin, ymax)
-	"""
 def set_same_limits(
 		axes_set, 
 		limit_getter = lambda ax: ax.get_ylim(), 
@@ -56,7 +45,8 @@ if __name__=='__main__':
 	data_dir = example_data_loader.get_amateur_data_set_directory(0)
 	
 	obs_file = data_dir / "2024-01-11-1917_1-Jupiter_750nm.tif"
-	deconv_file = data_dir / "output" / "2024-01-11-1917_1-Jupiter_750nm_region_0_psf_original_test_deconv_components.tif"
+	deconv_file = data_dir / "output" / "2024-01-11-1917_1-Jupiter_750nm_region_0_psf_fitted_test_deconv_components.tif"
+	psf_file = data_dir / "output" / "2024-01-11-1917_1-Jupiter_750nm_region_0_psf_fitted.npy"
 	comp_deconv_files = (
 		data_dir / "comparison_deconv" / "enhanced_a 2024-01-11-1917_1-Jupiter_750nm.tif",
 		data_dir / "comparison_deconv" / "enhanced_b 2024-01-11-1917_1-Jupiter_750nm.tif",
@@ -64,6 +54,8 @@ if __name__=='__main__':
 	
 	obs_data = load_image_as_numpy_array(obs_file)
 	deconv_data = load_image_as_numpy_array(deconv_file)
+	psf_data = np.load(psf_file)
+	_lgr.debug(f'{np.nansum(psf_data)=}')
 	comp_deconv_dataset = [load_image_as_numpy_array(fpath) for fpath in comp_deconv_files]
 	
 	
@@ -72,184 +64,284 @@ if __name__=='__main__':
 		comp_deconv_dataset[i] = sp.ndimage.median_filter(comp_deconv_dataset[i], 3)
 	
 	
-	psf_label = 3
-	source_labels, source_bounding_boxes, parameters = get_source_regions(obs_data, name=str(obs_file).split(os.sep)[-1])
-	psf_data = obs_data[source_bounding_boxes[psf_label-1].to_slices()].astype(float)
-	psf_data = psf_data_ops.normalise(psf_data)
+	# Normalise if required
+	#comp_deconv_dataset[0] *= np.nansum(obs_data)/ np.nansum(comp_deconv_dataset[0])
 	
 	
-	region = lambda : mpl.patches.Rectangle(
-		(472,233), 
-		120, 
-		1,#30, 
-		angle=22, 
-		facecolor='none', 
-		edgecolor='red', 
-		lw=1
-	)
+	regions = [
+		lambda : mpl.patches.Rectangle(
+			(465,265), 
+			40, 
+			20, 
+			angle=22, 
+			facecolor='none', 
+			edgecolor='red', 
+			lw=1
+		),
+		lambda : mpl.patches.Rectangle(
+			(455,290), 
+			120, 
+			60, 
+			angle=22, 
+			facecolor='none', 
+			edgecolor='red', 
+			lw=1
+		),
+		lambda : mpl.patches.Rectangle(
+			(472,233), 
+			120, 
+			30, 
+			angle=22, 
+			facecolor='none', 
+			edgecolor='red', 
+			lw=1
+		)
+	]
 	
-	# Plot data and region
-	f, ax = plt.subplots(2,int(1+np.ceil(len(comp_deconv_dataset)/2)),squeeze=False,figsize=(12,8))
-	ax = ax.flatten()
-	f.suptitle('data with region')
+	for region in regions:
 	
-	ax[0].imshow(obs_data)
-	ax[0].set_title(f'observation sum {np.nansum(obs_data)}')
-	
-	ax[1].imshow(deconv_data)
-	ax[1].set_title(f'MC deconv sum {np.nansum(deconv_data)}')
-	
-	
-	for i in range(len(comp_deconv_dataset)):
-		ax[2+i].imshow(comp_deconv_dataset[i])
-		ax[2+i].set_title(f'comparison deconv {i} sum {np.nansum(comp_deconv_dataset[i])}')
-	
-	for _a in ax:
-		_a.add_patch(region())
-	
-	plt.show()
-	
-	
-	# Plot residuals before convolving with psf
-	f, ax = plt.subplots(2,int(1+np.ceil(len(comp_deconv_dataset)/2)),squeeze=False,figsize=(12,8))
-	ax = ax.flatten()
-	f.suptitle('residuals before convolving with psf')
-	
-	ax[0].imshow(obs_data-obs_data)
-	ax[0].set_title(f'obs_data - obs_data')
-	
-	ax[1].imshow(deconv_data-obs_data)
-	ax[1].set_title(f'MC deconv - obs_data')
-	
-	
-	for i in range(len(comp_deconv_dataset)):
-		ax[2+i].imshow(comp_deconv_dataset[i]-obs_data)
-		ax[2+i].set_title(f'comparison deconv {i} - obs_data')
-	
-	set_same_limits(ax, lambda x: x.get_images()[0].get_clim(), lambda x, a, b: x.get_images()[0].set_clim(a,b))
-	
-	plt.show()
-	
-	
-	
-	# Plot residuals after convolving with psf
-	f, ax = plt.subplots(2,int(1+np.ceil(len(comp_deconv_dataset)/2)),squeeze=False,figsize=(12,8))
-	ax = ax.flatten()
-	f.suptitle('residuals after convolving with psf')
-	
-	ax[0].imshow(obs_data-obs_data)
-	ax[0].set_title(f'obs_data - obs_data')
-	
-	ax[1].imshow(sp.signal.fftconvolve(deconv_data, psf_data, mode='same')-obs_data)
-	ax[1].set_title(f'MC deconv - obs_data')
-	
-	
-	for i in range(len(comp_deconv_dataset)):
-		ax[2+i].imshow(sp.signal.fftconvolve(comp_deconv_dataset[i], psf_data, mode='same')-obs_data)
-		ax[2+i].set_title(f'comparison deconv {i} - obs_data')
-	
-	set_same_limits(ax, lambda x: x.get_images()[0].get_clim(), lambda x, a, b: x.get_images()[0].set_clim(a,b))
-	
-	plt.show()
-	
-	
-	
-	
-	a_region = region()
-	
-	transform = a_region.get_patch_transform()
-	
-	
-	mpl_indices = np.flip(np.indices(obs_data.shape), axis=0)
-	
-	points = np.moveaxis(mpl_indices,0,-1)
-	_lgr.debug(f'{points.shape=}')
-	t_points = transform.inverted().transform(points.reshape((-1,points.shape[-1]), order='C'))
-	_lgr.debug(f'{points=}')
-	_lgr.debug(f'{t_points=}')
-	t_points = np.moveaxis(t_points.reshape((*obs_data.shape,-1), order='C'), -1,0)
-	_lgr.debug(f'{t_points.shape=}')
-	
-	mask = np.ones_like(obs_data,dtype=bool)
-	for x in t_points:
-		mask &= ((0 <= x) & (x <= 1))
-	
-	
-	
-	# Plot region data only
-	zeros = np.zeros_like(obs_data)
-	
-	f, ax = plt.subplots(2,int(1+np.ceil(len(comp_deconv_dataset)/2)),squeeze=False,figsize=(12,8))
-	ax = ax.flatten()
-	f.suptitle('region data (other data zeroed)')
-	
-	zeros *= 0
-	zeros[mask] = obs_data[mask]
-	ax[0].imshow(zeros)
-	ax[0].set_title('observation')
-	
-	zeros *= 0
-	zeros[mask] = deconv_data[mask]
-	ax[1].imshow(zeros)
-	ax[1].set_title('MC deconv')
-	
-	for i in range(len(comp_deconv_dataset)):
+		# Plot data and region
+		f, ax = plt.subplots(2,int(1+np.ceil(len(comp_deconv_dataset)/2)),squeeze=False,figsize=(12,8))
+		ax = ax.flatten()
+		f.suptitle('data with region')
+		
+		ax[0].imshow(obs_data)
+		ax[0].set_title(f'observation sum {np.nansum(obs_data):0.4g}')
+		
+		ax[1].imshow(deconv_data)
+		ax[1].set_title(f'MC deconv sum {np.nansum(deconv_data):0.4g}')
+		
+		
+		for i in range(len(comp_deconv_dataset)):
+			ax[2+i].imshow(comp_deconv_dataset[i])
+			ax[2+i].set_title(f'comparison deconv {i} sum {np.nansum(comp_deconv_dataset[i]):0.4g}')
+		
+		for _a in ax:
+			_a.add_patch(region())
+		
+		plt.show()
+		
+		
+		# Plot residuals before convolving with psf
+		f, ax = plt.subplots(2,int(1+np.ceil(len(comp_deconv_dataset)/2)),squeeze=False,figsize=(12,8))
+		ax = ax.flatten()
+		f.suptitle('residuals before convolving with psf')
+		
+		ax[0].imshow(obs_data-obs_data)
+		ax[0].set_title(f'obs_data - obs_data')
+		
+		ax[1].imshow(deconv_data-obs_data)
+		ax[1].set_title(f'MC deconv - obs_data')
+		
+		
+		for i in range(len(comp_deconv_dataset)):
+			ax[2+i].imshow(comp_deconv_dataset[i]-obs_data)
+			ax[2+i].set_title(f'comparison deconv {i} - obs_data')
+		
+		set_same_limits(ax, lambda x: x.get_images()[0].get_clim(), lambda x, a, b: x.get_images()[0].set_clim(a,b))
+		
+		plt.show()
+		
+		
+		
+		# Plot residuals after convolving with psf
+		f, ax = plt.subplots(2,int(1+np.ceil(len(comp_deconv_dataset)/2)),squeeze=False,figsize=(12,8))
+		ax = ax.flatten()
+		f.suptitle('residuals after convolving with psf')
+		
+		ax[0].imshow(obs_data-obs_data)
+		ax[0].set_title(f'obs_data - obs_data')
+		
+		ax[1].imshow(sp.signal.fftconvolve(deconv_data, psf_data, mode='same')-obs_data)
+		ax[1].set_title(f'MC deconv - obs_data')
+		
+		
+		for i in range(len(comp_deconv_dataset)):
+			ax[2+i].imshow(sp.signal.fftconvolve(comp_deconv_dataset[i], psf_data, mode='same')-obs_data)
+			ax[2+i].set_title(f'comparison deconv {i} - obs_data')
+		
+		set_same_limits(ax, lambda x: x.get_images()[0].get_clim(), lambda x, a, b: x.get_images()[0].set_clim(a,b))
+		
+		plt.show()
+		
+		
+		
+		# Get a mask that selects the region
+		a_region = region()
+		
+		transform = a_region.get_patch_transform()
+		
+		
+		mpl_indices = np.flip(np.indices(obs_data.shape), axis=0)
+		
+		points = np.moveaxis(mpl_indices,0,-1)
+		_lgr.debug(f'{points.shape=}')
+		t_points = transform.inverted().transform(points.reshape((-1,points.shape[-1]), order='C'))
+		_lgr.debug(f'{points=}')
+		_lgr.debug(f'{t_points=}')
+		t_points = np.moveaxis(t_points.reshape((*obs_data.shape,-1), order='C'), -1,0)
+		_lgr.debug(f'{t_points.shape=}')
+		
+		mask = np.ones_like(obs_data,dtype=bool)
+		for x in t_points:
+			mask &= ((0 <= x) & (x <= 1))
+		
+		region_x_values = t_points[0][mask]
+		region_y_values = t_points[1][mask]
+		
+		n_bins = a_region.get_width()
+		region_x_bin_edges = np.linspace(0, int(np.ceil(np.max(region_x_values))), n_bins+1)
+		print(f'{region_x_bin_edges=}')
+		region_x_bin_values = np.zeros((n_bins,))
+		region_x_bin_masks = np.zeros((n_bins,*region_x_values.shape), dtype=bool)
+		for i in range(n_bins):
+			region_x_bin_masks[i] = (region_x_bin_edges[i] < region_x_values) & (region_x_values <= region_x_bin_edges[i+1])
+		
+		print(f'{region_x_bin_masks.shape=}')
+		print(f'{[np.mean(obs_data[mask][bin_mask]) for bin_mask in region_x_bin_masks]=}')
+		
+		
+		region_corners = np.array([x for x in a_region.get_corners()])
+		print(f'{region_corners=}')
+		
+		# Plot region data only
+		region_extent = (
+			region_corners[:,0].min(),
+			region_corners[:,0].max(),
+			region_corners[:,1].max(),
+			region_corners[:,1].min(),
+		)
+		region_slices = (
+			slice(int(np.floor(region_corners[:,1].min())), int(np.ceil(region_corners[:,1].max()))), 
+			slice(int(np.floor(region_corners[:,0].min())), int(np.ceil(region_corners[:,0].max())))
+		)
+		_lgr.debug(f'{region_extent=}')
+		zeros = np.zeros_like(obs_data)
+		
+		f, ax = plt.subplots(2,int(1+np.ceil(len(comp_deconv_dataset)/2)),squeeze=False,figsize=(12,8))
+		ax = ax.flatten()
+		f.suptitle('region data (other data zeroed)')
+		
 		zeros *= 0
-		zeros[mask] = comp_deconv_dataset[i][mask]
-		ax[2+i].imshow(zeros)
-		ax[2+i].set_title(f'comparison deconv {i}')
-	
-	for _a in ax:
-		_a.add_patch(region())
-	
-	plt.show()
-	
-	
-	
-	# Plot histogram of region data
-	f, ax = plt.subplots(2,int(1+np.ceil(len(comp_deconv_dataset)/2)),squeeze=False,figsize=(12,8))
-	ax = ax.flatten()
-	f.suptitle('histograms of region data')
-	
-	ax[0].hist(obs_data[mask].flatten(), bins=50)
-	ax[0].set_title('observation')
-	
-	ax[1].hist(deconv_data[mask].flatten(), bins=50)
-	ax[1].set_title('MC deconv')
-	
-	
-	for i in range(len(comp_deconv_dataset)):
-		ax[2+i].hist(comp_deconv_dataset[i][mask].flatten(), bins=50)
-		ax[2+i].set_title(f'comparison deconv {i}')
-	
-	plt.show()
-	
-	
-	# Plot line plot of region data
-	f, ax = plt.subplots(2,int(1+np.ceil(len(comp_deconv_dataset)/2)),squeeze=False,figsize=(12,8))
-	ax = ax.flatten()
-	f.suptitle('line plot of region data, region of data convovled with psf')
-	
-	ax[0].plot(obs_data[mask].flatten())
-	ax[0].set_title('observation')
-	
-	ax[1].plot(obs_data[mask].flatten())
-	ax[1].plot(deconv_data[mask].flatten(), label='deconv data')
-	ax[1].plot(sp.signal.fftconvolve(deconv_data, psf_data, mode='same')[mask].flatten(), label='deconv data convolved with psf')
-	ax[1].legend()
-	ax[1].set_title('MC deconv')
-	
-	
-	for i in range(len(comp_deconv_dataset)):
-		ax[2+i].plot(obs_data[mask].flatten())
-		ax[2+i].plot(comp_deconv_dataset[i][mask].flatten())
-		ax[2+i].plot(sp.signal.fftconvolve(comp_deconv_dataset[i], psf_data, mode='same')[mask].flatten())
-		ax[2+i].set_title(f'comparison deconv {i}')
-	
-	
-	set_same_limits(ax, lambda x: x.get_ylim(), lambda x, a, b: x.set_ylim(a,b))
+		zeros[mask] = obs_data[mask]
+		ax[0].imshow(zeros[region_slices], extent=region_extent, vmin=np.min(zeros[mask]), vmax=np.max(zeros[mask]))
+		ax[0].set_title('observation')
+		
+		zeros *= 0
+		zeros[mask] = deconv_data[mask]
+		ax[1].imshow(zeros[region_slices], extent=region_extent, vmin=np.min(zeros[mask]), vmax=np.max(zeros[mask]))
+		ax[1].set_title('MC deconv')
+		
+		for i in range(len(comp_deconv_dataset)):
+			zeros *= 0
+			zeros[mask] = comp_deconv_dataset[i][mask]
+			ax[2+i].imshow(zeros[region_slices], extent=region_extent, vmin=np.min(zeros[mask]), vmax=np.max(zeros[mask]))
+			ax[2+i].set_title(f'comparison deconv {i}')
+		
+		for _a in ax:
+			_a.add_patch(region())
+			
+		set_same_limits(ax, lambda x: x.get_images()[0].get_clim(), lambda x, a, b: x.get_images()[0].set_clim(a,b))
+		
+		plt.show()
+		
+		
+		
+		# Plot histogram of region data
+		f, ax = plt.subplots(2,int(1+np.ceil(len(comp_deconv_dataset)/2)),squeeze=False,figsize=(12,8))
+		ax = ax.flatten()
+		f.suptitle('histograms of region data')
+		
+		ax[0].hist(obs_data[mask].flatten(), bins=50)
+		ax[0].set_title('observation')
+		
+		ax[1].hist(deconv_data[mask].flatten(), bins=50)
+		ax[1].set_title('MC deconv')
+		
+		
+		for i in range(len(comp_deconv_dataset)):
+			ax[2+i].hist(comp_deconv_dataset[i][mask].flatten(), bins=50)
+			ax[2+i].set_title(f'comparison deconv {i}')
+		
+		set_same_limits(ax, lambda x: x.get_ylim(), lambda x, a, b: x.set_ylim(a,b))
+		set_same_limits(ax, lambda x: x.get_xlim(), lambda x, a, b: x.set_xlim(a,b))
+		
+		plt.show()
+		
+		
+		# Plot line plot of region data
+		std_alpha = 0.2
+		f, ax = plt.subplots(2,int(1+np.ceil(len(comp_deconv_dataset)/2)),squeeze=False,figsize=(12,8))
+		ax = ax.flatten()
+		f.suptitle('line plot of region data, region of data convovled with psf')
+		
+		x = range(region_x_bin_masks.shape[0])
+		
+		obs_data_region_x_mean = np.array([np.mean(obs_data[mask][bin_mask]) for bin_mask in region_x_bin_masks])
+		obs_data_region_x_std = np.array([np.std(obs_data[mask][bin_mask]) for bin_mask in region_x_bin_masks])
+		
+		p, = ax[0].plot(obs_data_region_x_mean)
+		ax[0].fill_between(x, obs_data_region_x_mean - obs_data_region_x_std, obs_data_region_x_mean + obs_data_region_x_std, color = p.get_color(), alpha=std_alpha)
+		ax[0].set_title('observation')
+		
+		
+		
+		
+		p, = ax[1].plot(obs_data_region_x_mean)
+		ax[1].fill_between(x, obs_data_region_x_mean - obs_data_region_x_std, obs_data_region_x_mean + obs_data_region_x_std, color = p.get_color(), alpha=std_alpha)
+		#ax[1].plot(deconv_data[mask].flatten(), label='deconv data')
+		#ax[1].plot(sp.signal.fftconvolve(deconv_data, psf_data, mode='same')[mask].flatten(), label='deconv data convolved with psf')
+		
+		deconv_data_region_x_mean = np.array([np.mean(deconv_data[mask][bin_mask]) for bin_mask in region_x_bin_masks])
+		deconv_data_region_x_std = np.array([np.std(deconv_data[mask][bin_mask]) for bin_mask in region_x_bin_masks])
+		
+		p, = ax[1].plot(deconv_data_region_x_mean, label='deconv data')
+		ax[1].fill_between(x, deconv_data_region_x_mean - deconv_data_region_x_std, deconv_data_region_x_mean + deconv_data_region_x_std, color = p.get_color(), alpha=std_alpha)
+		
+		conv_data = sp.signal.fftconvolve(deconv_data, psf_data, mode='same')
+		conv_data_region_x_mean = np.array([np.mean(conv_data[mask][bin_mask]) for bin_mask in region_x_bin_masks])
+		conv_data_region_x_std = np.array([np.std(conv_data[mask][bin_mask]) for bin_mask in region_x_bin_masks])
+		
+		p, = ax[1].plot(conv_data_region_x_mean, label='deconv data convolved with psf')
+		ax[1].fill_between(x, conv_data_region_x_mean - conv_data_region_x_std, conv_data_region_x_mean + conv_data_region_x_std, color = p.get_color(), alpha=std_alpha)
+		ax[1].legend()
+		ax[1].set_title('MC deconv')
+		
+		
+		for i in range(len(comp_deconv_dataset)):
+			#ax[2+i].plot(obs_data[mask].flatten())
+			#ax[2+i].plot(comp_deconv_dataset[i][mask].flatten())
+			#ax[2+i].plot(sp.signal.fftconvolve(comp_deconv_dataset[i], psf_data, mode='same')[mask].flatten())
+			
+			
+			
+			p, = ax[2+i].plot(obs_data_region_x_mean)
+			ax[2+i].fill_between(x, obs_data_region_x_mean - obs_data_region_x_std, obs_data_region_x_mean + obs_data_region_x_std, color = p.get_color(), alpha=std_alpha)
+			
+			comp_deconv_dataset_i_region_x_mean = np.array([np.mean(comp_deconv_dataset[i][mask][bin_mask]) for bin_mask in region_x_bin_masks])
+			comp_deconv_dataset_i_x_std = np.array([np.std(comp_deconv_dataset[i][mask][bin_mask]) for bin_mask in region_x_bin_masks])
+			
+			p, = ax[2+i].plot(comp_deconv_dataset_i_region_x_mean)
+			ax[2+i].fill_between(
+				x, 
+				comp_deconv_dataset_i_region_x_mean - comp_deconv_dataset_i_x_std, 
+				comp_deconv_dataset_i_region_x_mean + comp_deconv_dataset_i_x_std, 
+				color = p.get_color(), 
+				alpha=std_alpha
+			)
+			
+			conv_data = sp.signal.fftconvolve(comp_deconv_dataset[i], psf_data, mode='same')
+			conv_data_region_x_mean = np.array([np.mean(conv_data[mask][bin_mask]) for bin_mask in region_x_bin_masks])
+			conv_data_region_x_std = np.array([np.std(conv_data[mask][bin_mask]) for bin_mask in region_x_bin_masks])
+			
+			p, = ax[2+i].plot(conv_data_region_x_mean)
+			ax[2+i].fill_between(x, conv_data_region_x_mean - conv_data_region_x_std, conv_data_region_x_mean + conv_data_region_x_std, color = p.get_color(), alpha=std_alpha)
+			ax[2+i].set_title(f'comparison deconv {i}')
+		
+		
+		set_same_limits(ax, lambda x: x.get_ylim(), lambda x, a, b: x.set_ylim(a,b))
 
-	plt.show()
+		plt.show()
 	
 	
 	

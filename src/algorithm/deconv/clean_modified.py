@@ -31,6 +31,7 @@ class CleanModified(Base):
 	fabs_frac_threshold : float = 1E-1	# Fraction of original Absolute Brightest Pixel of residual at which iteration is stopped, lower values continue iteration for longer.
 	max_stat_increase	: float = np.inf# Maximum fractional increase of a statistic before terminating
 	min_frac_stat_delta	: float = 1E-2 	# Minimum fractional standard deviation of statistics before assuming no progress is being made and terminating iteration
+	give_best_result	: bool  = True 	# If True, will return the best (measured by statistics) result instead of final result.
 	
 	# private attributes
 	_obs : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False)
@@ -59,12 +60,12 @@ class CleanModified(Base):
 
 	def get_components(self) -> np.ndarray:
 		#return(self._components)
-		return(self._components_best)
+		return(self._components_best if self.give_best_result else self._components)
 	def get_residual(self) -> np.ndarray:
 		#return(self._residual)
-		return self._obs - sp.signal.fftconvolve(self._components_best, self._psf, mode='same')/self._flux_correction_factor
+		return self._obs - sp.signal.fftconvolve(self.get_components(), self._psf, mode='same')/self._flux_correction_factor
 	def get_iters(self):
-		return(self._i_best)
+		return(self._i_best if self.give_best_result else self._i)
 	
 	
 	def _init_algorithm(self, obs, psf) -> None:
@@ -193,6 +194,11 @@ class CleanModified(Base):
 		self._selected_map[...] = (self._px_choice_img_ptr.val > self._pixel_threshold)
 		
 		self._selected_px[self._selected_map] = self._residual[self._selected_map]*self.loop_gain
+		# TESTING DIFFERENT STRATEGIES
+		# This one may have better convergence statistics, I should check it
+		#rma = np.nanmax(np.abs(self._residual))
+		#r2 = (np.abs(self._residual)/rma)**2
+		#self._selected_px[self._selected_map] = (np.sign(self._residual)*(r2*rma))[self._selected_map]*self.loop_gain
 		self._accumulator[self._selected_map] += 1
 		
 		# convolve selected pixels with PSF and adjust so that flux is conserved

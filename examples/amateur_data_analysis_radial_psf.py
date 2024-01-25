@@ -169,7 +169,7 @@ def plot_source_regions(
 
 	for i, bbox in enumerate(bboxes):
 		rect = mpl.patches.Rectangle(*bbox.to_mpl_rect(),edgecolor='r', facecolor='none', lw=1)
-		text = f'region {i}'
+		text = f'region {i+1}'
 
 		region_data = data[bbox.to_slices()]
 		conservative_sig_noise = np.max(region_data)/np.median(region_data)
@@ -197,7 +197,7 @@ def model_badness_of_fit_callable_factory(model_flattened_callable, data, err):
 def save_array_as_tif(data_in, path, nan='zero', ninf='zero', pinf='zero', neg='zero', scale=False, type=np.uint16):
 	
 	
-	data = np.array(data_in) # copy input data
+	data = np.array(data_in, dtype=data_in.dtype) # copy input data
 	
 	nan_mask = np.isnan(data)
 	ninf_mask = np.isneginf(data)
@@ -235,7 +235,6 @@ def save_array_as_tif(data_in, path, nan='zero', ninf='zero', pinf='zero', neg='
 			tiff_info[339] = 1
 		case _:
 			raise NotImplementedError(f'Unknown PIL image mode for numpy type {type}')
-		
 	
 	PIL.Image.fromarray(data.astype(type), mode=image_mode).save(path, 'tiff', tiffinfo=tiff_info)
 	
@@ -257,29 +256,45 @@ if __name__=='__main__':
 	import example_data_loader
 	import psf_data_ops
 
+
+	data_set_index = 0
+
 	if len(sys.argv) <= 1:
-		files = example_data_loader.get_amateur_data_set(0)
+		files = example_data_loader.get_amateur_data_set(data_set_index)
 	else:
 		files = sys.argv[1:]
 
 	# note, labels are 1-indexed (0 is background)
 	target_label = 1
-	psf_label = 3
+	psf_label = -1 # last label is PSF as we want the smallest object.
 
 
 	mpl.rc('image', cmap='gray')
 
+	supersample_factor = 1
 
 	for file in files:
 		_lgr.debug(f'Operating on {file}')
 		with PIL.Image.open(file) as image:
+			image = image.convert(mode='F').resize(
+				(supersample_factor*x for x in image.size), 
+				#resample=PIL.Image.Resampling.NEAREST
+				#resample=PIL.Image.Resampling.BILINEAR
+				resample=PIL.Image.Resampling.BICUBIC
+			)
 			data = np.array(image)
 
-		output_dir = example_data_loader.get_amateur_data_set_output_directory(0)
+		output_dir = example_data_loader.get_amateur_data_set_output_directory(data_set_index)
+		output_dir.mkdir(parents=True, exist_ok=True)
 		fname = os.path.splitext(os.path.split(file)[1])[0]
 
 		source_labels, source_bounding_boxes, parameters = get_source_regions(data, name=file.split(os.sep)[-1])
 		_lgr.debug(f'{len(source_bounding_boxes)=}')
+		
+		assert psf_label != 0, "Labelled PSF region cannot be the background"
+		psf_label = psf_label if psf_label >=0 else np.max(source_labels) + 1 + psf_label
+		psf_bbox_index = psf_label-1
+		
 		
 		plot_source_regions(
 			data, 
@@ -295,7 +310,7 @@ if __name__=='__main__':
 		
 		
 		# Get PSF data
-		psf_data = data[source_bounding_boxes[psf_label-1].to_slices()].astype(float)
+		psf_data = data[source_bounding_boxes[psf_bbox_index].to_slices()].astype(float)
 		
 		psf_data = psf_data_ops.normalise(psf_data)
 		
@@ -344,7 +359,10 @@ if __name__=='__main__':
 		_lgr.debug(f'{fitted_vars=}')
 		_lgr.debug(f'{consts=}')
 		
-		#fitted_psf = psf_model.centered_result
+		fitted_psf = psf_model.centered_result
+		#r = np.sqrt(np.sum((np.indices(fitted_psf.shape).T - (np.array(fitted_psf.shape)//2)).T**2, axis=0))
+		#fitted_psf *= (1/(r+supersample_factor))**0.45
+		#fitted_psf /= np.nansum(fitted_psf)
 		#sys.exit()
 		
 		if True:
@@ -390,10 +408,23 @@ if __name__=='__main__':
 				case _:
 					raise NotImplementedError
 			
+			psf_for_deconv /= np.nansum(psf_for_deconv)
+			
 			# Get and deconvolve target data
-			for region_label in range(0,len(source_bounding_boxes)+1):
+			for region_label in [x for x in range(1,len(source_bounding_boxes)+1)]+[0]:
 				
 				output_file_fmt = "{fname}_region_{region_label}_psf_{psf_type}_test_deconv_{tag}.{ext}"
+				
+				save_array_as_tif(
+					psf_for_deconv, 
+					output_dir / "{fname}_region_{region_label}_psf_{psf_type}.{ext}".format(fname=fname, region_label=region_label, psf_type=psf_type, ext='tif'),
+					scale=True
+				)
+				
+				np.save(
+					output_dir / "{fname}_region_{region_label}_psf_{psf_type}.{ext}".format(fname=fname, region_label=region_label, psf_type=psf_type, ext='npy'),
+					psf_for_deconv
+				)
 				
 				if region_label == 0:
 					target_data = data.astype(float)
@@ -404,13 +435,13 @@ if __name__=='__main__':
 				target_data -= np.median(target_data[*bg_region_slice])
 				
 				n_iter = 1000#5000
-				threshold = 0.1 #0.3
+				threshold = 0.1#0.483#0.1 #0.3
 				loop_gain = 0.2 #0.02
-				rms_frac_threshold = 1E-5#1E-3
-				fabs_frac_threshold = 1E-5#1E-3
-				min_frac_stat_delta = 1E-2#1E-2
+				rms_frac_threshold = 1E-3#1E-3
+				fabs_frac_threshold = 1E-3#1E-3
+				min_frac_stat_delta = loop_gain*5E-2#1E-2
 				
-				deconvolver = CleanModified()
+				deconvolver = CleanModified(give_best_result=False)
 				deconvolver(
 					target_data, 
 					psf_for_deconv,
@@ -441,7 +472,7 @@ if __name__=='__main__':
 			
 				im0 = ax[0].imshow(target_data)
 				vmin, vmax = im0.get_clim()
-				ax[0].set_title(f'target ({vmin:0.2g}, {vmax:0.2g}) sum {np.nansum(target_data):0.4g}')
+				ax[0].set_title(f'target \n({vmin:0.2g}, {vmax:0.2g}) sum {np.nansum(target_data):0.4g}')
 			
 				if ('890' in fname 
 						or ('750' in fname and '1957' in fname and region_label == 2)
@@ -452,7 +483,7 @@ if __name__=='__main__':
 				else:
 					im1 = ax[1].imshow(deconv_components)
 				vmin, vmax = im1.get_clim()
-				ax[1].set_title(f'deconvolved target ({vmin:0.2g}, {vmax:0.2g}) sum {np.nansum(deconv_components):0.4g}')
+				ax[1].set_title(f'deconvolved target\n ({vmin:0.2g}, {vmax:0.2g}) sum {np.nansum(deconv_components):0.4g}')
 				
 				
 				im2 = ax[2].imshow(deconv_residual)
@@ -494,8 +525,6 @@ if __name__=='__main__':
 				ax[0].legend(handles=p_handles)
 				
 				plt.savefig(output_dir / output_file_fmt.format(fname=fname, region_label=region_label, psf_type=psf_type, tag=f'plot_deconv_stats', ext='png'))
-		
-		
 		
 		
 		
