@@ -10,8 +10,27 @@ import cfg.logs
 
 _lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
+
+"""
+	objective                                    image plane
+	-----------------------------------------------|
+		|                                          |
+		|                           .............. X         point on image plane, priciple ray to this point is ".../" line
+		|             ............./   \           |
+		|............/           theta  |          |
+......../ - - - - - - - - - - - - - - - - - - - - -|         optical axis
+		|                                          |
+		|                                          |
+		|                                          |
+		|                                          |
+	-----------------------------------------------|
+
+theta - Angle between optical axis and principle ray to point X on image plane
+
+"""
+
 def phase_psd_von_karman_turbulence(
-		f_axes : Annotated[np.ndarray, 'ModelInputData'],
+		f_axes : Annotated[np.ndarray, 'ModelInputData'], # f_axes, f is theta/wavelength
 		wavelength : Annotated[float, 'ModelInputData'],
 		r0 : Annotated[float, 'ModelParameter'],
 		turbulence_ndim : Annotated[float,'ModelParameter'],
@@ -23,7 +42,7 @@ def phase_psd_von_karman_turbulence(
 	"""
 	wav_factor = wavelength/5E-7
 	L0 = L0*wav_factor
-	#_lgr.debug(f'{np.nanmax(f_axes)=} {wavelength=} {wav_factor=} {r0=} {turbulence_ndim=} {L0=}')
+	#_lgr.debug(f'{f_axes=} {wavelength=} {wav_factor=} {r0=} {turbulence_ndim=} {L0=}')
 	
 	f_mesh = np.array(np.meshgrid(*f_axes[::-1]))
 	f_sq = np.sum(f_mesh**2, axis=0)
@@ -33,7 +52,7 @@ def phase_psd_von_karman_turbulence(
 	r0_wavelength_corrected = r0*wav_factor**(-1/r0_pow)
 	
 	psd = factor*(r0_wavelength_corrected)**(r0_pow)*(1/L0**2 + f_sq)**(f_pow)
-	center_idx = tuple(s//2 for s in psd.shape)
-	psd[center_idx] = 0 # stop infinity at f==0
+	#center_idx = tuple(s//2 for s in psd.shape)
+	#psd[center_idx] = 0 # stop infinity at f==0
 	return PhasePowerSpectralDensity(psd, f_axes)
 

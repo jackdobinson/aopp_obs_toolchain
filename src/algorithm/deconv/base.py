@@ -10,7 +10,9 @@ import inspect
 import context as ctx
 import context.temp
 
+import cfg.logs
 
+_lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
 @dc.dataclass(slots=True)
@@ -43,6 +45,9 @@ class Base:
 		: list[Callable[[Any, np.ndarray, np.ndarray],None]] \
 		= dc.field(default_factory=lambda : [], repr=False, hash=False, compare=False) # callbacks after the final iteration
 	
+	# State attributes visible from outside class
+	stop_reason : str = dc.field(default="unknown reason for terminating iteration", init=False, repr=False, hash=False, compare=False) # reason that iteration was terminated
+	
 	# Internal attributes
 	_i : int = dc.field(init=False, repr=False, hash=False, compare=False) # iteration counter
 	_components : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False) # result of the deconvolution
@@ -73,6 +78,14 @@ class Base:
 				Numpy array containing the point-spread-function for the observation.
 			**kwargs
 				Other passed arguments are assumed to overwrite algorithm parameters during a singular invocation.
+		
+		# Returns #
+			self._components : np.ndarray
+				Components found that make up the deconvolved image, ideally these components convolved with `psf` will give `obs`
+			self._residual : np.ndarray
+				The residual between the convolution of `self._components with` `psf`, and `obs`
+			self._i : int
+				The number of iterations performed before terminating
 		"""
 		with ctx.temp.attributes(self, **kwargs):
 			self._init_algorithm(obs, psf)
@@ -81,8 +94,12 @@ class Base:
 				for c in self.post_iter_hooks: c(self, obs, psf)
 				self._i += 1
 			
+			if self._i == self.n_iter:
+				self.stop_reason = "Maximum number of iterations reached"
+			
 			for c in self.final_hooks: c(self, obs, psf)
 		
+			_lgr.info(f'Iteration terminated: {self.stop_reason}')
 		return(
 			self._components,
 			self._residual,
@@ -103,7 +120,7 @@ class Base:
 		Perform a single iteration of the algorithm.
 		"""
 		for c in self.pre_iter_hooks: c(self, obs, psf)
-		print(f'TESTING: i={self._i}') 
+		_lgr.debug(f'i={self._i}') 
 		return(True)
 		
 		

@@ -7,7 +7,7 @@ import os.path
 import dataclasses as dc
 from typing import Any, TypeVar, TypeVarTuple, Generic
 import datetime as dt
-import functools
+from functools import partial
 
 import numpy as np
 import scipy as sp
@@ -27,9 +27,17 @@ import PIL
 import PIL.Image
 
 from geometry.bounding_box import BoundingBox
-from gaussian_psf_model import GaussianPSFModel
 from optimise_compat import PriorParam, PriorParamSet
 from algorithm.deconv.clean_modified import CleanModified
+
+from optics.turbulence_model import phase_psd_von_karman_turbulence
+from turbulence_psf_model import TurbulencePSFModel, SimpleTelescope, CCDSensor
+
+from radial_psf_model import RadialPSFModel
+
+
+import psf_data_ops
+
 
 import cfg.logs
 
@@ -161,7 +169,7 @@ def plot_source_regions(
 
 	for i, bbox in enumerate(bboxes):
 		rect = mpl.patches.Rectangle(*bbox.to_mpl_rect(),edgecolor='r', facecolor='none', lw=1)
-		text = f'region {i}'
+		text = f'region {i+1}'
 
 		region_data = data[bbox.to_slices()]
 		conservative_sig_noise = np.max(region_data)/np.median(region_data)
@@ -178,21 +186,18 @@ def plot_source_regions(
 
 
 
-def model_flattened_callable_factory(model):
-	def model_flattened_callable(x,y,sigma, const,factor):
-		return model(np.array([x,y]), np.array([sigma,sigma]), const)*factor
-	return model_flattened_callable
-
 def model_badness_of_fit_callable_factory(model_flattened_callable, data, err):
 	def model_badness_of_fit_callable(*args, **kwargs):
 		residual = model_flattened_callable(*args, **kwargs) - data
-		return np.nansum((residual/err)**2)
+		result = np.nansum((residual/err)**2)
+		return np.log(result)
 	
 	return model_badness_of_fit_callable
 
-def save_array_as_tif(data_in, path, nan='zero', ninf='zero', pinf='zero', scale='false'):
-	data = np.array(data_in) # copy input data
-	type = np.uint16
+def save_array_as_tif(data_in, path, nan='zero', ninf='zero', pinf='zero', neg='zero', scale=False, type=np.uint16):
+	
+	
+	data = np.array(data_in, dtype=data_in.dtype) # copy input data
 	
 	nan_mask = np.isnan(data)
 	ninf_mask = np.isneginf(data)
@@ -200,21 +205,49 @@ def save_array_as_tif(data_in, path, nan='zero', ninf='zero', pinf='zero', scale
 	
 	ignore_mask = nan_mask | ninf_mask | pinf_mask
 	
-	if scale:
-		data = (data - np.min(data[~ignore_mask]))/np.max(data[~ignore_mask]) * np.iinfo(type).max
+	# see: https://www.awaresystems.be/imaging/tiff/tifftags/baseline.html
+	tiff_info = {
+		259:1 # No compression
+	}
 	
-	for mode, mask in ((nan,nan_mask),(ninf,ninf_mask),(pinf,pinf_mask)):
+	if scale:
+		data_min, data_max = np.min(data[~ignore_mask]), np.max(data[~ignore_mask])
+		data = (data - data_min)/(data_max - data_min) * np.iinfo(type).max
+	
+	for mode, mask in ((nan,nan_mask),(ninf,ninf_mask),(pinf,pinf_mask),(neg,data <0)):
 		match mode:
 			case 'zero':
 				data[mask] = 0
 			case 'max':
 				data[mask] = np.iinfo(type).max
 			case 'min':
-				data[mask] = np.iinfo(type).min
-	PIL.Image.fromarray(((deconv_components-np.nanmin(deconv_components))/np.nanmax(deconv_components))*np.iinfo(type).max, mode='I;16')
+				data[mask] = np.iinfo(type).min	
 	
+	match type:
+		case np.float32:
+			image_mode = 'F'
+			tiff_info[339] = 3
+		case np.int32:
+			image_mode = 'I'
+			tiff_info[339] = 2
+		case np.uint16:
+			image_mode = 'I;16'
+			tiff_info[339] = 1
+		case _:
+			raise NotImplementedError(f'Unknown PIL image mode for numpy type {type}')
 	
-	PIL.Image.fromarray(data.astype(type), mode='I;16').save(path, 'tiff')
+	PIL.Image.fromarray(data.astype(type), mode=image_mode).save(path, 'tiff', tiffinfo=tiff_info)
+	
+def print_tiff_tags(path):
+	# print out tags of image
+	with PIL.Image.open(path) as im:
+		print(f'{path=}')
+		print(f'{im.mode=}')
+		exif = im.getexif()
+		for k,v in exif.items():
+			tag = PIL.TiffTags.lookup(k)
+			print(f'{tag} {v}')
+			
 	
 		
 
@@ -223,29 +256,45 @@ if __name__=='__main__':
 	import example_data_loader
 	import psf_data_ops
 
+
+	data_set_index = 0
+
 	if len(sys.argv) <= 1:
-		files = example_data_loader.get_amateur_data_set(0)
+		files = example_data_loader.get_amateur_data_set(data_set_index)
 	else:
 		files = sys.argv[1:]
 
 	# note, labels are 1-indexed (0 is background)
 	target_label = 1
-	psf_label = 3
+	psf_label = -1 # last label is PSF as we want the smallest object.
 
 
 	mpl.rc('image', cmap='gray')
 
+	supersample_factor = 1
 
 	for file in files:
 		_lgr.debug(f'Operating on {file}')
 		with PIL.Image.open(file) as image:
+			image = image.convert(mode='F').resize(
+				(supersample_factor*x for x in image.size), 
+				#resample=PIL.Image.Resampling.NEAREST
+				#resample=PIL.Image.Resampling.BILINEAR
+				resample=PIL.Image.Resampling.BICUBIC
+			)
 			data = np.array(image)
 
-		output_dir = example_data_loader.get_amateur_data_set_output_directory(0)
+		output_dir = example_data_loader.get_amateur_data_set_output_directory(data_set_index)
+		output_dir.mkdir(parents=True, exist_ok=True)
 		fname = os.path.splitext(os.path.split(file)[1])[0]
 
 		source_labels, source_bounding_boxes, parameters = get_source_regions(data, name=file.split(os.sep)[-1])
 		_lgr.debug(f'{len(source_bounding_boxes)=}')
+		
+		assert psf_label != 0, "Labelled PSF region cannot be the background"
+		psf_label = psf_label if psf_label >=0 else np.max(source_labels) + 1 + psf_label
+		psf_bbox_index = psf_label-1
+		
 		
 		plot_source_regions(
 			data, 
@@ -261,58 +310,60 @@ if __name__=='__main__':
 		
 		
 		# Get PSF data
-		psf_data = data[source_bounding_boxes[psf_label-1].to_slices()].astype(float)
+		psf_data = data[source_bounding_boxes[psf_bbox_index].to_slices()].astype(float)
 		
 		psf_data = psf_data_ops.normalise(psf_data)
 		
 		# Define and fit PSF model
-		psf_model = GaussianPSFModel(psf_data.shape, float)
+		psf_model = RadialPSFModel(
+			psf_data
+		)
+		
 		
 		params = PriorParamSet(
 			PriorParam(
 				'x',
 				(0, psf_data.shape[0]),
-				True,
+				False,
 				psf_data.shape[0]//2
 			),
 			PriorParam(
 				'y',
 				(0, psf_data.shape[1]),
-				True,
+				False,
 				psf_data.shape[1]//2
 			),
 			PriorParam(
-				'sigma',
-				(0, np.sum([x**2 for x in psf_data.shape])),
-				False,
-				5
-			),
-			PriorParam(
-				'const',
-				(0, 1),
-				False,
-				0
-			),
-			PriorParam(
-				'factor',
-				(0, 2),
-				False,
-				1
+				'nbins',
+				(0, np.inf),
+				True,
+				50
 			)
 		)
 		
-		flattened_psf_model_callable = model_flattened_callable_factory(psf_model)
+		#wavelength = 750E-9
+		
+		#flattened_psf_model_callable = lambda r0, turb_ndim, L0: psf_model(wavelength, r0, turb_ndim, L0)
+		#model_scipyCompat_callable, var_param_name_order, const_var_param_name_order = params.wrap_callable_for_scipy_parameter_order(flattened_psf_model_callable)
+		
+		
 		fitted_psf, fitted_vars, consts = psf_data_ops.fit_to_data(
 			params, 
-			flattened_psf_model_callable, 
+			psf_model, 
 			psf_data, 
 			np.ones_like(psf_data)*np.nanmax(psf_data)*1E-3, 
 			psf_data_ops.scipy_fitting_function_factory(sp.optimize.minimize),
-			functools.partial(psf_data_ops.objective_function_factory, mode='minimise'),
+			partial(psf_data_ops.objective_function_factory, mode='minimise'),
 			plot_mode=None
 		)
 		_lgr.debug(f'{fitted_vars=}')
 		_lgr.debug(f'{consts=}')
+		
+		fitted_psf = psf_model.centered_result
+		#r = np.sqrt(np.sum((np.indices(fitted_psf.shape).T - (np.array(fitted_psf.shape)//2)).T**2, axis=0))
+		#fitted_psf *= (1/(r+supersample_factor))**0.45
+		#fitted_psf /= np.nansum(fitted_psf)
+		#sys.exit()
 		
 		if True:
 			psf_residual = psf_data - fitted_psf
@@ -342,9 +393,9 @@ if __name__=='__main__':
 				a.xaxis.set_visible(False)
 				a.yaxis.set_visible(False)
 			
-			plt.show()
-			#plt.savefig(output_dir / (fname+'_psf_plot.png'))
-		continue # DEBUGGING
+			plt.savefig(output_dir / (fname+'_psf_plot.png'))
+
+		#continue # DEBUGGING
 		
 		# PSF is fitted at this point
 		
@@ -357,48 +408,49 @@ if __name__=='__main__':
 				case _:
 					raise NotImplementedError
 			
+			psf_for_deconv /= np.nansum(psf_for_deconv)
+			
 			# Get and deconvolve target data
-			for region_label in range(1,len(source_bounding_boxes)+1):
+			for region_label in [x for x in range(1,len(source_bounding_boxes)+1)]+[0]:
 				
 				output_file_fmt = "{fname}_region_{region_label}_psf_{psf_type}_test_deconv_{tag}.{ext}"
 				
-			
-				target_data = data[source_bounding_boxes[region_label-1].to_slices()].astype(float)
+				save_array_as_tif(
+					psf_for_deconv, 
+					output_dir / "{fname}_region_{region_label}_psf_{psf_type}.{ext}".format(fname=fname, region_label=region_label, psf_type=psf_type, ext='tif'),
+					scale=True
+				)
+				
+				np.save(
+					output_dir / "{fname}_region_{region_label}_psf_{psf_type}.{ext}".format(fname=fname, region_label=region_label, psf_type=psf_type, ext='npy'),
+					psf_for_deconv
+				)
+				
+				if region_label == 0:
+					target_data = data.astype(float)
+				else:
+					target_data = data[source_bounding_boxes[region_label-1].to_slices()].astype(float)
 				# subtract background emission
 				bg_region_slice = (s//10 for s in target_data.shape)
 				target_data -= np.median(target_data[*bg_region_slice])
 				
-				n_iter = 10000#5000
-				threshold = 0.1 #0.3
+				n_iter = 1000#5000
+				threshold = 0.1#0.483#0.1 #0.3
 				loop_gain = 0.2 #0.02
-				max_stat_increase = 1E-3
-				rms_frac_threshold = 1E-3#3E-3
-				fabs_frac_threshold = 1E-3#3E-3
+				rms_frac_threshold = 1E-3#1E-3
+				fabs_frac_threshold = 1E-3#1E-3
+				min_frac_stat_delta = loop_gain*5E-2#1E-2
 				
-				if '890' in fname:
-					threshold = 0.1#-1
-					loop_gain=0.2
-					#rms_frac_threshold = 5E-2
-					#fabs_frac_threshold = 5E-2
-				
-				elif region_label in (2,3):
-					rms_frac_threshold = 2E-2
-					fabs_frac_threshold = 2E-2
-					
-				if psf_type == 'original':
-					rms_frac_threshold /= 2
-					fabs_frac_threshold /= 2
-				
-				deconvolver = CleanModified()
+				deconvolver = CleanModified(give_best_result=False)
 				deconvolver(
 					target_data, 
 					psf_for_deconv,
 					n_iter=n_iter,
 					threshold = threshold,
 					loop_gain = loop_gain,
-					max_stat_increase=max_stat_increase,
 					rms_frac_threshold = rms_frac_threshold,
-					fabs_frac_threshold = fabs_frac_threshold
+					fabs_frac_threshold = fabs_frac_threshold,
+					min_frac_stat_delta = min_frac_stat_delta
 				)
 				
 				n_iters = deconvolver.get_iters()
@@ -420,7 +472,7 @@ if __name__=='__main__':
 			
 				im0 = ax[0].imshow(target_data)
 				vmin, vmax = im0.get_clim()
-				ax[0].set_title(f'target ({vmin:0.2g}, {vmax:0.2g})')
+				ax[0].set_title(f'target \n({vmin:0.2g}, {vmax:0.2g}) sum {np.nansum(target_data):0.4g}')
 			
 				if ('890' in fname 
 						or ('750' in fname and '1957' in fname and region_label == 2)
@@ -431,12 +483,12 @@ if __name__=='__main__':
 				else:
 					im1 = ax[1].imshow(deconv_components)
 				vmin, vmax = im1.get_clim()
-				ax[1].set_title(f'deconvolved target ({vmin:0.2g}, {vmax:0.2g})')
+				ax[1].set_title(f'deconvolved target\n ({vmin:0.2g}, {vmax:0.2g}) sum {np.nansum(deconv_components):0.4g}')
 				
 				
 				im2 = ax[2].imshow(deconv_residual)
 				vmin, vmax = im2.get_clim()
-				ax[2].set_title(f'residual ({vmin:0.2g}, {vmax:0.2g})')
+				ax[2].set_title(f'residual ({vmin:0.2g}, {vmax:0.2g})  sum {np.nansum(deconv_residual):0.4g}')
 				
 				
 				im3 = ax[3].imshow(np.log(np.abs(deconv_residual)))
@@ -450,24 +502,29 @@ if __name__=='__main__':
 				plt.savefig(output_dir / output_file_fmt.format(fname=fname, region_label=region_label, psf_type=psf_type, tag=f'plot', ext='png'))
 				
 				# Plot iteration statistics
-				f, ax = plt.subplots(1,3,squeeze=False,figsize=(18,9))
+				f, ax = plt.subplots(1,1,squeeze=False,figsize=(18,9))
 				ax = ax.flatten()
+				
+				ax = [ax[0], ax[0].twinx(), ax[0].twinx()]
+				ax[2].spines.right.set_position(('axes',1.05))
 				
 				f.suptitle(f'{dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f%z")}\n'+fname+f'\n{n_iters=} {fabs_frac_threshold=} {rms_frac_threshold=} {threshold=} {loop_gain=}')
 				
 				x = range(n_iters)
-				j = 0
+				p_handles = []
 				for i, stat_name in enumerate(iter_stat_names):
-					if stat_name == 'UNUSED': continue
-					
-					ax[j].plot(x, iter_stats[:n_iters,i])
-					ax[j].set_title(stat_name)
-					ax[j].set_yscale('log')
-					j+=1
+					p, = ax[i].plot(x, iter_stats[:n_iters,i], alpha=0.5, color=f"C{i}", label=stat_name)
+					p_handles.append(p)
+					if i==0:
+						ax[i].set(xlabel='Iteration')
+					ax[i].set(ylabel=stat_name)
+					ax[i].set_yscale('log')
+					ax[i].yaxis.label.set_color(p.get_color())
+					ax[i].tick_params(axis='y', colors=p.get_color())
+				
+				ax[0].legend(handles=p_handles)
 				
 				plt.savefig(output_dir / output_file_fmt.format(fname=fname, region_label=region_label, psf_type=psf_type, tag=f'plot_deconv_stats', ext='png'))
-		
-		
 		
 		
 		

@@ -7,7 +7,7 @@ import os.path
 import dataclasses as dc
 from typing import Any, TypeVar, TypeVarTuple, Generic
 import datetime as dt
-import functools
+from functools import partial
 
 import numpy as np
 import scipy as sp
@@ -27,9 +27,14 @@ import PIL
 import PIL.Image
 
 from geometry.bounding_box import BoundingBox
-from gaussian_psf_model import GaussianPSFModel
 from optimise_compat import PriorParam, PriorParamSet
 from algorithm.deconv.clean_modified import CleanModified
+
+from optics.turbulence_model import phase_psd_von_karman_turbulence
+from turbulence_psf_model import TurbulencePSFModel, SimpleTelescope, CCDSensor
+
+import psf_data_ops
+
 
 import cfg.logs
 
@@ -178,15 +183,11 @@ def plot_source_regions(
 
 
 
-def model_flattened_callable_factory(model):
-	def model_flattened_callable(x,y,sigma, const,factor):
-		return model(np.array([x,y]), np.array([sigma,sigma]), const)*factor
-	return model_flattened_callable
-
 def model_badness_of_fit_callable_factory(model_flattened_callable, data, err):
 	def model_badness_of_fit_callable(*args, **kwargs):
 		residual = model_flattened_callable(*args, **kwargs) - data
-		return np.nansum((residual/err)**2)
+		result = np.nansum((residual/err)**2)
+		return np.log(result)
 	
 	return model_badness_of_fit_callable
 
@@ -266,53 +267,61 @@ if __name__=='__main__':
 		psf_data = psf_data_ops.normalise(psf_data)
 		
 		# Define and fit PSF model
-		psf_model = GaussianPSFModel(psf_data.shape, float)
+		psf_model = TurbulencePSFModel(
+			SimpleTelescope(
+				8, 
+				200, 
+				CCDSensor.from_shape_and_pixel_size(psf_data.shape, 2.5E-6)
+			),
+			phase_psd_von_karman_turbulence
+		)
+		
 		
 		params = PriorParamSet(
 			PriorParam(
-				'x',
-				(0, psf_data.shape[0]),
+				'wavelength',
+				(0, np.inf),
 				True,
-				psf_data.shape[0]//2
+				750E-9
 			),
 			PriorParam(
-				'y',
-				(0, psf_data.shape[1]),
-				True,
-				psf_data.shape[1]//2
-			),
-			PriorParam(
-				'sigma',
-				(0, np.sum([x**2 for x in psf_data.shape])),
-				False,
-				5
-			),
-			PriorParam(
-				'const',
+				'r0',
 				(0, 1),
-				False,
-				0
+				True,
+				0.1
 			),
 			PriorParam(
-				'factor',
-				(0, 2),
+				'turbulence_ndim',
+				(0, 3),
 				False,
-				1
+				1.5
+			),
+			PriorParam(
+				'L0',
+				(0, 50),
+				False,
+				8
 			)
 		)
 		
-		flattened_psf_model_callable = model_flattened_callable_factory(psf_model)
+		#wavelength = 750E-9
+		
+		#flattened_psf_model_callable = lambda r0, turb_ndim, L0: psf_model(wavelength, r0, turb_ndim, L0)
+		#model_scipyCompat_callable, var_param_name_order, const_var_param_name_order = params.wrap_callable_for_scipy_parameter_order(flattened_psf_model_callable)
+		
+		
 		fitted_psf, fitted_vars, consts = psf_data_ops.fit_to_data(
 			params, 
-			flattened_psf_model_callable, 
+			psf_model, 
 			psf_data, 
 			np.ones_like(psf_data)*np.nanmax(psf_data)*1E-3, 
 			psf_data_ops.scipy_fitting_function_factory(sp.optimize.minimize),
-			functools.partial(psf_data_ops.objective_function_factory, mode='minimise'),
+			partial(psf_data_ops.objective_function_factory, mode='minimise'),
 			plot_mode=None
 		)
 		_lgr.debug(f'{fitted_vars=}')
 		_lgr.debug(f'{consts=}')
+		
 		
 		if True:
 			psf_residual = psf_data - fitted_psf
@@ -342,9 +351,8 @@ if __name__=='__main__':
 				a.xaxis.set_visible(False)
 				a.yaxis.set_visible(False)
 			
-			plt.show()
-			#plt.savefig(output_dir / (fname+'_psf_plot.png'))
-		continue # DEBUGGING
+			plt.savefig(output_dir / (fname+'_psf_plot.png'))
+
 		
 		# PSF is fitted at this point
 		
