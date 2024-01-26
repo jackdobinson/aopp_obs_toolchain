@@ -260,7 +260,7 @@ if __name__=='__main__':
 	mpl.rcParams['image.origin'] = 'upper'
 
 	# Choose dataset to operate upon
-	data_set_index = 1
+	data_set_index = 0
 
 	if len(sys.argv) <= 1:
 		files = example_data_loader.get_amateur_data_set(data_set_index)
@@ -363,6 +363,8 @@ if __name__=='__main__':
 		_lgr.debug(f'{consts=}')
 		
 		fitted_psf = psf_model.centered_result
+		
+		# Can reducing the wings of the PSF give a better fit?
 		#r = np.sqrt(np.sum((np.indices(fitted_psf.shape).T - (np.array(fitted_psf.shape)//2)).T**2, axis=0))
 		#fitted_psf *= (1/(r+supersample_factor))**0.45
 		#fitted_psf /= np.nansum(fitted_psf)
