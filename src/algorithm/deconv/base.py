@@ -6,6 +6,7 @@ import dataclasses as dc
 import numpy as np
 from typing import Callable, Any
 import inspect
+import datetime as dt
 
 import context as ctx
 import context.temp
@@ -46,24 +47,42 @@ class Base:
 		= dc.field(default_factory=lambda : [], repr=False, hash=False, compare=False) # callbacks after the final iteration
 	
 	# State attributes visible from outside class
-	stop_reason : str = dc.field(default="unknown reason for terminating iteration", init=False, repr=False, hash=False, compare=False) # reason that iteration was terminated
+	progress_string : str = dc.field(default="Ended prematurely: Class not initialised.", init=False, repr=False, hash=False, compare=False) # reason that iteration was terminated
 	
 	# Internal attributes
 	_i : int = dc.field(init=False, repr=False, hash=False, compare=False) # iteration counter
 	_components : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False) # result of the deconvolution
 	_residual : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False) # residual (obs - _components) of the deconvolution
-	
+	_last_parameters : dict[str,Any] = dc.field(init=False, repr=False, hash=False, compare=False) # parameters used for last call
 	
 	def get_parameters(self):
-		p = {}
+		return self._last_parameters
+	
+	def set_parameters(self, params):
+		for k,v in params.items():
+			if k=='parameters_recorded_at_timestamp': continue # Don't save this.
+			assert k[0] != '_', f'Private attribute (beginning with "_") "{k}" cannot be set as parameters'
+			assert not k.endswith('hooks'), f'Cannot set attribute "{k}" ending in "hooks", as these are lists of callables.'
+			assert hasattr(k), f'{self.__class__.__name__} does not have the attribute "{k}" to set from supplied parameters.'
+			assert hasattr(getattr(k), '__call__'), f'Attribute {self.__class__.__name__}.{k} is a callable, cannot set from supplied parameters.'
+			setattr(self, k, v)
+		self._set_last_parameters()
+		return
+	
+	def _set_last_parameters(self):
+		self._last_parameters = {}
+		# Add a timestamp to the parameters
+		assert not hasattr(self, 'parameters_recorded_at_timestamp'), f"'parameters_recorded_at_timestamp' is used internally and {self.__class__.__name__} cannot have it as an attribute"
+		self._last_parameters["parameters_recorded_at_timestamp"] = dt.datetime.now(dt.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f%z')
+		
+		# Loop over all fields of this dataclass
 		for k, m in self.__dataclass_fields__.items():
+			# If the field doesn't begin with '_', is not a callable, and is not a list of hooks then remember it.
 			if (k[0] != '_') \
 					and not hasattr(m, '__call__') \
-					and not k.endswith('hook') \
+					and not k.endswith('hooks') \
 				:
-				p[k] = getattr(self, k)
-		return p
-			
+				self._last_parameters[k] = getattr(self, k)
 	
 	def __call__(self, obs : np.ndarray, psf : np.ndarray, **kwargs) -> tuple[np.ndarray, np.ndarray, int]:
 		"""
@@ -88,18 +107,35 @@ class Base:
 				The number of iterations performed before terminating
 		"""
 		with ctx.temp.attributes(self, **kwargs):
-			self._init_algorithm(obs, psf)
-			for c in self.post_init_hooks: c(self, obs, psf)
-			while (self._i < self.n_iter) and self._iter(obs, psf):
-				for c in self.post_iter_hooks: c(self, obs, psf)
-				self._i += 1
-			
-			if self._i == self.n_iter:
-				self.stop_reason = "Maximum number of iterations reached"
-			
-			for c in self.final_hooks: c(self, obs, psf)
+			try:
+				self.progress_string = f'Ended prematurely: Initialising algorithm.'
+				
+				self._init_algorithm(obs, psf)
+				
+				self.progress_string = f'Ended prematurely: Algorithm initialised.'
+				
+				for c in self.post_init_hooks: 
+					c(self, obs, psf)
+					
+				self.progress_string = f'Ended prematurely: Iteration starting.'
+				
+				while (self._i < self.n_iter) and self._iter(obs, psf):
+					for c in self.post_iter_hooks: c(self, obs, psf)
+					self._i += 1
+				
+				for c in self.final_hooks: 
+					c(self, obs, psf)
+					
+			except Exception as e:
+				self.progress_string = f"Ended prematurely at {self._i} iterations: {str(e)}"
+				raise
+			finally:
+				if self._i == self.n_iter:
+					self.progress_string = f"Ended at {self._i} iterations: Maximum number of iterations reached."
+				_lgr.info(f'{self.progress_string}')
+				self._set_last_parameters()
 		
-			_lgr.info(f'Iteration terminated: {self.stop_reason}')
+			
 		return(
 			self._components,
 			self._residual,

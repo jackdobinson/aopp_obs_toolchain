@@ -256,8 +256,11 @@ if __name__=='__main__':
 	import example_data_loader
 	import psf_data_ops
 
+	# Set some defaults for matplotlib
+	mpl.rcParams['image.origin'] = 'upper'
 
-	data_set_index = 0
+	# Choose dataset to operate upon
+	data_set_index = 1
 
 	if len(sys.argv) <= 1:
 		files = example_data_loader.get_amateur_data_set(data_set_index)
@@ -452,6 +455,12 @@ if __name__=='__main__':
 					fabs_frac_threshold = fabs_frac_threshold,
 					min_frac_stat_delta = min_frac_stat_delta
 				)
+				
+				# Save the parameters used on this run
+				param_file = output_dir / output_file_fmt.format(fname=fname, region_label=region_label, psf_type=psf_type, tag='parameters', ext='txt')
+				with open(param_file, 'w') as f:
+					for k,v in deconvolver.get_parameters().items():
+						f.write(f'{k}\n\t{v}\n\n')				
 				
 				n_iters = deconvolver.get_iters()
 				iter_stat_names = deconvolver._iter_stat_names

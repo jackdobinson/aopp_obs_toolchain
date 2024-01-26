@@ -5,3 +5,4 @@ scipy
 matplotlib
 ultranest
 h5py
+scikit-image

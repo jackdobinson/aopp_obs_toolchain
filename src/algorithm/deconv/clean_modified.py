@@ -145,7 +145,7 @@ class CleanModified(Base):
 		_lgr.debug(f'{self._rms_threshold=:0.3g} rms = {self._iter_stat_record[self._i,1]:0.3g}')
 		_lgr.debug(f'{self._fabs_threshold=:0.3g} fabs = {self._iter_stat_record[self._i,0]:0.3g}')
 		if (self._iter_stat_record[self._i,1] < self._rms_threshold)  or (self._iter_stat_record[self._i,0] < self._fabs_threshold):
-			self.stop_reason = "Absolute brightest pixel, or root mean squared statistic have dropped below set threshold"
+			self.progress_string = f"Ended at {self._i} iterations: Absolute brightest pixel, or root mean squared statistic have dropped below set threshold."
 			return(False)
 	
 	
@@ -166,7 +166,7 @@ class CleanModified(Base):
 			max_increase_frac = np.nanmax((self._iter_stat_record[self._i] - self._stats_best)/self._stats_best)
 			_lgr.debug(f'{max_increase_frac=}')
 			if max_increase_frac >= self.max_stat_increase:
-				self.stop_reason = "A statistic has increased from the best seen statistic beyond set threshold"
+				self.progress_string = f"Ended at {self._i} iterations: A statistic has increased from the best seen statistic beyond set threshold."
 				return False
 		
 		
@@ -180,7 +180,7 @@ class CleanModified(Base):
 					_lgr.debug(f'{name} fractional standard deviation {self._stats_delta[j]}')
 			_lgr.debug(f'{self.min_frac_stat_delta=}')
 			if all([_std < self.min_frac_stat_delta for j, _std in enumerate(self._stats_delta) if self._iter_stat_names[j] != 'UNUSED']):
-				self.stop_reason = f"Standard deviation of statistics in last {n_lookback} steps are all below minimum fraction"
+				self.progress_string = f"Ended at {self._i} iterations: Standard deviation of statistics in last {n_lookback} steps are all below minimum fraction."
 				return False
 				
 		return True
