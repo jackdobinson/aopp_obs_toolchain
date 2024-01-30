@@ -5,6 +5,8 @@ Implementation of Singular Spectrum Analysis.
 See https://arxiv.org/pdf/1309.5050.pdf for details.
 """
 from typing import Any
+import weakref
+
 
 import cfg.logs
 _lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
@@ -20,7 +22,7 @@ import utilities as ut
 import utilities.np 
 import utilities.plt
 import py_svd as py_svd
-import typing
+
 
 class SSA:
 	def __init__(self, 
@@ -33,22 +35,21 @@ class SSA:
 		):
 		self.grouping = grouping
 		
+		#self.a = weakref.proxy(a)
 		self.a = a
 		
 		self.n = (*a.shape,)
-		self.nx = self.n[0]
-		
+		self.N = np.product(self.n)
+				
 		self.l = (tuple(nx//4 for nx in self.n) if w_shape is None 
 			else ((w_shape for nx in self.n) if type(w_shape) is int
 				else w_shape
 			)
 		)
 		self.L = np.product(self.l)
-		self.lx = self.l[0]
 		
 		self.k = tuple(nx - lx + 1 for nx, lx in zip(self.n, self.l))
 		self.K = np.product(self.k)
-		self.kx = self.k[0]
 
 		self.X = self.embed(self.a)
 		
@@ -57,7 +58,7 @@ class SSA:
 			# get svd of trajectory matrix
 			self.u, self.s, self.v_star = np.linalg.svd(self.X)
 			# make sure we have the full eigenvalue matrix, not just the diagonal
-			self.s = py_svd.rect_diag(self.s, (self.lx,self.kx))
+			self.s = py_svd.rect_diag(self.s, (self.L,self.K))
 		
 		if svd_strategy == 'eigval':
 			# this strategy is faster
@@ -385,7 +386,7 @@ class SSA:
 		n = [x if x < self.X_ssa.shape[0] else self.X_ssa.shape[0]-1 for x in n]
 	
 		n_component_plots = len(n)
-		noise_estimate = noise_estimate if noise_estimate is not None else np.std(self.a[tuple(slice(0,s//10) for s in self.a.shape)])
+		noise_estimate = noise_estimate if noise_estimate is not None else np.std(self.a[tuple(slice(0,s//10) for s in self.n)])
 	
 		reconstruction = lambda x=None: np.sum(self.X_ssa[:x], axis=0)
 		residual = lambda x = None: self.a - reconstruction(x)
@@ -404,12 +405,12 @@ class SSA:
 		fig.set(figwidth=12, figheight=8)
 		
 		
+		# Plot summary plots at the top
 		f0 = fig.add_subfigure(mpl.gridspec.SubplotSpec(gridspec, 0))
 		a0 = f0.subplots(1,4, squeeze=False, gridspec_kw={'top':0.5})
 		a0 = a0.flatten()
 		f0.suptitle(f'{n_component_plots} ssa images of obs (of {self.X_ssa.shape[0]})')
 		ax_iter=iter(a0)
-		
 		
 		ax = next(ax_iter)
 		plot_callable(ax,
@@ -424,14 +425,8 @@ class SSA:
 			reconstruction(),
 			'Reconstruction\n{data_limits}'
 		)
-		#ax.set_title(f'Reconstruction\nclim [{o_clim[0]:07.2E} {o_clim[1]:07.2E}]')
-		#plot_callable(ax, reconstruction(), vmin=o_clim[0], vmax=o_clim[1])
-		#ut.plt.remove_axes_ticks_and_labels(ax)
 		
 		ax = next(ax_iter)
-		#im = plot_callable(ax,residual())
-		#ax.set_title(f'Residual {residual_log_likelihood():07.2E}\nmean {np.mean(residual()):07.2E}\nclim [{im.get_clim()[0]:07.2E} {im.get_clim()[1]:07.2E}]')
-		#ut.plt.remove_axes_ticks_and_labels(ax)
 		plot_callable(ax,
 			residual(),
 			'\n'.join((
@@ -451,8 +446,7 @@ class SSA:
 		ax.legend()
 		
 		
-		
-		
+		# Plot individual component plots at the bottom
 		f1 = fig.add_subfigure(mpl.gridspec.SubplotSpec(gridspec, 1,3))
 		f1, a1 = ut.plt.figure_n_subplots(3*n_component_plots, figure=f1, sp_kwargs={'gridspec_kw':{'top':0.85, 'hspace':1}})
 		a1=a1.flatten()
@@ -472,17 +466,6 @@ class SSA:
 					f'sig_frac {np.sqrt(np.sum(self.X_ssa[i]**2)/(np.sum(self.a**2))):07.2E}',
 				))
 			)
-			#im = ax.imshow(self.X_ssa[i])
-			#title = '\n'.join((
-			#	f'X_ssa[{i}]',
-			#	f'eigenvalue {self.s_g[i,i]:07.2E}',
-			#	f'eigen_frac {self.s_g[i,i]/np.sum(self.s_g):07.2E}',
-			#	f'sig_frac {np.sqrt(np.sum(self.X_ssa[i]**2)/(np.sum(self.a**2))):07.2E}',
-			#	f'clim [{im.get_clim()[0]:07.2E} {im.get_clim()[1]:07.2E}]',
-			#))
-			
-			#ax.set_title(title)
-			#ut.plt.remove_axes_ticks_and_labels(ax)
 		
 		for j in n:
 			i = j+1
@@ -498,18 +481,6 @@ class SSA:
 				))
 			)
 			
-			
-			#im = plot_callable(ax,_data)
-			#title = '\n'.join((
-			#	f'sum(X_ssa[:{i}])',
-			#	f'eigen_frac {np.sum(np.diag(self.s_g)[:i])/np.sum(self.s_g):07.2E}',
-			#	f'sig_remain {1 - np.sqrt(np.sum(_data**2)/(np.sum(self.a**2))):07.2E}',
-			#	f'clim [{im.get_clim()[0]:07.2E} {im.get_clim()[1]:07.2E}]',
-			#))
-			#
-			#ax.set_title(title)
-			#ut.plt.remove_axes_ticks_and_labels(ax)
-		
 		for j in n:
 			i = j+1
 			ax=next(ax_iter)
@@ -523,18 +494,7 @@ class SSA:
 				))
 			)
 			
-			
-			#im = plot_callable(ax,residual(i))
-			#title = '\n'.join((
-			#	f'residual sum(X_ssa[:{i}]) {residual_log_likelihood(i):07.2E}',
-			#	f'mean {np.mean(residual(i)):07.2E}',
-			#	f'clim [{im.get_clim()[0]:07.2E} {im.get_clim()[1]:07.2E}]',
-			#))
-			#
-			#ax.set_title(title)
-			#ut.plt.remove_axes_ticks_and_labels(ax)
-		
-		
+	
 		return
 			
 
@@ -1019,8 +979,9 @@ if __name__=='__main__':
 	ssa = SSA(
 		data1d, 
 		svd_strategy='eigval', 
+		#svd_strategy='numpy',
 		rev_mapping='fft', 
-		grouping={'mode':'similar_eigenvalues', 'tolerance':0.01}
+		grouping={'mode':'similar_eigenvalues', 'tolerance':0.01},
 	)
 	ssa.plot_ssa(n_set)
 	plt.show()
@@ -1069,16 +1030,16 @@ if __name__=='__main__':
 		_lgr.info(f'TESTING: 2d ssa with {data_name} example data')
 		_lgr.info(f'{data2d.shape=}')
 		window_size = tuple(s//10 for s in data2d.shape)
+		_data = data2d.astype(np.float64)
 		ssa2d = SSA(
-			data2d.astype(np.float64), 
+			_data, 
 			window_size, 
 			svd_strategy='eigval', # uses less memory and is faster
-			# svd_strategy='numpy', # uses more memory and is slower
+			#svd_strategy='numpy', # uses more memory and is slower
 			#grouping={'mode':'elementary'}
 			grouping={'mode':'similar_eigenvalues', 'tolerance':0.01}
 		)
 		ssa2d.plot_ssa(n_set)
 		plt.show()
-	
 	
 	
