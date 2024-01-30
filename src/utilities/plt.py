@@ -62,6 +62,8 @@ def create_figure_with_subplots(nr, nc, nax=None ,size=6, squeeze=False, figure=
 	
 	if figure is None:
 		f = plt.figure(**fig_kwargs)
+	else:
+		f = figure
 	a = f.subplots(nr, nc, **sp_kwargs)
 	
 	for i, _ax in enumerate(a.flatten()):
@@ -73,8 +75,8 @@ def figure_n_subplots(n, figure=None, fig_kwargs={}, sp_kwargs={}):
 	return(create_figure_with_subplots(
 		*lowest_aspect_ratio_rectangle_of_at_least_area(n), 
 		nax=n, size=6, squeeze=False, figure=figure,
-		fig_kwargs={},
-		sp_kwargs={})
+		fig_kwargs=fig_kwargs,
+		sp_kwargs=sp_kwargs)
 	)
 
 def lim_sym_around_value(data, value=0):

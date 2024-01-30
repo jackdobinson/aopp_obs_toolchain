@@ -15,6 +15,7 @@ import scipy.signal
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.patches
+import matplotlib.gridspec
 import utilities as ut
 import utilities.np 
 import utilities.plt
@@ -22,14 +23,32 @@ import py_svd as py_svd
 import typing
 
 class SSA:
-	def __init__(self, a, w_shape=None, svd_strategy='numpy', rev_mapping='fft', grouping_method='elementary', x_axis=None):
-		self.x_axis = x_axis if x_axis is not None else np.arange(0, a.size)
-		self.grouping_method = grouping_method
+	def __init__(self, 
+			a, 
+			w_shape=None, 
+			svd_strategy='numpy', 
+			rev_mapping='fft', 
+			grouping : dict[str, Any] = {'mode':'elementary'}, 
+			n_eigen_values=None
+		):
+		self.grouping = grouping
 		
 		self.a = a
-		self.nx = self.a.size
-		self.lx = self.nx//4 if w_shape is None else w_shape
-		self.kx = self.nx - self.lx + 1
+		
+		self.n = (*a.shape,)
+		self.nx = self.n[0]
+		
+		self.l = (tuple(nx//4 for nx in self.n) if w_shape is None 
+			else ((w_shape for nx in self.n) if type(w_shape) is int
+				else w_shape
+			)
+		)
+		self.L = np.product(self.l)
+		self.lx = self.l[0]
+		
+		self.k = tuple(nx - lx + 1 for nx, lx in zip(self.n, self.l))
+		self.K = np.product(self.k)
+		self.kx = self.k[0]
 
 		self.X = self.embed(self.a)
 		
@@ -42,93 +61,129 @@ class SSA:
 		
 		if svd_strategy == 'eigval':
 			# this strategy is faster
-			S = self.X @ self.X.T
-			s, self.u = np.linalg.eig(S)
-			v = (self.X.T @ self.u)/np.sqrt(s)
-			self.v_star = np.zeros((self.kx,self.kx))
-			self.v_star[:self.lx,:self.kx] = v.T
-			self.s = np.zeros((self.lx, self.kx))
-			self.s[:self.u.shape[0], :self.u.shape[1]] = np.sqrt(np.diag(s))
+			evals, self.u = np.linalg.eig(self.X @ self.X.T)
+			# get eigenvectors and eigen values into decending order
+			evals_decending_idxs = np.argsort(evals)[::-1][:n_eigen_values]
+			evals = evals[evals_decending_idxs]
+			self.u = self.u.T[evals_decending_idxs].T
+			v = self.X.T @ (self.u / np.sqrt(evals))
+			self.v_star = v.T
+			self.s = np.sqrt(np.diag(evals))
 		
+		_lgr.info('decomposing trajectories')
+		# get the decomposed trajectories
 		self.X_decomp = py_svd.decompose_to_matricies(self.u,self.s,self.v_star)
 		self.d = self.X_decomp.shape[0]
 		
-		self.grouping =  self.get_grouping(grouping_method)
+		_lgr.info('determining trajectory groupings')
+		# determine optimal grouping
+		self.grouping = self.get_grouping(**self.grouping)
+		self.m = len(self.grouping)
 		
-		self.group()
+		_lgr.info('grouping trajectories')
+		# group trajectory components
+		self.X_g, self.u_g, self.v_star_g, self.s_g = self.group()
 		
-		if rev_mapping=='fft':
-			self.reverse_mapping_fft()
+		_lgr.info('reversing mapping')
+		if rev_mapping == 'fft':
+			self.X_ssa = self.quasi_hankelisation()
+		elif rev_mapping=='direct':
+			self.X_ssa = self.reverse_mapping()
 		else:
-			self.reverse_mapping()
+			raise ValueError(f'Unknown rev_mapping {repr(rev_mapping)}')
 		
-		self.X_reconstructed = np.sum(self.X_ssa, axis=0)
-		
+		_lgr.info('Single spectrum analysis complete')
 		return
 
 	def embed(self, a):
-		X = np.zeros((self.lx, self.kx))
-		for k in range(self.kx):
-				X[:, k] = a[k:k+self.lx]
+		ndim = len(self.k)
+		k_steps = np.cumprod((1,*self.k[:-1])).astype(int)[::-1]
+		_lgr.debug(f'{ndim=} {k_steps=} {self.L=} {self.K=}')
+		X = np.zeros((self.L, self.K))
+		_lgr.debug(f'{X.shape=}')
+		_lgr.debug(f'{self.n=} {self.k=} {self.l=}')
+		kn = np.zeros((len(self.n)),dtype=int)
+		for k in range(self.K):
+			for i in range(len(kn)):
+				kn[i] = (k-np.sum(kn[:i]*k_steps[:i]))//k_steps[i]
+			slices = tuple(slice(_k, _k+_l) for _k, _l in zip(kn[::-1], self.l))
+			#X[:, k] = vectorise_mat(a[k:k+self.lx])
+			X[:, k] = vectorise_mat(a[slices])
 		return(X)
 	
-	def get_grouping(self, grouping_method='elementary'):
-		# no-op for now
-		if grouping_method == 'elementary':
-			grouping = [[_x] for _x in range(0,self.d,1)]
-			return(grouping)
-		# test grouping op
-		elif grouping_method == 'pairs':
-			grouping = [[_x,_x+1] for _x in range(0,self.d,2)]
-			return(grouping)
-		# test better grouping op
-		elif grouping_method == 'pairs_after_first':
-			z = 1-self.d%2
-			grouping = [
-				np.array([0]), 
-				*list(zip(*np.stack([np.arange(1,self.d-z,2),np.arange(2,self.d,2)]))),
-				np.arange(self.d-z, self.d)
-			]
-			return(grouping)
-	
-		else:
-			raise NotImplementedError('Grouping method "{grouping_method}" not defined/implemented')
-	
-	def group(self):
-		# set up constants
-		self.m = len(self.grouping)
-		#self.m, self.I_max = self.grouping.shape
-		# don't group if we don't have to
+	def get_grouping(self, mode='elementary', **kwargs):
+		"""
+		Define how the eigentriples (evals, evecs, fvecs) should be grouped.
+		"""
+		def ensure_grouping_parameter(x): 
+			assert x in kwargs, f'Grouping {mode=} requires grouping parameter "{x}", which is not found in {kwargs}'
+			return kwargs[x]
 		
-		s_dash = np.zeros((self.kx,self.kx))
-		z = min(self.lx,self.kx)
-		s_dash[:z,:z] = self.s[:z,:z]
-		
-		
-		if np.all(self.grouping == np.arange(0,self.X_decomp.shape[0])[:,None]):
-			#print('DEBUGGING: no op grouping')
-			self.X_g = self.X_decomp
-			self.u_g = self.u
-			self.v_star_g = self.v_star
-			self.s_g = self.s
-			return
-		
-		
-		#print('DEBUGGING: pay attention to groups')
-		self.X_g = np.zeros((self.m, self.lx, self.kx))
-		self.u_g = np.zeros((self.lx, self.m))
-		self.v_star_g = np.zeros((self.m, self.kx))
-		self.s_g = np.zeros((self.m,self.m))
-		for _m, I in enumerate(self.grouping):
-			ss = np.sum(self.s[I,I])
-			for j in I:
-				s_fac = self.s[j,j]/ss
-				self.X_g[_m] += self.X_decomp[j]
-				self.s_g[_m,_m] += self.s[j,j]
-				self.u_g[:,_m] += self.u[:,j]*s_fac
-				self.v_star_g[_m,:] += self.v_star[j,:]*s_fac
+		# simplest method, we don't bother grouping.
+		match mode:
+			case 'elementary':
+				grouping = [[i] for i in range(self.d)]
+				return(grouping)
+			# test grouping op
+			case 'pairs':
+				grouping = [[_x,_x+1] for _x in range(0,self.d-1,2)]
+				return(grouping)
+			# test better grouping op
+			case 'pairs_after_first':
+				z = 1-self.d%2
+				grouping = [
+					np.array([0]), 
+					*list(zip(*np.stack([np.arange(1,self.d-z,2),np.arange(2,self.d,2)]))),
+					np.arange(self.d-z, self.d)
+				]
+				return(grouping)
+			case 'similar_eigenvalues':
+				tolerance = ensure_grouping_parameter('tolerance')
+				grouping = []
+				last_ev = 0
+				for i in range(self.d):
+					this_ev = self.s[i,i]
+					if abs(last_ev - this_ev) / last_ev < tolerance:
+						grouping[-1].append(i)
+					else:
+						grouping.append([i])
+						last_ev = this_ev
+				return grouping
+			case 'blocks_of_n':
+				n = ensure_grouping_parameter('n')
+				grouping = [list(range(j,j+kwargs['n'] if j+kwargs['n'] <= self.d else self.d)) for j in range(0,self.d,kwargs['n'])]
+				return grouping
+			case _:
+				raise NotImplementedError(f'Unknown grouping {mode=}, {kwargs} for {self}')
 
-		return
+	def group(self):
+		# don't bother grouping if we have nothing to group
+		if self.m == self.d:
+			# if we have as many groups as we have decomposed elements, then we didn't actually group any, so return decomposition.
+			return(self.X_decomp, self.u, self.v_star, self.s)
+		_lgr.debug(f'{self.grouping=}')
+		_lgr.debug(f'{self.X_decomp.shape=}')
+		_lgr.debug(f'{self.u.shape=}')
+		_lgr.debug(f'{self.v_star.shape=}')
+		_lgr.debug(f'{self.s.shape=}')
+		
+		
+		n_groups = len(self.grouping)
+		X_g = np.zeros((n_groups,*self.X_decomp.shape[1:]))
+		u_g = np.zeros((*self.u.shape[1:], n_groups))
+		v_star_g = np.zeros((n_groups,*self.v_star.shape[1:]))
+		s_g = np.zeros((n_groups,n_groups))
+		
+		for I, idxs in enumerate(self.grouping):
+			ss = np.sum(self.s[idxs,idxs])
+			for j in idxs:
+				s_fac = self.s[j,j]/ss # add components in porportion
+				X_g[I] += self.X_decomp[j]
+				u_g[:,I] += self.u[:,j]
+				v_star_g[I,:] += self.v_star[j,:]
+				s_g[I,I] += self.s[j,j]*s_fac
+				
+		return(X_g, u_g, v_star_g, s_g)
 	
 	
 	def reverse_mapping_fft(self):
@@ -191,70 +246,296 @@ class SSA:
 				E[n] = 0
 		return
 	
+	@staticmethod
+	def diagsums(a, b, mode='full', fac=None):
+		"""
+		This is practically the same as convolution using FFT
+		"""
+		_lgr.debug(f'{a.shape=} {b.shape=}')
+		shape_full = [s1+s2-1 for s1,s2 in zip(a.shape,b.shape)]
+		fac = fac if fac is not None else 1
+		a_fft = np.fft.fftn(a, shape_full)
+		b_fft = np.fft.fftn(b, shape_full)
+		conv = np.fft.ifftn(a_fft*b_fft*fac, shape_full).real
+		if mode=='full':
+			return(conv)
+		if mode=='same':
+			slices = tuple([slice((sf-sa)//2, (sa-sf)//2) for sa, sf in zip(a.shape, shape_full)])
+			return(conv[slices])
+		if mode=='valid':
+			slices = tuple([slice((sa-sb)//2, (sa-sb)//2) for sa, sb in zip(a.shape, b.shape)])
+			return(conv[slices])
 	
+	def quasi_hankelisation(self):
+		# reverse embedding
+		X_ssa = np.zeros((self.m, *self.n))
+		X_dash = np.zeros(self.n)
+		
+		order = 'F' # order to reshape arrays with
+		
+		W = self.diagsums(np.ones(self.k), np.ones(self.l), mode='full')
+		for j in range(self.m):
+			X_dash = self.diagsums(
+				np.squeeze(unvectorise_mat(self.u_g[:,j], self.l[0])),
+				np.squeeze(unvectorise_mat(self.v_star_g[j,:], self.k[0])),
+				mode='full',
+				fac=self.s_g[j,j]
+			)
+			X_ssa[j] = X_dash/W
+			
+		return(X_ssa)
+	
+	def plot_all(self, n_max=36):
+		self.plot_svd()
+		self.plot_eigenvectors(n_max)
+		self.plot_factorvectors(n_max)
+		self.plot_trajectory_decomp(n_max)
+		self.plot_trajectory_groups(n_max)
+		self.plot_ssa(n_max)
+		return
+
 	def plot_svd(self, recomp_n=None):
 		if recomp_n is None:
 			recomp_n = self.X_decomp.shape[0]
 		py_svd.plot(self.u, self.s, self.v_star, self.X, self.X_decomp, recomp_n=recomp_n)
 		return
 	
+	def plot_eigenvectors(self, n_max=None):
+		flip_ravel = lambda x: np.reshape(x.ravel(order='F'), x.shape)
+		# plot eigenvectors and factor vectors
+		n = min(self.u.shape[0], n_max if n_max is not None else self.u.shape[0])
+		f1, a1 = ut.plt.figure_n_subplots(n)
+		a1=a1.flatten()
+		f1.suptitle(f'First {n} Eigenvectors of X (of {self.u.shape[0]})')
+		ax_iter=iter(a1)
+		for i in range(n):
+			ax=next(ax_iter)
+			ax.set_title(f'i = {i} eigenval = {self.s[i,i]:07.2E}')
+			ut.plt.remove_axes_ticks_and_labels(ax)
+			ax.imshow(np.reshape(self.u[i,:],(self.lx,self.ly)).T)
+		return
 	
-	def plot_ssa(self, n_max=6):
-		# Matplotlib parameters
+	def plot_factorvectors(self, n_max=None):
+		flip_ravel = lambda x: np.reshape(x.ravel(order='F'), x.shape)
+		n = min(self.v_star.shape[0], n_max if n_max is not None else self.v_star.shape[0])
+		f1, a1 = ut.plt.figure_n_subplots(n)
+		a1=a1.flatten()
+		f1.suptitle(f'First {n} Factorvectors of X (of {self.v_star.shape[0]})')
+		ax_iter = iter(a1)
+		for j in range(n):
+			ax=next(ax_iter)
+			ax.set_title(f'j = {j}')
+			ut.plt.remove_axes_ticks_and_labels(ax)
+			ax.imshow(flip_ravel(np.reshape(self.v_star[j,:],(self.kx,self.ky)).T))
+			
+	def plot_trajectory_decomp(self, n_max=None):	
+		# Plot components of image decomposition
+		n = min(self.X_decomp.shape[0], n_max if n_max is not None else self.X_decomp.shape[0])
+		f1, a1 = ut.plt.figure_n_subplots(n)
+		a1 = a1.ravel()
+		f1.suptitle('Trajectory matrix components X_i [M = sum(X_i)]')
+		ax_iter = iter(a1)
+		for i in range(n):
+			ax = next(ax_iter)
+			ax.set_title(f'i = {i}', y=0.9)
+			ut.plt.remove_axes_ticks_and_labels(ax)
+			ax.imshow(self.X_decomp[i], origin='lower', aspect='auto')
+		return
+		
+		
+		
+	def plot_trajectory_groups(self, n_max=None):
+		# plot elements of X_g
+		n = min(self.X_g.shape[0], n_max if n_max is not None else self.X_g.shape[0])
+		f1, a1 = ut.plt.figure_n_subplots(n)
+		a1 = a1.ravel()
+		f1.suptitle('Trajectory matrix groups X_g [X = sum(X_g_i)]')
+		ax_iter=iter(a1)
+		for i in range(n):
+			ax = next(ax_iter)
+			ax.set_title(f'i = {i}', y=0.9)
+			ut.plt.remove_axes_ticks_and_labels(ax)
+			ax.imshow(self.X_g[i], origin='lower', aspect='auto')
+		return
+		
+	def plot_ssa(self, n=4, noise_estimate=None):
+	
+		_lgr.debug(f'Plotting SSA data')
+	
+		match len(self.n):
+			case 1:
+				def plot_callable(ax, data, title_fmt, **kwargs):
+					vmin, vmax = np.nanmin(data), np.nanmax(data)
+					ax.set_title(title_fmt.format(data_limits=f'[{vmin:07.2E}, {vmax:07.2E}]'))
+					result = ax.plot(np.arange(len(data)), data, ls='-', marker='')[0]
+					return result
+			case 2:
+				def plot_callable(ax, data, title_fmt, **kwargs): 
+					vmin, vmax = np.nanmin(data), np.nanmax(data)
+					ax.set_title(title_fmt.format(data_limits=f'[{vmin:07.2E}, {vmax:07.2E}]'))
+					result = ax.imshow(data, vmin=vmin, vmax=vmax)
+					ax.xaxis.set_visible(False)
+					ax.yaxis.set_visible(False)
+					return result
+			case _:
+				raise RuntimeError(f'No plotting callable for {len(self.n)}d SSA')
+	
+		n = list(range(n)) if type(n) is int else n
+		n = list(range(self.X_ssa.shape[0])) if n is None else n
+		n = [x if x < self.X_ssa.shape[0] else self.X_ssa.shape[0]-1 for x in n]
+	
+		n_component_plots = len(n)
+		noise_estimate = noise_estimate if noise_estimate is not None else np.std(self.a[tuple(slice(0,s//10) for s in self.a.shape)])
+	
+		reconstruction = lambda x=None: np.sum(self.X_ssa[:x], axis=0)
+		residual = lambda x = None: self.a - reconstruction(x)
+		residual_log_likelihood = lambda x = None : -0.5*np.log(np.sum((residual(x)/(self.a + noise_estimate))**2))
+	
+		print(f'{residual()=}')
+		print(f'{np.sum(residual())=}')
+	
+		# plot SSA of image
 		mpl.rcParams['lines.linewidth'] = 1
 		mpl.rcParams['font.size'] = 8
 		mpl.rcParams['lines.markersize'] = 2
-
-		n = min(self.m, n_max if n_max is not None else self.m)
-		f1, a1 = ut.plt.figure_n_subplots(n+4)
+		
+		gridspec = mpl.gridspec.GridSpec(4,1)
+		fig = plt.gcf()
+		fig.set(figwidth=12, figheight=8)
+		
+		
+		f0 = fig.add_subfigure(mpl.gridspec.SubplotSpec(gridspec, 0))
+		a0 = f0.subplots(1,4, squeeze=False, gridspec_kw={'top':0.5})
+		a0 = a0.flatten()
+		f0.suptitle(f'{n_component_plots} ssa images of obs (of {self.X_ssa.shape[0]})')
+		ax_iter=iter(a0)
+		
+		
+		ax = next(ax_iter)
+		plot_callable(ax,
+			self.a,
+			'Original\n{data_limits}'
+		)
+		window_rect = mpl.patches.Rectangle((0,0),*(self.l if len(self.l) == 2 else (self.l[0],1)),color='red',fill=False,ls='-')
+		ax.add_patch(window_rect)
+		
+		ax = next(ax_iter)
+		plot_callable(ax,
+			reconstruction(),
+			'Reconstruction\n{data_limits}'
+		)
+		#ax.set_title(f'Reconstruction\nclim [{o_clim[0]:07.2E} {o_clim[1]:07.2E}]')
+		#plot_callable(ax, reconstruction(), vmin=o_clim[0], vmax=o_clim[1])
+		#ut.plt.remove_axes_ticks_and_labels(ax)
+		
+		ax = next(ax_iter)
+		#im = plot_callable(ax,residual())
+		#ax.set_title(f'Residual {residual_log_likelihood():07.2E}\nmean {np.mean(residual()):07.2E}\nclim [{im.get_clim()[0]:07.2E} {im.get_clim()[1]:07.2E}]')
+		#ut.plt.remove_axes_ticks_and_labels(ax)
+		plot_callable(ax,
+			residual(),
+			'\n'.join((
+				'Residual\n{data_limits}',
+				f'mean {np.mean(residual()):07.2E}',
+				f'log_likelihood {residual_log_likelihood():07.2E}'
+			))
+		)
+		
+		ax = next(ax_iter)
+		ax.set_title('Eigenvalues')
+		ax.plot(range(self.m), np.diag(self.s_g))
+		ax.plot(n, np.diag(self.s_g)[n], color='red', marker='.', linestyle='none', label='plotted components')
+		ax.set_yscale('log')
+		ax.set_ylabel('Eigenvalue')
+		ax.set_xlabel('Component number')
+		ax.legend()
+		
+		
+		
+		
+		f1 = fig.add_subfigure(mpl.gridspec.SubplotSpec(gridspec, 1,3))
+		f1, a1 = ut.plt.figure_n_subplots(3*n_component_plots, figure=f1, sp_kwargs={'gridspec_kw':{'top':0.85, 'hspace':1}})
 		a1=a1.flatten()
-		f1.suptitle(f'First {n} ssa components of data (of {self.m})')
+		
 		ax_iter=iter(a1)
 		
 		
-		ax = next(ax_iter)
-		ax.set_title('Original and Reconstruction')
-		ax.plot(self.x_axis, self.a, label='data',ls='-',marker='.')
-		ax.plot(self.x_axis, self.X_reconstructed, label='sum(X_ssa)', ls='--', alpha=0.8)
-		ax.axvspan(self.x_axis[0], self.x_axis[self.lx], 0, 1, color='tab:gray', alpha=0.1, label='Window Size')
-		original_ylim = ax.get_ylim()
-		ax.legend()
-		
-		ax = next(ax_iter)
-		ax.set_title('Residual')
-		ax.plot(self.x_axis, self.a - self.X_reconstructed, ls='-', marker='')
-		
-		ax = next(ax_iter)
-		ax.set_title('Ratio (original/reconstruction)')
-		ax.plot(self.x_axis, self.a/self.X_reconstructed, ls='-', marker='')
-		
-		ax = next(ax_iter)
-		ax.set_title('Eigenvalues of components')
-		ii = list(range(self.m))
-		ax.plot(ii, [self.s_g[i,i] for i in ii], label='eigenvalues')
-		ax.set_ylabel('eigenvalue')
-		ax.set_xlabel('component number')
-		ax.set_yscale('log')
-		
-		for i in range(n):
+		for i in n:
 			ax=next(ax_iter)
-			ax.set_title(f'X_ssa[{i}]\neigenvalue {self.s_g[i,i]:07.2E}')
+			plot_callable(ax,
+				self.X_ssa[i],
+				'\n'.join((
+					f'X_ssa[{i}]',
+					'lim {data_limits}',
+					f'eigenvalue {self.s_g[i,i]:07.2E}',
+					f'eigen_frac {self.s_g[i,i]/np.sum(self.s_g):07.2E}',
+					f'sig_frac {np.sqrt(np.sum(self.X_ssa[i]**2)/(np.sum(self.a**2))):07.2E}',
+				))
+			)
+			#im = ax.imshow(self.X_ssa[i])
+			#title = '\n'.join((
+			#	f'X_ssa[{i}]',
+			#	f'eigenvalue {self.s_g[i,i]:07.2E}',
+			#	f'eigen_frac {self.s_g[i,i]/np.sum(self.s_g):07.2E}',
+			#	f'sig_frac {np.sqrt(np.sum(self.X_ssa[i]**2)/(np.sum(self.a**2))):07.2E}',
+			#	f'clim [{im.get_clim()[0]:07.2E} {im.get_clim()[1]:07.2E}]',
+			#))
+			
+			#ax.set_title(title)
 			#ut.plt.remove_axes_ticks_and_labels(ax)
-			ax.plot(self.x_axis, self.X_ssa[i], color='tab:blue', label='component')
-			ax.set_ylabel('component')
+		
+		for j in n:
+			i = j+1
+			ax=next(ax_iter)
+			_data = reconstruction(i)
+			plot_callable(ax,
+				_data,
+				'\n'.join((
+					f'sum(X_ssa[:{i}])',
+					'lim {data_limits}',
+					f'eigen_frac {np.sum(np.diag(self.s_g)[:i])/np.sum(self.s_g):07.2E}',
+					f'sig_remain {1 - np.sqrt(np.sum(_data**2)/(np.sum(self.a**2))):07.2E}',
+				))
+			)
 			
-			original_yrange = max(original_ylim) - min(original_ylim)
-			y_mean = np.nanmean(self.X_ssa[i])
-			new_ylim = (y_mean - original_yrange/2, y_mean + original_yrange/2)
-			ax.set_ylim(new_ylim)
 			
-			ax2 = ax.twinx()
-			ax2.plot(self.x_axis, np.sum(self.X_ssa[:i+1], axis=0), color='tab:orange', label='component sum', ls='--')
-			ax2.set_ylim(original_ylim)
-			ax2.set_ylabel('component Sum')
+			#im = plot_callable(ax,_data)
+			#title = '\n'.join((
+			#	f'sum(X_ssa[:{i}])',
+			#	f'eigen_frac {np.sum(np.diag(self.s_g)[:i])/np.sum(self.s_g):07.2E}',
+			#	f'sig_remain {1 - np.sqrt(np.sum(_data**2)/(np.sum(self.a**2))):07.2E}',
+			#	f'clim [{im.get_clim()[0]:07.2E} {im.get_clim()[1]:07.2E}]',
+			#))
+			#
+			#ax.set_title(title)
+			#ut.plt.remove_axes_ticks_and_labels(ax)
+		
+		for j in n:
+			i = j+1
+			ax=next(ax_iter)
+			plot_callable(ax,
+				residual(i),
+				'\n'.join((
+					f'residual sum(X_ssa[:{i}])',
+					'lim {data_limits}',
+					f'mean {np.mean(residual(i)):07.2E}',
+					f'log_likelihood {residual_log_likelihood(i):07.2E}'
+				))
+			)
 			
-			ut.plt.set_legend(ax, ax2)
-		return(f1,a1)
+			
+			#im = plot_callable(ax,residual(i))
+			#title = '\n'.join((
+			#	f'residual sum(X_ssa[:{i}]) {residual_log_likelihood(i):07.2E}',
+			#	f'mean {np.mean(residual(i)):07.2E}',
+			#	f'clim [{im.get_clim()[0]:07.2E} {im.get_clim()[1]:07.2E}]',
+			#))
+			#
+			#ax.set_title(title)
+			#ut.plt.remove_axes_ticks_and_labels(ax)
+		
+		
+		return
 			
 
 
@@ -322,14 +603,6 @@ class SSA2D:
 		
 		elif svd_strategy=='eigval':
 			# this version is much faster
-			"""
-			s, self.u = np.linalg.eig(self.X@self.X.T)
-			v = np.zeros((self.kxky, self.kxky))
-			v[:self.kxky, :self.lxly] = (self.X.T@self.u / np.sqrt(s))
-			self.v_star = v.T
-			self.s = np.zeros((self.lxly, self.kxky))
-			self.s[:self.u.shape[0], :self.u.shape[1]] =np.sqrt(np.diag(s))
-			"""
 			# L = full size of window
 			# N = full size of input data
 			# K = N - L + 1
@@ -353,13 +626,9 @@ class SSA2D:
 		_lgr.info('decomposing trajectories')
 		# get the decomposed trajectories
 		self.X_decomp = py_svd.decompose_to_matricies(self.u,self.s,self.v_star)
-		#self.X_decomp = np.einsum('ii,jk,kl->ijl', self.s, self.u, self.v_star)
-		#self.X_decomp = np.diag(self.s)[:,None,None]*(self.u @ self.v_star)[None,:,:]
-		
-		#self.X_decomp = np.diag(self.s)[:,None,None]*(self.u.T[:,:,None] @ self.v_star[:,None,:])
 		self.d = self.X_decomp.shape[0]
 		
-		_lgr.info('determinng trajectory groupings')
+		_lgr.info('determining trajectory groupings')
 		# determine optimal grouping
 		self.grouping = self.get_grouping(**self.grouping)
 		self.m = len(self.grouping)
@@ -420,7 +689,6 @@ class SSA2D:
 				last_ev = 0
 				for i in range(self.d):
 					this_ev = self.s[i,i]
-					_lgr.debug(f'{abs(last_ev - this_ev) / last_ev=}')
 					if abs(last_ev - this_ev) / last_ev < tolerance:
 						grouping[-1].append(i)
 					else:
@@ -438,7 +706,7 @@ class SSA2D:
 	
 	def group(self):
 		# don't bother grouping if we have nothing to group
-		if self.m==self.d:
+		if self.m == self.d:
 			# if we have as many groups as we have decomposed elements, then we didn't actually group any, so return decomposition.
 			return(self.X_decomp, self.u, self.v_star, self.s)
 		_lgr.debug(f'{self.grouping=}')
@@ -456,18 +724,11 @@ class SSA2D:
 		
 		for I, idxs in enumerate(self.grouping):
 			ss = np.sum(self.s[idxs,idxs])
-			#ss = np.sum(np.sqrt(self.s[idxs,idxs]))
 			for j in idxs:
-				s_fac = 1
 				s_fac = self.s[j,j]/ss # add components in porportion
-				#s_fac = np.sqrt(self.s[j,j])/ss # add components in porportion
-				#_lgr.debug(f'{X_g[I]=} {self.X_decomp[j]=}')
 				X_g[I] += self.X_decomp[j]
-				#u_g[:,I] += self.u[:,j]*s_fac
 				u_g[:,I] += self.u[:,j]
-				#v_star_g[I,:] += self.v_star[j,:]*s_fac
 				v_star_g[I,:] += self.v_star[j,:]
-				#s_g[I,I] = max(s_g[I,I],self.s[j,j])
 				s_g[I,I] += self.s[j,j]*s_fac
 				
 		return(X_g, u_g, v_star_g, s_g)
@@ -741,6 +1002,8 @@ if __name__=='__main__':
 	test_data_type_1d = ('random',)
 	
 	
+	n_set = [0, 4, 12, 24]
+	
 	# find 1d testing data
 	for data_type in test_data_type_1d:
 		if data_type == 'random':
@@ -753,14 +1016,19 @@ if __name__=='__main__':
 			
 	_lgr.info(f'TESTING: 1d ssa with {data_type} example data')
 	
-	ssa = SSA(data1d, svd_strategy='numpy', rev_mapping='fft', grouping_method='elementary')
-	ssa.plot_ssa()
+	ssa = SSA(
+		data1d, 
+		svd_strategy='eigval', 
+		rev_mapping='fft', 
+		grouping={'mode':'similar_eigenvalues', 'tolerance':0.01}
+	)
+	ssa.plot_ssa(n_set)
 	plt.show()
 	
 	
 	
 	dataset = []
-	n_set = [0, 4, 12, 24]
+	
 	
 	if len(sys.argv) > 1:
 		for item in sys.argv[1:]:
@@ -801,7 +1069,7 @@ if __name__=='__main__':
 		_lgr.info(f'TESTING: 2d ssa with {data_name} example data')
 		_lgr.info(f'{data2d.shape=}')
 		window_size = tuple(s//10 for s in data2d.shape)
-		ssa2d = SSA2D(
+		ssa2d = SSA(
 			data2d.astype(np.float64), 
 			window_size, 
 			svd_strategy='eigval', # uses less memory and is faster

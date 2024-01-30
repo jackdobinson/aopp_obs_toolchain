@@ -41,15 +41,6 @@ def decompose_to_matricies(u, s, v_star):
 	n = min(s.shape) # number of singular vectors to decompose into
 	decomp = np.diag(s)[:,None,None]*(u.T[:n,:n,None] @ v_star[:n,None,:n])
 	return(decomp)
-	"""
-	decomp = np.zeros((n,u.shape[0],v_star.shape[0]))
-	u_dash, v_dash = np.zeros((u.shape[0],1)), np.zeros((1,v_star.shape[1]))
-	for i in range(n):
-		u_dash[:,0] = u[:,i]
-		v_dash[0,:] = v_star[i,:]
-		decomp[i,:,:] = s[i,i] * u_dash @ v_dash
-	return(decomp)
-	"""
 
 def plot(u, s, v_star, inmat, decomp, recomp_n=None, f1=None, a1=None):
 	print(u.shape)
