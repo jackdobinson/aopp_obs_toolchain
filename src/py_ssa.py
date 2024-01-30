@@ -4,8 +4,10 @@ Implementation of Singular Spectrum Analysis.
 
 See https://arxiv.org/pdf/1309.5050.pdf for details.
 """
-import utilities.logging_setup
-logging, _lgr = utilities.logging_setup.getLoggers(__name__, 'WARNING')
+from typing import Any
+
+import cfg.logs
+_lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 import numpy as np
 import scipy as sp
@@ -262,7 +264,14 @@ class SSA:
 # * Create low-memory mode by only bothering with u and v which create a square s-matrix,
 #   can also try truncating those matrices to only include the first N terms
 class SSA2D:	
-	def __init__(self, a, w_shape=None, svd_strategy='eigval', rev_mapping='fft', grouping_method='elementary', n_eigen_values=None):
+	def __init__(self, 
+			a, 
+			w_shape=None, 
+			svd_strategy='eigval', 
+			rev_mapping='fft', 
+			grouping : dict[str,Any] = {'mode':'elementary'}, 
+			n_eigen_values=None
+		):
 		"""
 		Set up initial values of useful constants
 		
@@ -279,7 +288,7 @@ class SSA2D:
 			fastest
 		rev_mapping : 'fft' | 'direct'
 			How should we reverse the embedding? 'fft' is fastest
-		grouping_method : 'elementary' | 'pairs' | 'pairs_after_first'
+		grouping : dict[str, Any] {'mode':'elementary' | 'pairs' | 'pairs_after_first' | 'similar_eigenvalues' | 'blocks_of_n', **}
 			How should we group the tarjectory matricies? Values other than
 			'elementary' do not give exact results
 			
@@ -288,14 +297,14 @@ class SSA2D:
 			array 'a' in self.X_ssa
 			
 		"""
-		_lgr.INFO('in SSA2D, initialising attributes')
+		_lgr.info('in SSA2D, initialising attributes')
 		self.a = a
 		self.nx, self.ny = a.shape
 		if w_shape is None:
 			self.lx, self.ly = self.nx//4, self.ny//4
 		else:
 			self.lx, self.ly = w_shape
-		self.grouping_method = grouping_method
+		self.grouping = grouping
 			
 		self.kx, self.ky = self.nx-self.lx+1, self.ny-self.ly+1
 		self.lxly = self.lx*self.ly
@@ -304,7 +313,7 @@ class SSA2D:
 		
 		self.X = self.embed(self.a)
 		
-		_lgr.INFO('computing single value decomposition')
+		_lgr.info('computing single value decomposition')
 		if svd_strategy == 'numpy':
 			# get svd of trajectory matrix
 			self.u, self.s, self.v_star = np.linalg.svd(self.X)
@@ -341,25 +350,25 @@ class SSA2D:
 		else:
 			raise ValueError(f'Unknown svd_strategy {repr(svd_strategy)}')
 		
-		_lgr.INFO('decomposing trajectories')
+		_lgr.info('decomposing trajectories')
 		# get the decomposed trajectories
-		#self.X_decomp = py_svd.decompose_to_matricies(self.u,self.s,self.v_star)
+		self.X_decomp = py_svd.decompose_to_matricies(self.u,self.s,self.v_star)
 		#self.X_decomp = np.einsum('ii,jk,kl->ijl', self.s, self.u, self.v_star)
 		#self.X_decomp = np.diag(self.s)[:,None,None]*(self.u @ self.v_star)[None,:,:]
 		
-		self.X_decomp = np.diag(self.s)[:,None,None]*(self.u.T[:,:,None] @ self.v_star[:,None,:])
+		#self.X_decomp = np.diag(self.s)[:,None,None]*(self.u.T[:,:,None] @ self.v_star[:,None,:])
 		self.d = self.X_decomp.shape[0]
 		
-		_lgr.INFO('determinng trajectory groupings')
+		_lgr.info('determinng trajectory groupings')
 		# determine optimal grouping
-		self.grouping = self.get_grouping(self.grouping_method)
+		self.grouping = self.get_grouping(**self.grouping)
 		self.m = len(self.grouping)
 		
-		_lgr.INFO('grouping trajectories')
+		_lgr.info('grouping trajectories')
 		# group trajectory components
 		self.X_g, self.u_g, self.v_star_g, self.s_g = self.group()
 		
-		_lgr.INFO('reversing mapping')
+		_lgr.info('reversing mapping')
 		if rev_mapping == 'fft':
 			self.X_ssa = self.quasi_hankelisation()
 		elif rev_mapping=='direct':
@@ -367,7 +376,7 @@ class SSA2D:
 		else:
 			raise ValueError(f'Unknown rev_mapping {repr(rev_mapping)}')
 		
-		_lgr.INFO('Single spectrum analysis complete')
+		_lgr.info('Single spectrum analysis complete')
 		return
 		
 	def embed(self, a):
@@ -376,31 +385,55 @@ class SSA2D:
 			for k2 in range(self.ky):
 				X[:,k1+k2*self.kx] = vectorise_mat(a[k1:k1+self.lx, k2:k2+self.ly])
 		return(X)
-		
-	def get_grouping(self, grouping_method='elmentary'):
+	
+	
+	
+	def get_grouping(self, mode='elementary', **kwargs):
 		"""
 		Define how the eigentriples (evals, evecs, fvecs) should be grouped.
 		"""
-		# simplest method, we don't bother grouping.
-		if grouping_method == 'elementary':
-			grouping = [[i] for i in range(self.d)]
-			return(grouping)
-		# test grouping op
-		elif grouping_method == 'pairs':
-			grouping = [[_x,_x+1] for _x in range(0,self.d-1,2)]
-			return(grouping)
-		# test better grouping op
-		elif grouping_method == 'pairs_after_first':
-			z = 1-self.d%2
-			grouping = [
-				np.array([0]), 
-				*list(zip(*np.stack([np.arange(1,self.d-z,2),np.arange(2,self.d,2)]))),
-				np.arange(self.d-z, self.d)
-			]
-			return(grouping)
-		else:
-			raise NotImplementedError(f'Unknown grouping method {repr(grouping_method)} for {self}')
+		def ensure_grouping_parameter(x): 
+			assert x in kwargs, f'Grouping {mode=} requires grouping parameter "{x}", which is not found in {kwargs}'
+			return kwargs[x]
 		
+		# simplest method, we don't bother grouping.
+		match mode:
+			case 'elementary':
+				grouping = [[i] for i in range(self.d)]
+				return(grouping)
+			# test grouping op
+			case 'pairs':
+				grouping = [[_x,_x+1] for _x in range(0,self.d-1,2)]
+				return(grouping)
+			# test better grouping op
+			case 'pairs_after_first':
+				z = 1-self.d%2
+				grouping = [
+					np.array([0]), 
+					*list(zip(*np.stack([np.arange(1,self.d-z,2),np.arange(2,self.d,2)]))),
+					np.arange(self.d-z, self.d)
+				]
+				return(grouping)
+			case 'similar_eigenvalues':
+				tolerance = ensure_grouping_parameter('tolerance')
+				grouping = []
+				last_ev = 0
+				for i in range(self.d):
+					this_ev = self.s[i,i]
+					_lgr.debug(f'{abs(last_ev - this_ev) / last_ev=}')
+					if abs(last_ev - this_ev) / last_ev < tolerance:
+						grouping[-1].append(i)
+					else:
+						grouping.append([i])
+						last_ev = this_ev
+				return grouping
+			case 'blocks_of_n':
+				n = ensure_grouping_parameter('n')
+				grouping = [list(range(j,j+kwargs['n'] if j+kwargs['n'] <= self.d else self.d)) for j in range(0,self.d,kwargs['n'])]
+				return grouping
+			case _:
+				raise NotImplementedError(f'Unknown grouping {mode=}, {kwargs} for {self}')
+
 	
 	
 	def group(self):
@@ -408,23 +441,34 @@ class SSA2D:
 		if self.m==self.d:
 			# if we have as many groups as we have decomposed elements, then we didn't actually group any, so return decomposition.
 			return(self.X_decomp, self.u, self.v_star, self.s)
+		_lgr.debug(f'{self.grouping=}')
+		_lgr.debug(f'{self.X_decomp.shape=}')
+		_lgr.debug(f'{self.u.shape=}')
+		_lgr.debug(f'{self.v_star.shape=}')
+		_lgr.debug(f'{self.s.shape=}')
 		
-		X_g = np.zeros((self.m, self.lxly, self.kxky))
-		u_g = np.zeros((self.lxly, self.m))
-		v_star_g = np.zeros((self.m, self.kxky))
-		s_g = np.zeros((self.m,self.m))
+		
+		n_groups = len(self.grouping)
+		X_g = np.zeros((n_groups,*self.X_decomp.shape[1:]))
+		u_g = np.zeros((*self.u.shape[1:], n_groups))
+		v_star_g = np.zeros((n_groups,*self.v_star.shape[1:]))
+		s_g = np.zeros((n_groups,n_groups))
 		
 		for I, idxs in enumerate(self.grouping):
 			ss = np.sum(self.s[idxs,idxs])
 			#ss = np.sum(np.sqrt(self.s[idxs,idxs]))
 			for j in idxs:
 				s_fac = 1
-				#s_fac = self.s[j,j]/ss # add components in porportion
+				s_fac = self.s[j,j]/ss # add components in porportion
 				#s_fac = np.sqrt(self.s[j,j])/ss # add components in porportion
+				#_lgr.debug(f'{X_g[I]=} {self.X_decomp[j]=}')
 				X_g[I] += self.X_decomp[j]
-				u_g[:,I] += self.u[:,j]*s_fac
-				v_star_g[I,:] += self.v_star[j,:]*s_fac
-				s_g[I,I] += self.s[j,j]
+				#u_g[:,I] += self.u[:,j]*s_fac
+				u_g[:,I] += self.u[:,j]
+				#v_star_g[I,:] += self.v_star[j,:]*s_fac
+				v_star_g[I,:] += self.v_star[j,:]
+				#s_g[I,I] = max(s_g[I,I],self.s[j,j])
+				s_g[I,I] += self.s[j,j]*s_fac
 				
 		return(X_g, u_g, v_star_g, s_g)
 		
@@ -560,16 +604,30 @@ class SSA2D:
 			ax.imshow(self.X_g[i], origin='lower', aspect='auto')
 		return
 		
-	def plot_ssa(self, n_max=4):
+	def plot_ssa(self, n=4, noise_estimate=None):
+	
+		n = list(range(n)) if type(n) is int else n
+		n = list(range(self.X_ssa.shape[0])) if n is None else n
+		n = [x if x < self.X_ssa.shape[0] else self.X_ssa.shape[0]-1 for x in n]
+	
+		n_component_plots = len(n)
+		noise_estimate = noise_estimate if noise_estimate is not None else np.std(self.a[tuple(slice(0,s//10) for s in self.a.shape)])
+	
+		reconstruction = lambda x=None: np.sum(self.X_ssa[:x], axis=0)
+		residual = lambda x = None: self.a - reconstruction(x)
+		residual_log_likelihood = lambda x = None : -0.5*np.log(np.sum((residual(x)/(self.a + noise_estimate))**2))
+	
+		print(f'{residual()=}')
+		print(f'{np.sum(residual())=}')
+	
 		# plot SSA of image
 		mpl.rcParams['lines.linewidth'] = 1
 		mpl.rcParams['font.size'] = 8
 		mpl.rcParams['lines.markersize'] = 2
 		
-		n = min(self.X_ssa.shape[0], n_max if n_max is not None else self.X_ssa.shape[0])
-		f1, a1 = ut.plt.figure_n_subplots(n+4)
+		f1, a1 = ut.plt.figure_n_subplots(3*n_component_plots+4)
 		a1=a1.flatten()
-		f1.suptitle(f'First {n} ssa images of obs (of {self.X_ssa.shape[0]})')
+		f1.suptitle(f'{n_component_plots} ssa images of obs (of {self.X_ssa.shape[0]})')
 		ax_iter=iter(a1)
 		
 		ax = next(ax_iter)
@@ -582,22 +640,24 @@ class SSA2D:
 		
 		ax = next(ax_iter)
 		ax.set_title(f'Reconstruction\nclim [{o_clim[0]:07.2E} {o_clim[1]:07.2E}]')
-		ax.imshow(np.sum(self.X_ssa, axis=0), vmin=o_clim[0], vmax=o_clim[1])
+		ax.imshow(reconstruction(), vmin=o_clim[0], vmax=o_clim[1])
 		ut.plt.remove_axes_ticks_and_labels(ax)
 		
 		ax = next(ax_iter)
-		im = ax.imshow(self.a - np.sum(self.X_ssa, axis=0))
-		ax.set_title(f'Residual\nclim [{im.get_clim()[0]:07.2E} {im.get_clim()[1]:07.2E}]')
+		im = ax.imshow(residual())
+		ax.set_title(f'Residual {residual_log_likelihood():07.2E}\nmean {np.mean(residual()):07.2E}\nclim [{im.get_clim()[0]:07.2E} {im.get_clim()[1]:07.2E}]')
 		ut.plt.remove_axes_ticks_and_labels(ax)
 		
 		ax = next(ax_iter)
 		ax.set_title('Eigenvalues')
 		ax.plot(range(self.m), np.diag(self.s_g))
+		ax.plot(n, np.diag(self.s_g)[n], color='red', marker='.', linestyle='none', label='plotted components')
 		ax.set_yscale('log')
 		ax.set_ylabel('Eigenvalue')
 		ax.set_xlabel('Component number')
+		ax.legend()
 		
-		for i in range(n):
+		for i in n:
 			ax=next(ax_iter)
 			im = ax.imshow(self.X_ssa[i])
 			title = '\n'.join((
@@ -610,7 +670,36 @@ class SSA2D:
 			
 			ax.set_title(title)
 			ut.plt.remove_axes_ticks_and_labels(ax)
+		
+		for j in n:
+			i = j+1
+			ax=next(ax_iter)
+			_data = reconstruction(i)
+			im = ax.imshow(_data)
+			title = '\n'.join((
+				f'sum(X_ssa[:{i}])',
+				f'eigen_frac {np.sum(np.diag(self.s_g)[:i])/np.sum(self.s_g):07.2E}',
+				f'sig_remain {1 - np.sqrt(np.sum(_data**2)/(np.sum(self.a**2))):07.2E}',
+				f'clim [{im.get_clim()[0]:07.2E} {im.get_clim()[1]:07.2E}]',
+			))
 			
+			ax.set_title(title)
+			ut.plt.remove_axes_ticks_and_labels(ax)
+		
+		for j in n:
+			i = j+1
+			ax=next(ax_iter)
+			im = ax.imshow(residual(i))
+			title = '\n'.join((
+				f'residual sum(X_ssa[:{i}]) {residual_log_likelihood(i):07.2E}',
+				f'mean {np.mean(residual(i)):07.2E}',
+				f'clim [{im.get_clim()[0]:07.2E} {im.get_clim()[1]:07.2E}]',
+			))
+			
+			ax.set_title(title)
+			ut.plt.remove_axes_ticks_and_labels(ax)
+		
+		
 		return
 	
 	
@@ -645,6 +734,8 @@ def mult_by_quasi_hankel(A, b, bx, cxcy):
 	
 #%%
 if __name__=='__main__':
+	import sys
+	
 	# get example data in order of desirability
 	test_data_type_2d = ('fitscube','fractal','random')
 	test_data_type_1d = ('random',)
@@ -660,50 +751,66 @@ if __name__=='__main__':
 		else:
 			raiseValueError(f'Unknown type of test data for 1d case {repr(data_type)}')
 			
-	print(f'TESTING: 1d ssa with {data_type} example data')
+	_lgr.info(f'TESTING: 1d ssa with {data_type} example data')
 	
-	ssa = SSA(data1d, svd_strategy='eigval', rev_mapping='fft', grouping_method='elementary')
+	ssa = SSA(data1d, svd_strategy='numpy', rev_mapping='fft', grouping_method='elementary')
 	ssa.plot_ssa()
 	plt.show()
 	
 	
 	
+	dataset = []
+	n_set = [0, 4, 12, 24]
 	
-	# find 2d testing data
-	for data_type in test_data_type_2d:
-		if data_type == 'fitscube':
-			try:
-				import fitscube.deconvolve.helpers
-				data2d, psf = fitscube.deconvolve.helpers.get_test_data()
-				del psf
-			except ImportError:
-				print('WARNING: Could not import "fitscube.deconvolve.helpers", use builtins instead')
-			else:
-				break
-			
-		elif data_type == 'fractal':
-			try:
+	if len(sys.argv) > 1:
+		for item in sys.argv[1:]:
+			if item.endswith('.tif'):
 				import PIL
-				data2d = np.asarray(PIL.Image.effect_mandelbrot((60,50),(0,0,1,1),100))
-			except ImportError:
-				print('WARNING: Could not import PIL, using next most desirable example data')
+				with PIL.Image.open(item) as image:
+					dataset.append((item,np.array(image)[160:440, 350:630]))
+	else:
+		# find 2d testing data
+		for data_type in test_data_type_2d:
+			if data_type == 'fitscube':
+				try:
+					import fitscube.deconvolve.helpers
+					data2d, psf = fitscube.deconvolve.helpers.get_test_data()
+					del psf
+				except ImportError:
+					print('WARNING: Could not import "fitscube.deconvolve.helpers", use builtins instead')
+				else:
+					break
+				
+			elif data_type == 'fractal':
+				try:
+					import PIL
+					data2d = np.asarray(PIL.Image.effect_mandelbrot((60,50),(0,0,1,1),100))
+				except ImportError:
+					print('WARNING: Could not import PIL, using next most desirable example data')
+				else:
+					break
+				
+			elif data_type == 'random':
+				data2d = np.random.random((60,50))
+				
 			else:
-				break
-			
-		elif data_type == 'random':
-			data2d = np.random.random((60,50))
-			
-		else:
-			raise ValueError(f'Unknown type of test data for 2d case {repr(data_type)}')
-			
-	print(f'TESTING: 2d ssa with {data_type} example data')
-	ssa2d = SSA2D(data2d.astype(np.float64), (7,7), svd_strategy='numpy', grouping_method='elementary')
-	ssa2d.plot_ssa()
-	plt.show()
+				raise ValueError(f'Unknown type of test data for 2d case {repr(data_type)}')
+		dataset.append((data_type, data2d))
 	
-	ssa2d = SSA2D(data2d.astype(np.float64), (7,7), svd_strategy='numpy', grouping_method='elementary')
-	ssa2d.plot_ssa()
-	plt.show()
+	for data_name, data2d in dataset:
+		_lgr.info(f'TESTING: 2d ssa with {data_name} example data')
+		_lgr.info(f'{data2d.shape=}')
+		window_size = tuple(s//10 for s in data2d.shape)
+		ssa2d = SSA2D(
+			data2d.astype(np.float64), 
+			window_size, 
+			svd_strategy='eigval', # uses less memory and is faster
+			# svd_strategy='numpy', # uses more memory and is slower
+			#grouping={'mode':'elementary'}
+			grouping={'mode':'similar_eigenvalues', 'tolerance':0.01}
+		)
+		ssa2d.plot_ssa(n_set)
+		plt.show()
 	
 	
 	
