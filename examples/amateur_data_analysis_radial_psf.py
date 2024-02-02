@@ -196,7 +196,7 @@ def model_badness_of_fit_callable_factory(model_flattened_callable, data, err):
 
 def save_array_as_tif(data_in, path, nan='zero', ninf='zero', pinf='zero', neg='zero', scale=False, type=np.uint16):
 	
-	
+	_lgr.debug(f'{path=}')
 	data = np.array(data_in, dtype=data_in.dtype) # copy input data
 	
 	nan_mask = np.isnan(data)
@@ -212,7 +212,9 @@ def save_array_as_tif(data_in, path, nan='zero', ninf='zero', pinf='zero', neg='
 	
 	if scale:
 		data_min, data_max = np.min(data[~ignore_mask]), np.max(data[~ignore_mask])
+		_lgr.debug(f'{data_min=} {data_max=}')
 		data = (data - data_min)/(data_max - data_min) * np.iinfo(type).max
+		_lgr.debug(f'{np.min(data)=} {np.max(data)=}')
 	
 	for mode, mask in ((nan,nan_mask),(ninf,ninf_mask),(pinf,pinf_mask),(neg,data <0)):
 		match mode:
@@ -260,7 +262,7 @@ if __name__=='__main__':
 	mpl.rcParams['image.origin'] = 'upper'
 
 	# Choose dataset to operate upon
-	data_set_index = 0
+	data_set_index = 1
 
 	if len(sys.argv) <= 1:
 		files = example_data_loader.get_amateur_data_set(data_set_index)
@@ -472,8 +474,15 @@ if __name__=='__main__':
 				deconv_residual = deconvolver.get_residual()
 				
 				# Save the data
-				save_array_as_tif(deconv_components, output_dir / output_file_fmt.format(fname=fname, region_label=region_label, psf_type=psf_type, tag='components', ext='tif'))
-				save_array_as_tif(deconv_residual, output_dir / output_file_fmt.format(fname=fname, region_label=region_label, psf_type=psf_type, tag='residual', ext='tif'))
+				save_array_as_tif(
+					deconv_components, 
+					output_dir / output_file_fmt.format(fname=fname, region_label=region_label, psf_type=psf_type, tag='components', ext='tif')
+				)
+				save_array_as_tif(
+					deconv_residual, 
+					output_dir / output_file_fmt.format(fname=fname, region_label=region_label, psf_type=psf_type, tag='residual', ext='tif'), 
+					scale=True
+				)
 				
 				# Plot data
 				f, ax = plt.subplots(2,2,squeeze=False,figsize=(12,8))
