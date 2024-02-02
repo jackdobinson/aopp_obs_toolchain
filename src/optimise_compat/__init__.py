@@ -1,7 +1,7 @@
 """
 Classes and routines for wrangling PSF model into a format used by various 3rd party optimisation tools.
 """
-from typing import Callable
+from typing import Callable, ParamSpec, Any
 import dataclasses as dc
 import inspect
 
@@ -11,6 +11,10 @@ from data_structures import BiDirectionalMap
 
 import cfg.logs
 _lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+
+
+P = ParamSpec('P')
+
 
 def linear_transform_factory(
 		in_domain : tuple[float,float], 
@@ -130,6 +134,39 @@ class PriorParamSet:
 			self.all_param_index_to_constant_param_index_map[k] = j
 		return
 	
+	@staticmethod
+	def get_arg_names_of_callable(
+			acallable,
+			arg_names : list[str,...] | None = None # names of the arguments to `acallable`, in the correct order as if from inspect.signature(acallable).parameters.keys()
+		):
+		
+		if arg_names is None:
+			if hasattr(acallable, 'arg_names'):
+				_lgr.debug(f'{acallable.arg_names=}')
+				arg_names = acallable.arg_names
+			else:
+				sig = inspect.signature(acallable)
+				_lgr.debug(f'{sig=}')
+				arg_names = list(sig.parameters.keys())
+		_lgr.debug(f'{arg_names=}')
+		return arg_names
+	
+	def apply_to_callable(self,
+			acallable : Callable[P, Any],
+			variable_param_values : dict[str,Any],
+			const_param_values : dict[str,Any],
+			defaults : dict[str, Any] = {},
+			not_found_value : Any = None,
+			arg_names : list[str,...] | None = None # names of the arguments to `acallable`, in the correct order as if from inspect.signature(acallable).parameters.keys()
+		):
+		arg_names = self.get_arg_names_of_callable(acallable, arg_names)
+		param_value_dict = {**defaults, **const_param_values, **variable_param_values} # variables overwrite consts which overwrite defaults if there's a conflict
+		arg_values = tuple(param_value_dict.get(x,not_found_value) for x in arg_names)
+
+		return acallable(*arg_values)
+		
+	
+	
 	def wrap_callable_for_scipy_parameter_order(self, 
 			acallable, 
 			*,
@@ -161,6 +198,8 @@ class PriorParamSet:
 		_lgr.debug(f'{self.all_param_index_to_constant_param_index_map=}')
 		
 		# acallable example: some_function(carg1, varg2, carg3, varg4)
+		arg_names = self.get_arg_names_of_callable(acallable, arg_names)
+		"""
 		if arg_names is None:
 			sig = inspect.signature(acallable)
 			_lgr.debug(f'{sig=}')
@@ -176,7 +215,7 @@ class PriorParamSet:
 		if arg_names is None:
 			arg_names = list(sig.parameters.keys())
 		_lgr.debug(f'{arg_names=}')
-		
+		"""
 		n_args = len(arg_names)
 		_lgr.debug(f'{n_args=}')
 		

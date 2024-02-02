@@ -5,9 +5,9 @@ from __future__ import annotations
 import sys, os
 import os.path
 import dataclasses as dc
-from typing import Any, TypeVar, TypeVarTuple, Generic
+from typing import Any, TypeVar, TypeVarTuple, Generic, ParamSpec, Callable, Protocol
 import datetime as dt
-import functools
+from functools import partial
 
 import numpy as np
 import scipy as sp
@@ -27,9 +27,17 @@ import PIL
 import PIL.Image
 
 from geometry.bounding_box import BoundingBox
-from gaussian_psf_model import GaussianPSFModel
 from optimise_compat import PriorParam, PriorParamSet
 from algorithm.deconv.clean_modified import CleanModified
+
+
+
+
+
+
+
+import psf_data_ops
+
 
 import cfg.logs
 
@@ -40,6 +48,7 @@ T = TypeVar('T')
 Ts = TypeVarTuple('Ts')
 S = Generic[IntVar]
 N = TypeVar('N',bound=int)
+M = TypeVar('M',bound=int)
 LabelArray = np.ndarray[S,int]
 
 def select_labels_from_props(props, predicate = lambda prop: True):
@@ -161,7 +170,7 @@ def plot_source_regions(
 
 	for i, bbox in enumerate(bboxes):
 		rect = mpl.patches.Rectangle(*bbox.to_mpl_rect(),edgecolor='r', facecolor='none', lw=1)
-		text = f'region {i}'
+		text = f'region {i+1}'
 
 		region_data = data[bbox.to_slices()]
 		conservative_sig_noise = np.max(region_data)/np.median(region_data)
@@ -178,21 +187,18 @@ def plot_source_regions(
 
 
 
-def model_flattened_callable_factory(model):
-	def model_flattened_callable(x,y,sigma, const,factor):
-		return model(np.array([x,y]), np.array([sigma,sigma]), const)*factor
-	return model_flattened_callable
-
 def model_badness_of_fit_callable_factory(model_flattened_callable, data, err):
 	def model_badness_of_fit_callable(*args, **kwargs):
 		residual = model_flattened_callable(*args, **kwargs) - data
-		return np.nansum((residual/err)**2)
+		result = np.nansum((residual/err)**2)
+		return np.log(result)
 	
 	return model_badness_of_fit_callable
 
-def save_array_as_tif(data_in, path, nan='zero', ninf='zero', pinf='zero', scale='false'):
-	data = np.array(data_in) # copy input data
-	type = np.uint16
+def save_array_as_tif(data_in, path, nan='zero', ninf='zero', pinf='zero', neg='zero', scale=False, type=np.uint16):
+	
+	_lgr.debug(f'{path=}')
+	data = np.array(data_in, dtype=data_in.dtype) # copy input data
 	
 	nan_mask = np.isnan(data)
 	ninf_mask = np.isneginf(data)
@@ -200,75 +206,146 @@ def save_array_as_tif(data_in, path, nan='zero', ninf='zero', pinf='zero', scale
 	
 	ignore_mask = nan_mask | ninf_mask | pinf_mask
 	
-	if scale:
-		data = (data - np.min(data[~ignore_mask]))/np.max(data[~ignore_mask]) * np.iinfo(type).max
+	# see: https://www.awaresystems.be/imaging/tiff/tifftags/baseline.html
+	tiff_info = {
+		259:1 # No compression
+	}
 	
-	for mode, mask in ((nan,nan_mask),(ninf,ninf_mask),(pinf,pinf_mask)):
+	if scale:
+		data_min, data_max = np.min(data[~ignore_mask]), np.max(data[~ignore_mask])
+		_lgr.debug(f'{data_min=} {data_max=}')
+		data = (data - data_min)/(data_max - data_min) * np.iinfo(type).max
+		_lgr.debug(f'{np.min(data)=} {np.max(data)=}')
+	
+	for mode, mask in ((nan,nan_mask),(ninf,ninf_mask),(pinf,pinf_mask),(neg,data <0)):
 		match mode:
 			case 'zero':
 				data[mask] = 0
 			case 'max':
 				data[mask] = np.iinfo(type).max
 			case 'min':
-				data[mask] = np.iinfo(type).min
-	PIL.Image.fromarray(((deconv_components-np.nanmin(deconv_components))/np.nanmax(deconv_components))*np.iinfo(type).max, mode='I;16')
+				data[mask] = np.iinfo(type).min	
 	
+	match type:
+		case np.float32:
+			image_mode = 'F'
+			tiff_info[339] = 3
+		case np.int32:
+			image_mode = 'I'
+			tiff_info[339] = 2
+		case np.uint16:
+			image_mode = 'I;16'
+			tiff_info[339] = 1
+		case _:
+			raise NotImplementedError(f'Unknown PIL image mode for numpy type {type}')
 	
-	PIL.Image.fromarray(data.astype(type), mode='I;16').save(path, 'tiff')
+	PIL.Image.fromarray(data.astype(type), mode=image_mode).save(path, 'tiff', tiffinfo=tiff_info)
 	
+def print_tiff_tags(path):
+	# print out tags of image
+	with PIL.Image.open(path) as im:
+		print(f'{path=}')
+		print(f'{im.mode=}')
+		exif = im.getexif()
+		for k,v in exif.items():
+			tag = PIL.TiffTags.lookup(k)
+			print(f'{tag} {v}')
+			
+
+
+
+
+# Need to have some way to describe how to communicate with the dependency injection mechanism,
+# this isn't the best, but it's what I could come up with. 
+# `ParamsAndPsfModelDependencyInjector` is a base class that defines the interface
+# I could probably do this with protocols, but I think it would be harder to communicate my intent
+
+Ts_PSF_Data_Array_Shape = [N,M] # We don't know the shape of the PSF data, but it must be a have two integer values
+P_ArgumentsLikePriorParamSet = ParamSpec('ArgumentsLikePriorParamSet') # we require that this argument set is compatible with parameters specified in a 'PriorParamSet' instance
+T_PSF_Data_NumpyArray = np.ndarray[Ts_PSF_Data_Array_Shape, T] # PSF data is a numpy array of some specified shape and type 'T'
+T_PSF_Model_Flattened_Callable = Callable[P_ArgumentsLikePriorParamSet, T_PSF_Data_NumpyArray] # We want the callable we are given to accept parameters in a way that is compatible with 'PriorParamSet', and return a numpy array that is like our PSF Data
+T_Fitted_Variable_Parameters = dict[str,Any] # Fitted varaibles from `psf_data_ops.fit_to_data(...)` are returned as a dictionary
+T_Constant_Parameters = dict[str,Any] # Constant paramters to `psf_data_ops.fit_to_data(...)` are returned as a dictionary
+P_PSF_Result_Postprocessor_Arguments = [PriorParamSet, T_PSF_Model_Flattened_Callable, T_Fitted_Variable_Parameters, T_Constant_Parameters] # If we want to postprocess the fitted PSF result, we will need to know the PriorParamSet used, the callable used, the fitted variables, and the constant paramters resulting from the fit.
+T_PSF_Result_Postprocessor_Callable = Callable[P_PSF_Result_Postprocessor_Arguments, T_PSF_Data_NumpyArray] # If we preprocess the fitted PSF, we must return something that is compatible with the PSF data.
+
+class ParamsAndPsfModelDependencyInjector:
+	def __init__(self, psf_data : PSF_Data_NumpyArray):
+		self.psf_data = psf_data
+		self._psf_model = NotImplemented
+	
+	def get_psf_model_name(self):
+		return self._psf_model.__class__.__name__
+
+	def get_parameters(self) -> PriorParamSet :
+		NotImplemented
+	
+	def get_psf_model_flattened_callable(self) -> PSF_Model_Flattened_Callable : 
+		NotImplemented
+	
+	def get_psf_result_postprocessor(self) -> None | T_PSF_Result_Postprocessor_Callable : 
+		NotImplemented
+
+
+class RadialPSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
+	from radial_psf_model import RadialPSFModel
+	
+	def __init__(self, psf_data):
 		
-
-if __name__=='__main__':
-
-	import example_data_loader
-	import psf_data_ops
-
-	if len(sys.argv) <= 1:
-		files = example_data_loader.get_amateur_data_set(0)
-	else:
-		files = sys.argv[1:]
-
-	# note, labels are 1-indexed (0 is background)
-	target_label = 1
-	psf_label = 3
-
-
-	mpl.rc('image', cmap='gray')
-
-
-	for file in files:
-		_lgr.debug(f'Operating on {file}')
-		with PIL.Image.open(file) as image:
-			data = np.array(image)
-
-		output_dir = example_data_loader.get_amateur_data_set_output_directory(0)
-		fname = os.path.splitext(os.path.split(file)[1])[0]
-
-		source_labels, source_bounding_boxes, parameters = get_source_regions(data, name=file.split(os.sep)[-1])
-		_lgr.debug(f'{len(source_bounding_boxes)=}')
+		super().__init__(psf_data)
 		
-		plot_source_regions(
-			data, 
-			source_labels, 
-			source_bounding_boxes, 
-			parameters, 
-			output_file= output_dir / (fname+'_source_regions.png')
+		self._params = PriorParamSet(
+			PriorParam(
+				'x',
+				(0, psf_data.shape[0]),
+				False,
+				psf_data.shape[0]//2
+			),
+			PriorParam(
+				'y',
+				(0, psf_data.shape[1]),
+				False,
+				psf_data.shape[1]//2
+			),
+			PriorParam(
+				'nbins',
+				(0, np.inf),
+				True,
+				50
+			)
 		)
 		
+		self._psf_model = RadialPSFModelDependencyInjector.RadialPSFModel(
+			psf_data
+		)
 		
-		_lgr.debug(f'{parameters=}')
-		_lgr.debug(f'{len(source_bounding_boxes)=}')
+	
+	def get_parameters(self):
+		return self._params
+	
+	def get_psf_model_flattened_callable(self): 
+		return self._psf_model
+	
+	def get_psf_result_postprocessor(self): 
+		def psf_result_postprocessor(params, psf_model_flattened_callable, fitted_vars, consts):
+			params.apply_to_callable(
+				psf_model_flattened_callable, 
+				fitted_vars,
+				consts
+			)
+			return psf_model_flattened_callable.centered_result
+			
+		return psf_result_postprocessor
+
+
+class GaussianPSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
+	from gaussian_psf_model import GaussianPSFModel
+	
+	def __init__(self, psf_data):
 		
+		super().__init__(psf_data)
 		
-		# Get PSF data
-		psf_data = data[source_bounding_boxes[psf_label-1].to_slices()].astype(float)
-		
-		psf_data = psf_data_ops.normalise(psf_data)
-		
-		# Define and fit PSF model
-		psf_model = GaussianPSFModel(psf_data.shape, float)
-		
-		params = PriorParamSet(
+		self._params = PriorParamSet(
 			PriorParam(
 				'x',
 				(0, psf_data.shape[0]),
@@ -301,26 +378,181 @@ if __name__=='__main__':
 			)
 		)
 		
-		flattened_psf_model_callable = model_flattened_callable_factory(psf_model)
+		self._psf_model = GaussianPSFModelDependencyInjector.GaussianPSFModel(psf_data.shape, float)
+	
+	
+	
+	def get_parameters(self):
+		return self._params
+	
+	def get_psf_model_flattened_callable(self): 
+		def psf_model_flattened_callable(x, y, sigma, const, factor):
+			return self._psf_model(np.array([x,y]), np.array([sigma,sigma]), const)*factor
+		return psf_model_flattened_callable
+	
+	def get_psf_result_postprocessor(self): 
+		return None
+
+
+class TurbulencePSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
+	from turbulence_psf_model import TurbulencePSFModel, SimpleTelescope, CCDSensor
+	from optics.turbulence_model import phase_psd_von_karman_turbulence as turbulence_model
+	
+	def __init__(self, psf_data):
+		super().__init__(psf_data)
+		
+		self._params = PriorParamSet(
+			PriorParam(
+				'wavelength',
+				(0, np.inf),
+				True,
+				750E-9
+			),
+			PriorParam(
+				'r0',
+				(0, 1),
+				True,
+				0.1
+			),
+			PriorParam(
+				'turbulence_ndim',
+				(0, 3),
+				False,
+				1.5
+			),
+			PriorParam(
+				'L0',
+				(0, 50),
+				False,
+				8
+			)
+		)
+		
+		self._psf_model = TurbulencePSFModelDependencyInjector.TurbulencePSFModel(
+			TurbulencePSFModelDependencyInjector.SimpleTelescope(
+				8, 
+				200, 
+				TurbulencePSFModelDependencyInjector.CCDSensor.from_shape_and_pixel_size(psf_data.shape, 2.5E-6)
+			),
+			TurbulencePSFModelDependencyInjector.turbulence_model
+		)
+		
+	def get_parameters(self):
+		return self._params
+	
+	def get_psf_model_flattened_callable(self): 
+		return self._psf_model
+	
+	def get_psf_result_postprocessor(self): 
+		return None
+
+
+
+
+if __name__=='__main__':
+
+	import example_data_loader
+	import psf_data_ops
+
+	# Set some defaults for matplotlib
+	mpl.rc('image', cmap='gray', origin='upper')
+
+	# Choose dataset to operate upon
+	data_set_index = 0
+
+	if len(sys.argv) <= 1:
+		files = example_data_loader.get_amateur_data_set(data_set_index)
+	else:
+		files = sys.argv[1:]
+
+	# We use scikit-image to label regions of emission from largest to smallest (0 is background, 1 is largest emission source, etc.)
+	# The actual labelling is done later, this is just the configuration
+	# note, labels are 1-indexed (0 is background)
+	target_label = 1
+	psf_label = -1 # last label is PSF as we want the smallest object.
+
+	# set PSF model type
+	psf_model_type = ('turbulence', 'gaussian', 'radial')[2]
+
+
+	# Use the correct dependency injector for the psf model type
+	match psf_model_type:
+		case 'turbulence':
+			params_and_psf_model_dependency_injector : ParamsAndPsfModelDependencyInjector = TurbulencePSFModelDependencyInjector
+		case 'gaussian':
+			params_and_psf_model_dependency_injector : ParamsAndPsfModelDependencyInjector = GaussianPSFModelDependencyInjector
+		case 'radial':
+			params_and_psf_model_dependency_injector : ParamsAndPsfModelDependencyInjector = RadialPSFModelDependencyInjector
+		case _:
+			raise NotImplementedError(f'Unknown option {psf_model_type=}')
+	
+	# Loop over the files in our input dataset
+	for file in files:
+		_lgr.debug(f'Operating on {file}')
+		with PIL.Image.open(file) as image:
+			image = image.convert(mode='F')
+			data = np.array(image)
+
+		output_dir = example_data_loader.get_amateur_data_set_output_directory(data_set_index)
+		output_dir.mkdir(parents=True, exist_ok=True)
+		fname = os.path.splitext(os.path.split(file)[1])[0]
+
+		source_labels, source_bounding_boxes, parameters = get_source_regions(data, name=file.split(os.sep)[-1])
+		_lgr.debug(f'{len(source_bounding_boxes)=}')
+		
+		assert psf_label != 0, "Labelled PSF region cannot be the background"
+		psf_label = psf_label if psf_label >=0 else np.max(source_labels) + 1 + psf_label
+		psf_bbox_index = psf_label-1
+		
+		
+		plot_source_regions(
+			data, 
+			source_labels, 
+			source_bounding_boxes, 
+			parameters, 
+			output_file= output_dir / (fname+'_source_regions.png')
+		)
+		
+		
+		_lgr.debug(f'{parameters=}')
+		_lgr.debug(f'{len(source_bounding_boxes)=}')
+		
+		
+		# Get PSF data
+		psf_data = psf_data_ops.normalise(data[source_bounding_boxes[psf_bbox_index].to_slices()].astype(float))
+		
+		# Get psf model, PriorParamSet, and any postprocessing function from dependency injection
+		di = params_and_psf_model_dependency_injector(psf_data)
+		psf_model_name = di.get_psf_model_name()
+		params = di.get_parameters()
+		psf_model = di.get_psf_model_flattened_callable()
+		psf_result_postprocess = di.get_psf_result_postprocessor()
+		
+		# fit PSF model
 		fitted_psf, fitted_vars, consts = psf_data_ops.fit_to_data(
 			params, 
-			flattened_psf_model_callable, 
+			psf_model, 
 			psf_data, 
 			np.ones_like(psf_data)*np.nanmax(psf_data)*1E-3, 
 			psf_data_ops.scipy_fitting_function_factory(sp.optimize.minimize),
-			functools.partial(psf_data_ops.objective_function_factory, mode='minimise'),
+			partial(psf_data_ops.objective_function_factory, mode='minimise'),
 			plot_mode=None
 		)
 		_lgr.debug(f'{fitted_vars=}')
 		_lgr.debug(f'{consts=}')
 		
+		# Do any postprocessing if we need to
+		if psf_result_postprocess is not None:
+			fitted_psf = psf_result_postprocess(params, psf_model, fitted_vars, consts)
+		
+		# Plot the PSF data so we know what we are using for later
 		if True:
 			psf_residual = psf_data - fitted_psf
 		
 			f, ax = plt.subplots(2,2,squeeze=False,figsize=(12,8))
 			ax = ax.flatten()
 			
-			f.suptitle(f'{dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f%z")}\n'+fname + f' PSF region={psf_label}')
+			f.suptitle(f'{dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f%z")} {psf_model_name}\n'+fname + f' PSF region={psf_label}')
 		
 			im0 = ax[0].imshow(psf_data)
 			vmin, vmax = im0.get_clim()
@@ -342,64 +574,77 @@ if __name__=='__main__':
 				a.xaxis.set_visible(False)
 				a.yaxis.set_visible(False)
 			
-			plt.show()
-			#plt.savefig(output_dir / (fname+'_psf_plot.png'))
-		continue # DEBUGGING
+			plt.savefig(output_dir / (fname+f'_psf_name_{psf_model_name}_plot.png'))
+
 		
 		# PSF is fitted at this point
+		# Now we do the deconvolution
 		
+		# Want to compare fitted PSF with the observed psf, so loop over the two different cases
 		for psf_type in ('fitted','original'):
 			match psf_type:
 				case 'fitted':
+					psf_name = psf_model_name
 					psf_for_deconv = fitted_psf
 				case 'original':
+					psf_name = 'ObservedPSF'
 					psf_for_deconv = psf_data
 				case _:
 					raise NotImplementedError
 			
-			# Get and deconvolve target data
-			for region_label in range(1,len(source_bounding_boxes)+1):
-				
-				output_file_fmt = "{fname}_region_{region_label}_psf_{psf_type}_test_deconv_{tag}.{ext}"
-				
+			psf_for_deconv /= np.nansum(psf_for_deconv)
 			
-				target_data = data[source_bounding_boxes[region_label-1].to_slices()].astype(float)
+			# Loop over the regions that define the target data
+			for region_label in [x for x in range(1,len(source_bounding_boxes)+1)]+[0]:
+				
+				output_file_fmt = "{fname}_region_{region_label}_psf_{psf_name}_test_deconv_{tag}.{ext}"
+				
+				save_array_as_tif(
+					psf_for_deconv, 
+					output_dir / "{fname}_region_{region_label}_psf_{psf_name}.{ext}".format(fname=fname, region_label=region_label, psf_name=psf_name, ext='tif'),
+					scale=True
+				)
+				
+				np.save(
+					output_dir / "{fname}_region_{region_label}_psf_{psf_name}.{ext}".format(fname=fname, region_label=region_label, psf_name=psf_name, ext='npy'),
+					psf_for_deconv
+				)
+				
+				if region_label == 0:
+					target_data = data.astype(float)
+				else:
+					target_data = data[source_bounding_boxes[region_label-1].to_slices()].astype(float)
+				
 				# subtract background emission
 				bg_region_slice = (s//10 for s in target_data.shape)
 				target_data -= np.median(target_data[*bg_region_slice])
 				
-				n_iter = 10000#5000
-				threshold = 0.1 #0.3
+				# Set deconvolution paramters
+				n_iter = 1000#5000
+				threshold = 0.1#0.483#0.1 #0.3
 				loop_gain = 0.2 #0.02
-				max_stat_increase = 1E-3
-				rms_frac_threshold = 1E-3#3E-3
-				fabs_frac_threshold = 1E-3#3E-3
+				rms_frac_threshold = 1E-3#1E-3
+				fabs_frac_threshold = 1E-3#1E-3
+				min_frac_stat_delta = loop_gain*5E-2#1E-2
 				
-				if '890' in fname:
-					threshold = 0.1#-1
-					loop_gain=0.2
-					#rms_frac_threshold = 5E-2
-					#fabs_frac_threshold = 5E-2
-				
-				elif region_label in (2,3):
-					rms_frac_threshold = 2E-2
-					fabs_frac_threshold = 2E-2
-					
-				if psf_type == 'original':
-					rms_frac_threshold /= 2
-					fabs_frac_threshold /= 2
-				
-				deconvolver = CleanModified()
+				# Peform deconvolution
+				deconvolver = CleanModified(give_best_result=False)
 				deconvolver(
 					target_data, 
 					psf_for_deconv,
 					n_iter=n_iter,
 					threshold = threshold,
 					loop_gain = loop_gain,
-					max_stat_increase=max_stat_increase,
 					rms_frac_threshold = rms_frac_threshold,
-					fabs_frac_threshold = fabs_frac_threshold
+					fabs_frac_threshold = fabs_frac_threshold,
+					min_frac_stat_delta = min_frac_stat_delta
 				)
+				
+				# Save the parameters used on this run
+				param_file = output_dir / output_file_fmt.format(fname=fname, region_label=region_label, psf_name=psf_name, tag='parameters', ext='txt')
+				with open(param_file, 'w') as f:
+					for k,v in deconvolver.get_parameters().items():
+						f.write(f'{k}\n\t{v}\n\n')				
 				
 				n_iters = deconvolver.get_iters()
 				iter_stat_names = deconvolver._iter_stat_names
@@ -408,20 +653,28 @@ if __name__=='__main__':
 				deconv_components = deconvolver.get_components()
 				deconv_residual = deconvolver.get_residual()
 				
-				# Save the data
-				save_array_as_tif(deconv_components, output_dir / output_file_fmt.format(fname=fname, region_label=region_label, psf_type=psf_type, tag='components', ext='tif'))
-				save_array_as_tif(deconv_residual, output_dir / output_file_fmt.format(fname=fname, region_label=region_label, psf_type=psf_type, tag='residual', ext='tif'))
+				# Save the results of the deconvolution
+				save_array_as_tif(
+					deconv_components, 
+					output_dir / output_file_fmt.format(fname=fname, region_label=region_label, psf_name=psf_name, tag='components', ext='tif')
+				)
+				save_array_as_tif(
+					deconv_residual, 
+					output_dir / output_file_fmt.format(fname=fname, region_label=region_label, psf_name=psf_name, tag='residual', ext='tif'), 
+					scale=True
+				)
 				
-				# Plot data
+				# Plot results of the deconvolution
 				f, ax = plt.subplots(2,2,squeeze=False,figsize=(12,8))
 				ax = ax.flatten()
 				
-				f.suptitle(f'{dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f%z")}\n'+fname+f'\n{n_iters=}')
+				f.suptitle(f'{dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f%z")} {psf_name}\n'+fname+f'\n{n_iters=}')
 			
 				im0 = ax[0].imshow(target_data)
 				vmin, vmax = im0.get_clim()
-				ax[0].set_title(f'target ({vmin:0.2g}, {vmax:0.2g})')
+				ax[0].set_title(f'target \n({vmin:0.2g}, {vmax:0.2g}) sum {np.nansum(target_data):0.4g}')
 			
+				# For some input data, we want to use 99% of the range as speckles can break things.
 				if ('890' in fname 
 						or ('750' in fname and '1957' in fname and region_label == 2)
 					):
@@ -431,12 +684,12 @@ if __name__=='__main__':
 				else:
 					im1 = ax[1].imshow(deconv_components)
 				vmin, vmax = im1.get_clim()
-				ax[1].set_title(f'deconvolved target ({vmin:0.2g}, {vmax:0.2g})')
+				ax[1].set_title(f'deconvolved target\n ({vmin:0.2g}, {vmax:0.2g}) sum {np.nansum(deconv_components):0.4g}')
 				
 				
 				im2 = ax[2].imshow(deconv_residual)
 				vmin, vmax = im2.get_clim()
-				ax[2].set_title(f'residual ({vmin:0.2g}, {vmax:0.2g})')
+				ax[2].set_title(f'residual ({vmin:0.2g}, {vmax:0.2g})  sum {np.nansum(deconv_residual):0.4g}')
 				
 				
 				im3 = ax[3].imshow(np.log(np.abs(deconv_residual)))
@@ -447,27 +700,32 @@ if __name__=='__main__':
 					a.xaxis.set_visible(False)
 					a.yaxis.set_visible(False)
 				
-				plt.savefig(output_dir / output_file_fmt.format(fname=fname, region_label=region_label, psf_type=psf_type, tag=f'plot', ext='png'))
+				plt.savefig(output_dir / output_file_fmt.format(fname=fname, region_label=region_label, psf_name=psf_name, tag=f'plot', ext='png'))
 				
 				# Plot iteration statistics
-				f, ax = plt.subplots(1,3,squeeze=False,figsize=(18,9))
+				f, ax = plt.subplots(1,1,squeeze=False,figsize=(18,9))
 				ax = ax.flatten()
 				
-				f.suptitle(f'{dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f%z")}\n'+fname+f'\n{n_iters=} {fabs_frac_threshold=} {rms_frac_threshold=} {threshold=} {loop_gain=}')
+				ax = [ax[0], ax[0].twinx(), ax[0].twinx()]
+				ax[2].spines.right.set_position(('axes',1.05))
+				
+				f.suptitle(f'{dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f%z")} {psf_name}\n'+fname+f'\n{n_iters=} {fabs_frac_threshold=} {rms_frac_threshold=} {threshold=} {loop_gain=}')
 				
 				x = range(n_iters)
-				j = 0
+				p_handles = []
 				for i, stat_name in enumerate(iter_stat_names):
-					if stat_name == 'UNUSED': continue
-					
-					ax[j].plot(x, iter_stats[:n_iters,i])
-					ax[j].set_title(stat_name)
-					ax[j].set_yscale('log')
-					j+=1
+					p, = ax[i].plot(x, iter_stats[:n_iters,i], alpha=0.5, color=f"C{i}", label=stat_name)
+					p_handles.append(p)
+					if i==0:
+						ax[i].set(xlabel='Iteration')
+					ax[i].set(ylabel=stat_name)
+					ax[i].set_yscale('log')
+					ax[i].yaxis.label.set_color(p.get_color())
+					ax[i].tick_params(axis='y', colors=p.get_color())
 				
-				plt.savefig(output_dir / output_file_fmt.format(fname=fname, region_label=region_label, psf_type=psf_type, tag=f'plot_deconv_stats', ext='png'))
-		
-		
+				ax[0].legend(handles=p_handles)
+				
+				plt.savefig(output_dir / output_file_fmt.format(fname=fname, region_label=region_label, psf_name=psf_name, tag=f'plot_deconv_stats', ext='png'))
 		
 		
 		
