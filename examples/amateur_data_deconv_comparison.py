@@ -15,7 +15,7 @@ import example_data_loader
 import psf_data_ops
 import plot_helper
 
-from amateur_data_analysis_radial_psf import get_source_regions
+from amateur_data_analysis import get_source_regions
 
 import cfg.logs
 
@@ -46,13 +46,13 @@ if __name__=='__main__':
 	# Set some defaults for matplotlib
 	mpl.rcParams['image.origin'] = 'upper'
 	
-	for psf_type in ('fitted', 'original'):
+	for psf_name in ('GaussianPSFModel', 'RadialPSFModel', 'TurbulencePSFModel', 'ObservedPSF'):
 		
 		data_dir = example_data_loader.get_amateur_data_set_directory(0)
 		
 		obs_file = data_dir / "2024-01-11-1917_1-Jupiter_750nm.tif"
-		deconv_file = data_dir / "output" / f"2024-01-11-1917_1-Jupiter_750nm_region_0_psf_{psf_type}_test_deconv_components.tif"
-		psf_file = data_dir / "output" / f"2024-01-11-1917_1-Jupiter_750nm_region_0_psf_{psf_type}.npy"
+		deconv_file = data_dir / "output" / f"2024-01-11-1917_1-Jupiter_750nm_region_0_psf_{psf_name}_test_deconv_components.tif"
+		psf_file = data_dir / "output" / f"2024-01-11-1917_1-Jupiter_750nm_region_0_psf_{psf_name}.npy"
 		
 		comp_deconv_dir = data_dir / "comparison_deconv"
 		comp_deconv_files = (
@@ -61,7 +61,7 @@ if __name__=='__main__':
 		)
 		output_dir = comp_deconv_dir / "output"
 		output_dir.mkdir(parents=True, exist_ok=True)
-		plot_fname_fmt = '{fname}'+f'_psf_{psf_type}'+'_{plot_info}.png'
+		plot_fname_fmt = '{fname}'+f'_psf_{psf_name}'+'_{plot_info}.png'
 		
 		obs_data = load_image_as_numpy_array(obs_file)
 		deconv_data = load_image_as_numpy_array(deconv_file)
