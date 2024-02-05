@@ -34,13 +34,14 @@ def rect_diag(a, shape):
 		d[i,i]=a[i]
 	return(d)
 
-def decompose_to_matricies(u, s, v_star):
-	_lgr.debug(f'{u.shape=}')
-	_lgr.debug(f'{s.shape=}')
-	_lgr.debug(f'{v_star.shape=}')
-	n = min(s.shape) # number of singular vectors to decompose into
-	decomp = np.diag(s)[:,None,None]*(u.T[:n,:n,None] @ v_star[:n,None,:n])
-	return(decomp)
+def decompose_to_matricies(u : np.ndarray, s : np.ndarray, v_star : np.ndarray, small : bool = True) -> np.ndarray:
+	if small:
+		n = min(s.shape) # number of singular vectors to decompose into
+		decomp = np.diag(s)[:,None,None]*(u.T[:n,:n,None] @ v_star[:n,None,:n])
+	else:
+		decomp = np.diag(s)[:,None,None]*(u.T[:,:,None] @ v_star[:,None,:])
+		
+	return decomp
 
 def plot(u, s, v_star, inmat, decomp, recomp_n=None, f1=None, a1=None):
 	print(u.shape)
