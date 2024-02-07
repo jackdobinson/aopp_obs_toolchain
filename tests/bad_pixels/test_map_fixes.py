@@ -98,9 +98,7 @@ def test_bp_map_mean_fix(nans, infs, a):
 			+ (f"Has INFs at {list(tuple(x) for x in np.argwhere(np.isinf(ar)))}. " if np.any(np.isinf(ar)) else "") 
 	
 
-
-
-def test_bp_map_interp_fix():
+def create_example_data():
 	nans = (
 		(0,0,0),
 		(0,1,0),
@@ -120,7 +118,11 @@ def test_bp_map_interp_fix():
 		
 	for coord in infs:
 		a[coord] = np.inf
+	return a
+
+def test_bp_map_interp_fix():
 	
+	a = create_example_data()
 	
 	a_old = np.array(a)
 	
@@ -150,3 +152,54 @@ def test_bp_map_interp_fix():
 		"Array should have no NAN or INF elements. " \
 		+ (f"Has NANs at {list(tuple(x) for x in np.argwhere(np.isnan(a)))}. " if np.any(np.isnan(a)) else "") \
 		+ (f"Has INFs at {list(tuple(x) for x in np.argwhere(np.isinf(a)))}. " if np.any(np.isinf(a)) else "") 
+
+
+@scientest.decorators.debug
+def test_bp_map_ssa_sum_prob():
+	import algorithm.bad_pixels.ssa_sum_prob
+	from py_ssa import SSA
+	import matplotlib.pyplot as plt
+	import itertools as it
+	
+	a = np.indices((21,33)).astype(float)
+	a[0] -= 10
+	a[1] -= 15
+	a = -np.sum(a*a, axis=0)
+	a -= np.min(a)
+	a += np.random.normal(a, 10)
+	
+	n_idxs = 20
+	idxs = []
+	for s in a.shape:
+		idxs.append(np.random.choice(range(s), n_idxs, replace=True))
+	
+	idxs = tuple(zip(idxs))
+	a[idxs] = 50
+	
+	plt.imshow(a)
+	plt.show()
+	
+	ssa = SSA(
+		a,
+		grouping={'mode':'similar_eigenvalues', 'tolerance':0.01}
+	)
+	
+	#for item in ssa.X_ssa:
+	#	plt.imshow(item)
+	#	plt.show()
+	#	plt.hist(item.flatten(), bins=100)
+	#	plt.show()
+	
+	
+	ssa.plot_ssa([ssa.X_ssa.shape[0]//16, ssa.X_ssa.shape[0]//4, 2*ssa.X_ssa.shape[0]//4, 3*ssa.X_ssa.shape[0]//4])
+	plt.show()
+	
+	algorithm.bad_pixels.ssa_sum_prob.ssa2d_sum_prob_map(
+		ssa,
+		start = 3,
+		stop = None,
+		value=0.7,
+		show_plots=2,
+		weight_by_evals=False
+	)
+	

@@ -36,7 +36,7 @@ import random
 import scientest.cfg.logs
 import scientest.cfg.settings
 
-_lgr = scientest.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = scientest.cfg.logs.get_logger_at_level(__name__, 'INFO')
 
 
 from scientest.term_output import terminal_right, terminal_left, terminal_center, terminal_wrap #,terminal_fill, 

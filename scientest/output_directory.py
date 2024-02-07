@@ -12,7 +12,7 @@ import scientest
 import scientest.cfg.logs
 import scientest.cfg.settings
 
-_lgr = scientest.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = scientest.cfg.logs.get_logger_at_level(__name__, 'INFO')
 
 
 def get_last_modified_time_of_anything_in_dir(dir : Path) -> dt.datetime:

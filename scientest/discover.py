@@ -114,4 +114,16 @@ def discover_tests(
 				
 				test_discovery_data[module_locator.full_name][tid] = {'callable':test_member_callable,'name':test_name}
 
+
+	# process scientest_attributes on tests
+	for module_name, module_tests in test_discovery_data.items():
+		for test_id, test in module_tests.items():
+			for key, value in getattr(test['callable'], 'scientest_attributes', {}).items():
+				match key:
+					case 'debug':
+						if value:
+							_lgr.info(f'Debugging test {test_id}::{test["name"]}, removing all other tests...')
+							return {module_name : {test_id : test}}
+				
+
 	return test_discovery_data

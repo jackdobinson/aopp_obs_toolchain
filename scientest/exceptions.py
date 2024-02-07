@@ -1,0 +1,6 @@
+
+
+
+class TestSkippedException(Exception):
+	pass
+	

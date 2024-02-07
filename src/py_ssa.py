@@ -656,7 +656,7 @@ if __name__=='__main__':
 			_lgr.info(f'{data2d.shape=}')
 			window_size = tuple(s//10 for s in data2d.shape)
 			_data = data2d.astype(np.float64)
-			ssa2d = SSA(
+			ssa = SSA(
 				_data, 
 				window_size,
 				rev_mapping='fft',
@@ -665,7 +665,7 @@ if __name__=='__main__':
 				#grouping={'mode':'elementary'}
 				grouping={'mode':'similar_eigenvalues', 'tolerance':0.01}
 			)
-			ssa2d.plot_ssa(n_set)
+			ssa.plot_ssa(n_set)
 			plt.show()
 	
 	

@@ -121,6 +121,33 @@ def skip(func,
 		func(*args, **kwargs)
 	return __wrapper__
 
+@decorator
+def mark(func, mark, payload = None):
+	"""
+	Mark test for debugging, testing only runs this test
+	"""
+	@wraps(func)
+	def __wrapper__(*args, **kwargs):
+		mark_actions.action_map[mark](payload)
+		func(*args, **kwargs)
+			
+	return __wrapper__
+
+
+@decorator
+def debug(func):
+	"""
+	Mark test for debugging, testing only runs this test
+	"""
+	@wraps(func)
+	def __wrapper__(*args, **kwargs):
+		func(*args, **kwargs)
+	
+	setattr(__wrapper__, 'scientest_attributes', getattr(__wrapper__, 'scientest_attributes', {}))
+	__wrapper__.scientest_attributes['debug'] = True
+	
+	return __wrapper__
+
 
 def get_base_wrapped_callable(func):
 	"""

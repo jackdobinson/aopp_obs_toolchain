@@ -36,6 +36,7 @@ def matplotlib_plt_show_intercept(*args, **kwargs):
 		
 	plot_file_name = f"show_plot_{n}.png"
 	plt._old_savefig(scientest.test_output_dir / plot_file_name)
+	plt.close()
 
 def matplotlib_savefig_intercept(fname, **kwargs):
 	scientest.test_output_dir.ensure_dir()
