@@ -12,6 +12,9 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 
 import scientest
+import scientest.cfg.logs
+
+_lgr = scientest.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 # TODO: Ideally I would like to make all output go to a "<PATH>/test_output/test_<DATE>/" folder.
 # Make matplotlib.show() function not block
@@ -32,7 +35,6 @@ def matplotlib_plt_show_intercept(*args, **kwargs):
 		return
 		
 	plot_file_name = f"show_plot_{n}.png"
-	
 	plt._old_savefig(scientest.test_output_dir / plot_file_name)
 
 def matplotlib_savefig_intercept(fname, **kwargs):

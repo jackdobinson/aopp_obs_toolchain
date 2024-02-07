@@ -31,7 +31,7 @@ def test_callable_wrapper_for_scipy_parameter_order():
 	
 	arg_to_param_name_map_1 = {'x1':'c1', 'y1':'v1'}
 	
-	new_func, var_params, const_params = ppset.wrap_callable_for_scipy_parameter_order(afunc, arg_to_param_name_map_1)
+	new_func, var_params, const_params = ppset.wrap_callable_for_scipy_parameter_order(afunc, arg_to_param_name_map=arg_to_param_name_map_1)
 	
 	expected=['v1','v2']
 	assert scientest.check.listlike_is_identical(var_params, expected), f'{var_params=} {expected=}'
@@ -48,7 +48,7 @@ def test_callable_wrapper_for_scipy_parameter_order():
 	
 	arg_to_param_name_map_2 = {'x1':'v1', 'y1':'c1'}
 	
-	new_func, var_params, const_params = ppset.wrap_callable_for_scipy_parameter_order(afunc, arg_to_param_name_map_2)
+	new_func, var_params, const_params = ppset.wrap_callable_for_scipy_parameter_order(afunc, arg_to_param_name_map=arg_to_param_name_map_2)
 	
 	assert scientest.check.listlike_is_identical(var_params, ['v1','v2'])
 	assert scientest.check.listlike_is_identical(const_params, ['c1','c2'])

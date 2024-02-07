@@ -215,33 +215,19 @@ class SSA:
 		"""
 		Peform embedding of our data, a, into the trajectory matrix, self.X.
 		"""
-		# Get number of steps for each dimension
-		# for example self.k = (9,7,3)
-		# then k_steps = (1, 1*9, 1*9*7)
-		k_steps = np.cumprod((1,*self.k[:-1])).astype(int)[::-1]
-		#_lgr.debug(f'{self.ndim=} {k_steps=} {self.L=} {self.K=}')
-		
-		# create the trajectory matrix X to hold the vector embeddings
 		X = np.zeros((self.L, self.K))
-		#_lgr.debug(f'{X.shape=}')
-		#_lgr.debug(f'{self.n=} {self.k=} {self.l=}')
-		
-		a_slice = a[tuple(slice(_k) for _k in self.k)]
-		#_lgr.debug(f'{a_slice.shape=}')
+		a_slices= tuple(slice(_k) for _k in self.k)
 
-		# Get all self.k shaped sub-arrays, flatten them and save them in X
-
-		# Unfortunate numpy bug: np.flatiter.<attr> returns the NEXT value,
-		# not the value the iterator is currently on, so have to be 1 behind.
-		a_flat_iter = a_slice.flat
-		idx, coord = a_flat_iter.index, a_flat_iter.coords[::-1]
-		for item in a_flat_iter:
+		a_it = np.nditer(
+			a[a_slices], 
+			flags=['f_index', 'multi_index'], 
+			order='F'
+		)
+		for item in a_it:
+			idx, coord = a_it.index, a_it.multi_index
 			slices = tuple(slice(_k, _k+_l) for _k, _l in zip(coord, self.l))
 			X[:, idx] = vectorise_mat(a[slices])
 			
-			# Fix for unfortunate numpy bug
-			idx, coord = a_flat_iter.index, a_flat_iter.coords[::-1]
-		
 		return X
 		
 	
@@ -483,7 +469,7 @@ class SSA:
 		return
 		
 	def plot_ssa(self, n=4, noise_estimate=None):
-	
+		import estimate_noise
 		_lgr.debug(f'Plotting SSA data')
 	
 		match len(self.n):
@@ -509,11 +495,12 @@ class SSA:
 		n = [x if x < self.X_ssa.shape[0] else self.X_ssa.shape[0]-1 for x in n]
 	
 		n_component_plots = len(n)
-		noise_estimate = noise_estimate if noise_estimate is not None else np.std(self.a[tuple(slice(0,s//10) for s in self.n)])
+		noise_estimate = noise_estimate if noise_estimate is not None else estimate_noise.corners_standard_deviation(self.a) 
 	
 		reconstruction = lambda x=None: np.sum(self.X_ssa[:x], axis=0)
 		residual = lambda x = None: self.a - reconstruction(x)
-		residual_log_likelihood = lambda x = None : -0.5*np.log(np.sum((residual(x)/(self.a + noise_estimate))**2))
+		residual_log_likelihood = lambda x = None : -0.5*np.log(np.nansum((residual(x)/(np.nan_to_num(self.a) + noise_estimate))**2))
+
 	
 		print(f'{residual()=}')
 		print(f'{np.sum(residual())=}')
@@ -656,79 +643,16 @@ def frobenius_inner_prod(A : np.ndarray,B : np.ndarray) -> np.ndarray:
 if __name__=='__main__':
 	import sys
 	
-	# get example data in order of desirability
-	test_data_type_2d = ('fitscube','fractal','random')
-	test_data_type_1d = ('random',)
-	
-	
 	n_set = [0, 5, 50, 90]
-	
-	
-	if True:
-	# find 1d testing data
-		for data_type in test_data_type_1d:
-			if data_type == 'random':
-				np.random.seed(100)
-				n = 1000
-				w = 10
-				data1d = np.convolve(np.random.random((n,)), np.ones((w,)), mode='same')
-			else:
-				raiseValueError(f'Unknown type of test data for 1d case {repr(data_type)}')
-				
-		_lgr.info(f'TESTING: 1d ssa with {data_type} example data')
-		
-		ssa = SSA(
-			data1d, 
-			svd_strategy='eigval', 
-			#svd_strategy='numpy',
-			rev_mapping='fft', 
-			grouping={'mode':'similar_eigenvalues', 'tolerance':0.01},
-		)
-		ssa.plot_ssa(n_set)
-		plt.show()
-	
-	
-	
 	dataset = []
 	
-	
-	# 2D testing data
-	if True:
-		if len(sys.argv) > 1:
-			for item in sys.argv[1:]:
-				if item.endswith('.tif'):
-					import PIL
-					with PIL.Image.open(item) as image:
-						dataset.append((item,np.array(image)[160:440, 350:630]))
-		else:
-			# find 2d testing data
-			for data_type in test_data_type_2d:
-				if data_type == 'fitscube':
-					try:
-						import fitscube.deconvolve.helpers
-						data2d, psf = fitscube.deconvolve.helpers.get_test_data()
-						del psf
-					except ImportError:
-						print('WARNING: Could not import "fitscube.deconvolve.helpers", use builtins instead')
-					else:
-						break
-					
-				elif data_type == 'fractal':
-					try:
-						import PIL
-						data2d = np.asarray(PIL.Image.effect_mandelbrot((60,50),(0,0,1,1),100))
-					except ImportError:
-						print('WARNING: Could not import PIL, using next most desirable example data')
-					else:
-						break
-					
-				elif data_type == 'random':
-					data2d = np.random.random((60,50))
-					
-				else:
-					raise ValueError(f'Unknown type of test data for 2d case {repr(data_type)}')
-			dataset.append((data_type, data2d))
-		
+	if len(sys.argv) > 1:
+		for item in sys.argv[1:]:
+			if item.endswith('.tif'):
+				import PIL
+				with PIL.Image.open(item) as image:
+					dataset.append((item,np.array(image)[160:440, 350:630]))
+				
 		for data_name, data2d in dataset:
 			_lgr.info(f'TESTING: 2d ssa with {data_name} example data')
 			_lgr.info(f'{data2d.shape=}')

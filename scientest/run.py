@@ -124,10 +124,12 @@ def run_tests(test_discovery_data, continue_on_fail=True, live_output=False):
 			
 			
 			module_full_name, test_callable_name = tid.split('::')
+			_lgr.debug(f"{scientest.root_test_output_dir / module_full_name.replace('.',os.sep)=}")
 			scientest.test_output_dir = TestsOutputDirectory(
-				scientest.cfg.settings.root_test_output_dir / module_full_name.replace('.',os.sep),
+				scientest.root_test_output_dir / module_full_name.replace('.',os.sep),
 				dir_fmt="{test_callable_name}",
-				format_parameter_providers = {"test_callable_name":lambda : test_callable_name}
+				format_parameter_providers = {"test_callable_name":lambda : test_callable_name},
+				remove_old_dirs_mode = None
 			)
 			
 			# Run the test
