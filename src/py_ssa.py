@@ -18,9 +18,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.patches
 import matplotlib.gridspec
-import utilities as ut
-import utilities.np 
-import utilities.plt
+import plot_helper
 import py_svd as py_svd
 
 
@@ -416,55 +414,55 @@ class SSA:
 		flip_ravel = lambda x: np.reshape(x.ravel(order='F'), x.shape)
 		# plot eigenvectors and factor vectors
 		n = min(self.u.shape[0], n_max if n_max is not None else self.u.shape[0])
-		f1, a1 = ut.plt.figure_n_subplots(n)
+		f1, a1 = plot_helper.figure_n_subplots(n)
 		a1=a1.flatten()
 		f1.suptitle(f'First {n} Eigenvectors of X (of {self.u.shape[0]})')
 		ax_iter=iter(a1)
 		for i in range(n):
 			ax=next(ax_iter)
 			ax.set_title(f'i = {i} eigenval = {self.s[i,i]:07.2E}')
-			ut.plt.remove_axes_ticks_and_labels(ax)
+			plot_helper.remove_axes_ticks_and_labels(ax)
 			ax.imshow(np.reshape(self.u[i,:],(self.lx,self.ly)).T)
 		return
 	
 	def plot_factorvectors(self, n_max=None):
 		flip_ravel = lambda x: np.reshape(x.ravel(order='F'), x.shape)
 		n = min(self.v_star.shape[0], n_max if n_max is not None else self.v_star.shape[0])
-		f1, a1 = ut.plt.figure_n_subplots(n)
+		f1, a1 = plot_helper.figure_n_subplots(n)
 		a1=a1.flatten()
 		f1.suptitle(f'First {n} Factorvectors of X (of {self.v_star.shape[0]})')
 		ax_iter = iter(a1)
 		for j in range(n):
 			ax=next(ax_iter)
 			ax.set_title(f'j = {j}')
-			ut.plt.remove_axes_ticks_and_labels(ax)
+			plot_helper.remove_axes_ticks_and_labels(ax)
 			ax.imshow(flip_ravel(np.reshape(self.v_star[j,:],(self.kx,self.ky)).T))
 			
 	def plot_trajectory_decomp(self, n_max=None):	
 		# Plot components of image decomposition
 		n = min(self.X_decomp.shape[0], n_max if n_max is not None else self.X_decomp.shape[0])
-		f1, a1 = ut.plt.figure_n_subplots(n)
+		f1, a1 = plot_helper.figure_n_subplots(n)
 		a1 = a1.ravel()
 		f1.suptitle('Trajectory matrix components X_i [M = sum(X_i)]')
 		ax_iter = iter(a1)
 		for i in range(n):
 			ax = next(ax_iter)
 			ax.set_title(f'i = {i}', y=0.9)
-			ut.plt.remove_axes_ticks_and_labels(ax)
+			plot_helper.remove_axes_ticks_and_labels(ax)
 			ax.imshow(self.X_decomp[i], origin='lower', aspect='auto')
 		return
 		
 	def plot_trajectory_groups(self, n_max=None):
 		# plot elements of X_g
 		n = min(self.X_g.shape[0], n_max if n_max is not None else self.X_g.shape[0])
-		f1, a1 = ut.plt.figure_n_subplots(n)
+		f1, a1 = plot_helper.figure_n_subplots(n)
 		a1 = a1.ravel()
 		f1.suptitle('Trajectory matrix groups X_g [X = sum(X_g_i)]')
 		ax_iter=iter(a1)
 		for i in range(n):
 			ax = next(ax_iter)
 			ax.set_title(f'i = {i}', y=0.9)
-			ut.plt.remove_axes_ticks_and_labels(ax)
+			plot_helper.remove_axes_ticks_and_labels(ax)
 			ax.imshow(self.X_g[i], origin='lower', aspect='auto')
 		return
 		
@@ -558,7 +556,7 @@ class SSA:
 		
 		# Plot individual component plots at the bottom
 		f1 = fig.add_subfigure(mpl.gridspec.SubplotSpec(gridspec, 1,3))
-		f1, a1 = ut.plt.figure_n_subplots(3*n_component_plots, figure=f1, sp_kwargs={'gridspec_kw':{'top':0.85, 'hspace':1}})
+		f1, a1 = plot_helper.figure_n_subplots(3*n_component_plots, figure=f1, sp_kwargs={'gridspec_kw':{'top':0.85, 'hspace':1}})
 		a1=a1.flatten()
 		
 		ax_iter=iter(a1)
