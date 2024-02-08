@@ -160,7 +160,7 @@ def test_bp_map_ssa_sum_prob():
 	from py_ssa import SSA
 	import matplotlib.pyplot as plt
 	import itertools as it
-	
+	np.random.seed(100)
 	a = np.indices((21,33)).astype(float)
 	a[0] -= 10
 	a[1] -= 15
@@ -198,8 +198,9 @@ def test_bp_map_ssa_sum_prob():
 		ssa,
 		start = 3,
 		stop = None,
-		value=0.7,
+		value=0.95,
 		show_plots=2,
-		weight_by_evals=False
+		weight_by_evals=False,
+		transform_value_as = ['ppf']
 	)
 	
