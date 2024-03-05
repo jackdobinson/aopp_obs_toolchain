@@ -177,30 +177,78 @@ def test_bp_map_ssa_sum_prob():
 	a[idxs] = 50
 	
 	plt.imshow(a)
+	plt.title(f'{a.shape=}')
 	plt.show()
+	
+	desired_bp_map = np.zeros_like(a, dtype=bool)
+	desired_bp_map_idxs = [
+		[ 3,  0],
+		[ 3, 16],
+		[ 3, 17],
+		[ 3, 25],
+		[ 6, 20],
+		[ 8, 18],
+		[ 9,  3],
+		[ 9, 12],
+		[ 9, 14],
+		[10, 28],
+		[11, 24],
+		[12,  7],
+		[14, 19],
+		[15,  3],
+		[15, 27],
+		[16, 20],
+		[17,  0],
+		[17, 25],
+		[17, 30],
+		[19,  1]
+	]
+	
+	print(f'{a.shape=}')
+	for idx in desired_bp_map_idxs:
+		desired_bp_map[tuple(idx)] = True
+	
+	plt.imshow(desired_bp_map)
+	plt.title('Desired bad pixel map')
+	plt.show()
+	
 	
 	ssa = SSA(
 		a,
-		grouping={'mode':'similar_eigenvalues', 'tolerance':0.01}
+		#grouping={'mode':'elementary'},
+		grouping={'mode':'similar_eigenvalues', 'tolerance':0.01},
 	)
-	
-	#for item in ssa.X_ssa:
-	#	plt.imshow(item)
-	#	plt.show()
-	#	plt.hist(item.flatten(), bins=100)
-	#	plt.show()
 	
 	
 	ssa.plot_ssa([ssa.X_ssa.shape[0]//16, ssa.X_ssa.shape[0]//4, 2*ssa.X_ssa.shape[0]//4, 3*ssa.X_ssa.shape[0]//4])
 	plt.show()
 	
-	algorithm.bad_pixels.ssa_sum_prob.ssa2d_sum_prob_map(
+	bp_map = algorithm.bad_pixels.ssa_sum_prob.ssa2d_sum_prob_map(
 		ssa,
-		start = 3,
+		start = 5,
 		stop = None,
-		value=0.95,
-		show_plots=2,
+		value=0.97,
+		show_plots=1,
+		#show_plots=2,
 		weight_by_evals=False,
 		transform_value_as = ['ppf']
 	)
 	
+	plt.close('all')
+	plt.imshow(bp_map)
+	plt.title('Found bad pixel map')
+	plt.show()
+	
+	# Test our algorithm by requiring we find a certain fraction of bad pixels, and a certain fraction of good pixels
+	n_real_bad_pixels = np.count_nonzero(desired_bp_map)
+	n_found_bad_pixels = np.count_nonzero(bp_map & desired_bp_map)
+	frac_found_bad_pixels = n_found_bad_pixels/n_real_bad_pixels
+	bp_frac_target = 0.9
+	
+	n_real_good_pixels = np.count_nonzero(~desired_bp_map)
+	n_found_good_pixels = np.count_nonzero((~bp_map) & (~desired_bp_map))
+	frac_found_good_pixels = n_found_good_pixels/n_real_good_pixels
+	gp_frac_target = 0.99
+	
+	assert frac_found_bad_pixels >= bp_frac_target, f'Found {n_found_bad_pixels}/{n_real_bad_pixels} bad pixels, false negative fraction {1-frac_found_bad_pixels} > {1-bp_frac_target}'
+	assert frac_found_good_pixels >= gp_frac_target, f'Found {n_found_good_pixels}/{n_real_good_pixels} good pixels, false positive fraction {1-frac_found_good_pixels} > {1-gp_frac_target}'

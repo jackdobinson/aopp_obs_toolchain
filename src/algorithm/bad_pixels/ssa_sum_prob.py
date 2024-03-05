@@ -5,6 +5,8 @@ import scipy as sp
 import scipy.stats
 import numpy as np
 
+
+# TODO: Remove dependence on `utilities` module
 import utilities as ut
 import utilities.sp
 from utilities.classes import Next, Alias
@@ -19,15 +21,30 @@ def ssa2d_sum_prob_map(
 		value=0.995, 
 		show_plots=0, 
 		transform_value_as : list[Literal['median_prob', 'ppf'],] = [], 
-		weight_by_evals=True
+		weight_by_evals=False
 	):
 	"""
-	Computes a bad pixel map from an SSA2D object. 
+	Computes a bad pixel map from an SSA2D object. Concentrates on hot/cold pixels w.r.t background.
 	
-	For each component of the SSA decomposition, a probability map is made of how far a given
-	pixel deviates from the median. The probabilities for each component are combined together
-	(by mean or weighted mean) to give a 'score' for each pixel. A bad pixel map is chosen by
-	selecting all pixels whose 'score' is larger than a passed value.
+	Idea is that for a hot/cold pixel, the high frequency components of the SSA decomposition must 
+	also be hot/cold. Therefore, the hot/cold pixels will consistently be at the *edges* of the
+	pixel probability distribution for the higher frequency SSA components. As high frequency
+	SSA components outnumber low frequency SSA components, we can just use all components as 
+	long as we don't weight them by their eigenvalues (if we do, we should try and be selective
+	to only the components where the scale of changes matches the scale of the hot/cold pixels).
+	
+	For each component of the SSA decomposition, a map is made of how far a given pixel deviates 
+	from the median (range [-1,1]). The median differences for each component are combined together
+	(by mean or weighted mean) to give a 'score' for each pixel. Bad pixels should have scores at the
+	extreme ends of the [-1,1] range. A bad pixel map is chosen by taking the absolute value of the score,
+	and selecting all pixels whose |score| is larger than a give value.
+	
+	TODO: See about extending this logic to using SSA for interpolation. E.g. 
+		1) pass in a set of pixels
+		2) Calculate the 'difference from median of SSA component' score for each pixel
+		3) For each pixel, only combine SSA components when the |score| < 'some value'
+		This should ensure that 'extreme' values for that pixel are ignored and the 
+		reconstructed pixel value is more similar to the surrounding pixels.
 
 	# ARGUMENTS #
 		ssa
@@ -72,29 +89,34 @@ def ssa2d_sum_prob_map(
 	start = 0 if start is None else start
 	distrib = sp.stats.cauchy
 	data_probs = np.zeros((stop-start, *ssa.a.shape),dtype=float)
-	#data = np.zeros((stop-start, *ssa.a.shape))
 	
 	# choose a pixel->probability function
 	# we get a range of (0,1) from "ut.sp.construct_cdf_from()"
 	# it gives us the cumulative probability for each pixel
-	# we want to change this to a 'probability away from median' value
-	prob_median_transform_func = lambda x: (2*(x-0.5))**2
-	#prob_median_transform_func = lambda x: np.fabs(2*(x-0.5))
-	#prob_median_transform_func = lambda x: (2*(x-0.5))
+	# This function changes it to 'distance away from median' in the range [-1, 1]
+	prob_median_transform_func = lambda x: (2*(x-0.5))
 	
 	# apply pixel->probability function to each SSA component
 	for i in range(0, stop-start):
 		data_cdf = ut.sp.construct_cdf_from(ssa.X_ssa[i+start].ravel())
 		data_probs[i,...] = prob_median_transform_func(data_cdf(ssa.X_ssa[i+start].ravel()).reshape(ssa.a.shape))
 
-	# combine pixel probabilites together
+	# combine pixel probabilites together, pixels that are "strange" will have correlated distances away from
+	# the median for each SSA component. Therefore, "normal" pixels will tend towards zero when taking the mean of `data_probs`,
+	# but "strange" (hot/cold) pixels will stay close to +/- 1. Finally, then take absolute value 
+	# as we want a range of [0,1] where 0 is data is "normal" and 1 is data is "strange"
+	# NOTE: Instead of using `np.fabs` here, I could square the results. It shouldn't make much of a difference apart from adjusting
+	#       the exact values of the `data_probs_sum`.
+	data_probs_sum_func = lambda x, _start, _stop: np.fabs(
+		(1/(_stop-(_start-1))) * np.sum(x[:_stop-(_start-1)], axis=0)
+	)
 	if weight_by_evals:
-		# try mean weighted by eigenvalues
-		evals_trimmed = (np.diag(ssa.s)**2)[start:stop]
-		data_probs_sum = (1/np.sum(evals_trimmed))*np.sum(evals_trimmed[:,None,None]*data_probs, axis=0)
-	else:
-		# try using mean instead of sum
-		data_probs_sum = (1/(stop-start))*np.sum(data_probs, axis=0)
+		# try weighted by eigenvalues, generally do not want this one but the option is there
+		data_probs_sum_func = lambda x, _start, _stop: np.fabs(
+			(1/(np.sum((np.diag(ssa.s)**2)[_start:_stop+1]))) * np.sum(((np.diag(ssa.s)**2)[_start:_stop+1])[:,None,None] * x[:_stop-(_start-1)],axis=0)
+		)
+
+
 
 	# apply the pixel->probability function to 'value' argument if desired
 	if 'median_prob' in transform_value_as:
@@ -103,11 +125,11 @@ def ssa2d_sum_prob_map(
 		cutoff_func = lambda _test, _value: ut.sp.construct_ppf_from(_test.ravel())(_value)
 	else:
 		cutoff_func = lambda _test, _value: _value
-	bp_mask = pixel_map(ssa.a, data_probs_sum, value, show_plots=show_plots, cutoff_func=cutoff_func, plot_kw={'suptitle':f'Sum ssa2d probability maps\n{value=}'})
+	bp_mask = pixel_map(ssa.a, data_probs_sum_func(data_probs,start,stop), value, show_plots=show_plots, cutoff_func=cutoff_func, plot_kw={'suptitle':f'Sum ssa2d probability maps\n{value=}'})
 
 	# plots for debugging and progress
 	if show_plots > 1:
-		nplots = (stop-start)
+		nplots = ssa.X_ssa.shape[0]#(stop-start)
 		
 		for i in range(nplots):
 			f1, a1 = ut.plt.figure_n_subplots(4)
@@ -123,13 +145,15 @@ def ssa2d_sum_prob_map(
 				hvals, hbins, hpatches = ax.hist(ssa.X_ssa[i].ravel(), bins=100, density=True)
 				x = np.linspace(np.min(ssa.X_ssa[i]),np.max(ssa.X_ssa[i]), 100)
 				ax.twinx().plot(x, ut.sp.construct_cdf_from(ssa.X_ssa[i].ravel())(x), color='tab:orange', ls='-')
-			with Next(ax_iter) as ax:
-				ax.set_title(f'probabilities of ssa.X_ssa[i]')
-				ax.imshow(data_probs[i], vmin=0, vmax=1)
-				ut.plt.remove_axes_ticks_and_labels(ax)
-			with Next(ax_iter) as ax:
-				ax.set_title(f'histogram of prob. of ssa.X_ssa[{i}]')
-				hvals, hbins, hpatches = ax.hist(data_probs[i].ravel(), bins=100, density=False)
+			if i < stop and i >= start:
+				with Next(ax_iter) as ax:
+					ax.set_title(f'probabilities of ssa.X_ssa[{i}]')
+					ax.imshow(data_probs[i-start], vmin=-1, vmax=1)
+					ut.plt.remove_axes_ticks_and_labels(ax)
+				with Next(ax_iter) as ax:
+					ax.set_title(f'|sum of probabilities of ssa.X_ssa[{start}:{i+1}]|')
+					ax.imshow(data_probs_sum_func(data_probs, start, i), vmin=0, vmax=1)
+					ut.plt.remove_axes_ticks_and_labels(ax)
 				
 			plt.savefig(f'ssa_{i}_bad_pixel_prob_maps.png')
 	return(bp_mask)
