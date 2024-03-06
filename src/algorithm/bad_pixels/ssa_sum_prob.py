@@ -1,17 +1,21 @@
 
 from typing import Literal
 
+import numpy as np
 import scipy as sp
 import scipy.stats
-import numpy as np
 
+import context
+from context.next import Next
 
-# TODO: Remove dependence on `utilities` module
-import utilities as ut
-import utilities.sp
-from utilities.classes import Next, Alias
+from stats.empirical import EmpiricalDistribution
+from scipy_helper.interp import interpolate_at_mask
 
+import plot_helper
 import matplotlib.pyplot as plt
+
+import cfg.logs
+_lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
 def ssa2d_sum_prob_map(
@@ -98,8 +102,9 @@ def ssa2d_sum_prob_map(
 	
 	# apply pixel->probability function to each SSA component
 	for i in range(0, stop-start):
-		data_cdf = ut.sp.construct_cdf_from(ssa.X_ssa[i+start].ravel())
-		data_probs[i,...] = prob_median_transform_func(data_cdf(ssa.X_ssa[i+start].ravel()).reshape(ssa.a.shape))
+		#data_cdf = ut.sp.construct_cdf_from(ssa.X_ssa[i+start].ravel())
+		data_distribution = EmpiricalDistribution(ssa.X_ssa[i+start].ravel())
+		data_probs[i,...] = prob_median_transform_func(data_distribution.cdf(ssa.X_ssa[i+start].ravel()).reshape(ssa.a.shape))
 
 	# combine pixel probabilites together, pixels that are "strange" will have correlated distances away from
 	# the median for each SSA component. Therefore, "normal" pixels will tend towards zero when taking the mean of `data_probs`,
@@ -122,24 +127,34 @@ def ssa2d_sum_prob_map(
 	if 'median_prob' in transform_value_as:
 		value = prob_median_transform_func(value)
 	if 'ppf' in transform_value_as:
-		cutoff_func = lambda _test, _value: ut.sp.construct_ppf_from(_test.ravel())(_value)
+		cutoff_func = lambda _test, _value: EmpiricalDistribution(_test.ravel()).ppf(_value)
 	else:
 		cutoff_func = lambda _test, _value: _value
-	bp_mask = pixel_map(ssa.a, data_probs_sum_func(data_probs,start,stop), value, show_plots=show_plots, cutoff_func=cutoff_func, plot_kw={'suptitle':f'Sum ssa2d probability maps\n{value=}'})
+		
+	bp_mask = pixel_map(
+		ssa.a, 
+		data_probs_sum_func(data_probs,start,stop), 
+		value, 
+		show_plots=show_plots, 
+		cutoff_func=cutoff_func, 
+		plot_kw = {
+				'suptitle':f'Sum ssa2d probability maps\n{value=}'
+			}
+		)
 
 	# plots for debugging and progress
 	if show_plots > 1:
 		nplots = ssa.X_ssa.shape[0]#(stop-start)
 		
 		for i in range(nplots):
-			f1, a1 = ut.plt.figure_n_subplots(4)
+			f1, a1 = plot_helper.figure_n_subplots(4)
 			f1.suptitle(f'Sum ssa.X_ssa[{i}] probability maps')
 			ax_iter=iter(a1.flatten())
 			
 			with Next(ax_iter) as ax:
 				ax.set_title(f'ssa.X_ssa[{i}]\nsum {np.nansum(ssa.X_ssa[i])}')
 				ax.imshow(ssa.X_ssa[i])
-				ut.plt.remove_axes_ticks_and_labels(ax)
+				plot_helper.remove_axes_ticks_and_labels(ax)
 			with Next(ax_iter) as ax:
 				ax.set_title(f'histogram of ssa.X_ssa[{i}]')
 				hvals, hbins, hpatches = ax.hist(ssa.X_ssa[i].ravel(), bins=100, density=True)
@@ -149,11 +164,11 @@ def ssa2d_sum_prob_map(
 				with Next(ax_iter) as ax:
 					ax.set_title(f'probabilities of ssa.X_ssa[{i}]')
 					ax.imshow(data_probs[i-start], vmin=-1, vmax=1)
-					ut.plt.remove_axes_ticks_and_labels(ax)
+					plot_helper.remove_axes_ticks_and_labels(ax)
 				with Next(ax_iter) as ax:
 					ax.set_title(f'|sum of probabilities of ssa.X_ssa[{start}:{i+1}]|')
 					ax.imshow(data_probs_sum_func(data_probs, start, i), vmin=0, vmax=1)
-					ut.plt.remove_axes_ticks_and_labels(ax)
+					plot_helper.remove_axes_ticks_and_labels(ax)
 				
 			plt.savefig(f'ssa_{i}_bad_pixel_prob_maps.png')
 	return(bp_mask)
@@ -166,7 +181,7 @@ def pixel_map(
 		value, 
 		show_plots=0, 
 		plot_kw={}, 
-		cutoff_func = lambda _test, _value: ut.sp.construct_ppf_from(_test.ravel())(_value), 
+		cutoff_func = lambda _test, _value: EmpiricalDistribution(_test.ravel()).ppf(_value), 
 		bp_mask_func = lambda _test, _cutoff: _test > _cutoff
 	) -> np.ndarray:
 	"""
@@ -204,26 +219,26 @@ def pixel_map(
 
 	#breakpoint() # DEBUGGING
 	if show_plots > 0:
-		interpolated = ut.sp.interpolate_at_mask(img, bp_mask, edges='convolution', method='cubic')
+		interpolated = interpolate_at_mask(img, bp_mask, edges='convolution', method='cubic')
 		plot_pixel_map_test(img, test, cutoff, bp_mask, interpolated, plot_kw=plot_kw)
 		plt.savefig(f'pixel_map_plot.png')
 	return(bp_mask)
 
 
 def plot_pixel_map_test(img, test, cutoff, mask, interp, plot_kw={}):
-	f2, a2 = ut.plt.figure_n_subplots(6)
+	f2, a2 = plot_helper.figure_n_subplots(6)
 	a2_iter = iter(a2.ravel())
 	f2.suptitle(plot_kw.get('suptitle', 'pixel map function'))
 	
 	with Next(a2_iter) as ax:
 		ax.set_title(f'Original image\nsum {np.nansum(img):08.2E}\nsqrt(sum^2) {np.sqrt(np.nansum(img**2)):08.2E}')
 		ax.imshow(img)
-		ut.plt.remove_axes_ticks_and_labels(ax)
+		plot_helper.remove_axes_ticks_and_labels(ax)
 		
 	with Next(a2_iter) as ax:
 		ax.set_title(f'pixel choice test function\nsum {np.nansum(test):08.2E} sqrt(sum^2) {np.sqrt(np.nansum(test**2)):08.2E}')
 		ax.imshow(test)
-		ut.plt.remove_axes_ticks_and_labels(ax)
+		plot_helper.remove_axes_ticks_and_labels(ax)
 		
 	with Next(a2_iter) as ax:
 		ax.set_title(f'histogram of choice function\ncutoff {cutoff:06.4f}')
@@ -233,7 +248,7 @@ def plot_pixel_map_test(img, test, cutoff, mask, interp, plot_kw={}):
 	with Next(a2_iter) as ax:
 		ax.set_title(f'mask from cut of choice function\nn_masked {np.nansum(mask)} frac_masked {np.nansum(mask)/mask.size:08.2E}')
 		ax.imshow(mask)
-		ut.plt.remove_axes_ticks_and_labels(ax)
+		plot_helper.remove_axes_ticks_and_labels(ax)
 		
 	with Next(a2_iter) as ax:
 		ax.set_title('\n'.join((f'original interpolated at mask',
@@ -241,7 +256,7 @@ def plot_pixel_map_test(img, test, cutoff, mask, interp, plot_kw={}):
 								f'sqrt(sum^2) {np.sqrt(np.nansum(interp**2)):08.2E} frac {np.sqrt(np.nansum(interp**2))/np.sqrt(np.nansum(img**2)):08.2E}',
 		)))
 		ax.imshow(interp)
-		ut.plt.remove_axes_ticks_and_labels(ax)
+		plot_helper.remove_axes_ticks_and_labels(ax)
 		
 	with Next(a2_iter) as ax:
 		residual = interp - img
@@ -250,4 +265,4 @@ def plot_pixel_map_test(img, test, cutoff, mask, interp, plot_kw={}):
 								f'sqrt(sum^2) {np.sqrt(np.nansum(residual**2)):08.2E} frac {np.sqrt(np.nansum(residual**2))/np.sqrt(np.nansum(img**2)):08.2E}',
 		)))
 		ax.imshow(residual)
-		ut.plt.remove_axes_ticks_and_labels(ax)
+		plot_helper.remove_axes_ticks_and_labels(ax)
