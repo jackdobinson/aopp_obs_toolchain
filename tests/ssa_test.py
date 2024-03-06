@@ -68,3 +68,91 @@ def test_ssa_residuals_are_within_limits(frac_residual_limit):
 		assert not np.any(np.isnan(frac_residual)), f"{data_name}, require no NANs in fractional residual"
 		assert not np.any(np.isinf(frac_residual)), f"{data_name}, require no INFs in fractional residual"
 		assert np.all(frac_residual < frac_residual_limit), f'{data_name}, require frac_residual < {frac_residual_limit} everywhere but highest value is {np.max(frac_residual)}'
+
+
+
+
+@scientest.decorators.debug
+def ssa_interpolation_test():
+	import matplotlib.pyplot as plt
+	from algorithm.interpolate.ssa import ssa_intepolate_at_mask
+	
+	
+	np.random.seed(100)
+	a = np.indices((21,33)).astype(float)
+	a[0] -= 10
+	a[1] -= 15
+	a = -np.sum(a*a, axis=0)
+	a -= np.min(a)
+	a += np.random.normal(a, 10)
+	
+	n_idxs = 20
+	idxs = []
+	for s in a.shape:
+		idxs.append(np.random.choice(range(s), n_idxs, replace=True))
+	
+	idxs = tuple(zip(idxs))
+	bp_map = np.zeros_like(a, dtype=bool)
+	bp_map[idxs] = True
+	
+	a_original = np.array(a)
+	plt.close('all')
+	plt.title('original data')
+	plt.imshow(a_original)
+	plt.show()
+	
+	a[idxs] = 50
+	
+	
+	
+	plt.title('corrupted data')
+	plt.imshow(a)
+	plt.show()
+	
+	plt.clf()
+	plt.title('bp_map')
+	plt.imshow(bp_map)
+	plt.show()
+	
+	ssa = SSA(
+		a,
+		grouping={'mode':'elementary'},
+		#grouping={'mode':'similar_eigenvalues', 'tolerance':0.01},
+	)
+	
+	a_interp = ssa_intepolate_at_mask(
+		ssa, 
+		bp_map,
+		start=0, 
+		stop=None, 
+		value=0.5, 
+		show_plots=0,
+		median_size = 5,
+	)
+	
+	plt.clf()
+	plt.title('interpolated data')
+	plt.imshow(a_interp)
+	plt.show()
+	
+	plt.clf()
+	plt.title('interpolated - original')
+	plt.imshow((a_interp - a_original)/a_original)
+	plt.show()
+	
+	
+	assert False, 'DEBUGGING'
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
