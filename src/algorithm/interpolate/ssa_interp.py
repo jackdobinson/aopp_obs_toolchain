@@ -25,9 +25,8 @@ def ssa_intepolate_at_mask(
 		mask,
 		start=0, 
 		stop=None, 
-		value=0.5, 
+		value=0.5, # 0.5 seems to be the best value
 		show_plots=0,
-		median_size = 5,
 	):
 	"""
 	Using SSA for interpolation. E.g. 
@@ -63,14 +62,23 @@ def ssa_intepolate_at_mask(
 
 		if i >= start and i < stop:
 			j = i - start
-			#median_value = data_distribution.ppf(0.5)
-			median_filtered_components = sp.ndimage.median_filter(ssa.X_ssa[i], size=median_size)
-			data_probs[j,...] = prob_median_transform_func(data_distribution.cdf(ssa.X_ssa[j].ravel()).reshape(ssa.a.shape))
 
+			# Interpolate the SSA components
+			points = np.indices(ssa.X_ssa[i].shape)
+			p_known = points[:,~mask].T
+			p_unknown = points[:,mask].T
+			known_values = ssa.X_ssa[i][~mask]
+			interp_values = sp.interpolate.griddata(p_known, known_values, p_unknown)
+			
+			# Get the distance from the median for each pixel
+			data_probs[j,...] = prob_median_transform_func(data_distribution.cdf(ssa.X_ssa[j].ravel()).reshape(ssa.a.shape))
+			
+			# If masked pixel is close to the median, don't replace it. Otherwise, replace with interpolated value
 			px_contrib_mask[...] = np.fabs(data_probs[j, mask]) >= value
 			_lgr.debug(f'{px_contrib_mask=}')
-			#px_contrib_temp[px_contrib_mask] = median_value
-			px_contrib_temp[px_contrib_mask] = median_filtered_components[mask][px_contrib_mask]
+			
+			# Only use the interpolated components when we have extreme values
+			px_contrib_temp[px_contrib_mask] = interp_values[px_contrib_mask]
 		
 		_lgr.debug(f'{px_contrib_temp=}')
 		interp_mask_accumulator += px_contrib_temp

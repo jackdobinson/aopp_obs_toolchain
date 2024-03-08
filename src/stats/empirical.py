@@ -39,3 +39,24 @@ class EmpiricalDistribution:
 			right=np.nan
 		)
 
+	def pdf(self, nbins=100) -> Number | np.ndarray:
+		"""
+		Returns the probability density function of the distribution
+		"""
+		n_bin_centers = nbins - 1
+		x = np.linspace(np.min(self._data), np.max(self._data), n_bin_centers)
+		dx = np.diff(x)
+		bins = np.zeros((x.shape[0]+1,*x.shape[1:]))
+		bins[0] = x[0] - dx[0]/2
+		bins[1:-1] = x[:-1] + dx/2
+		bins[-1] = x[-1] + dx[-1]/2
+				
+		counts = np.zeros((n_bin_centers,), dtype=float)
+		for idx in range(0, bins.shape[0]-1):
+			counts[idx] = np.count_nonzero((bins[idx] < self._data) & (self._data <= bins[idx+1]))
+		
+		return bins, counts/self._data.size
+		
+		
+		
+		
