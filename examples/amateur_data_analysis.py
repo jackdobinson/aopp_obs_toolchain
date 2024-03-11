@@ -273,12 +273,13 @@ class ParamsAndPsfModelDependencyInjector:
 	def __init__(self, psf_data : PSF_Data_NumpyArray):
 		self.psf_data = psf_data
 		self._psf_model = NotImplemented
+		self._params = NotImplemented # PriorParamSet()
 	
 	def get_psf_model_name(self):
 		return self._psf_model.__class__.__name__
 
-	def get_parameters(self) -> PriorParamSet :
-		NotImplemented
+	def get_parameters(self) -> PriorParamSet:
+		return self._params
 	
 	def get_psf_model_flattened_callable(self) -> PSF_Model_Flattened_Callable : 
 		NotImplemented

@@ -154,7 +154,7 @@ def test_bp_map_interp_fix():
 		+ (f"Has INFs at {list(tuple(x) for x in np.argwhere(np.isinf(a)))}. " if np.any(np.isinf(a)) else "") 
 
 
-#@scientest.decorators.debug
+@scientest.decorators.debug
 def test_bp_map_ssa_sum_prob():
 	import algorithm.bad_pixels.ssa_sum_prob
 	from py_ssa import SSA
@@ -181,32 +181,7 @@ def test_bp_map_ssa_sum_prob():
 	plt.show()
 	
 	desired_bp_map = np.zeros_like(a, dtype=bool)
-	desired_bp_map_idxs = [
-		[ 3,  0],
-		[ 3, 16],
-		[ 3, 17],
-		[ 3, 25],
-		[ 6, 20],
-		[ 8, 18],
-		[ 9,  3],
-		[ 9, 12],
-		[ 9, 14],
-		[10, 28],
-		[11, 24],
-		[12,  7],
-		[14, 19],
-		[15,  3],
-		[15, 27],
-		[16, 20],
-		[17,  0],
-		[17, 25],
-		[17, 30],
-		[19,  1]
-	]
-	
-	print(f'{a.shape=}')
-	for idx in desired_bp_map_idxs:
-		desired_bp_map[tuple(idx)] = True
+	desired_bp_map[idxs] = True
 	
 	plt.imshow(desired_bp_map)
 	plt.title('Desired bad pixel map')

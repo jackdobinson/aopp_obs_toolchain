@@ -73,7 +73,7 @@ def test_ssa_residuals_are_within_limits(frac_residual_limit):
 
 
 
-@scientest.decorators.debug
+#@scientest.decorators.debug
 def ssa_interpolation_test():
 	import matplotlib.pyplot as plt
 	from algorithm.interpolate.ssa_interp import ssa_intepolate_at_mask
