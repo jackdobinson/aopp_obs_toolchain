@@ -237,3 +237,18 @@ def set_legend(*args, a_or_f=None, **kwargs):
 		a_or_f = args[0]
 	a_or_f.legend(hs, ls, **kwargs)
 	return
+
+def fig_add_patch(figure, *patches):
+	figure.patches.extend(patches)
+
+def fig_draw_bbox_of_artist(figure, *artists, color='red', linewidth=1, **kwargs):
+	renderer = figure.canvas.get_renderer()
+	for artist in artists:
+		bbox = artist.get_window_extent(renderer)
+		figure.lines.append(mpl.lines.Line2D(
+			[bbox.x0, bbox.x0, bbox.x1, bbox.x1, bbox.x0], 
+			[bbox.y0, bbox.y1, bbox.y1, bbox.y0, bbox.y0],
+			linewidth=linewidth,
+			color=color,
+			**kwargs
+		))

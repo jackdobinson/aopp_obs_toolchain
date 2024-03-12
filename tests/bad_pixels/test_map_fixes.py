@@ -154,7 +154,7 @@ def test_bp_map_interp_fix():
 		+ (f"Has INFs at {list(tuple(x) for x in np.argwhere(np.isinf(a)))}. " if np.any(np.isinf(a)) else "") 
 
 
-@scientest.decorators.debug
+#@scientest.decorators.debug
 def test_bp_map_ssa_sum_prob():
 	import algorithm.bad_pixels.ssa_sum_prob
 	from py_ssa import SSA
