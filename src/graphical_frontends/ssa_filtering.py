@@ -269,11 +269,13 @@ class RadioButtons(WidgetBase):
 
 
 class ImageViewer:
-	def __init__(self, parent_figure=None, pf_gridspec = None, gridspec_index = 0):
+	def __init__(self, parent_figure=None, pf_gridspec = None, gridspec_index = 0, window_title='Image Viewer'):
 		self.parent_figure = plt.figure(figsize=(12,8)) if parent_figure is None else parent_figure
 		self.pf_gridspec = self.parent_figure.add_gridspec(1,1,left=0,right=0,top=1,bottom=1,wspace=0,hspace=0) if pf_gridspec is None else pf_gridspec
 		self.figure = self.parent_figure.add_subfigure(self.pf_gridspec[gridspec_index])
 		
+		self.window_title=window_title
+		self.set_window_title()
 		
 		self.main_axes_rect = (0.2, 0.2, 0.7, 0.7) # (left, bottom, width, height) in fraction of figure area
 		self.main_axes = self.figure.add_axes(self.main_axes_rect, projection=None, polar=False)
@@ -302,6 +304,9 @@ class ImageViewer:
 		self.image_clim_slider_mode_selector = RadioButtons(self.figure, (0.06,0.65,0.2,0.1), self.image_clim_slider_modes, title='clim slider mode')
 		self.set_clim_slider_mode(self.image_clim_slider_modes[0])
 		self.image_clim_slider_mode_selector.on_clicked(self.set_clim_slider_mode)
+	
+	def set_window_title(self):
+		self.figure.canvas.manager.set_window_title(self.window_title)
 	
 	def set_clim_slider_mode(self, mode):
 		if self.image_clim_slider_mode_callback_id is not None:
@@ -381,6 +386,11 @@ class ImageViewer:
 
 
 
+class SSAViewer(ImageViewer):
+	def __init__(self, *args, **kwargs):
+		if 'window_title' not in kwargs: kwargs['window_title'] = 'SSA Viewer'
+		super().__init__(*args, **kwargs)
+
 
 
 if __name__ == '__main__':
@@ -392,5 +402,5 @@ if __name__ == '__main__':
 		test_image[i,...] = test_image[i]**(2*((i+1)/test_image.shape[0]))
 	
 	
-	imviewer = ImageViewer()
+	imviewer = SSAViewer()
 	imviewer.show(test_image, 'test_image')
