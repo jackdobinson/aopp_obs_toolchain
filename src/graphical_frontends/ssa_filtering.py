@@ -4,7 +4,7 @@ Graphical front end to SSA filtering of an image, should be usable for a cube an
 
 import sys, os
 import pathlib
-from typing import Callable
+from typing import Callable, Any
 
 import numpy as np
 import matplotlib as mpl
@@ -27,13 +27,50 @@ _lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 default_scalar_formatter = mpl.ticker.ScalarFormatter().format_data
 
 
-class ImagePlot:
+class CallbackMixin:
+	def __init__(self, callback_set_names : tuple[str]):
+		self.callbacks = {}
+		for csn in callback_set_names:
+			self.callbacks[csn] = []
+		
+	def get_callback_sets(self):
+		return self.callbacks.keys()
+	
+	def set_callback_sets(self, callback_set_names):
+		for csn in callback_set_names:
+			if csn not in self.callbacks:
+				self.callbacks[csn] = []
+	
+	def remove_callback_sets(self, callback_set_names):
+		for csn in callback_set_names:
+			del self.callbacks[csn]
+	
+	def attach_callback(self, callback_set, acallable : Callable[[Any,...],bool]) -> int:
+		try:
+			i = self.callbacks[callback_set].index(None)
+			self.callbacks[callback_set][i] = acallable
+			return i
+		except ValueError:
+			i = len(self.callbacks[callback_set])
+			self.callbacks[callback_set].append(acallable)
+		return i
+	
+	def disconnect_callback_idx(self, callback_set, idx):
+		self.callbacks[callback_set][idx] = None
+	
+	def call_callbacks(self, callback_set, *args, **kwargs):
+		for acallback in self.callbacks.get(callback_set,[]):
+			if acallback is not None: 
+				acallback(*args, **kwargs)
+
+
+class ImagePlot(CallbackMixin):
 	def __init__(self, ax, **kwargs):
+		CallbackMixin.__init__(self,('on_set_clim','on_set_data'))
 		self.ax = ax
 		self.data_shape = (0,0)
 		self.kwargs = kwargs
 		self.im = None
-		self.callbacks = {}
 	
 	def set_clim(self, min=None, max=None):
 		
@@ -60,33 +97,7 @@ class ImagePlot:
 		self.set_axes_limits()
 		self.set_clim()
 		self.call_callbacks('on_set_data', data)
-		
-	def attach_callback(self, callback_set, acallable : Callable[[float,float],None]):
-		possible_callback_sets = (
-			'on_set_clim',
-			'on_set_data'
-		)
-		if callback_set not in self.callbacks:
-			if callback_set in possible_callback_sets:
-				self.callbacks[callback_set] = []
-			else:
-				raise ValueError(f'callback set name "{callback_set}" not permitted, must be one of {possible_callback_sets}')
-		try:
-			i = self.callbacks[callback_set].index(None)
-			self.callbacks[callback_set][i] = acallable
-			return i
-		except ValueError:
-			i = len(self.callbacks[callback_set])
-			self.callbacks[callback_set].append(acallable)
-		return i
-		
-	def disconnect_callback_idx(self, callback_set, idx):
-		self.callbacks[callback_set][idx] = None
 	
-	def call_callbacks(self, callback_set, *args, **kwargs):
-		for acallback in self.callbacks.get(callback_set,[]):
-			acallback(*args, **kwargs)
-
 
 class WidgetBase:
 	def __init__(self, fig, ax_rect):
@@ -306,7 +317,8 @@ class ImageViewer:
 		self.image_clim_slider_mode_selector.on_clicked(self.set_clim_slider_mode)
 	
 	def set_window_title(self):
-		self.figure.canvas.manager.set_window_title(self.window_title)
+		if self.window_title is not None:
+			self.figure.canvas.manager.set_window_title(self.window_title)
 	
 	def set_clim_slider_mode(self, mode):
 		if self.image_clim_slider_mode_callback_id is not None:
@@ -386,12 +398,51 @@ class ImageViewer:
 
 
 
-class SSAViewer(ImageViewer):
-	def __init__(self, *args, **kwargs):
-		if 'window_title' not in kwargs: kwargs['window_title'] = 'SSA Viewer'
-		super().__init__(*args, **kwargs)
+class SSAViewer:
+	def __init__(self, parent_figure=None, pf_gridspec = None, gridspec_index = 0, window_title='Image Viewer'):
+		
+		
+		self.parent_figure = plt.figure(figsize=(12,8)) if parent_figure is None else parent_figure
+		self.pf_gridspec = self.parent_figure.add_gridspec(1,1,left=0,right=0,top=1,bottom=1,wspace=0,hspace=0) if pf_gridspec is None else pf_gridspec
+		self.figure = self.parent_figure.add_subfigure(self.pf_gridspec[gridspec_index])
+		self.set_window_title(window_title)
+		
+		self.f_gridspec = self.figure.add_gridspec(2,2,left=0,right=0,top=1,bottom=1,wspace=0,hspace=0)
+		
+		
+		self.input_image_viewer = ImageViewer(self.figure, pf_gridspec=self.f_gridspec, gridspec_index=0, window_title=None)
+		self.ssa_image_viewer = ImageViewer(self.figure, pf_gridspec=self.f_gridspec, gridspec_index=1, window_title=None)
+		#self.ssa_residual_viewer = ImageViewer(self.figure, pf_gridspec=self.f_gridspec, gridspec_index=1, window_title=None)
+		
+		self.input_data = None
+		self.ssa_data = None
 
+	def set_window_title(self, title):
+		if title is not None:
+			self.figure.canvas.manager.set_window_title(title)
 
+	def show(self, data=None, title=None):
+		plt.figure(self.parent_figure)
+		
+		self.set_data(data)
+		
+		plt.show()
+	
+	def set_data(self, data):
+		self.input_data = data
+		
+		self.input_image_viewer.set_data(self.input_data)
+		
+		self.ssa = SSA(
+			self.input_image_viewer.get_displayed_data(),
+			(5,5),
+			rev_mapping='fft',
+			svd_strategy='eigval', # uses less memory and is faster
+			#grouping={'mode':'elementary'}
+			grouping={'mode':'similar_eigenvalues', 'tolerance':0.01}
+		)
+		_lgr.debug(f'{self.ssa.X_ssa.shape=} {self.ssa.m=}')
+		self.ssa_image_viewer.set_data(self.ssa.X_ssa)
 
 if __name__ == '__main__':
 	#image = sys.argv[1]

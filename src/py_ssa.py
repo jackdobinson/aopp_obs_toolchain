@@ -203,10 +203,12 @@ class SSA:
 		# get eigenvectors and eigen values into decending order
 		evals_decending_idxs = np.argsort(evals)[::-1][:n_eigen_values]
 		evals = evals[evals_decending_idxs]
+		evals_signs = np.sign(evals)
+		sqrt_abs_evals = np.sqrt(np.fabs(evals))
 		u = u.T[evals_decending_idxs].T
-		v = X.T @ (u / np.sqrt(evals))
+		v = X.T @ (u / sqrt_abs_evals)
 		v_star = v.T
-		s = np.sqrt(np.diag(evals))
+		s = np.diag(evals_signs*sqrt_abs_evals)
 		return u, s, v_star
 
 	def embed(self, a : Array_1D | Array_2D):
@@ -293,13 +295,6 @@ class SSA:
 			return(self.X_decomp, self.u, self.v_star, self.s)
 			
 		# Otherwise we should actually group the matrices as we said we would
-		_lgr.debug(f'{self.grouping=}')
-		_lgr.debug(f'{self.X_decomp.shape=}')
-		_lgr.debug(f'{self.u.shape=}')
-		_lgr.debug(f'{self.v_star.shape=}')
-		_lgr.debug(f'{self.s.shape=}')
-		
-		
 		X_g = np.zeros((self.m,*self.X_decomp.shape[1:]))
 		u_g = np.zeros((*self.u.shape[1:], self.m))
 		v_star_g = np.zeros((self.m,*self.v_star.shape[1:]))
@@ -309,7 +304,7 @@ class SSA:
 			# For the I^{th} group of matrices,
 			# sum up the singular values. We will add members of the
 			# group in proportion to their contribution to the singular value
-			ss = np.sum(self.s[idxs,idxs]) 
+			ss = np.nansum(self.s[idxs,idxs]) 
 			
 			# Add group members together
 			for j in idxs:
