@@ -28,9 +28,9 @@ default_scalar_formatter = mpl.ticker.ScalarFormatter().format_data
 
 
 class CallbackMixin:
-	def __init__(self, callback_set_names : tuple[str]):
+	def __init__(self, *args : tuple[str]):
 		self.callbacks = {}
-		for csn in callback_set_names:
+		for csn in args:
 			self.callbacks[csn] = []
 		
 	def get_callback_sets(self):
@@ -66,7 +66,7 @@ class CallbackMixin:
 
 class ImagePlot(CallbackMixin):
 	def __init__(self, ax, **kwargs):
-		CallbackMixin.__init__(self,('on_set_clim','on_set_data'))
+		CallbackMixin.__init__(self,'on_set_clim','on_set_data')
 		self.ax = ax
 		self.data_shape = (0,0)
 		self.kwargs = kwargs
@@ -118,6 +118,9 @@ class WidgetBase:
 	
 	def disconnect(self, cid):
 		return self.widget.disconnect(cid)
+	
+	def remove(self):
+		self.ax.remove()
 
 
 
@@ -221,9 +224,9 @@ class TextBox(WidgetBase):
 
 
 class Range(Slider):
-	def __init__(self, fig, ax_rect, label='range', min=-1E300, max=1E300, orientation='vertical', **kwargs):
+	def __init__(self, fig, ax_rect, label='range', min=-1E300, max=1E300, orientation='vertical', step=None, **kwargs):
 		self.ax = fig.add_axes(ax_rect)
-		self.widget = mpl.widgets.RangeSlider(self.ax, label, valmin=min, valmax=max, orientation=orientation, **kwargs)
+		self.widget = mpl.widgets.RangeSlider(self.ax, label, valmin=min, valmax=max, orientation=orientation, valstep=step, **kwargs)
 		
 		self.set_labels_for_orientation(fig, orientation)
 			
@@ -231,7 +234,7 @@ class Range(Slider):
 	def set_limits(self, min = None, max = None, sticky_values=[False,False]):
 		if min is None: min = self.widget.valmin
 		if max is None: max = self.widget.valmax
-		assert min <= max, f'{self.__class__.__name__}.set_limits(...), min must be <= max, currently {min=} {max=}'
+		assert min < max, f'{self.__class__.__name__}.set_limits(...), min must be <= max, currently {min=} {max=}'
 		self.widget.valmin = min
 		self.widget.valmax = max
 		minmax = (min,max)
@@ -279,8 +282,9 @@ class RadioButtons(WidgetBase):
 
 
 
-class ImageViewer:
+class ImageViewer(CallbackMixin):
 	def __init__(self, parent_figure=None, pf_gridspec = None, gridspec_index = 0, window_title='Image Viewer'):
+		
 		self.parent_figure = plt.figure(figsize=(12,8)) if parent_figure is None else parent_figure
 		self.pf_gridspec = self.parent_figure.add_gridspec(1,1,left=0,right=0,top=1,bottom=1,wspace=0,hspace=0) if pf_gridspec is None else pf_gridspec
 		self.figure = self.parent_figure.add_subfigure(self.pf_gridspec[gridspec_index])
@@ -370,7 +374,6 @@ class ImageViewer:
 		if self.main_axes_image_data is None: return
 		
 		
-		_lgr.debug(f'{self.main_axes_image_data.ndim=}')
 		if self.main_axes_image_data.ndim == 2:
 			self.image_plane_slider.set_active(False)
 		
@@ -380,9 +383,8 @@ class ImageViewer:
 			self.image_plane_slider.set_active(True)
 			self.image_plane_slider.set_limits(0,self.main_axes_image_data.shape[0]-1)
 		
-		self.main_axes_im.set_data(self.main_axes_image_data[self.image_plane_slider.get_value()] if self.image_plane_slider.get_active() else self.main_axes_image_data)
-	
-	
+		self.main_axes_im.set_data(self.get_displayed_data())
+			
 	def set_image_plane(self, x):
 		self.main_axes_im.set_data(self.main_axes_image_data[int(x)])
 		return True
@@ -398,11 +400,82 @@ class ImageViewer:
 
 
 
+class ResidualViewer(ImageViewer):
+	def __init__(self, parent_figure=None, pf_gridspec = None, gridspec_index = 0, window_title='Image Viewer'):
+		super().__init__(parent_figure, pf_gridspec, gridspec_index, window_title)
+		self.frozen_clims = (0,1)
+	
+	
+	def set_clim_slider_mode(self, mode):
+		if self.image_clim_slider_mode_callback_id is not None:
+			self.main_axes_im.disconnect_callback_idx('on_set_data', self.image_clim_slider_mode_callback_id)
+		
+		match self.image_clim_slider_modes.index(mode):
+			case 0:
+				# Have clim slider always be min-max of new data plane
+				self.image_clim_slider_mode_callback_id = self.main_axes_im.attach_callback(
+					'on_set_data', 
+					lambda x: self.image_clim_slider.set_limits(np.nanmin(x), np.nanmax(x))
+				)
+				if self.main_axes_image_data is not None:
+					self.image_clim_slider.set_limits(
+						np.nanmin(self.get_displayed_data()), 
+						np.nanmax(self.get_displayed_data())
+					)
+			
+			case 1:
+				# Have clim slider hold the frozen limits but the image values value
+				self.image_clim_slider_mode_callback_id = self.main_axes_im.attach_callback(
+					'on_set_data', 
+					lambda x: self.image_clim_slider.set_value((np.nanmin(x), np.nanmax(x)))
+				)
+				if self.main_axes_image_data is not None:
+					self.image_clim_slider.set_limits(*self.frozen_clims)
+			
+			case _:
+				ValueError(f'Unrecognised slider mode "{mode}", must be one of {self.image_clim_slider_modes}')
+			
+		if self.main_axes_image_data is not None:
+			self.image_clim_slider.set_value(
+				(np.nanmin(self.get_displayed_data()), np.nanmax(self.get_displayed_data()))
+			)
+		return True
+	
+
+class ImageAggregator(ImageViewer, CallbackMixin):
+	def __init__(self, parent_figure=None, pf_gridspec = None, gridspec_index = 0, window_title='Image Aggregator'):
+		CallbackMixin.__init__(self, 'on_set_image_agg_planes')
+		ImageViewer.__init__(self, parent_figure, pf_gridspec , gridspec_index , window_title)
+		
+		self.image_plane_slider.remove()
+		self.image_plane_slider = Range(self.figure, (0.02, 0.2, 0.02, 0.7), step=1, label='aggregate image planes')
+		self.image_plane_slider.on_changed(self.set_image_agg_planes)
+		
+		
+	
+	def get_displayed_data(self):
+		x = self.image_plane_slider.get_value()
+		return np.nansum(self.main_axes_image_data[int(x[0]):int(x[1])], axis=0) if self.image_plane_slider.get_active() else self.main_axes_image_data
+	
+	
+	def set_image_agg_planes(self, x):
+		self.main_axes_im.set_data(np.nansum(self.main_axes_image_data[int(x[0]):int(x[1])], axis=0))
+		self.call_callbacks('on_set_image_agg_planes', self)
+		return True
+	
+	def set_data(self, data : np.ndarray = None):
+		super().set_data(data)
+		_lgr.debug(f'{data.shape=}')
+		self.image_plane_slider.set_limits(0,data.shape[0])
+		self.image_plane_slider.set_value((0,data.shape[0]))
+		
+
+
 class SSAViewer:
 	def __init__(self, parent_figure=None, pf_gridspec = None, gridspec_index = 0, window_title='Image Viewer'):
 		
 		
-		self.parent_figure = plt.figure(figsize=(12,8)) if parent_figure is None else parent_figure
+		self.parent_figure = plt.figure(figsize=(15,10)) if parent_figure is None else parent_figure
 		self.pf_gridspec = self.parent_figure.add_gridspec(1,1,left=0,right=0,top=1,bottom=1,wspace=0,hspace=0) if pf_gridspec is None else pf_gridspec
 		self.figure = self.parent_figure.add_subfigure(self.pf_gridspec[gridspec_index])
 		self.set_window_title(window_title)
@@ -412,10 +485,25 @@ class SSAViewer:
 		
 		self.input_image_viewer = ImageViewer(self.figure, pf_gridspec=self.f_gridspec, gridspec_index=0, window_title=None)
 		self.ssa_image_viewer = ImageViewer(self.figure, pf_gridspec=self.f_gridspec, gridspec_index=1, window_title=None)
-		#self.ssa_residual_viewer = ImageViewer(self.figure, pf_gridspec=self.f_gridspec, gridspec_index=1, window_title=None)
+		self.ssa_aggregate_viewer = ImageAggregator(self.figure, pf_gridspec=self.f_gridspec, gridspec_index=2, window_title=None)
+		self.ssa_residual_viewer = ResidualViewer(self.figure, pf_gridspec=self.f_gridspec, gridspec_index=3, window_title=None)
+		
+		self.ssa_aggregate_viewer.attach_callback('on_set_image_agg_planes',
+			lambda other: self.set_residual_data(self.input_image_viewer.get_displayed_data(),other.get_displayed_data())
+		)
+		
 		
 		self.input_data = None
 		self.ssa_data = None
+
+	def set_residual_data(self, obs_data, model_data):
+		residual = obs_data - model_data
+		self.ssa_residual_viewer.frozen_clims = (
+			min(np.nanmin(obs_data), np.nanmin(residual)),
+			max(np.nanmax(obs_data), np.nanmin(residual))
+		)
+		self.ssa_residual_viewer.set_data(residual)
+		
 
 	def set_window_title(self, title):
 		if title is not None:
@@ -443,6 +531,8 @@ class SSAViewer:
 		)
 		_lgr.debug(f'{self.ssa.X_ssa.shape=} {self.ssa.m=}')
 		self.ssa_image_viewer.set_data(self.ssa.X_ssa)
+		self.ssa_aggregate_viewer.set_data(self.ssa.X_ssa)
+		self.ssa_residual_viewer.set_data(self.input_image_viewer.get_displayed_data() - self.ssa_aggregate_viewer.get_displayed_data())
 
 if __name__ == '__main__':
 	#image = sys.argv[1]
