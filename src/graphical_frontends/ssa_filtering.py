@@ -3,7 +3,7 @@ Graphical front end to SSA filtering of an image, should be usable for a cube an
 """
 
 import sys, os
-import pathlib
+from pathlib import Path
 from typing import Callable, Any
 
 import numpy as np
@@ -16,6 +16,7 @@ import matplotlib.transforms
 import matplotlib.patches
 import matplotlib.lines
 
+import PIL.Image
 
 from py_ssa import SSA
 
@@ -327,7 +328,7 @@ class TextBox(WidgetBase):
 		self.widget = mpl.widgets.TextBox(self.ax, label=label, initial=initial, **kwargs)
 		
 	def get_value(self):
-		return self.widget.text.get_text()
+		return self.widget.text#.get_text()
 	
 	def on_submit(self, acallable : Callable[[str],bool]):
 		def callback(text):
@@ -394,6 +395,20 @@ class RadioButtons(WidgetBase):
 		self.widget.on_clicked(dispatch_click_event)
 
 
+class Button(WidgetBase):
+	def __init__(self, fig, ax_rect, label, **kwargs):
+		super().__init__(fig, ax_rect)
+		self.widget = mpl.widgets.Button(self.ax, label, **kwargs)
+	
+	def on_clicked(self, callback : Callable[[],bool]):
+		def dispatch_click_event(selected_label):
+			if callback(selected_label):
+				self.ax.figure.canvas.draw()
+		self.widget.on_clicked(dispatch_click_event)
+
+
+
+
 class BasePanel:
 	def __init__(self, 
 			parent_figure : None | mpl.figure.Figure | mpl.figure.SubFigure = None, 
@@ -409,7 +424,7 @@ class BasePanel:
 		self.set_window_title()
 		
 		# Figure we are going to use to draw the panel
-		self.figure = self.parent_figure.add_subfigure(self.pf_gridspec[gridspec_index])
+		self.figure = self.parent_figure.add_subfigure(self.pf_gridspec[gridspec_index], frameon=False)
 		
 		self.create_main_axes()
 		self.create_main_handles()
@@ -446,7 +461,7 @@ class ImageViewer(CallbackMixin):
 		
 		self.parent_figure = plt.figure(figsize=(12,8)) if parent_figure is None else parent_figure
 		self.pf_gridspec = self.parent_figure.add_gridspec(1,1,left=0,right=0,top=1,bottom=1,wspace=0,hspace=0) if pf_gridspec is None else pf_gridspec
-		self.figure = self.parent_figure.add_subfigure(self.pf_gridspec[gridspec_index])
+		self.figure = self.parent_figure.add_subfigure(self.pf_gridspec[gridspec_index], frameon=False)
 		
 		self.window_title=window_title
 		self.set_window_title()
@@ -747,25 +762,24 @@ class LineRegionPanel(BasePanel, CallbackMixin):
 			self.main_axes.axvline(r_max, alpha=0.5, color='tab:red', ls='--')
 		]
 	
-	
 
 class SSAViewer:
 	def __init__(self, parent_figure=None, pf_gridspec = None, gridspec_index = 0, window_title='Image Viewer'):
 		
 		
-		self.parent_figure = plt.figure(figsize=(15,10)) if parent_figure is None else parent_figure
+		self.parent_figure = plt.figure(figsize=(15,10), layout='constrained') if parent_figure is None else parent_figure
 		self.pf_gridspec = self.parent_figure.add_gridspec(1,1,left=0,right=0,top=1,bottom=1,wspace=0,hspace=0) if pf_gridspec is None else pf_gridspec
-		self.figure = self.parent_figure.add_subfigure(self.pf_gridspec[gridspec_index])
+		self.figure = self.parent_figure.add_subfigure(self.pf_gridspec[gridspec_index], frameon=False)
 		self.set_window_title(window_title)
 		
-		self.f_gridspec = self.figure.add_gridspec(2,2,left=0,right=0,top=1,bottom=1,wspace=0,hspace=0)
+		self.f_gridspec = self.figure.add_gridspec(2,2,left=0.4,right=0.6,top=0.7,bottom=0.3,wspace=0,hspace=0)
 		
 		
 		self.input_image_viewer = ImageViewer(self.figure, pf_gridspec=self.f_gridspec, gridspec_index=0, window_title=None)
-		#self.ssa_image_viewer = ImageViewer(self.figure, pf_gridspec=self.f_gridspec, gridspec_index=1, window_title=None)
 		self.ssa_evalue_panel = LineRegionPanel(self.figure, self.f_gridspec, 1, None)
 		self.ssa_aggregate_viewer = ImageAggregator(self.figure, pf_gridspec=self.f_gridspec, gridspec_index=2, window_title=None)
 		self.ssa_residual_viewer = ResidualViewer(self.figure, pf_gridspec=self.f_gridspec, gridspec_index=3, window_title=None)
+		
 		
 		self.input_image_viewer.main_axes_im.set_title('Input Data')
 		
@@ -787,8 +801,76 @@ class SSAViewer:
 		self.ssa_residual_viewer.main_axes_im.set_title('Residual (Input Data - Sum of SSA Components)')
 		
 		
+		self.save_button = Button(self.figure, (0.05, 0.001, 0.15, 0.03), 'Save Aggregated SSA Components')
+		self.save_button.on_clicked(self.save_aggregated_ssa_components)		
+		self.save_path_text = TextBox(self.figure, (0.05, 0.031, 0.3, 0.02), label='path')
+		self.save_checks = CheckButtons(self.figure, (0.2,0.001, 0.15,0.03), ['overwrite', 'create parent folders'])
+		
+		
+		
+		self.save_feedback_text = self.figure.text(0.05, 0.052, 'Formats: ".npy", ".tiff"')
+		
+		
+		
+		
 		self.input_data = None
 		self.ssa_data = None
+
+
+	def save_aggregated_ssa_components(self, event):
+		save_path = Path(self.save_path_text.get_value())
+		_lgr.debug(f'{save_path=}')
+		can_overwrite, can_create_parents = self.save_checks.get_value()
+		
+		success_flag = False
+		feedback = [f'Saving to "{save_path.absolute()}"']
+		fail_feedback = []
+		success_feedback = []
+		
+		_lgr.debug(f'Collecting failure feedback')
+		if save_path.exists():
+			fail_feedback.append('DESTINATION ALREADY EXISTS')
+			if save_path.is_dir():
+				fail_feedback.append('AND IS A DIRECTORY') 
+			elif save_path.is_file():
+				fail_feedback.append('AND IS A FILE')
+		elif not save_path.parent.exists():
+			fail_feedback.append('PARENT DIRECTORY NOT PRESENT')
+		
+		ext = save_path.suffix
+		
+		
+		if (not save_path.exists() or (can_overwrite and not save_path.is_dir())) and (save_path.parent.exists() or can_create_parents):
+			_lgr.debug(f'Starting save attempt...')
+			try:
+				if not save_path.parent.exists() and can_create_parents:
+					save_path.parent.mkdir(parents=True, exist_ok=True)
+				
+				data = self.ssa_aggregate_viewer.get_displayed_data()
+				match ext:
+					case '.npy':
+						np.save(save_path, data)
+					case '.tiff':
+						PIL.Image.fromarray(data).save(save_path)
+					case _:
+						raise RuntimeError(f'Unknown extension "{ext}"')
+			except Exception as e:
+				fail_feedback.append(str(e))
+				success_flag=False
+			else:
+				success_feedback.append('successful')
+				success_flag = True
+			_lgr.debug(f'Completed save attempt.')
+		
+		_lgr.debug(f'Writing feedback...')
+		if success_flag:
+			self.save_feedback_text.set_text(' '.join(feedback+success_feedback))
+			self.save_feedback_text.set_color('green')
+		else:
+			self.save_feedback_text.set_text(' '.join(feedback+fail_feedback))
+			self.save_feedback_text.set_color('red')
+		_lgr.debug(f'Feedback written.')
+		return True
 
 	def set_image_plane_range_from_evalue_panel_region(self, r_min, r_max):
 		if r_min is None:
