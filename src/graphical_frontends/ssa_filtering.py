@@ -14,6 +14,7 @@ import matplotlib.widgets
 import matplotlib.ticker
 import matplotlib.transforms
 import matplotlib.patches
+import matplotlib.lines
 
 
 from py_ssa import SSA
@@ -64,21 +65,40 @@ class CallbackMixin:
 				acallback(*args, **kwargs)
 
 
-class ImagePlot(CallbackMixin):
+class BasePlot:
+	def __init__(self, ax, **kwargs):
+		self.ax = ax
+		self.data = None
+		self.kwargs = kwargs
+		# self.handle holds the things that are shown on the axes.
+		self.handle = None
+	
+	def remove(self):
+		if self.handle is not None:
+			# if the handle is a list, then remove each element individually
+			# otherwise, remove the handle itself
+			if type(self.handle) in (list, tuple):
+				for h in self.handle:
+					h.remove()
+			else:
+				self.handle.remove()
+		self.handle = None
+	
+	def set_title(self, title : None | str):
+		self.ax.set_title(title)
+	
+
+class ImagePlot(BasePlot, CallbackMixin):
 	def __init__(self, ax, **kwargs):
 		CallbackMixin.__init__(self,'on_set_clim','on_set_data')
-		self.ax = ax
-		self.data_shape = (0,0)
-		self.kwargs = kwargs
-		self.im = None
+		BasePlot.__init__(self, ax, **kwargs)
 	
 	def set_clim(self, min=None, max=None):
-		
 		if min is None or max is None:
-			image_data = self.im.get_array()
+			image_data = self.handle.get_array()
 			if min is None: min = np.nanmin(image_data)
 			if max is None: max = np.nanmax(image_data)
-		self.im.set(clim=(min,max))
+		self.handle.set(clim=(min,max))
 		self.call_callbacks('on_set_clim', min, max)
 		
 	
@@ -86,18 +106,111 @@ class ImagePlot(CallbackMixin):
 		self.ax.set_xlim(*xlim)
 		self.ax.set_ylim(*ylim)
 	
-	def set_data(self, data):
-		if self.im is None or any(s1 != s2 for s1,s2 in zip(self.data_shape,data.shape)):
-			if self.im is not None: 
-				self.im.remove()
-			self.im = self.ax.imshow(data, **self.kwargs)
-			self.data_shape = data.shape
 	
-		self.im.set_data(data)
+	def sanitise_data(self, new_data):
+		if type(new_data) is not np.ndarray:
+			raise RuntimeError(f'{self.__class__.__name__} accepts 2 dimensional numpy arrays')
+		if new_data.ndim != 2:
+			raise RuntimeError(f'{self.__class__.__name__} accepts 2 dimensional numpy arrays as input data, was passed data with {new_data.ndim} dimensions')
+		return new_data
+	
+	def is_new_data_compatible(self, sanitised_data):
+		if self.data is None:
+			return False
+		return all(s1 == s2 for s1,s2 in zip(self.data.shape, sanitised_data.shape))
+	
+	def remove(self):
+		if self.handle is not None:
+			self.handle.remove()
+		self.handle = None
+	
+	def set_data(self, new_data):
+		sanitised_new_data = self.sanitise_data(new_data)
+		if not self.is_new_data_compatible(sanitised_new_data):
+			self.remove()
+			self.data = sanitised_new_data
+			self.create()
+		else:
+			self.data = sanitised_new_data
+			self.handle.set_data(self.data)
 		self.set_axes_limits()
 		self.set_clim()
-		self.call_callbacks('on_set_data', data)
+		self.call_callbacks('on_set_data', self)
 	
+	
+	def create(self):
+		self.handle = self.ax.imshow(self.data, **self.kwargs)
+
+
+class LinePlot(BasePlot, CallbackMixin):
+	def __init__(self, ax, **kwargs):
+		CallbackMixin.__init__(self,'on_set_data')
+		BasePlot.__init__(self, ax, **kwargs)
+
+	def is_new_data_compatible(self, sanitised_new_data):
+		if (self.data is None
+			or len(sanitised_new_data) > len(self.data)
+		):
+			return False
+		return True
+
+	
+
+	def sanitise_data(self, new_data):
+		# want to put data into a format where we have
+		# three dimensions: "dataset", "x or y data", "values"
+		# I.e. the shape is always (n_datasets, 2, n_points)
+		ndim = 0
+		_lgr.debug(f'{type(new_data)=}')
+		if type(new_data) is np.ndarray:
+			ndim = new_data.ndim
+		else:
+			# how many levels can we index
+			test_value = new_data
+			while hasattr(new_data, "__getitem__"):
+				ndim += 1
+				test_value = new_data[0]
+		
+		match (ndim):
+			case 1:
+				return ((np.arange(len(new_data)),new_data),)
+			case 2:
+				return (new_data,)
+			case 3:
+				return new_data
+			case _:
+				raise ValueError(f'{self.__class__.__name__} can only accept data with up to 3 dimensions of shape (n_datasets, 2, n_points). Passed data has {ndim} dimensions.')
+			
+		
+	def set_axes_limits(self, 
+			xlim : tuple[float | None, float | None] = (None,None), 
+			ylim  : tuple[float | None, float | None] = (None,None)
+		):
+		self.ax.set_xlim(*xlim)
+		self.ax.set_ylim(*ylim)
+		
+
+
+	def set_data(self, new_data):
+		sanitised_new_data = self.sanitise_data(new_data)
+		if not self.is_new_data_compatible(sanitised_new_data):
+			self.remove()
+			self.data = sanitised_new_data
+			self.create()
+		else:
+			for i, line in enumerate(self.handle):
+				if i < len(sanitised_new_data):
+					line.set_data(sanitised_new_data[i])
+				else:
+					line.remove()
+		self.set_axes_limits()
+		self.call_callbacks('on_set_data', self)
+	
+	def create(self):
+		self.handle = []
+		for dataset in self.data:
+			self.handle.extend(self.ax.plot(dataset[0], dataset[1], **self.kwargs))
+				
 
 class WidgetBase:
 	def __init__(self, fig, ax_rect):
@@ -281,6 +394,52 @@ class RadioButtons(WidgetBase):
 		self.widget.on_clicked(dispatch_click_event)
 
 
+class BasePanel:
+	def __init__(self, 
+			parent_figure : None | mpl.figure.Figure | mpl.figure.SubFigure = None, 
+			pf_gridspec : None | mpl.gridspec.GridSpec = None, 
+			gridspec_index : int = 0, 
+			window_title : None | str = None
+		):
+		# Information about how to draw the panel in the containing figure
+		self.parent_figure = plt.figure(figsize=(12,8)) if parent_figure is None else parent_figure
+		self.pf_gridspec = self.parent_figure.add_gridspec(1,1,left=0,right=0,top=1,bottom=1,wspace=0,hspace=0) if pf_gridspec is None else pf_gridspec
+		self.window_title=window_title
+		
+		self.set_window_title()
+		
+		# Figure we are going to use to draw the panel
+		self.figure = self.parent_figure.add_subfigure(self.pf_gridspec[gridspec_index])
+		
+		self.create_main_axes()
+		self.create_main_handles()
+	
+	def create_main_axes(self):
+		# Get the axes for the plot
+		# (left, bottom, width, height) in fraction of figure area
+		self.main_axes_rect = (0.2, 0.2, 0.7, 0.7)
+		self.main_axes = self.figure.add_axes(self.main_axes_rect, projection=None, polar=False)
+	
+	def create_main_handles(self):
+		self.main_data_handle = None
+		self.main_plot_handle = None
+
+	def set_window_title(self):
+		if self.window_title is not None:
+			self.figure.canvas.manager.set_window_title(self.window_title)
+	
+	def set_data(self, new_data):
+		NotImplemented
+	
+	def show(self, data : None | Any = None, title : None | str = None):
+		plt.figure(self.parent_figure)
+		
+		self.set_data(data)
+		self.main_axes.set_title(title)
+		
+		plt.show()
+	
+
 
 class ImageViewer(CallbackMixin):
 	def __init__(self, parent_figure=None, pf_gridspec = None, gridspec_index = 0, window_title='Image Viewer'):
@@ -333,7 +492,7 @@ class ImageViewer(CallbackMixin):
 				# Have clim slider always be min-max of new data plane
 				self.image_clim_slider_mode_callback_id = self.main_axes_im.attach_callback(
 					'on_set_data', 
-					lambda x: self.image_clim_slider.set_limits(np.nanmin(x), np.nanmax(x))
+					lambda other: self.image_clim_slider.set_limits(np.nanmin(other.data), np.nanmax(other.data))
 				)
 				if self.main_axes_image_data is not None:
 					self.image_clim_slider.set_limits(
@@ -345,7 +504,7 @@ class ImageViewer(CallbackMixin):
 				# Have clim slider holder the full range of data, and be min-max of new data plane when selected
 				self.image_clim_slider_mode_callback_id = self.main_axes_im.attach_callback(
 					'on_set_data', 
-					lambda x: self.image_clim_slider.set_value((np.nanmin(x), np.nanmax(x)))
+					lambda other: self.image_clim_slider.set_value((np.nanmin(other.data), np.nanmax(other.data)))
 				)
 				if self.main_axes_image_data is not None:
 					self.image_clim_slider.set_limits(
@@ -415,7 +574,7 @@ class ResidualViewer(ImageViewer):
 				# Have clim slider always be min-max of new data plane
 				self.image_clim_slider_mode_callback_id = self.main_axes_im.attach_callback(
 					'on_set_data', 
-					lambda x: self.image_clim_slider.set_limits(np.nanmin(x), np.nanmax(x))
+					lambda other: self.image_clim_slider.set_limits(np.nanmin(other.data), np.nanmax(other.data))
 				)
 				if self.main_axes_image_data is not None:
 					self.image_clim_slider.set_limits(
@@ -427,7 +586,7 @@ class ResidualViewer(ImageViewer):
 				# Have clim slider hold the frozen limits but the image values value
 				self.image_clim_slider_mode_callback_id = self.main_axes_im.attach_callback(
 					'on_set_data', 
-					lambda x: self.image_clim_slider.set_value((np.nanmin(x), np.nanmax(x)))
+					lambda other: self.image_clim_slider.set_value((np.nanmin(other.data), np.nanmax(other.data)))
 				)
 				if self.main_axes_image_data is not None:
 					self.image_clim_slider.set_limits(*self.frozen_clims)
@@ -470,6 +629,125 @@ class ImageAggregator(ImageViewer, CallbackMixin):
 		self.image_plane_slider.set_value((0,data.shape[0]))
 		
 
+class LineRegionPanel(BasePanel, CallbackMixin):
+	class RemoveRegionException(Exception):
+		pass
+
+	def __init__(self, parent_figure=None, pf_gridspec = None, gridspec_index = 0, window_title='Line Region', **kwargs):
+		CallbackMixin.__init__(self, 'on_region_changed')
+		super().__init__(parent_figure, pf_gridspec, gridspec_index, window_title)
+		
+		self.main_plot_handle = LinePlot(self.main_axes, **kwargs)
+		self.main_data_handle = None
+		
+		self.shown_span_hdls = None
+		self.span_selector_wdgt = mpl.widgets.SpanSelector(
+			self.main_axes,
+			direction='horizontal',
+			onselect = self.region_changed
+		)
+		self.set_region_limits()
+	
+	def set_data(self, new_data):
+		self.main_data_handle = new_data
+		self.main_plot_handle.set_data(self.main_data_handle)
+	
+	def set_region_limits(self, 
+			min_value : None | float | int = None, 
+			max_value : None | float | int = None, 
+			snap_step_value : None | float | int = None, 
+			min_size : None | float | int = None, 
+			max_size : None | float | int = None,
+			snap_action = 'round', 
+			below_min_action='set', 
+			above_max_action='set',
+			region_too_small_action = 'remove_region',
+			region_too_large_action = 'remove_region'
+		):
+		self.r_min_value = min_value
+		self.r_max_value = max_value
+		self.r_snap_step_value = snap_step_value
+		self.r_min_size = min_size
+		self.r_max_size = max_size
+		self.r_snap_action = snap_action
+		self.r_below_min_action = below_min_action
+		self.r_above_max_action = above_max_action
+		self.r_region_too_small_action = region_too_small_action
+		self.r_region_too_large_action = region_too_large_action
+	
+	
+	
+	
+	def apply_region_action(self, value: int | float, limit : int | float, action : str) -> int | float | None:
+		match action:
+			case 'round':
+				remainder = value % limit
+				return value - remainder if (remainder < 1/2*limit) else value - remainder + limit
+			case 'floor':
+				return value - value % limit
+			case 'ceil':
+				return (value + limit) % limit
+			case 'set':
+				return limit
+			case 'remove_region':
+				raise LineRegionPanel.RemoveRegionException
+	
+	def apply_region_limits(self, r_min, r_max):
+		# Apply min/max values
+		if self.r_min_value is not None:
+			if r_min < self.r_min_value:
+				r_min = self.apply_region_action(r_min, self.r_min_value, self.r_below_min_action)
+			if r_max < self.r_min_value:
+				r_max = self.apply_region_action(r_max, self.r_min_value, self.r_below_min_action)
+		
+		if self.r_max_value is not None:
+			if r_min > self.r_max_value:
+				r_min = self.apply_region_action(r_min, self.r_max_value, self.r_below_max_action)
+			if r_max > self.r_max_value:
+				r_max = self.apply_region_action(r_max, self.r_max_value, self.r_below_max_action)
+		
+		# Apply snap to step
+		if self.r_snap_step_value is not None:
+			r_min = self.apply_region_action(r_min, self.r_snap_step_value, self.r_snap_action)
+			r_max = self.apply_region_action(r_max, self.r_snap_step_value, self.r_snap_action)
+		
+		if self.r_min_size is not None and (r_max - r_min) < self.r_min_size:
+			region_size = self.apply_region_action((r_max - r_min), self.r_min_size, self.r_region_too_small_action)
+			r_max = r_min + region_size
+		
+		if self.r_max_size is not None and (r_max - r_min) > self.r_max_size:
+			region_size = self.apply_region_action((r_max - r_min), self.r_max_size, self.r_region_too_large_action)
+			r_max = r_min + region_size
+		return r_min, r_max
+		
+		
+	
+	def region_changed(self, r_min : float, r_max : float) -> bool:
+		try:
+			r_min, r_max = self.apply_region_limits(r_min, r_max)
+		except LineRegionPanel.RemoveRegionException:
+			self.remove_region()
+			self.call_callbacks('on_region_changed', None, None)
+			return
+			
+		self.set_region(r_min, r_max)
+		self.call_callbacks('on_region_changed', r_min, r_max)
+	
+	def remove_region(self):
+		if self.shown_span_hdls is not None:
+			for h in self.shown_span_hdls:
+				h.remove()
+			self.shown_span_hdls = None
+	
+	def set_region(self, r_min, r_max):
+		self.remove_region()
+		self.shown_span_hdls = [
+			self.main_axes.axvspan(r_min, r_max, alpha=0.3, color='tab:red'),
+			self.main_axes.axvline(r_min, alpha=0.5, color='tab:red', ls='-'),
+			self.main_axes.axvline(r_max, alpha=0.5, color='tab:red', ls='--')
+		]
+	
+	
 
 class SSAViewer:
 	def __init__(self, parent_figure=None, pf_gridspec = None, gridspec_index = 0, window_title='Image Viewer'):
@@ -484,17 +762,47 @@ class SSAViewer:
 		
 		
 		self.input_image_viewer = ImageViewer(self.figure, pf_gridspec=self.f_gridspec, gridspec_index=0, window_title=None)
-		self.ssa_image_viewer = ImageViewer(self.figure, pf_gridspec=self.f_gridspec, gridspec_index=1, window_title=None)
+		#self.ssa_image_viewer = ImageViewer(self.figure, pf_gridspec=self.f_gridspec, gridspec_index=1, window_title=None)
+		self.ssa_evalue_panel = LineRegionPanel(self.figure, self.f_gridspec, 1, None)
 		self.ssa_aggregate_viewer = ImageAggregator(self.figure, pf_gridspec=self.f_gridspec, gridspec_index=2, window_title=None)
 		self.ssa_residual_viewer = ResidualViewer(self.figure, pf_gridspec=self.f_gridspec, gridspec_index=3, window_title=None)
 		
-		self.ssa_aggregate_viewer.attach_callback('on_set_image_agg_planes',
-			lambda other: self.set_residual_data(self.input_image_viewer.get_displayed_data(),other.get_displayed_data())
+		self.input_image_viewer.main_axes_im.set_title('Input Data')
+		
+		
+		self.ssa_evalue_panel.main_axes.set_yscale('log')
+		self.ssa_evalue_panel.main_axes.set_xlabel('Singular Value Index')
+		self.ssa_evalue_panel.main_axes.set_ylabel('Singular Value')
+		self.ssa_evalue_panel.main_plot_handle.set_title('SSA Singular Values of Components')
+		self.ssa_evalue_panel.set_region_limits(0,None,1,1,None)
+		self.ssa_evalue_panel.attach_callback('on_region_changed',
+			self.set_image_plane_range_from_evalue_panel_region
 		)
+		
+		self.ssa_aggregate_viewer.main_axes_im.set_title('Sum of SSA Components')
+		self.ssa_aggregate_viewer.attach_callback('on_set_image_agg_planes',
+			self.set_image_plane_range_from_aggregator
+		)
+		
+		self.ssa_residual_viewer.main_axes_im.set_title('Residual (Input Data - Sum of SSA Components)')
 		
 		
 		self.input_data = None
 		self.ssa_data = None
+
+	def set_image_plane_range_from_evalue_panel_region(self, r_min, r_max):
+		if r_min is None:
+			r_min = 0
+		if r_max is None:
+			r_max = len(self.ssa_evalue_panel.main_data_handle)
+		self.ssa_aggregate_viewer.image_plane_slider.set_value((r_min,r_max))
+		self.ssa_aggregate_viewer.main_axes_im.set_data(np.nansum(self.ssa_aggregate_viewer.main_axes_image_data[int(r_min):int(r_max)], axis=0))
+		self.set_residual_data(self.input_image_viewer.get_displayed_data(),self.ssa_aggregate_viewer.get_displayed_data())
+
+	def set_image_plane_range_from_aggregator(self, agg):
+		x = agg.image_plane_slider.get_value()
+		self.set_residual_data(self.input_image_viewer.get_displayed_data(),agg.get_displayed_data())
+		self.ssa_evalue_panel.set_region(x[0],x[1]+1)
 
 	def set_residual_data(self, obs_data, model_data):
 		residual = obs_data - model_data
@@ -529,8 +837,8 @@ class SSAViewer:
 			#grouping={'mode':'elementary'}
 			grouping={'mode':'similar_eigenvalues', 'tolerance':0.01}
 		)
-		_lgr.debug(f'{self.ssa.X_ssa.shape=} {self.ssa.m=}')
-		self.ssa_image_viewer.set_data(self.ssa.X_ssa)
+		_lgr.debug(f'{self.ssa.X_ssa.shape=} {self.ssa.m=} {np.diag(self.ssa.s_g)=}')
+		self.ssa_evalue_panel.set_data(np.diag(self.ssa.s_g))
 		self.ssa_aggregate_viewer.set_data(self.ssa.X_ssa)
 		self.ssa_residual_viewer.set_data(self.input_image_viewer.get_displayed_data() - self.ssa_aggregate_viewer.get_displayed_data())
 
