@@ -33,6 +33,7 @@ from typing import Callable
 import logging
 import random
 
+import scientest
 import scientest.cfg.logs
 import scientest.cfg.settings
 
@@ -45,6 +46,7 @@ import scientest.discover
 
 from scientest.decorators import TestSkippedException
 from scientest.output_directory import TestsOutputDirectory
+
 
 import scientest.intercepts.matplotlib
 
@@ -99,6 +101,21 @@ def redirect_logging(stream, old_handler : logging.Handler = None):
 	logger.addHandler(old_handler)
 
 
+def handle_marks(mark, payload):
+	"""
+	Marked tests are treated differently to unmarked ones.
+	
+	TODO:
+	* Add command line options to customise this on a per-invocation basis
+	* Add ability to put a file into the test folder so this can be controlled on a test-folder basis
+	"""
+	if (mark in ('slow', 'broken')):
+		raise TestSkippedException(f'{mark}' + f': {payload}' if payload is not None and not callable(payload) else '')
+	
+	if callable(payload):
+		payload()
+	
+
 def run_tests(test_discovery_data, continue_on_fail=True, live_output=False):
 	"""
 	Run discovered tests
@@ -125,6 +142,7 @@ def run_tests(test_discovery_data, continue_on_fail=True, live_output=False):
 			
 			module_full_name, test_callable_name = tid.split('::')
 			_lgr.debug(f"{scientest.root_test_output_dir / module_full_name.replace('.',os.sep)=}")
+			
 			scientest.test_output_dir = TestsOutputDirectory(
 				scientest.root_test_output_dir / module_full_name.replace('.',os.sep),
 				dir_fmt="{test_callable_name}",
@@ -148,6 +166,11 @@ def run_tests(test_discovery_data, continue_on_fail=True, live_output=False):
 					if 'item' in pre_locals:
 						del pre_locals['item']
 					
+					# retrieve any marks the test has
+					for mark, payload in getattr(td['callable'], 'scientest_attributes', {}).get('marks',[]):
+						handle_marks(mark, payload)
+					
+					# Run the test
 					td['callable']()
 					
 					# Save program state directly after test

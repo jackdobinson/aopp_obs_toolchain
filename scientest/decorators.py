@@ -124,12 +124,17 @@ def skip(func,
 @decorator
 def mark(func, mark, payload = None):
 	"""
-	Mark test for debugging, testing only runs this test
+	Mark test, and supply a payload that can be used later.
 	"""
 	@wraps(func)
 	def __wrapper__(*args, **kwargs):
-		mark_actions.action_map[mark](payload)
 		func(*args, **kwargs)
+	
+	setattr(__wrapper__, 'scientest_attributes', getattr(__wrapper__, 'scientest_attributes', {}))
+	if 'marks' in __wrapper__.scientest_attributes:
+		__wrapper__.scientest_attributes['marks'].append((mark, payload))
+	else:
+		__wrapper__.scientest_attributes['marks'] = [(mark, payload)]
 			
 	return __wrapper__
 

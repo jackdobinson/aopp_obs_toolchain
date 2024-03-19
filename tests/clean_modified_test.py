@@ -26,7 +26,9 @@ from plot_helper.base import AxisDataMapping
 
 
 import test_data
+import scientest
 import scientest.decorators
+
 
 algo_basic_test_data = SimpleNamespace(
 	n_iter = 10,
@@ -51,7 +53,7 @@ def test_clean_modified_call_altered_instantiated_parameters():
 	assert result[2] == n_iter_overwrite, f"Expect {n_iter_overwrite} iterations of CleanModified, have {result[2]} instead."
 
 
-@scientest.decorators.skip(True)
+#@scientest.decorators.mark('slow', )
 def test_clean_modified_on_example_data(n_iter=200):
 	# get example data
 	obs = FitsSpecifier(test_data.example_fits_file, 'DATA', (slice(229,230),slice(None),slice(None)), {'CELESTIAL':(1,2)}) 
@@ -122,14 +124,15 @@ def test_clean_modified_on_example_data(n_iter=200):
 		hdu_residual
 	])
 
-	output_dir = os.path.join(test_data.test_dir, 'output')
+	output_dir = scientest.test_output_dir.path
+	print(f'{output_dir=}')
 	os.makedirs(output_dir, exist_ok=True)
 	output_fname = os.path.join(output_dir, f"{__name__}_test_clean_modified_on_example_data_output.fits")
 	print(f'Outputting test result to {output_fname}')
 	hdul_output.writeto(output_fname, overwrite=True)
 
 
-@scientest.decorators.skip(True)
+@scientest.decorators.mark('broken', "displays animated plots that are incompatible with intercepting matplotlib's 'show' function")
 def test_clean_modified_on_example_data_with_plotting_hooks(n_iter=200):
 	
 	

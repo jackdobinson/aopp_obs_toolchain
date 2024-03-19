@@ -25,6 +25,7 @@ from plot_helper.base import AxisDataMapping
 
 
 import test_data
+import scientest
 import scientest.decorators
 import scientest.cfg.settings
 
@@ -53,7 +54,7 @@ def test_call_altered_instantiated_parameters():
  
 
 
-@scientest.decorators.skip(True)
+#@scientest.decorators.mark('slow')
 def test_on_example_data(n_iter=200):
 	# get example data
 	obs = FitsSpecifier(test_data.example_fits_file, 'DATA', (slice(229,230),slice(None),slice(None)), {'CELESTIAL':(1,2)}) 
@@ -129,7 +130,7 @@ def test_on_example_data(n_iter=200):
 		hdu_residual
 	])
 
-	output_dir = os.path.join(test_data.test_dir, 'output')
+	output_dir = scientest.test_output_dir.path
 	os.makedirs(output_dir, exist_ok=True)
 	output_fname = os.path.join(output_dir, f"{__name__}_test_lucy_richardson_on_example_data_output.fits")
 	print(f'Outputting test result to {output_fname}')
@@ -137,7 +138,8 @@ def test_on_example_data(n_iter=200):
 
 
 
-@scientest.decorators.skip(True)
+@scientest.decorators.mark('broken', 'displays animated plots that are incompatible with intercepting matplotlib\'s "show" function')
+# This test displays animated plots that don't play nice with `scientest` intercepting matplotlib's show function.
 def test_on_example_data_with_plotting_hooks(n_iter=200):
 	# get example data
 	obs = FitsSpecifier(test_data.example_fits_file, 'DATA', (slice(229,230),slice(None),slice(None)), {'CELESTIAL':(1,2)}) 
