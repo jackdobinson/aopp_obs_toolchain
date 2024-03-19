@@ -3,8 +3,8 @@
 Implements Otsu's method for thresholding images
 """
 
-import utilities.logging_setup
-logging, _lgr = utilities.logging_setup.getLoggers(__name__, 'DEBUG')
+import cfg
+_lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 import sys, os
 import numpy as np
@@ -12,8 +12,6 @@ import scipy as sp
 import matplotlib.pyplot as plt
 from astropy.io import fits
 
-import utilities as ut
-import utilities.plt
 import fitting
 
 def calc(counts, bin_edges):

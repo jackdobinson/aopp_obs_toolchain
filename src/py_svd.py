@@ -7,12 +7,9 @@ Mostly consists of helper functions, as numpy does heavy lifting.
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-import utilities as ut
-import utilities.np 
-import utilities.plt
 
 import cfg.logs
-
+import plot_helper
 _lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
@@ -54,10 +51,10 @@ def plot(u, s, v_star, inmat, decomp, recomp_n=None, f1=None, a1=None):
 
 	# plot SVD of image
 	if f1 is None or a1 is None:
-		f1, a1 = ut.plt.figure_n_subplots(6, figure=f1)
+		f1, a1 = plot_helper.figure_n_subplots(6, figure=f1)
 
 	a1 = a1.ravel()
-	[ut.plt.remove_axes_ticks_and_labels(ax) for ax in a1]
+	[plot_helper.remove_axes_ticks_and_labels(ax) for ax in a1]
 
 	f1.suptitle('Singular value decomposition U S V* of input maxtrix')
 
@@ -66,7 +63,7 @@ def plot(u, s, v_star, inmat, decomp, recomp_n=None, f1=None, a1=None):
 
 	a1[1].set_title('Diagonal elements of S (decending order)')
 	a1[1].plot(np.diag(s))
-	ut.plt.remove_axes_ticks_and_labels(a1[1], state=True)
+	plot_helper.remove_axes_ticks_and_labels(a1[1], state=True)
 	a1[1].set_xlabel('sv idx')
 	a1[1].set_ylabel('sv')
 	a1[1].axvline(recomp_n, color='red', ls='--')
@@ -85,11 +82,11 @@ def plot(u, s, v_star, inmat, decomp, recomp_n=None, f1=None, a1=None):
 
 	# Plot components of image decomposition
 	n = min(decomp.shape[0], 2*recomp_n)
-	f1, a1 = ut.plt.figure_n_subplots(n)
+	f1, a1 = plot_helper.figure_n_subplots(n)
 	a1 = a1.ravel()
 	f1.suptitle(f'First {n} svd components X_i [M = sum(X_i)] (of {decomp.shape[0]})')
 	for i, ax in enumerate(a1):
-		ut.plt.remove_axes_ticks_and_labels(ax)
+		plot_helper.remove_axes_ticks_and_labels(ax)
 		ax.set_title(f'i = {i}', y=0.9)
 		ax.imshow(decomp[i])
 	return

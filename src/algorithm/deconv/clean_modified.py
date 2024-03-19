@@ -7,10 +7,10 @@ import scipy.signal
 
 from .base import Base
 
-from utilities.classes import Pointer
-import fitscube.deconvolve.helpers
+from data_structures.pointer import Pointer
 import image_processing as im_proc
 import image_processing.otsu_thresholding
+import mfunc
 
 import cfg.logs
 
@@ -219,7 +219,7 @@ class CleanModified(Base):
 			np.nanmax(np.fabs(self._residual)), # fabs
 			np.sqrt(np.nansum(self._residual**2)/self._residual.size), # rms
 			np.nansum( # generalised_least_squares
-				0.5*fitscube.deconvolve.helpers.generalised_least_squares(
+				0.5*mfunc.generalised_least_squares(
 					self._components,
 					obs, self.noise_std, psf
 				)
