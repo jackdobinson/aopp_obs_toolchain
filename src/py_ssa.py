@@ -22,20 +22,22 @@ import plot_helper
 import py_svd as py_svd
 
 
-T = TypeVar('T')
-N = TypeVar('N',bound=int)
-M = TypeVar('M',bound=int)
 
+# Hopefully creating these will be useful in making easy-to-read type hints
+T = TypeVar('T') # Represents a Type, e.g. float, int, str
+N = TypeVar('N',bound=int) # Represents an integer
+M = TypeVar('M',bound=int) # Represents another integer that is not necessarily the same as N
+L = TypeVar('L',bound=int) # Represents another integer that is not necessarily the same as N or M
 
+Array_1D = np.ndarray[[N],T] # Represents an 1 dimensional array of type T. For example `np.ones((10,), dtype=int)`
+Array_2D = np.ndarray[[N,M],T] # Represents a 2 dimensional array of type T. For example `np.zeros((128,256), dtype=float)`
+Array_3D = np.ndarray[[N,M,L], T] # Represents a 3 dimensional array of type T. For example `np.zeros((10,24,36), dtype=float)`
 
-
-
-Array_1D = np.ndarray[[N],T]
-Array_2D = np.ndarray[[N,M],T]
-
-
+# These define sets of strings, and are used later to restrict argument values to only these strings
 Grouping_Mode_Literals = Literal['elementary'] | Literal['pairs'] | Literal['pairs_after_first'] | Literal['similar_eigenvalues'] | Literal['blocks_of_n']
-
+SVD_Strategy_Literals = Literal['numpy'] | Literal['eigval']
+Reverse_Mapping_Strategy_Literals = Literal['fft'] | Literal['direct']
+Convolution_Mode_literals = Literal['full'] | Literal['same'] | Literal['valid']
 
 #%%
 # TODO:
@@ -45,8 +47,8 @@ class SSA:
 	def __init__(self, 
 			a : Array_1D | Array_2D, 
 			w_shape : None | int | tuple[N] | tuple[N,M] = None, 
-			svd_strategy: Literal['numpy'] | Literal['eigval'] = 'eigval', 
-			rev_mapping : Literal['fft'] | Literal['direct'] ='fft', 
+			svd_strategy: SVD_Strategy_Literals = 'eigval', 
+			rev_mapping : Reverse_Mapping_Strategy_Literals ='fft', 
 			grouping : dict[str, Any] = {'mode':'elementary'}, 
 			n_eigen_values : None | int = None
 		):
@@ -211,7 +213,7 @@ class SSA:
 		s = np.diag(evals_signs*sqrt_abs_evals)
 		return u, s, v_star
 
-	def embed(self, a : Array_1D | Array_2D):
+	def embed(self, a : Array_1D | Array_2D) -> Array_2D:
 		"""
 		Peform embedding of our data, a, into the trajectory matrix, self.X.
 		"""
@@ -234,9 +236,19 @@ class SSA:
 	def get_grouping(self, 
 			mode : Grouping_Mode_Literals = 'elementary', 
 			**kwargs
-		):
+		) -> list[list[int]]:
 		"""
 		Define how the eigentriples (evals, evecs, fvecs) should be grouped.
+		
+		# ARGUMENTS #
+			mode : str
+				How the grouping will be performed
+			**kwargs : Dict[str,Any]
+				Data required depending upon mode, see SSA.__init__ docstring for details
+		
+		# RETURNS #
+			grouping : list[list[int]]
+				List of indices that will make up each group.
 		"""
 		def ensure_grouping_parameter(x): 
 			assert x in kwargs, f'Grouping {mode=} requires grouping parameter "{x}", which is not found in {kwargs}'
@@ -282,9 +294,26 @@ class SSA:
 			case _:
 				raise NotImplementedError(f'Unknown grouping {mode=}, {kwargs} for {self}')
 
-	def group(self):
+	def group(self) -> tuple[Array_3D, Array_2D, Array_2D, Array_2D]:
 		"""
-		Perform the actual grouping
+		Perform the actual grouping of decomposed elements
+		
+		Takes lists of indices from `self.grouping`, and sums decomposed elements with those indices
+		i.e. self.grouping=[[0], [1,2,3], [4,5,6,7], [9]]
+		then grouped components are X_g = [ X_0, X_1+X_2+X_3, X_4+X_5+X_6+X_7, X_9]
+		
+		# ARGUMENTS #
+			None, but uses `self.X_decomp`, `self.u`, `self.s`, `self.v_star`, `self.grouping`, `self.d`, `self.m`
+		
+		# RETURNS #
+			X_g : Array_3D
+				Grouped matrixes
+			u_g : Array_2D
+				Grouped left singular vectors
+			v_star_g : Array_2D
+				Grouped right singular vectors
+			s_g : Array_2D
+				Grouped singular values
 		"""
 		# self.d - number of matrices the trajectory matrix has been decomposed into
 		# self.m - number of matrices we will have after grouping the decomposed matrices
@@ -316,9 +345,13 @@ class SSA:
 				
 		return(X_g, u_g, v_star_g, s_g)
 	
-	def reverse_mapping(self) -> np.ndarray :
+	def reverse_mapping(self) -> Array_2D | Array_3D:
 		"""		
 		Reverses the embedding map. This version is slow but more accurate, use quasi_hankelisation instead in most applications
+		
+		# RETURNS #
+			X_ssa : Array_2D | Array_3D
+				2D (for 1D input data) or 3D (for 2D input data) singular spectrum analysis components. First index is the component number.
 		"""
 		
 		E = np.zeros((*self.n,))
@@ -351,12 +384,28 @@ class SSA:
 		return X_ssa
 	
 	@staticmethod
-	def diagsums(a, b, mode='full', fac=None):
+	def diagsums(
+			a : Array_2D, 
+			b : Array_2D, 
+			mode : Convolution_Mode_literals = 'full',
+			fac : int | float = 1
+		) -> Array_2D:
 		"""
-		This is practically the same as convolution using FFT
+		Diagonally sum matrices `a` and `b`. This is practically the same as convolution using FFT.
+		
+		# ARGUMENTS #
+			a : Array_2D
+			b : Array_2D
+			mode : Convolution_Mode_literals = 'full'
+				Convolution mode to use
+			fac : int | float = 1
+				Factor to multiply convolution by.
+		
+		# RETURNS #
+			conv : Array_2D
+				Diagonal sum of `a` and `b`
 		"""
 		shape_full = [s1+s2-1 for s1,s2 in zip(a.shape,b.shape)]
-		fac = fac if fac is not None else 1
 		a_fft = np.fft.fftn(a, shape_full)
 		b_fft = np.fft.fftn(b, shape_full)
 		conv = np.fft.ifftn(a_fft*b_fft*fac, shape_full).real
@@ -369,9 +418,13 @@ class SSA:
 			slices = tuple([slice((sa-sb)//2, (sa-sb)//2) for sa, sb in zip(a.shape, b.shape)])
 			return(conv[slices])
 	
-	def quasi_hankelisation(self):
+	def quasi_hankelisation(self) -> Array_2D | Array_3D:
 		"""
 		Reverses the embedding map, faster than the direct method but less accurate. Is almost always good enough.
+		
+		# RETURNS #
+			X_ssa : Array_2D | Array_3D
+				2D (for 1D input data) or 3D (for 2D input data) singular spectrum analysis components. First index is the component number.
 		"""
 		X_ssa = np.zeros((self.m, *self.n))
 		X_dash = np.zeros(self.n)
@@ -391,6 +444,9 @@ class SSA:
 		return(X_ssa)
 	
 	def plot_all(self, n_max=36):
+		"""
+		Plot all details of SSA. Makes lots of plots
+		"""
 		self.plot_svd()
 		self.plot_eigenvectors(n_max)
 		self.plot_factorvectors(n_max)
@@ -400,12 +456,18 @@ class SSA:
 		return
 
 	def plot_svd(self, recomp_n=None):
+		"""
+		Plots SVD used in SSA
+		"""
 		if recomp_n is None:
 			recomp_n = self.X_decomp.shape[0]
 		py_svd.plot(self.u, self.s, self.v_star, self.X, self.X_decomp, recomp_n=recomp_n)
 		return
 	
 	def plot_eigenvectors(self, n_max=None):
+		"""
+		Plots eigenvectors (left singular vectors) of SSA
+		"""
 		flip_ravel = lambda x: np.reshape(x.ravel(order='F'), x.shape)
 		# plot eigenvectors and factor vectors
 		n = min(self.u.shape[0], n_max if n_max is not None else self.u.shape[0])
@@ -421,6 +483,9 @@ class SSA:
 		return
 	
 	def plot_factorvectors(self, n_max=None):
+		"""
+		Plots factorvectors (right singular vectors) of SSA
+		"""
 		flip_ravel = lambda x: np.reshape(x.ravel(order='F'), x.shape)
 		n = min(self.v_star.shape[0], n_max if n_max is not None else self.v_star.shape[0])
 		f1, a1 = plot_helper.figure_n_subplots(n)
@@ -433,7 +498,10 @@ class SSA:
 			plot_helper.remove_axes_ticks_and_labels(ax)
 			ax.imshow(flip_ravel(np.reshape(self.v_star[j,:],(self.kx,self.ky)).T))
 			
-	def plot_trajectory_decomp(self, n_max=None):	
+	def plot_trajectory_decomp(self, n_max=None):
+		"""
+		Plots decomposed trajectory matrix of SSA
+		"""
 		# Plot components of image decomposition
 		n = min(self.X_decomp.shape[0], n_max if n_max is not None else self.X_decomp.shape[0])
 		f1, a1 = plot_helper.figure_n_subplots(n)
@@ -448,6 +516,9 @@ class SSA:
 		return
 		
 	def plot_trajectory_groups(self, n_max=None):
+		"""
+		Plots grouped decomposed trajectory matrix of SSA
+		"""
 		# plot elements of X_g
 		n = min(self.X_g.shape[0], n_max if n_max is not None else self.X_g.shape[0])
 		f1, a1 = plot_helper.figure_n_subplots(n)
@@ -462,6 +533,9 @@ class SSA:
 		return
 		
 	def plot_ssa(self, n=4, noise_estimate=None):
+		"""
+		Plots an overview of the SSA results
+		"""
 		import estimate_noise
 		_lgr.debug(f'Plotting SSA data')
 	
@@ -493,10 +567,6 @@ class SSA:
 		reconstruction = lambda x=None: np.sum(self.X_ssa[:x], axis=0)
 		residual = lambda x = None: self.a - reconstruction(x)
 		residual_log_likelihood = lambda x = None : -0.5*np.log(np.nansum((residual(x)/(np.nan_to_num(self.a) + noise_estimate))**2))
-
-	
-		print(f'{residual()=}')
-		print(f'{np.sum(residual())=}')
 	
 		# plot SSA of image
 		mpl.rcParams['lines.linewidth'] = 1
@@ -612,20 +682,26 @@ class SSA:
 
 
 	
-def vectorise_mat(a : np.ndarray) -> np.ndarray:
+def vectorise_mat(a : Array_2D) -> Array_1D:
+	"""
+	Takes a matrix and flattens it into a vector
+	"""
 	return(a.ravel(order='F'))
 
-def unvectorise_mat(a : np.ndarray, m : tuple[int,]) -> np.ndarray:
+def unvectorise_mat(a : Array_1D, m : tuple[int,]) -> Array_2D | Array_3D:
+	"""
+	Takes a vector (that is a flattened matrix) and turns it back into a matrix of shape `m`
+	"""
 	return(np.reshape(a, (*m,-1), order='F'))
 
 
-def frobenius_norm(A : np.ndarray) -> np.ndarray:
+def frobenius_norm(A : np.ndarray) -> float:
 	"""
 	Root of the sum of the elementwise squares
 	"""
 	return(np.sqrt(np.sum(A*A)))
 
-def frobenius_inner_prod(A : np.ndarray,B : np.ndarray) -> np.ndarray:
+def frobenius_inner_prod(A : np.ndarray,B : np.ndarray) -> float:
 	"""
 	Sum of the elementwise multiplication
 	"""
@@ -634,33 +710,47 @@ def frobenius_inner_prod(A : np.ndarray,B : np.ndarray) -> np.ndarray:
 	
 
 if __name__=='__main__':
+	"""
+	Run this script as __main__ to see an example of it's output
+	"""
 	import sys
+	import PIL 
 	
-	n_set = [0, 5, 50, 90]
-	dataset = []
+	# When plotting example eigenvalues and SSA components, use ones this far through the entire set (element range is 0->1)
+	eval_n_set_frac = [0, 0.2, 0.5, 0.9]
+	
+	# datasets have a name and data
+	dataset : list[tuple[str,np.ndarray]]= []
 	
 	if len(sys.argv) > 1:
 		for item in sys.argv[1:]:
 			if item.endswith('.tif'):
-				import PIL
 				with PIL.Image.open(item) as image:
 					dataset.append((item,np.array(image)[160:440, 350:630]))
-				
-		for data_name, data2d in dataset:
-			_lgr.info(f'TESTING: 2d ssa with {data_name} example data')
-			_lgr.info(f'{data2d.shape=}')
-			window_size = tuple(s//10 for s in data2d.shape)
-			_data = data2d.astype(np.float64)
-			ssa = SSA(
-				_data, 
-				window_size,
-				rev_mapping='fft',
-				svd_strategy='eigval', # uses less memory and is faster
-				#svd_strategy='numpy', # uses more memory and is slower
-				#grouping={'mode':'elementary'}
-				grouping={'mode':'similar_eigenvalues', 'tolerance':0.01}
+	else:
+		dataset.append(
+			(
+				'noisy_mandelbrot_fractal_example', 
+				np.asarray(PIL.Image.effect_mandelbrot((60,50),(0,0,1,1),100))  + 10*np.random.normal(size=(60,50)).T
 			)
-			ssa.plot_ssa(n_set)
-			plt.show()
+		)
+				
+	for data_name, data2d in dataset:
+		_lgr.info(f'TESTING: 2d ssa with {data_name} example data')
+		_lgr.info(f'{data2d.shape=}')
+		window_size = tuple(s//10 for s in data2d.shape)
+		_data = data2d.astype(np.float64)
+		ssa = SSA(
+			_data, 
+			window_size,
+			rev_mapping='fft',
+			svd_strategy='eigval', # uses less memory and is faster
+			#svd_strategy='numpy', # uses more memory and is slower
+			#grouping={'mode':'elementary'}
+			grouping={'mode':'similar_eigenvalues', 'tolerance':0.01}
+		)
+		n_set = [int(ssa.m*f) for f in eval_n_set_frac]
+		ssa.plot_ssa(n_set)
+		plt.show()
 	
 	

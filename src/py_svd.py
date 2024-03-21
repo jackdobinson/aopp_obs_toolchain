@@ -2,7 +2,8 @@
 """
 Implementation of Singular Value Decomposition
 
-Mostly consists of helper functions, as numpy does heavy lifting.
+Mostly consists of helper functions as numpy does heavy lifting. Run the module as __main__
+to see and example of it in action.
 """
 import numpy as np
 import matplotlib.pyplot as plt
@@ -10,10 +11,28 @@ import matplotlib as mpl
 
 import cfg.logs
 import plot_helper
-_lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+
+_lgr = cfg.logs.get_logger_at_level(__name__, 'INFO')
 
 
-def svd(a, n=None):
+def svd(a : np.ndarray, n : None | int = None) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+	"""
+	Perform single value decomposition on array `a`, see https://en.wikipedia.org/wiki/Singular_value_decomposition
+	
+	# ARGUMENTS #
+		a : np.ndarray
+			Array to perform SVD on
+		n : int | None
+			Number of SVD components to report
+	
+	# RETURNS #
+		evecs : np.ndarray
+			"Left side" singular vectors, "U" in A = U S V*
+		singular_values : np.ndarray
+			Singular values of "left side" and "right side" singular vectors, S in A = U S V*
+		fvecs : np.ndarray
+			"Right side" singular vectors, V in A = U S V*
+	"""
 	evals, evecs = np.linalg.eig(a @ a.T)
 	e_idxs = np.argsort(evals)[::-1][:n]
 	evals = evals[e_idxs]
@@ -32,6 +51,9 @@ def rect_diag(a, shape):
 	return(d)
 
 def decompose_to_matricies(u : np.ndarray, s : np.ndarray, v_star : np.ndarray, small : bool = True) -> np.ndarray:
+	"""
+	Using the results of a singular value decomposition (M = U S V*), returns the matrix M_i =  SUM(s_i * u_i * v_i)
+	"""
 	if small:
 		n = min(s.shape) # number of singular vectors to decompose into
 		decomp = np.diag(s)[:,None,None]*(u.T[:n,:n,None] @ v_star[:n,None,:n])
@@ -40,18 +62,44 @@ def decompose_to_matricies(u : np.ndarray, s : np.ndarray, v_star : np.ndarray, 
 		
 	return decomp
 
-def plot(u, s, v_star, inmat, decomp, recomp_n=None, f1=None, a1=None):
-	print(u.shape)
-	print(s.shape)
-	print(v_star.shape)
+def plot(u : np.ndarray, s : np.ndarray, v_star : np.ndarray, inmat : np.ndarray, decomp : np.ndarray, recomp_n=None, f1=None, a1=None):
+	"""
+	Visualisation of the SVD process, where a matrix M is decomposed into components M =  U S V*
+	
+	# ARGUMENTS #
+		u : np.ndarray
+			left singular vectors of some matrix M
+		s : np.ndarray
+			singular values of some matrix M
+		v : np.ndarray
+			right singular vectors of some matrix M
+		inmat : np.ndarray
+			The input matrix, M that `u`, `s`, `v` come from
+		decom : np.ndarray
+			The M_i decomposition of matrix M, where M =  SUM(M_i) = SUM(s_i * u_i * v_i)
+		recomp_n: int | None
+			The number of decomposed matrices M_i to recombine for visualisation purposes
+		f1 : matplotlib.figure.Figure | None
+			Figure to put the plot axes in
+		a1 : Sequence[matplotlib.axes.Axes] | None
+			6 Axes to plot the data in
+	"""
+	_lgr.debug(f'{u.shape=}')
+	_lgr.debug(f'{s.shape=}')
+	_lgr.debug(f'{v_star.shape=}')
 	if recomp_n  is None:
 		recomp_n = decomp.shape[0]
 	recomp = np.sum(decomp[:recomp_n], axis=(0))
 	reconstruct = u @ s @ v_star
 
+	_lgr.debug(f'Data ready for plotting')
+	
+	
 	# plot SVD of image
 	if f1 is None or a1 is None:
 		f1, a1 = plot_helper.figure_n_subplots(6, figure=f1)
+
+	_lgr.debug('figures and axes available')
 
 	a1 = a1.ravel()
 	[plot_helper.remove_axes_ticks_and_labels(ax) for ax in a1]
@@ -80,45 +128,46 @@ def plot(u, s, v_star, inmat, decomp, recomp_n=None, f1=None, a1=None):
 	a1[5].set_title(f'Recomposition from sum(X)_0^{recomp_n}\nclim [{np.min(recomp):07.2E},{np.max(recomp):07.2E}]')
 	a1[5].imshow(recomp)
 
+
+	n_decomp_components_to_plot = 8
+	_lgr.debug(f'Plotting {n_decomp_components_to_plot} components of image decomposition')
 	# Plot components of image decomposition
-	n = min(decomp.shape[0], 2*recomp_n)
-	f1, a1 = plot_helper.figure_n_subplots(n)
-	a1 = a1.ravel()
-	f1.suptitle(f'First {n} svd components X_i [M = sum(X_i)] (of {decomp.shape[0]})')
-	for i, ax in enumerate(a1):
+	n = min(decomp.shape[0], n_decomp_components_to_plot)
+	f2, a2 = plot_helper.figure_n_subplots(n)
+	_lgr.debug(f'{f2=} {a2=}')
+	a2 = a2.ravel()
+	f2.suptitle(f'First {n} svd components X_i [M = sum(X_i)] (of {decomp.shape[0]})')
+	for i, ax in enumerate(a2):
 		plot_helper.remove_axes_ticks_and_labels(ax)
 		ax.set_title(f'i = {i}', y=0.9)
 		ax.imshow(decomp[i])
 	return
 
-#%%
+
 if __name__=='__main__':
 	# "arguments"
-	recomp_n = 3
+	recomp_n = None
 
 	# get example data
 	try:
 		import PIL
-		print('Creating mandelbrot fractal as test case')
+		_lgr.info('Creating mandelbrot fractal as test case')
 		obs = np.asarray(PIL.Image.effect_mandelbrot((60,50),(0,0,1,1),100))
 	except ImportError:
-		print('Creating random numbers as test case')
+		_lgr.info('Creating random numbers as test case')
 		obs = np.random.random((60,50))
 	#obs, psf = fitscube.deconvolve.helpers.get_test_data()
 
-	# get singular value decomposition
+	_lgr.info('get singular value decomposition')
 	u, s, v_star = np.linalg.svd(obs)
 
-	# get svd from numpy into full form
+	_lgr.info('get svd from numpy into full form')
 	s = rect_diag(s, (u.shape[1],v_star.shape[1]))
 
+	_lgr.info('get decomposed matrices from U S V*')
 	decomp = decompose_to_matricies(u, s, v_star)
 
-	# %% plot singular value decomposition
-
-	# setup plotting defaults
-	mpl.rc_file(mpl.matplotlib_fname())
-
+	_lgr.info('plot singular value decomposition')
 	plot(u, s, v_star, obs, decomp, recomp_n)
 	plt.show()
 
