@@ -1,6 +1,7 @@
 """
-Contains routines for casting to and from types.
+Contains routines for casting to and from types. Generally useful for simple data marshalling to and from text
 """
+
 from typing import Iterable, Any
 
 class CastException(Exception):

@@ -12,7 +12,6 @@ import scipy as sp
 import matplotlib.pyplot as plt
 from astropy.io import fits
 
-import fitting
 
 def calc(counts, bin_edges):
 	ns = np.linspace(0, counts.size-1, counts.size)
@@ -22,15 +21,10 @@ def calc(counts, bin_edges):
 		p1, p2 = counts[:i], counts[i:]
 		w1, w2 = np.nansum(p1), np.nansum(p2)
 		u1, u2 = np.nansum(p1*i1)/w1, np.nansum(p2*i2)/w2
-		#_lgr.DEBUG(f'{i1.size=} {i2.size=} {p1.size=} {p2.size=} {w1=:08.2E} {w2=:08.2E} {u1=:08.2E} {u2=:08.2E}')
 		inter_class_variance[i] = (w1*w2*(u1-u2)**2)/np.sum(counts)
 	return(inter_class_variance)
 
 def threshold(bin_edges, icv):
-	#bin_mids = 0.5*(bin_edges[1:]+bin_edges[:1])
-	#_lgr.DEBUG(f'{bin_mids=}')
-	#_lgr.DEBUG(f'{bin_edges=}')
-	#_lgr.DEBUG(f'{icv=}')
 	return(bin_edges[np.nanargmax(icv)] if np.any(~np.isnan(icv)) else np.nan)
 
 
@@ -62,7 +56,7 @@ def frac_per_fpix_threshold(data, frac_per_fpix=15, n_max=10, on_fail='return_la
 		ot = threshold(bin_edges, icv)
 		data[data<ot] = np.nan
 		this_frac_per_fpix = (np.nansum(data)*n)/(np.sum(~np.isnan(data))*s)
-		print(i, ot, this_frac_per_fpix)
+		_lgr.debug(i, ot, this_frac_per_fpix)
 		if  this_frac_per_fpix > frac_per_fpix:
 			return(ot)
 	return(None if on_fail != 'return_last' else ot)
@@ -82,7 +76,7 @@ def max_frac_per_fpix_threshold(data, n_max=10):
 		ot = threshold(bin_edges, icv)
 		data[data<ot] = np.nan
 		this_frac_per_fpix = (np.nansum(data)*n)/(np.sum(~np.isnan(data))*s)
-		print(i, ot, this_frac_per_fpix)
+		_lgr.debug(i, ot, this_frac_per_fpix)
 	return(ot)
 
 
@@ -134,21 +128,9 @@ def plot_repeats(data, n=4):
 		rdata = np.array(odatal[i])
 		rdata[rdata<ot] = np.nan
 	
-		#icv /= np.nanmax(icv)
-
 		range_frac = (ot-bin_edges[0])/(bin_edges[-1]-bin_edges[0])
 		npix_frac = np.sum(~np.isnan(rdata))/np.sum(~np.isnan(odatal[i]))
-		print(range_frac, npix_frac, (range_frac-npix_frac)/(range_frac+npix_frac))
-
-		#X = np.vstack([bin_edges**0, bin_edges**1, bin_edges**2]).T
-		#polyfit = np.linalg.lstsq(A, np.nan_to_num(icv))
-		#polyfit = fitting.linear_least_squares(np.nan_to_num(icv), X)
-		#polyfits.append(polyfit)
-		#print(polyfit[0])
-		#print(np.nansum(polyfit[1]**2)/bin_edges.size)
-		#print(polyfit[2])
-		#print(np.trace(polyfit[2]))
-		#print(np.nansum(polyfit[1]**2)/np.trace(polyfit[2]))
+		_lgr.debug(range_frac, npix_frac, (range_frac-npix_frac)/(range_frac+npix_frac))
 
 		countsl.append(counts)
 		bin_edgesl.append(bin_edges)
@@ -162,7 +144,6 @@ def plot_repeats(data, n=4):
 
 	ots = n_thresholds(np.array(data), n)
 
-	#f1, axes = ut.plt.figure_n_subplots(n*3)
 	f1, axes = ut.plt.create_figure_with_subplots(4, n, sp_kwargs={'gridspec_kw':{'hspace':0.3}})
 	axes_iter = iter(axes.T.flatten())
 
@@ -186,8 +167,6 @@ def plot_repeats(data, n=4):
 		ax.plot(bin_edgesl[i], icvl[i])
 		ax.axvline(otl[i], color='red')
 		ax.axvline(ots[i], color='green', ls='--')
-		#if polyfits[i][0].size > 0:
-		#	ax.plot(bin_edgesl[i], polynomial(polyfits[i][0][::-1],bin_edgesl[i]))
 
 		ax = next(axes_iter)
 		ax.imshow(rdatal[i])

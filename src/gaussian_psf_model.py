@@ -1,4 +1,6 @@
-
+"""
+Point spread function (PSF) model that is just a gaussian
+"""
 
 from typing import Any, TypeVar, TypeVarTuple, Generic, Annotated, NewType
 

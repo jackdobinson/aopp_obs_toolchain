@@ -1,3 +1,8 @@
+"""
+Routines for handing an array that knows it's physical size.
+"""
+
+
 import itertools as it
 import numpy as np
 from typing import Callable

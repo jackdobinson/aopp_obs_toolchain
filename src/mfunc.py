@@ -1,25 +1,9 @@
 """
 Module containing small mathematical functions that are useful in lots of contexts
-"""
-import numpy as np
-import scipy as sp
-import scipy.signal
-from typing import Callable
-
-def logistic_function(x, left_limit=0, right_limit=1, transition_scale=1, center=0):
-	return (right_limit-left_limit)/(1+np.exp(-(np.e/transition_scale)*(x-center))) + left_limit
 
 
 
-
-
-
-
-
-
-
-"""
-Helpers for deconvolution routines.
+## Helpers for deconvolution routines ##
 
 Working Definitions:
 	components
@@ -46,7 +30,29 @@ Useful Concepts:
 	entropy
 		A measure of how much extra information you have to add to a model.
 		More information = more negative value.
+
 """
+
+import numpy as np
+import scipy as sp
+import scipy.signal
+from typing import Callable
+
+Number = float | int
+
+
+def logistic_function(
+		x : Number | np.ndarray, 
+		left_limit : Number = 0, 
+		right_limit : Number = 1, 
+		transition_scale : Number = 1, 
+		center : Number = 0
+	) -> Number | np.ndarray:
+	return (right_limit-left_limit)/(1+np.exp(-(np.e/transition_scale)*(x-center))) + left_limit
+
+
+
+# Different versions of generalised least squares
 
 def generalised_least_squares(
 		components 	: np.ndarray, 
@@ -76,6 +82,8 @@ def generalised_least_squares_mat(
 		return(np.einsum('ij,jk,kl->il', mm_matrix_row, inv_cov_mat, mm_matrix_row.T))
 
 
+# Different versions of entropy
+
 def entropy_pos_neg(
 		components : np.ndarray,
 		error : np.ndarray | float | int
@@ -101,6 +109,8 @@ def entropy_adj(
 		error : np.ndarray | float | int = 1 # this could be absorbed into alpha if we need to only have 2 arguments
 		):
 	return(entropy_pos_neg(components-model,error))
+
+
 
 def regularised_least_squares(
 		components 			: np.ndarray,
