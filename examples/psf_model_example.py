@@ -421,7 +421,9 @@ if __name__=='__main__':
 				)
 				#continue # DEBUGGING
 				
-				
+				# If using dependency injection mechanism like "amateur_data_analysis.py"
+				# Instead of "psf_data_ops.scipy_fitting_function_factory
+				# would have optimise_compat.ultranest.fitting_function_factory
 				sampler = ultranest.ReactiveNestedSampler(
 					var_param_name_order, 
 					psf_model_likelihood_scipyCompat_callable,
