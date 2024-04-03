@@ -6,7 +6,7 @@ import types
 import logging
 
 logging.basicConfig(
-	format="%(asctime)s %(filename)s:%(lineno)d \"%(funcName)s()\" %(levelname)s: %(message)s",
+	format="%(asctime)s %(filename)s:%(lineno)d \"%(funcName)s\" %(levelname)s: %(message)s",
 	datefmt="%Y-%m-%dT%H:%M:%S %z",
 	force=True
 )
@@ -25,6 +25,7 @@ def log_excepthook(type, value, traceback):
 	
 	# Use the original source of the exception as the source of the log.
 	co = tb.tb_frame.f_code
+	
 	rcrd_fac = lambda msg: logging.LogRecord(excepthook_lgr.name, logging.ERROR, co.co_filename, tb.tb_lineno, msg, {}, None,func=co.co_qualname)
 	
 	rcrd = rcrd_fac(value)

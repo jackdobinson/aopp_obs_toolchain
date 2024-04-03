@@ -375,7 +375,8 @@ if __name__=='__main__':
 			
 			
 			final_result = None
-			idx_0_median_noise_factor = None
+			initial_median_noise_estimate = None
+			initial_median_noise_estimate_idx = 0
 			for wavelength, idx in wavelength_idxs:
 				
 				_lgr.info(f'{idx=} {wavelength=}')
@@ -386,13 +387,20 @@ if __name__=='__main__':
 				
 				
 				
-				if idx_0_median_noise_factor is None:
-					idx_0_median_noise = np.std(np.nan_to_num(psf_data[wavelength_idxs[0][1]]) - sp.ndimage.median_filter(np.nan_to_num(psf_data[wavelength_idxs[0][1]]),size=5))
+				if initial_median_noise_estimate is None:
+					initial_median_noise_estimate_idx = idx
+					data_for_median_noise_estimate = psf_data[initial_median_noise_estimate_idx]
+					if np.all(np.isnan(data_for_median_noise_estimate)):
+						_lgr.error(f'When operating on file {psf.path} data_for_median_noise_estimate = psf_data[{initial_median_noise_estimate_idx}] is all NANs')
+						continue
+					data_for_median_noise_estimate_removed_nans = np.nan_to_num(data_for_median_noise_estimate)
+					initial_median_noise_estimate = np.std(data_for_median_noise_estimate_removed_nans - sp.ndimage.median_filter(data_for_median_noise_estimate_removed_nans,size=5))
 				
+				_lgr.debug(f'{initial_median_noise_estimate=}')
 				median_noise = np.std(np.nan_to_num(psf_data[idx]) - sp.ndimage.median_filter(np.nan_to_num(psf_data[idx]),size=5))
 				
 				# Want to adjust for the increased variance on long-wavelength results, otherwise a lot of effort is spent fitting long-wavelengths more exactly than required
-				median_noise_correction_factor = np.sqrt(median_noise/ idx_0_median_noise)
+				median_noise_correction_factor = np.sqrt(median_noise/ initial_median_noise_estimate)
 				_lgr.debug(f'{median_noise=} {median_noise_correction_factor=}')
 				
 				model_result_scipyCompat_callable = psf_model_result_callable_factory(model_scipyCompat_callable, wavelength, show_plots=show_plots)
