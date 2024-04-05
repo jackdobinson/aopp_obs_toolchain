@@ -1,20 +1,25 @@
 """
 Helpers for array operations involving indexing
 """
-from typing import TypeVar
+from typing import TypeVar, NewType
 
 import numpy as np
 
-from typedef import NumVar, ShapeVar
+
 import cfg.logs
 _lgr = cfg.logs.get_logger_at_level(__name__, 'WARNING')
 
 
+from typedef import NumVar, ShapeVar
+
 T = TypeVar('T')
-M = NumVar('M')
-N = NumVar('N')
-S = ShapeVar('S')
-Q = ShapeVar('Q')
+
+type N = NewType('N', NumVar)
+type M = NewType('M', NumVar)
+
+type S[X] = NewType('ShapeS', ShapeVar[X])
+type Q[X] = NewType('ShapeQ', ShapeVar[X])
+type R[X] = NewType('ShapeR', ShapeVar[X])
 
 
 def pacman(a : np.ndarray[S[N],T], indices : np.ndarray[[N,M],int]) -> np.ndarray[[N,M],T]:

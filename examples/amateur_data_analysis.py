@@ -43,13 +43,20 @@ import cfg.logs
 
 _lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
-IntVar = TypeVar('IntVar', bound=int)
+
 T = TypeVar('T')
 Ts = TypeVarTuple('Ts')
-S = Generic[IntVar]
-N = TypeVar('N',bound=int)
-M = TypeVar('M',bound=int)
-LabelArray = np.ndarray[S,int]
+
+# Integers that may or may not be equal
+type N = TypeVar('N',bound=int)
+type M = TypeVar('M',bound=int)
+
+# A length N tuple of integers
+type S[N] = GenericAlias(tuple, (int,)*N)
+
+# An numpy array of integers with a specific shape
+type LabelArray[X] = np.ndarray[X,int]
+
 
 def select_labels_from_props(props, predicate = lambda prop: True):
 	selected_labels = []
@@ -253,7 +260,7 @@ def print_tiff_tags(path):
 			
 
 
-
+"""
 
 # Need to have some way to describe how to communicate with the dependency injection mechanism,
 # this isn't the best, but it's what I could come up with. 
@@ -447,7 +454,9 @@ class TurbulencePSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
 	def get_psf_result_postprocessor(self): 
 		return None
 
+"""
 
+from psf_model_dependency_injector import RadialPSFModelDependencyInjector, GaussianPSFModelDependencyInjector, TurbulencePSFModelDependencyInjector
 
 
 if __name__=='__main__':

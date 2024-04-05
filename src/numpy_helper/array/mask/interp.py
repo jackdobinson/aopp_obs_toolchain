@@ -1,10 +1,9 @@
 """
 ND interpolation for numpy arrays
 """
-from typing import TypeVar
+from typing import TypeVar, NewType
 import numpy as np
 
-from typedef import ShapeVar, NumVar
 
 import cfg.logs
 _lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
@@ -13,11 +12,16 @@ import numpy_helper as nph
 import numpy_helper.array
 import numpy_helper.array.index
 
+from typedef import NumVar, ShapeVar
+
 T = TypeVar('T')
-M = NumVar('M')
-N = NumVar('N')
-S = ShapeVar('S')
-Q = ShapeVar('Q')
+
+type N = NewType('N', NumVar)
+type M = NewType('M', NumVar)
+
+type S[X] = NewType('ShapeS', ShapeVar[X])
+type Q[X] = NewType('ShapeQ', ShapeVar[X])
+type R[X] = NewType('ShapeR', ShapeVar[X])
 
 
 def get_index_boundary_func(name : str):
@@ -38,7 +42,7 @@ def constant(a : np.ndarray[S[N],T], m : np.ndarray[S[N],bool], value : T = 0 ) 
 def mean(
 		a : np.ndarray[S[N],T], 
 		m : np.ndarray[S[N],bool], 
-		window : np.ndarray[Q[M<=N],bool] | Q[M<=N] | int = 3, 
+		window : np.ndarray[Q[M],bool] | Q[M] | int = 3, # Where M <= N
 		boundary : str ='reflect', 
 		const : T = 0 
 	) -> np.ndarray[S[N],T]:

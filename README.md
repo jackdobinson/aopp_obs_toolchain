@@ -10,7 +10,7 @@ Placeholders:
 	`<REPO_DIR>`
 		The top-level directory of this repository. I.e. the directory this file is in.
 
-	`<PYTHON_VERSION>`
+	`<X.Y.Z>`
 		The version of python used in development, currently this is `3.11.5`.
 	
 	`<VENV_DIR>`
@@ -19,21 +19,131 @@ Placeholders:
 
 ### setting up the virtual environment ###
 
-* Download and install python 3.11.5 from the [python website](https://www.python.org/downloads/release/python-3115/) or any other location.
-  - Note: 3.11.5 is the python version used in development, newer and/or older versions may work as well.
+* Created using python 3.12.2, I'll refer to the version number as `<X.Y.Z>` in code, where X is the major release, Y is the minor release, and Z is the build number.
+
+  - NOTE: Sometimes only some of the version numbers are used e.g. `<X.Y>` for just the major and minor number, or `<XYZ>` when the numbers are concatenated together 
+    without the dots inbetween them (i.e. `3122` instead of `3.12.2`).
+
+  - I.e. the python executable for some version would be `python<X.Y.Z>`
+
+* Download and install python 3.12.2 from the [python website](https://www.python.org/downloads/release/python-3122/) or any other location.
+  - Note: 3.12.2 is the python version used in development, newer and/or older versions may work as well.
 
 * Create a virtual environment in this directory using the following command:
-	`python3.11 -m venv <VENV_DIR>`
-	
-	Where `<VENV_DIR>` is the directory to store the virtual environment in. I suggest `.venv_<PYTHON_VERSION>`, and will assume this name in the rest of this document.
 
-* Run the command `cd <REPO_DIR>; echo "${PWD}/src" > <VENV_DIR>/lib/python3.11/site-packages/aopp_obs_toolchain.pth`. This will create a ".pth" file that tells python where to look for the package's source files.
+  - `python<x.y> -m venv <VENV_DIR>`
 
-* **If** you have modified the environment variable PYTHONPATH, and those changes will interfere with development, run the command `echo -e "alias python=\"python -E"\nalias python3=\"python3 -E"\nalias python3.11=\"python3.11 -E\"" >> <VENV_DIR>/bin/activate`. This will ensure that the PYTHONPATH environment variable is ignored for the virtual environment.
+  - Where `<VENV_DIR>` is the directory to store the virtual environment in. I suggest `.venv_<X.Y.Z>`, and will assume this name in the rest of this document.
 
-* Activate the virtual environment via the command: `source <VENV_DIR>/bin/activate`. I will assume the virual environment is active from now on.
+* To ensure that the virtual environment can find the development files, we will create a ".pth" file inside the virtual environment that tells python
+  where to look for modules. Replace `<REPO_DIR>`, `<VENV_DIR>`, `<X>`, `<Y>` in the following command:
 
-* Run the command `pip install -r <REPO_DIR>/requirements.txt` to install required supporting packages.
+  - `cd <REPO_DIR>; echo "${PWD}/src" > <VENV_DIR>/lib/python<X>.<Y>/site-packages/aopp_obs_toolchain.pth`
+
+* **If** you have modified the environment variable PYTHONPATH, and those changes will interfere with development, you want to ensure the PYTHONPATH environment
+  variable is ignored for the virtual environment. The following command will set up aliases to the python executables in the virtual environment, with command-line
+  arguments set so they will ignore PYTHONPATH.
+  
+  - `echo -e "alias python=\"python -E\"\nalias python3=\"python3 -E\"\nalias python<X>.<Y>=\"python<X>.<Y> -E\"" >> <VENV_DIR>/bin/activate`
+
+* Activate the virtual environment via the command: 
+
+  - `source <VENV_DIR>/bin/activate`. I will assume the virual environment is active from now on.
+
+* Install required supporting packages with the command 
+
+  - `pip install -r <REPO_DIR>/requirements.txt`
+
+#### default installation as a single command ####
+
+Use the following command to install the desired version of python and do the steps above, NOTE: use [CTRL]+[SHIFT]+[V] when pasting into the terminal.
+
+```
+PYTHON_VERSION=(3 12 2) && \
+PYTHON_INSTALL_DIRECTORY="${HOME:?}/python/python_versions" && \
+REPO_DIR="${HOME:?}/repos/aopp_obs_toolchain" && \
+VENV_PREFIX=".venv" && \
+echo "" && \
+echo "PYTHON_MAJOR_VERSION=${PYTHON_VERSION[0]:?ERROR: PYTHON_VERSION must have 3 entries (e.g. '(3 12 2)')}" && \
+echo "PYTHON_MINOR_VERSION=${PYTHON_VERSION[1]:?ERROR: PYTHON_VERSION must have 3 entries (e.g. '(3 12 2)')}" && \
+echo "PYTHON_BUILD_VERSION=${PYTHON_VERSION[2]:?ERROR: PYTHON_VERSION must have 3 entries (e.g. '(3 12 2)')}" && \
+echo "PYTHON_INSTALL_DIRECTORY=${PYTHON_INSTALL_DIRECTORY:?ERROR: PYTHON_INSTALL_DIRECTORY must be set}" && \
+echo "REPO_DIR=${REPO_DIR:?ERROR: REPO_DIR must be set}" && \
+echo "VENV_PREFIX=${VENV_PREFIX:?ERROR: VENV_PREFIX must be set}" && \
+echo "" && \
+PYTHON_VERSION_STR="${PYTHON_VERSION[0]}.${PYTHON_VERSION[1]}.${PYTHON_VERSION[2]}" && \
+echo "${PYTHON_VERSION_STR}" && \
+VENV_DIR="${REPO_DIR:?}/${VENV_PREFIX:?}_${PYTHON_VERSION_STR:?}" && \
+DOWNLOAD_URL="https://www.python.org/ftp/python/${PYTHON_VERSION_STR:?}/Python-${PYTHON_VERSION_STR:?}.tgz" && \
+PYTHON_VERSION_INSTALL_DIR="${PYTHON_INSTALL_DIRECTORY:?python install directory required}/python${PYTHON_VERSION_STR:?}" && \
+echo "PYTHON_VERSION_INSTALL_DIR=${PYTHON_VERSION_INSTALL_DIR:?}" && \
+mkdir -p ${PYTHON_VERSION_INSTALL_DIR:?} && \
+PYTHON_VERSION_SOURCE_DIR="${PYTHON_VERSION_INSTALL_DIR:?}/Python-${PYTHON_VERSION_STR:?}" && \
+echo "PYTHON_VERSION_SOURCE_DIR=${PYTHON_VERSION_SOURCE_DIR:?}" && \
+PYTHON_VERSION_DOWNLOAD_FILE="${PYTHON_VERSION_SOURCE_DIR:?}.tgz" && \
+echo "PYTHON_VERSION_DOWNLOAD_FILE=${PYTHON_VERSION_DOWNLOAD_FILE:?}" && \
+echo "Downloading python source from ${PYTHON_VERSION_DOWNLOAD_FILE:?}..." && \
+curl ${DOWNLOAD_URL:?} --output ${PYTHON_VERSION_DOWNLOAD_FILE:?} && \
+echo "Python source downloaded." && \
+echo "Installing dependencies..." && \
+sudo apt-get install -y \
+    curl \
+    gcc \
+    libbz2-dev \
+    libev-dev \
+    libffi-dev \
+    libgdbm-dev \
+    liblzma-dev \
+    libncurses-dev \
+    libreadline-dev \
+    libsqlite3-dev \
+    libssl-dev \
+    make \
+    tk-dev \
+    wget \
+    zlib1g-dev && \
+echo "Dependencies installed." && \
+echo "Extracting source file ${PYTHON_VERSION_DOWNLOAD_FILE:?}" && \
+tar -xvzf ${PYTHON_VERSION_DOWNLOAD_FILE:?} -C ${PYTHON_VERSION_INSTALL_DIR:?} && \
+echo "source file extacted." && \
+echo "Moving into source-code directory. ${PYTHON_VERSION_SOURCE_DIR:?}..." && \
+cd ${PYTHON_VERSION_SOURCE_DIR:?} && \
+echo "Configuring python installation..." && \
+./configure \
+    --prefix=${PYTHON_VERSION_INSTALL_DIR:?} \
+	--enable-optimizations \
+	--enable-ipv6 \
+     && \
+echo "Configuration done." && \
+echo "Running makefile..." && \
+make && \
+echo "Makefile complete." && \
+echo "Performing installation..." && \
+make install && \
+echo "Installation complete" && \
+echo "Making virtual environment at ${VENV_DIR:?}" && \
+${PYTHON_VERSION_INSTALL_DIR:?}/bin/python3 -m venv ${VENV_DIR:?} && \
+echo "Virtual environment created" && \
+PYTHON_MAJOR_MINOR_STR="${PYTHON_VERSION[0]:?}.${PYTHON_VERSION[1]:?}" && \
+echo "PYTHON_MAJOR_MINOR_STR=${PYTHON_MAJOR_MINOR_STR:?}" && \
+REPO_SOURCE_DIR=$(readlink -f "${REPO_DIR:?}/src") && \
+echo "REPO_SOURCE_DIR=${REPO_SOURCE_DIR:?}" && \
+echo "Creating '.pth' file for virtual environment..." && \
+echo "${REPO_SOURCE_DIR:?}" > ${VENV_DIR:?}/lib/python${PYTHON_MAJOR_MINOR_STR:?}/site-packages/aopp_obs_toolchain.pth && \
+echo "'.pth' file created" && \
+echo "Adding aliases to avoid PYTHONPATH..." && \
+echo -e "alias python=\"python -E\"\nalias python3=\"python3 -E\"\nalias python${PYTHON_MAJOR_MINOR_STR:?}=\"python${PYTHON_MAJOR_MINOR_STR:?} -E\"" >> ${VENV_DIR:?}/bin/activate && \
+echo "Aliases added." && \
+echo "Activating virtual environment..." && \
+source ${VENV_DIR:?}/bin/activate && \
+echo "Virtual environment activated" && \
+echo "Installing required packages" && \
+pip install -r ${REPO_DIR:?}/requirements.txt && \
+echo "Required packages installed"
+```
+
+
+
 
 
 ### VSCode Setup ###

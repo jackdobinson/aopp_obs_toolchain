@@ -1,18 +1,21 @@
 """
 Helper routines that calculate values or give information about arrays
 """
-from typing import TypeVar, Literal
+from typing import TypeVar, Literal, NewType
 
 import numpy as np
 
 from typedef import NumVar, ShapeVar
 
 T = TypeVar('T')
-M = NumVar('M')
-N = NumVar('N')
-S = ShapeVar('S')
-Q = ShapeVar('Q')
-R = ShapeVar('R')
+
+type N = NewType('N', NumVar)
+type M = NewType('M', NumVar)
+
+type S[X] = NewType('ShapeS', ShapeVar[X])
+type Q[X] = NewType('ShapeQ', ShapeVar[X])
+type R[X] = NewType('ShapeR', ShapeVar[X])
+
 
 
 
