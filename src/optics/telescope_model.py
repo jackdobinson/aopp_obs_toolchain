@@ -6,7 +6,7 @@ from optics.function import PupilFunction, PointSpreadFunction, OpticalTransferF
 from optics.geometric.optical_component import OpticalComponentSet
 
 import cfg.logs
-_lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = cfg.logs.get_logger_at_level(__name__, 'INFO')
 
 
 def pupil_function_of_optical_component_set(

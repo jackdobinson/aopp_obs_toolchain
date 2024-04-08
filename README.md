@@ -11,7 +11,7 @@ Placeholders:
 		The top-level directory of this repository. I.e. the directory this file is in.
 
 	`<X.Y.Z>`
-		The version of python used in development, currently this is `3.11.5`.
+		The version of python used in development, currently this is `3.12.2`.
 	
 	`<VENV_DIR>`
 		The directory of the python virtual environment for the project. Default name is `.venv_<PYTHON_VERSION>`.
@@ -220,6 +220,8 @@ if [ "${TERM_PROGRAM}" == "vscode" ]; then
             for VENV_DIR in ${VENV_DIRS[@]}; do
                 echo -e "\tsource ${VENV_DIR}/bin/activate"
             done
+        else
+          echo "ERROR: No virtual environments (matching glob with \".venv*\") found in \"${VSCODE_WORKSPACE_DIR}\""
         fi
     fi
 fi
@@ -249,4 +251,51 @@ Files are searched if:
 * Activate the virtual environment with `source <VENV_DIR>/bin/activate`
 
 * Run the tests (includes test discovery) via `python3 -m scientest.run ./tests`.
+
+### Test Output ###
+
+* Some logging output will appear at the top, this is recognisable as each logging line has a prefix '<TIME> <FILE>:<LINE> "<FUNCTION>" <LEVEL>: '
+  
+  - <TIME> is the system time the log is written
+  
+  - <FILE> is the python file (not including folders) the log is comming from
+  
+  - <LINE> is the line of the file the log is coming from
+  
+  - <FUNCTION> is the function in the file the log is coming from
+  
+  - <LEVEL> is the level of the log, by default there are 5 log levels. In order of severity they are: "DEBUG", "INFO", "WARN", "ERROR", "CRIT".
+
+* There is a "Discovery Summary" section that details all of the tests found by `scientest`. The format is:
+
+  - The summary starts with a line that looks like "================== Discovery Summary ======================"
+  
+  - Following entries have a module on one line, then the tests found in that module on subsequent lines with a hanging indent e.g.
+    ```
+    module "lucy_richardson_test" contains tests:
+        test_call_altered_instantiated_parameters
+        test_on_example_data
+        test_on_example_data_with_plotting_hooks
+        test_runs_for_basic_data
+    module "clean_modified_test" contains tests:
+        test_clean_modified_call_altered_instantiated_parameters
+        test_clean_modified_on_example_data
+        test_clean_modified_on_example_data_with_plotting_hooks
+    ```
+    
+* Next there is the "Running Tests" section, it's default is to output the results live, so it may take a while to complete. 
+  The format is:
+
+  - Starts with a line that looks like "====================== Running Tests ========================="
+  
+  - Each line details the test module and the test function on the LHS in the format "module::function", the staus 
+    (Passed, Failed, Skipped, etc.) on the RHS, if a test is skipped the following line contains some right-justified text 
+    explaining why the test was skipped. Tests should all pass or be skipped with a reason. E.g.
+    ```
+    lucy_richardson_test::test_call_altered_instantiated_parameters -------------------------------------------------- Passed
+    lucy_richardson_test::test_on_example_data ----------------------------------------------------------------------- Passed
+    lucy_richardson_test::test_on_example_data_with_plotting_hooks -------------------------------------------------- Skipped
+                         broken: displays animated plots that are incompatible with intercepting matplotlib's "show" function
+    lucy_richardson_test::test_runs_for_basic_data ------------------------------------------------------------------- Passed
+    ```
 

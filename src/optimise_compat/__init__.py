@@ -10,7 +10,7 @@ import numpy as np
 from data_structures import BiDirectionalMap
 
 import cfg.logs
-_lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = cfg.logs.get_logger_at_level(__name__, 'INFO')
 
 
 P = ParamSpec('P')
@@ -243,6 +243,9 @@ class PriorParamSet:
 		const_arg_order_array = np.array(tuple(arg_index for const_param_index, arg_index in sorted(constant_param_order_to_arg_order.items(), key=lambda x:x[0])))
 		
 		def new_callable(one_var_arg, *one_const_arg):
+			#_lgr.debug(f'{one_var_arg=}')
+			#_lgr.debug(f'{one_const_arg=}')
+			#_lgr.debug(f'{variable_arg_order_array=}')
 			args = [None]*n_args
 			for i, j in enumerate(variable_arg_order_array):
 				args[j] = one_var_arg[i]

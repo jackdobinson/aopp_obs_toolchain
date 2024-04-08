@@ -10,77 +10,72 @@ import numpy as np
 
 import plot_helper
 import cfg.logs
-
 _lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+
+from optimise_compat import PriorParamSet
+
+import ultranest
 
 T = TypeVar('T')
 P = ParamSpec('P')
 
-
-def model_likelihood_callable_factory(
-		model_result_callable : Callable[P,T], 
-		data : T, 
-		err : T
-	) -> Callable[P,float]:
-	"""
-	Factory function that creates a callable that computes the likelihood of
-	a result from `model_result_callable`, given `data` with error `err`.
-	The output of this factory is what is called by Ultranest.
+def fitting_function_factory(
+		reactive_nested_sampler_kwargs : dict[str,Any] = {}, 
+		sampler_run_kwargs : dict[str,Any] = {}
+	) -> Callable[[PriorParamSet, Callable[...,float], list[str]|tuple[str], list[str]|tuple[str]], [...]]:
 	
-	# ARGUMENTS #
+	reactive_nested_sampler_kwargs_defaults = dict(
+		resume = 'subfolder',
+		run_num = 0
+	)
+	reactive_nested_sampler_kwargs_defaults.update(reactive_nested_sampler_kwargs)
 	
-	model_result_callable
-		A callable that returns the result of whatever model we are using.
+	reactive_nested_sampler_kwargs = reactive_nested_sampler_kwargs_defaults
 	
-	data
-		The data we are trying to fit our model to.
+	sampler_run_kwargs_defaults = dict(
+		max_iters=2000, #500, # 2000,
+		max_ncalls=10000, #5000
+		frac_remain=1E-2,
+		Lepsilon = 1E-1,
+		min_num_live_points=40, #20, #80
+		cluster_num_live_points=8, #1, #40
+		dlogz=100,
+		min_ess=8, #1, #40
+		update_interval_volume_fraction=0.99, #0.8
+		max_num_improvement_loops=10,
+		widen_before_initial_plateau_num_warn = 1.5*40, #*min_live_points,
+		widen_before_initial_plateau_num_max = 2*40 #*min_live_points
+	)
 	
-	err
-		Error on the `data`
+	sampler_run_kwargs_defaults.update(sampler_run_kwargs)
+	sampler_run_kwargs = sampler_run_kwargs_defaults
 	
-	# RETURNS #
+	
+	
+	_lgr.debug(f'{reactive_nested_sampler_kwargs=}')
+	
+	if 'log_dir' not in reactive_nested_sampler_kwargs:
+		raise RuntimeError(f'Need to pass "log_dir" as one of "reactive_nested_sampler_kwargs" to tell ultranest where to store results')
+	
+	
+	def fitting_function(params, objective_function, var_param_name_order, const_param_name_order): # should return fitted parameters
+		sampler = ultranest.ReactiveNestedSampler(
+			var_param_name_order, 
+			objective_function,
+			params.get_linear_transform_to_domain(var_param_name_order, (0,1)),
+			**reactive_nested_sampler_kwargs
+		)
 		
-		likelihood_callable
-			A callable that returns the likelihood of the model result for given input parameters.
-	"""
-	def likelihood_callable(*args, **kwargs):
+		final_result = None
+		
+		for result in sampler.run_iter(**sampler_run_kwargs):
+			sampler.print_results()
+			sampler.plot()
+			final_result = result
 	
-		result = model_result_callable(*args, **kwargs)
-		residual = data - result
-
-		nan_mask = np.isnan(data)
+		return final_result['maximum_likelihood']['point']
 		
-		# err can be pre-computed
-		# assume residual is gaussian distributed, with a sigma on each pixel and a flat value
-		z = residual[~nan_mask]/err[~nan_mask]
-		likelihood = -(z*z)/2 # want the log of the pdf
-		
-		return likelihood.mean()
-	
-	return likelihood_callable
-
-def model_fractional_likelihood_callable_factory(
-		model_result_callable : Callable[P,T], 
-		data : T, 
-		err : T
-	) -> Callable[P,float]:
-	
-	def fractional_likelihood_callable(*args, **kwargs):
-		
-		result = model_result_callable(*args, **kwargs)
-		residual = data - result
-
-		nan_mask = np.isnan(data)
-		
-		# err can be pre-computed
-		# assume residual is gaussian distributed, with a sigma on each pixel and a flat value
-		z = residual[~nan_mask]/((data[~nan_mask]+1E-3)*err[~nan_mask])
-		likelihood = -(z*z)/2 # want the log of the pdf
-		
-		return likelihood.mean()
-	
-	return fractional_likelihood_callable
-
+	return fitting_function
 
 class UltranestResultSet:
 	

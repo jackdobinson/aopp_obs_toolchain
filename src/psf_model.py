@@ -329,7 +329,6 @@ class PSFModel:
 		
 		result = GeoArray(downsample(np.array(interp(points)), sample_size), tuple(a[::sample_size] for a in output_axes))
 		
-		
 		#result = GeoArray(downsample(self.psf_full.data, sample_size), tuple(wav_factor*a[::sample_size] for a in self.psf_full.axes))
 		_lgr.debug(f'{result.data.shape=}')
 		

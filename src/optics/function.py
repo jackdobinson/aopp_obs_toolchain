@@ -10,7 +10,7 @@ from geo_array import GeoArray
 
 import cfg.logs
 
-_lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = cfg.logs.get_logger_at_level(__name__, 'WARN')
 
 
 class PupilFunction(GeoArray):

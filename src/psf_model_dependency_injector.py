@@ -13,6 +13,15 @@ import numpy as np
 
 from optimise_compat import PriorParam, PriorParamSet
 
+from gaussian_psf_model import GaussianPSFModel
+from radial_psf_model import RadialPSFModel
+from turbulence_psf_model import TurbulencePSFModel, SimpleTelescope, CCDSensor
+from optics.turbulence_model import phase_psd_von_karman_turbulence as turbulence_model
+from psf_model import PSFModel as AOInstrumentPSFModel
+from optics.turbulence_model import phase_psd_von_karman_turbulence
+from optics.adaptive_optics_model import phase_psd_fetick_2019_moffat_function
+from instrument_model.vlt import VLT
+
 
 T = TypeVar('T')
 Ts = TypeVarTuple('Ts')
@@ -62,6 +71,34 @@ type T_PSF_Result_Postprocessor_Callable = Callable[
 ]
 
 
+
+def prior_param_args_from_param_spec(
+		param_name : str, 
+		is_const_default : bool | None, 
+		initial_value_default : float | None, 
+		range_default : tuple[float,float] | None, 
+		var_params : list[str] | tuple[str], 
+		const_params : list[str] | tuple[str], 
+		initial_values : dict[str, float], 
+		range_values : dict[str, tuple[float,float]]
+	) -> tuple[str, tuple[float,float], bool, float]:
+	
+	if (is_const_default == None) and ((param_name not in var_params) | (param_name not in const_params)):
+		raise RuntimeError(f'Parameter "{param_name}" cannot be assumed to be constant or variable, it must be defined as such.')
+	if (initial_value_default == None) and (param_name not in initial_values):
+		raise RuntimeError(f'Parameter "{param_name}" does not have an initial value assigned and cannot use a default value')
+	if (range_default == None) and (param_name not in range_values):
+		raise RuntimeError(f'Parameter "{param_name}" does not have a range assigned and cannot use a default range')
+
+	return (
+		param_name,
+		range_values.get(param_name, range_default),
+		False if param_name in var_params else True if param_name in const_params else is_const_default,
+		initial_values.get(param_name, initial_value_default)
+	)
+
+
+
 class ParamsAndPsfModelDependencyInjector:
 	def __init__(self, psf_data : T_PSF_Data_NumpyArray):
 		self.psf_data = psf_data
@@ -82,7 +119,6 @@ class ParamsAndPsfModelDependencyInjector:
 
 
 class RadialPSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
-	from radial_psf_model import RadialPSFModel
 	
 	def __init__(self, psf_data):
 		
@@ -133,7 +169,7 @@ class RadialPSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
 
 
 class GaussianPSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
-	from gaussian_psf_model import GaussianPSFModel
+	
 	
 	def __init__(self, psf_data):
 		
@@ -189,8 +225,7 @@ class GaussianPSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
 
 
 class TurbulencePSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
-	from turbulence_psf_model import TurbulencePSFModel, SimpleTelescope, CCDSensor
-	from optics.turbulence_model import phase_psd_von_karman_turbulence as turbulence_model
+	
 	
 	def __init__(self, psf_data):
 		super().__init__(psf_data)
@@ -239,4 +274,129 @@ class TurbulencePSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
 	
 	def get_psf_result_postprocessor(self): 
 		return None
+
+
+
+class MUSEAdaptiveOpticsPSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
+
+	
+	def __init__(self, 
+			psf_data, 
+			var_params : list[str] | tuple[str] = [], 
+			const_params : list [str] | tuple [str] = [],
+			initial_values : dict[str,float] = {},
+			range_values : dict[str,tuple[float,float]] = {}
+		):
+		super().__init__(psf_data)
+		
+		instrument = VLT.muse(
+			expansion_factor = 3,
+			supersample_factor = 2,
+			obs_shape=psf_data.shape[-2:]
+		)
+		
+		self._psf_model = AOInstrumentPSFModel(
+			instrument.optical_transfer_function(),
+			phase_psd_von_karman_turbulence,
+			phase_psd_fetick_2019_moffat_function,
+			instrument
+		)
+		
+		self._params = params = PriorParamSet(
+			PriorParam(
+				*prior_param_args_from_param_spec('wavelength', True, 750E-9, (0,np.inf), var_params, const_params, initial_values, range_values)
+			),
+			PriorParam(
+				*prior_param_args_from_param_spec('r0', True, 0.15, (0,np.inf), var_params, const_params, initial_values, range_values)
+			),
+			PriorParam(
+				*prior_param_args_from_param_spec('turb_ndim', True, 1.3, (1,2), var_params, const_params, initial_values, range_values)
+			),
+			PriorParam(
+				*prior_param_args_from_param_spec('L0', True, 1.5, (0,10), var_params, const_params, initial_values, range_values)
+			),
+			PriorParam(
+				*prior_param_args_from_param_spec('alpha', False, 0.4, (0.1,3), var_params, const_params, initial_values, range_values) 
+			),
+			PriorParam(
+				*prior_param_args_from_param_spec('beta', True, 1.6, (1.1, 10), var_params, const_params, initial_values, range_values)
+			),
+			PriorParam(
+				*prior_param_args_from_param_spec('ao_correction_frac_offset', False, 0, (-1,1), var_params, const_params, initial_values, range_values)
+			),
+			PriorParam(
+				*prior_param_args_from_param_spec('ao_correction_amplitude', False, 2.2, (0,5), var_params, const_params, initial_values, range_values)
+			),
+			PriorParam(
+				*prior_param_args_from_param_spec('factor', False, 1, (0.7,1.3), var_params, const_params, initial_values, range_values)
+			),
+			PriorParam(
+				*prior_param_args_from_param_spec('s_factor', True, 0, (0,np.inf), var_params, const_params, initial_values, range_values)
+			),
+			PriorParam(
+				*prior_param_args_from_param_spec('f_ao', True, instrument.f_ao, (24.0/(2*instrument.obj_diameter),52.0/(2*instrument.obj_diameter)), var_params, const_params, initial_values, range_values)
+			)
+		)
+		
+		
+		
+	def get_parameters(self):
+		return self._params
+	
+	def get_psf_model_flattened_callable(self):
+		parent = self
+		class PSFModelFlattenedCallable:
+			def __init__(self):
+				self.specific_model = None
+				self.result = None
+				self.cached_args = np.zeros((10,))
+				
+			
+			def __call__(
+					self,
+					wavelength,
+					r0, 
+					turb_ndim, 
+					L0, 
+					alpha, 
+					beta,
+					f_ao,
+					ao_correction_amplitude, 
+					ao_correction_frac_offset, 
+					s_factor,
+					factor
+				):
+
+				# if we should recalculate everything, do so. Otherwise use the saved model
+				if np.any(np.abs(np.array((r0, turb_ndim, L0, alpha, beta, f_ao,ao_correction_amplitude, ao_correction_frac_offset, s_factor,factor)) - self.cached_args) > 1E-5):
+					self.specific_model = parent._psf_model(
+						None,
+						(r0, turb_ndim, L0),
+						(alpha, beta),
+						f_ao,
+						ao_correction_amplitude,
+						ao_correction_frac_offset,
+						s_factor
+					)
+				
+				
+				#_lgr.debug(f'{(wavelength,r0, turb_ndim, L0, alpha, beta, f_ao,ao_correction_amplitude, ao_correction_frac_offset, s_factor,factor)}')
+				self.result = self.specific_model.at(wavelength, plots=False).data
+				
+				return factor*(self.result / np.nansum(self.result.data))
+		
+		return PSFModelFlattenedCallable()
+	
+	def get_psf_result_postprocessor(self): 
+		def psf_result_postprocessor(params, psf_model_flattened_callable, fitted_vars, consts):
+			result = params.apply_to_callable(
+				psf_model_flattened_callable, 
+				fitted_vars,
+				consts
+			)
+			#result /= np.nansum(result)
+			#result *= psf_model_flattened_callable.factor
+			return result
+			
+		return psf_result_postprocessor
 

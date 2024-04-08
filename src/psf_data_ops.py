@@ -143,6 +143,7 @@ def objective_function_factory(model_flattened_callable, data, err, mode='minimi
 			def model_likelihood_callable(*args, **kwargs):
 				residual = model_flattened_callable(*args, **kwargs) - data
 				result = np.nansum((residual/err)**2)
+				#_lgr.debug(f'{-np.log(result)=}')
 				return -np.log(result)
 			
 			return model_likelihood_callable
