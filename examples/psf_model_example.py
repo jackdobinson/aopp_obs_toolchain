@@ -71,7 +71,7 @@ if __name__=='__main__':
 	
 	
 	
-	def plot_example_result(result, psf_data, suptitle=None, show=True):
+	def plot_result(result, psf_data, suptitle=None, show=True):
 		if not show: return
 	
 		residual = psf_data-result
@@ -163,14 +163,9 @@ if __name__=='__main__':
 				(8.64E-7, 390),
 				(9E-7,426),
 				(9.244E-7, 450),
-			)[:1] # DEBUGGING
+			)
 			
 			
-			nested_sampling_stop_fraction = 0.01
-			nested_sampling_max_iterations = 500 #2000
-			min_live_points = 20
-			show_plots = False
-			update_params_search_region = False
 			result_set_directory = Path('ultranest_logs')
 			
 			
@@ -183,14 +178,23 @@ if __name__=='__main__':
 			initial_median_noise_estimate = None
 			initial_median_noise_estimate_idx = 0
 			
-			for wavelength, idx in wavelength_idxs:
+			
+			result_callables = []
+			
+			for wavelength, idx in wavelength_idxs: 
 				_lgr.info(f'{idx=} {wavelength=}')
 				
-				di = MUSEAdaptiveOpticsPSFModelDependencyInjector(psf_data, initial_values={'wavelength':wavelength})
+				di = MUSEAdaptiveOpticsPSFModelDependencyInjector(
+					psf_data,
+					var_params=['alpha','factor','f_ao', 'ao_correction_frac_offset', 'ao_correction_amplitude'],
+					const_params=[],
+					initial_values={'wavelength':wavelength}
+				)
 				psf_model_name = di.get_psf_model_name()
 				params = di.get_parameters()
 				psf_model_callable = di.get_psf_model_flattened_callable()
 				psf_result_postprocess = di.get_psf_result_postprocessor()
+				result_callables.append(di.get_scipy_compatible_callable())
 				
 				result_set.metadata['constant_parameters'] = [p.to_dict() for p in params.constant_params]
 				result_set.save_metadata()
@@ -212,6 +216,10 @@ if __name__=='__main__':
 				median_noise_correction_factor = np.sqrt(median_noise/ initial_median_noise_estimate)
 				_lgr.debug(f'{median_noise=} {median_noise_correction_factor=}')
 				
+				
+				# Paramters to pass to ultranest
+				num_live_points = 200
+				
 				# fit PSF model
 				fitted_psf, fitted_vars, consts = psf_data_ops.fit_to_data(
 					params, 
@@ -222,25 +230,39 @@ if __name__=='__main__':
 						reactive_nested_sampler_kwargs = {
 							'log_dir' : result_set.directory,
 							'run_num' : idx
+						},
+						sampler_run_kwargs = {
+							'max_iters' : 2000, #500, # 2000,
+							'max_ncalls' : 10000, #5000
+							'frac_remain' : 1E-2,
+							'Lepsilon' : 1E-1,
+							'min_num_live_points' : num_live_points, #20, #80
+							'cluster_num_live_points' : num_live_points/5, #1, #40
+							'min_ess' : num_live_points, #1, #40
+							'widen_before_initial_plateau_num_warn' : 1.5*num_live_points, #*min_live_points,
+							'widen_before_initial_plateau_num_max' : 2*num_live_points #*min_live_points
 						}
 					), # optimise_compat.ultranest.fitting_function_factory
 					partial(psf_data_ops.objective_function_factory, mode='maximise'),
 					plot_mode=None
 				)
-				_lgr.debug(f'{fitted_vars=}')
-				_lgr.debug(f'{consts=}')
+				_lgr.info(f'{fitted_vars=}')
+				_lgr.info(f'{consts=}')
 				
 				# Do any postprocessing if we need to
 				if psf_result_postprocess is not None:
-					fitted_psf = psf_result_postprocess(params, psf_model_callable, fitted_vars, consts)
+					result = psf_result_postprocess(params, psf_model_callable, fitted_vars, consts)
+					plot_result(result, psf_data[idx], suptitle=f'{idx=}\n{fitted_vars=}', show=False)
+				
+				
 			
 			
-			#result_set.plot_params_vs_wavelength(show=False, save=True)
-			#result_set.plot_results(
-			#	lambda wav: psf_model_result_callable_factory(model_scipyCompat_callable, wav, show_plots=show_plots),
-			#	psf_data,
-			#	show=False,
-			#	save=True
-			#)
+			result_set.plot_params_vs_run_index(show=False, save=True)
+			result_set.plot_results(
+				result_callables,
+				psf_data,
+				show=False,
+				save=True
+			)
 	
 			

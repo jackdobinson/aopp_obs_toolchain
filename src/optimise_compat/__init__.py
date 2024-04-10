@@ -114,6 +114,10 @@ class PriorParamSet:
 	def constant_params(self):
 		return tuple(self.prior_params[i] for i in self.all_param_index_to_constant_param_index_map.keys())
 	
+	@property
+	def consts(self):
+		return dict((p.name,p.const_value) for p in self.constant_params)
+	
 	def __getitem__(self, k : str | int):
 		if type(k) == str:
 			return self.prior_params[self.param_name_index_map[k]]

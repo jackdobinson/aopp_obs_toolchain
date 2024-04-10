@@ -37,14 +37,14 @@ def fitting_function_factory(
 		max_ncalls=10000, #5000
 		frac_remain=1E-2,
 		Lepsilon = 1E-1,
-		min_num_live_points=40, #20, #80
-		cluster_num_live_points=8, #1, #40
+		min_num_live_points=200, #20, #80
+		cluster_num_live_points=40, #1, #40
 		dlogz=100,
-		min_ess=8, #1, #40
+		min_ess=200, #1, #40
 		update_interval_volume_fraction=0.99, #0.8
-		max_num_improvement_loops=10,
-		widen_before_initial_plateau_num_warn = 1.5*40, #*min_live_points,
-		widen_before_initial_plateau_num_max = 2*40 #*min_live_points
+		max_num_improvement_loops=3,
+		widen_before_initial_plateau_num_warn = 1.5*200, #*min_live_points,
+		widen_before_initial_plateau_num_max = 2*200 #*min_live_points
 	)
 	
 	sampler_run_kwargs_defaults.update(sampler_run_kwargs)
@@ -122,45 +122,79 @@ class UltranestResultSet:
 			'stats' : rdata['posterior']
 		}
 
+	def get_run_indices(self) -> tuple[int,...] | list[int,...]:
+		run_indices = []
+		for p in self.directory.iterdir():
+			if p.is_dir() and p.stem.startswith('run'):
+				run_indices.append(int(p.stem[3:]))
+		return run_indices
 
-	def get_params_vs_wavelength(self) -> tuple[np.array, dict[str,np.array]]:
+
+	def get_params_vs_run_index(self, metadata_keys_to_include=[], sort_by=None) -> tuple[list[int,...], dict[str,np.array], dict[str,np.array]]:
+		"""
+		sort_by : None | str = None
+			Metadata or parameter name to sort by. If `None`, sort by run index
+		"""
+		run_indices = self.get_run_indices()
+		n_runs_indices = len(run_indices)
 		
-		wavs = np.array([w for w,idx in self.metadata['wavelength_idxs']])
-		idxs = np.array([idx for w,idx in self.metadata['wavelength_idxs']])
-		
+		metadata_values = {}
 		param_values = {}
-		_lgr.debug(f'{wavs=} {idxs=} {param_values=}')
-		for i, (wavelength, idx) in enumerate(self.metadata['wavelength_idxs']):
+		
+		
+		# use numpy arrays
+		for i, idx in enumerate(run_indices):
+			
+			for key in metadata_keys_to_include:
+				if key not in metadata_values:
+					metadata_values[key] = np.full((n_runs_indices,), np.nan)
+				metadata_values[key][i] = self.metadata[k][i] 
+		
 		
 			result = self.get_result_data_from_path(self.get_result_data_path(idx))
 			for j, pname in enumerate(result['param_names']):
 				if pname not in param_values:
-					param_values[pname] = np.full_like(wavs, np.nan)
+					param_values[pname] = np.full((n_runs_indices,), np.nan)
 				param_values[pname][i] = result['best_point'][j]
 		
-		sort_indices = np.argsort(wavs)
-		wavs = wavs[sort_indices]
-		idxs = idxs[sort_indices]
+		sort_indices = np.argsort(run_indices if sort_by not in param_values else (param_values[sort_by] if sort_by not in metadata_values else metadata_values[sort_by]))
+		metadata_values = dict((k,v[sort_indices]) for k,v in metadata_values.items())
 		param_values = dict((k,v[sort_indices]) for k,v in param_values.items())
 		
-		_lgr.debug(f'{wavs=} {idxs=} {param_values=}')
+		_lgr.debug(f'{metadata_values=} {param_values=}')
 		
-		return wavs, idxs, param_values
+		return run_indices, metadata_values, param_values
 
-	def plot_params_vs_wavelength(self, show=False, save=True):
-		fname = 'params_vs_wavelength.png'
-		wavs, _, param_values = self.get_params_vs_wavelength()
+	def plot_params_vs_run_index(self, x_var=None, show=False, save=True, **kwargs):
+		"""
+		x_var : str | None
+			Variable to display along x-axis. If `None`, uses run index.
+		kwargs : dict[str,Any]
+			Forwarded to `self.get_params_vs_run_index(...)`
+		"""
+		run_indices, metadata_values, param_values = self.get_params_vs_run_index(**kwargs)
 		
-		f, a = plot_helper.figure_n_subplots(len(param_values))
+		x_label = 'run index' if x_var is None else x_var
+		x_values = run_indices if x_var is None else (param_values[x_var] if (x_var not in metadata_values) else metadata_values[x_var])
+		
+		fname = f'params_vs_{x_label}.png'
+		
+		f, a = plot_helper.figure_n_subplots(len(param_values)+len(metadata_values))
 		#f.tight_layout(pad=16, w_pad=8, h_pad=4)
 		f.set_layout_engine('constrained')
 		
-		f.suptitle('Parameters vs Wavelength')
+		f.suptitle(f'params and metadata vs {x_label}')
 		for i, pname in enumerate(param_values):
 			a[i].set_title(pname)
-			a[i].set_xlabel('wavelength')
+			a[i].set_xlabel(x_label)
 			a[i].set_ylabel(pname)
-			a[i].plot(wavs, param_values[pname], 'bo-')
+			a[i].plot(x_values, param_values[pname], 'bo-')
+		
+		for i, mname in enumerate(metadata_values):
+			a[i].set_title(mname)
+			a[i].set_xlabel(x_label)
+			a[i].set_ylabel(mname)
+			a[i].plot(x_values, metadata_values[mname], 'bo-')
 		
 		
 		plot_helper.output(
@@ -168,9 +202,12 @@ class UltranestResultSet:
 			None if save is None else self.directory / fname
 		)
 	
+	@property
+	def plot_directory(self) -> Path:
+		return self.directory / "resultset_plots" 
 	
 	def plot_results(self, 
-			model_callable_factory : Callable[[float],Callable[[float,...],np.ndarray]], 
+			result_providers : list[Callable[tuple[float,...], np.ndarray]], # List of functions that produce results for run "N" 
 			ref_data : np.ndarray, 
 			show=False, 
 			save=True
@@ -178,16 +215,19 @@ class UltranestResultSet:
 		log_plot_fname_fmt = 'log_result_{idx}.png'
 		linear_plot_fname_fmt = 'linear_result_{idx}.png'
 		
-		wavs, idxs, param_values = self.get_params_vs_wavelength()
-		_lgr.debug(f'{wavs=} {idxs=} {param_values=}')
+		run_indices, metadata_values, param_values = self.get_params_vs_run_index()
 		
-		for i, (wav, idx) in enumerate(zip(wavs, idxs)):
-			_lgr.debug(f'{i=} {wav=} {idx=}')
+		# Ensure plot directory exists if we are going to use it
+		if save:
+			self.plot_directory.mkdir(parents=True, exist_ok=True)
+		
+		# Loop over run indices and plot all the things we need
+		for i, idx in enumerate(run_indices):
+			_lgr.debug(f'{i=} {idx=}')
 			
 			params = tuple(param_values[pname][i] for pname in param_values)
 			_lgr.debug(f'{params=}')
-			model_callable = model_callable_factory(wav)
-			result = model_callable(params)
+			result = result_providers[i](params)
 			
 			
 			data = ref_data[idx]
@@ -200,7 +240,7 @@ class UltranestResultSet:
 			# plot log of result vs reference data
 			f, a = plot_helper.figure_n_subplots(4)
 			f.set_layout_engine('constrained')
-			f.suptitle(f'log results {wav=} {idx=}')
+			f.suptitle(f'log results {idx=}')
 			vmin, vmax = np.nanmin(log_data), np.nanmax(log_data)
 			
 			a[0].set_title(f'log data [{vmin}, {vmax}]')
@@ -218,14 +258,14 @@ class UltranestResultSet:
 			
 			plot_helper.output(
 				show, 
-				None if save is None else self.directory / log_plot_fname_fmt.format(idx=idx)
+				None if save is None else self.plot_directory / log_plot_fname_fmt.format(idx=idx)
 			)
 			
 			
 			# plot result vs reference data
 			f, a = plot_helper.figure_n_subplots(4)
 			f.set_layout_engine('constrained')
-			f.suptitle(f'linear results {wav=} {idx=}')
+			f.suptitle(f'linear results {idx=}')
 			
 			vmin, vmax = np.nanmin(data), np.nanmax(data)
 			
@@ -245,7 +285,9 @@ class UltranestResultSet:
 			a[3].set_title(f'frac residual [{vmin}, {vmax}]')
 			a[3].imshow(frac_residual, vmin=vmin, vmax=vmax)
 			
+			
+			
 			plot_helper.output(
 				show, 
-				None if save is None else self.directory / linear_plot_fname_fmt.format(idx=idx)
+				None if save is None else self.plot_directory / linear_plot_fname_fmt.format(idx=idx)
 			)

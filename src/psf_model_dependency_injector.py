@@ -70,6 +70,11 @@ type T_PSF_Result_Postprocessor_Callable = Callable[
 	T_PSF_Data_NumpyArray
 ]
 
+# A scipy-compatible callable has all of it's "fitable" paramters in a single tuple, and other paramters are ones that are held constant
+# it should return a numpy array that we can compare with our reference data
+type T_Scipy_Compatble_Callable = Callable[[tuple[float,...], ...], T_PSF_Data_NumpyArray] 
+
+
 
 
 def prior_param_args_from_param_spec(
@@ -116,6 +121,17 @@ class ParamsAndPsfModelDependencyInjector:
 	
 	def get_psf_result_postprocessor(self) -> None | T_PSF_Result_Postprocessor_Callable : 
 		NotImplemented
+	
+	def get_scipy_compatible_callable(self) -> T_Scipy_Compatble_Callable:
+		"""
+		Return a scipy-compatible callable has all of it's "fitable" parameters in a single tuple, and constant 
+		parameters are default-valued. The callable has the attributes `var_param_name_order` and 
+		`const_param_name_order` which give the order of the fitable and default-valued parameters respectively.
+		"""
+		scipy_compatible_callable, var_param_name_order, const_param_name_order = self.get_parameters().wrap_callable_for_scipy_parameter_order(self.get_psf_model_flattened_callable())
+		scipy_compatible_callable.var_param_name_order = var_param_name_order
+		scipy_compatible_callable.const_param_name_order = const_param_name_order
+		return scipy_compatible_callable
 
 
 class RadialPSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
@@ -394,8 +410,6 @@ class MUSEAdaptiveOpticsPSFModelDependencyInjector(ParamsAndPsfModelDependencyIn
 				fitted_vars,
 				consts
 			)
-			#result /= np.nansum(result)
-			#result *= psf_model_flattened_callable.factor
 			return result
 			
 		return psf_result_postprocessor
