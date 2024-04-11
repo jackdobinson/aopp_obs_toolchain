@@ -185,7 +185,7 @@ if __name__=='__main__':
 				
 				di = MUSEAdaptiveOpticsPSFModelDependencyInjector(
 					psf_data,
-					var_params=['alpha','factor', 'ao_correction_frac_offset', 'ao_correction_amplitude', 'f_ao', 'r0'],
+					var_params=['alpha','factor', 'ao_correction_frac_offset', 'ao_correction_amplitude', 'f_ao'],
 					const_params=[],
 					initial_values={'wavelength':wavelength}
 				)
