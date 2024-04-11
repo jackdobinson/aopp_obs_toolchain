@@ -241,7 +241,7 @@ class GaussianPSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
 			)
 		)
 		
-		self._psf_model = GaussianPSFModelDependencyInjector.GaussianPSFModel(psf_data.shape, float)
+		self._psf_model = GaussianPSFModel(psf_data.shape, float)
 	
 	
 	
