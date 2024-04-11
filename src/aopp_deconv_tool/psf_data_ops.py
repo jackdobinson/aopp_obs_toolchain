@@ -4,12 +4,12 @@ Module containing routines that operate on point spread function data
 from typing import Callable, TypeVar, Generic, ParamSpec, TypeVarTuple, Any
 import functools
 import numpy as np
-import numpy_helper as nph
-import numpy_helper.array
-import numpy_helper.slice
 import scipy as sp
 import scipy.ndimage
 
+import aopp_deconv_tool.numpy_helper as nph
+import aopp_deconv_tool.numpy_helper.array
+import aopp_deconv_tool.numpy_helper.slice
 from aopp_deconv_tool.optimise_compat import PriorParamSet
 
 import aopp_deconv_tool.cfg.logs

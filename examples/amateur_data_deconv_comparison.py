@@ -12,14 +12,13 @@ import scipy.ndimage
 import scipy.signal
 
 import example_data_loader
-import psf_data_ops
-import plot_helper
+import aopp_deconv_tool.psf_data_ops as psf_data_ops
+import aopp_deconv_tool.plot_helper as plot_helper
 
 from amateur_data_analysis import get_source_regions
 
-import cfg.logs
-
-_lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+import aopp_deconv_tool.cfg.logs
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
 def load_image_as_numpy_array(fpath):

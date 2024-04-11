@@ -15,35 +15,32 @@ import numpy as np
 from astropy.io import fits
 import ultranest
 import ultranest.plot
-
-
 import scipy as sp
 import scipy.stats
 import scipy.interpolate
 import scipy.ndimage
 
-import numpy_helper as nph
-import astropy_helper as aph
-from astropy_helper.fits.specifier import FitsSpecifier
-import numpy_helper.array
-import numpy_helper.axes
-import numpy_helper.slice
+import aopp_deconv_tool.numpy_helper as nph
+import aopp_deconv_tool.astropy_helper as aph
+from aopp_deconv_tool.astropy_helper.fits.specifier import FitsSpecifier
+import aopp_deconv_tool.numpy_helper.array
+import aopp_deconv_tool.numpy_helper.axes
+import aopp_deconv_tool.numpy_helper.slice
+
+import aopp_deconv_tool.plot_helper as plot_helper
+import aopp_deconv_tool.mfunc as mfunc
+import aopp_deconv_tool.psf_data_ops as psf_data_ops
+
+from aopp_deconv_tool.optimise_compat import PriorParam, PriorParamSet
+from aopp_deconv_tool.optimise_compat.ultranest_compat import UltranestResultSet, fitting_function_factory
+
+from aopp_deconv_tool.psf_model_dependency_injector import MUSEAdaptiveOpticsPSFModelDependencyInjector
+
+import aopp_deconv_tool.cfg.logs
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+
+
 import example_data_loader
-import plot_helper
-import mfunc
-import psf_data_ops
-
-from optimise_compat import PriorParam, PriorParamSet
-from optimise_compat.ultranest_compat import UltranestResultSet, fitting_function_factory
-
-import cfg.logs
-_lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
-
-
-
-from psf_model_dependency_injector import MUSEAdaptiveOpticsPSFModelDependencyInjector
-
-
 
 def get_error(data, frac, low_limit, hi_limit, sigma):
 	"""
@@ -188,8 +185,8 @@ if __name__=='__main__':
 				
 				di = MUSEAdaptiveOpticsPSFModelDependencyInjector(
 					psf_data,
-					var_params=['alpha','factor', 'ao_correction_frac_offset', 'ao_correction_amplitude', ],
-					const_params=['f_ao', 'r0'],
+					var_params=['alpha','factor', 'ao_correction_frac_offset', 'ao_correction_amplitude', 'f_ao', 'r0'],
+					const_params=[],
 					initial_values={'wavelength':wavelength}
 				)
 				psf_model_name = di.get_psf_model_name()

@@ -26,22 +26,15 @@ import matplotlib.patches
 import PIL
 import PIL.Image
 
-from geometry.bounding_box import BoundingBox
-from optimise_compat import PriorParam, PriorParamSet
-from algorithm.deconv.clean_modified import CleanModified
+from aopp_deconv_tool.geometry.bounding_box import BoundingBox
+from aopp_deconv_tool.optimise_compat import PriorParam, PriorParamSet
+from aopp_deconv_tool.algorithm.deconv.clean_modified import CleanModified
+import aopp_deconv_tool.psf_data_ops as psf_data_ops
 
+from aopp_deconv_tool.psf_model_dependency_injector import RadialPSFModelDependencyInjector, GaussianPSFModelDependencyInjector, TurbulencePSFModelDependencyInjector
 
-
-
-
-
-
-import psf_data_ops
-
-
-import cfg.logs
-
-_lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+import aopp_deconv_tool.cfg.logs
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
 T = TypeVar('T')
@@ -260,13 +253,10 @@ def print_tiff_tags(path):
 
 
 
-from psf_model_dependency_injector import RadialPSFModelDependencyInjector, GaussianPSFModelDependencyInjector, TurbulencePSFModelDependencyInjector
-
 
 if __name__=='__main__':
 
 	import example_data_loader
-	import psf_data_ops
 
 	# Set some defaults for matplotlib
 	mpl.rc('image', cmap='gray', origin='upper')

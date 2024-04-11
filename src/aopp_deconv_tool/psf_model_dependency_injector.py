@@ -292,13 +292,13 @@ class TurbulencePSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
 			)
 		)
 		
-		self._psf_model = TurbulencePSFModelDependencyInjector.TurbulencePSFModel(
-			TurbulencePSFModelDependencyInjector.SimpleTelescope(
+		self._psf_model = TurbulencePSFModel(
+			SimpleTelescope(
 				8, 
 				200, 
-				TurbulencePSFModelDependencyInjector.CCDSensor.from_shape_and_pixel_size(psf_data.shape, 2.5E-6)
+				CCDSensor.from_shape_and_pixel_size(psf_data.shape, 2.5E-6)
 			),
-			TurbulencePSFModelDependencyInjector.turbulence_model
+			turbulence_model
 		)
 		
 	def get_parameters(self):
@@ -344,7 +344,7 @@ class MUSEAdaptiveOpticsPSFModelDependencyInjector(ParamsAndPsfModelDependencyIn
 				*prior_param_args_from_param_spec('wavelength', True, 750E-9, (0,np.inf), var_params, const_params, initial_values, range_values)
 			),
 			PriorParam(
-				*prior_param_args_from_param_spec('r0', True, 0.15, (0,np.inf), var_params, const_params, initial_values, range_values)
+				*prior_param_args_from_param_spec('r0', True, 0.15, (0.01,10), var_params, const_params, initial_values, range_values)
 			),
 			PriorParam(
 				*prior_param_args_from_param_spec('turb_ndim', True, 1.3, (1,2), var_params, const_params, initial_values, range_values)
