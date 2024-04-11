@@ -176,7 +176,7 @@ class RadialPSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
 			)
 		)
 		
-		self._psf_model = RadialPSFModelDependencyInjector.RadialPSFModel(
+		self._psf_model = RadialPSFModel(
 			psf_data
 		)
 		
