@@ -10,19 +10,19 @@ import matplotlib.pyplot as plt
 
 
 
-import astropy_helper as aph
-import astropy_helper.fits.header
-from astropy_helper.fits.specifier import FitsSpecifier
-import numpy_helper as nph
-import numpy_helper.axes
-import numpy_helper.slice
-import numpy_helper.array
-from algorithm.deconv.clean_modified import CleanModified
-import algorithm.bad_pixels
-import plot_helper
-from plot_helper import figure_n_subplots, LimSymAroundValue
-from plot_helper.plotters import PlotSet, Histogram, Image, VerticalLine, IterativeLineGraph, HorizontalLine
-from plot_helper.base import AxisDataMapping
+import aopp_deconv_tool.astropy_helper as aph
+import aopp_deconv_tool.astropy_helper.fits.header
+from aopp_deconv_tool.astropy_helper.fits.specifier import FitsSpecifier
+import aopp_deconv_tool.numpy_helper as nph
+import aopp_deconv_tool.numpy_helper.axes
+import aopp_deconv_tool.numpy_helper.slice
+import aopp_deconv_tool.numpy_helper.array
+from aopp_deconv_tool.algorithm.deconv.clean_modified import CleanModified
+import aopp_deconv_tool.algorithm.bad_pixels
+import aopp_deconv_tool.plot_helper as plot_helper
+from aopp_deconv_tool.plot_helper import figure_n_subplots, LimSymAroundValue
+from aopp_deconv_tool.plot_helper.plotters import PlotSet, Histogram, Image, VerticalLine, IterativeLineGraph, HorizontalLine
+from aopp_deconv_tool.plot_helper.base import AxisDataMapping
 
 
 import test_data
@@ -76,11 +76,11 @@ def test_clean_modified_on_example_data(n_iter=200):
 			psf_data_offset = nph.array.get_center_offset_brightest_pixel(psf_data)
 			psf_data = nph.array.apply_offset(psf_data, psf_data_offset)
 
-			obs_data_bp_mask = algorithm.bad_pixels.get_map(obs_data)
-			obs_data = algorithm.bad_pixels.fix(obs_data, obs_data_bp_mask, 'simple')
+			obs_data_bp_mask =aopp_deconv_tool.algorithm.bad_pixels.get_map(obs_data)
+			obs_data =aopp_deconv_tool.algorithm.bad_pixels.fix(obs_data, obs_data_bp_mask, 'simple')
 
-			psf_data_bp_mask = algorithm.bad_pixels.get_map(psf_data)
-			psf_data = algorithm.bad_pixels.fix(psf_data, psf_data_bp_mask, 'simple')
+			psf_data_bp_mask =aopp_deconv_tool.algorithm.bad_pixels.get_map(psf_data)
+			psf_data =aopp_deconv_tool.algorithm.bad_pixels.fix(psf_data, psf_data_bp_mask, 'simple')
 
 			#print(f'{obs_data.shape=} {psf_data.shape=}')
 			#print(f'{obs.slices=} {psf.slices=}')
@@ -255,11 +255,11 @@ def test_clean_modified_on_example_data_with_plotting_hooks(n_iter=200):
 			psf_data_offset = nph.array.get_center_offset_brightest_pixel(psf_data)
 			psf_data = nph.array.apply_offset(psf_data, psf_data_offset)
 
-			obs_data_bp_mask = algorithm.bad_pixels.get_map(obs_data)
-			obs_data = algorithm.bad_pixels.fix(obs_data, obs_data_bp_mask, 'mean')
+			obs_data_bp_mask =aopp_deconv_tool.algorithm.bad_pixels.get_map(obs_data)
+			obs_data =aopp_deconv_tool.algorithm.bad_pixels.fix(obs_data, obs_data_bp_mask, 'mean')
 
-			psf_data_bp_mask = algorithm.bad_pixels.get_map(psf_data)
-			psf_data = algorithm.bad_pixels.fix(psf_data, psf_data_bp_mask, 'mean')
+			psf_data_bp_mask =aopp_deconv_tool.algorithm.bad_pixels.get_map(psf_data)
+			psf_data =aopp_deconv_tool.algorithm.bad_pixels.fix(psf_data, psf_data_bp_mask, 'mean')
 
 			#print(f'{obs_data.shape=} {psf_data.shape=}')
 			#print(f'{obs.slices=} {psf.slices=}')

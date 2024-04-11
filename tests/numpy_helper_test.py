@@ -4,9 +4,10 @@
 
 import numpy as np
 
-import numpy_helper as nph
-import numpy_helper.axes
-import numpy_helper.slice
+import aopp_deconv_tool.numpy_helper as nph
+import aopp_deconv_tool.numpy_helper.axes
+import aopp_deconv_tool.numpy_helper.slice
+import aopp_deconv_tool.numpy_helper.array
 
 def test_axes_to_end():
 	a = np.ones((2,3,4,5))
@@ -57,8 +58,6 @@ def test_slice_get_indices():
 
 
 def test_array_offsets():
-	import numpy_helper.array
-
 	a = np.zeros((7,7))
 	expected_result = np.array(a)
 	a[5,5] = 1
@@ -71,8 +70,6 @@ def test_array_offsets():
 	assert np.all(b == expected_result), f"Expected {expected_result}, have {b}"
 
 def test_array_ensure_odd():
-	import numpy_helper.array
-
 	a = np.zeros((1,2,3,4,5,6,7,8))
 	expected_shape = ((1,1,3,3,5,5,7,7))
 

@@ -1,6 +1,6 @@
 
 import scientest.check
-from optimise_compat import PriorParam, PriorParamSet
+from aopp_deconv_tool.optimise_compat import PriorParam, PriorParamSet
 
 def test_prior_params_constructed_correctly():
 	prior_param_list = [

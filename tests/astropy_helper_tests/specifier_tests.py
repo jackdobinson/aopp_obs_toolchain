@@ -3,8 +3,8 @@
 
 import os
 
-import astropy_helper as aph
-import astropy_helper.fits.specifier
+import aopp_deconv_tool.astropy_helper as aph
+import aopp_deconv_tool.astropy_helper.fits.specifier
 
 import test_data
 

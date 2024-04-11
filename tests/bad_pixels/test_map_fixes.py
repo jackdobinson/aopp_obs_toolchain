@@ -1,7 +1,15 @@
 
-import numpy as np
-import algorithm.bad_pixels as bp
 import random
+import itertools as it
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+import aopp_deconv_tool.algorithm.bad_pixels.ssa_sum_prob as ssa_sum_prob
+from aopp_deconv_tool.py_ssa import SSA
+import aopp_deconv_tool.algorithm.bad_pixels as bp
+
 
 import scientest.decorators
 
@@ -156,10 +164,7 @@ def test_bp_map_interp_fix():
 
 #@scientest.decorators.debug
 def test_bp_map_ssa_sum_prob():
-	import algorithm.bad_pixels.ssa_sum_prob
-	from py_ssa import SSA
-	import matplotlib.pyplot as plt
-	import itertools as it
+	
 	np.random.seed(100)
 	a = np.indices((21,33)).astype(float)
 	a[0] -= 10
@@ -198,7 +203,7 @@ def test_bp_map_ssa_sum_prob():
 	ssa.plot_ssa([ssa.X_ssa.shape[0]//16, ssa.X_ssa.shape[0]//4, 2*ssa.X_ssa.shape[0]//4, 3*ssa.X_ssa.shape[0]//4])
 	plt.show()
 	
-	bp_map = algorithm.bad_pixels.ssa_sum_prob.ssa2d_sum_prob_map(
+	bp_map = ssa_sum_prob.ssa2d_sum_prob_map(
 		ssa,
 		start = 5,
 		stop = None,

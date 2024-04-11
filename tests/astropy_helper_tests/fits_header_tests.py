@@ -1,6 +1,6 @@
 
-import astropy_helper as aph
-import astropy_helper.fits.header
+import aopp_deconv_tool.astropy_helper as aph
+import aopp_deconv_tool.astropy_helper.fits.header
 
 def test_aph_fits_header_gives_correct_standard_output_format():
 	

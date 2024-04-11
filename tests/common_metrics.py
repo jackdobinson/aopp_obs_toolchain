@@ -2,7 +2,7 @@
 Contains common metrics used in tests
 """
 import numpy as np
-import stats.empirical
+import aopp_deconv_tool.stats.empirical
 
 class FracError:
 	def __init__(self, observed : np.ndarray, expected : np.ndarray):
@@ -22,7 +22,7 @@ class FracError:
 	
 	@property
 	def pdf(self):
-		return stats.empirical.EmpiricalDistribution(self.value).pdf()
+		return aopp_deconv_tool.stats.empirical.EmpiricalDistribution(self.value).pdf()
 
 def frac_error(observed : np.ndarray, expected : np.ndarray) -> np.ndarray:
 	return ((observed - expected)**2)/expected

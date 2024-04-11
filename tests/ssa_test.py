@@ -2,12 +2,16 @@
 import scientest.decorators
 
 import numpy as np
-from py_ssa import SSA
-import estimate_noise
-import common_metrics
+import matplotlib.pyplot as plt
 
-import cfg.logs
-_lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+from aopp_deconv_tool.algorithm.interpolate.ssa_interp import ssa_intepolate_at_mask
+import aopp_deconv_tool.scipy_helper as scipy_helper
+from aopp_deconv_tool.py_ssa import SSA
+import aopp_deconv_tool.estimate_noise as estimate_noise
+import common_metrics as common_metrics
+
+import aopp_deconv_tool.cfg.logs
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 @scientest.decorators.pass_args(1E-9)
 def test_ssa_residuals_are_within_limits(frac_residual_limit):
@@ -75,9 +79,7 @@ def test_ssa_residuals_are_within_limits(frac_residual_limit):
 
 #@scientest.decorators.debug
 def ssa_interpolation_test():
-	import matplotlib.pyplot as plt
-	from algorithm.interpolate.ssa_interp import ssa_intepolate_at_mask
-	import scipy_helper
+	
 	
 	
 	np.random.seed(100)

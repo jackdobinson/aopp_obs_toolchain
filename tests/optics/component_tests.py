@@ -1,11 +1,11 @@
 
 import numpy as np
 
-from geometry.shape import Circle
-from optics.geometric.optical_component import OpticalComponentSet, Aperture, Obstruction,Refractor,LightBeam,LightBeamSet
+from aopp_deconv_tool.geometry.shape import Circle
+from aopp_deconv_tool.optics.geometric.optical_component import OpticalComponentSet, Aperture, Obstruction,Refractor,LightBeam,LightBeamSet
 
 import matplotlib.pyplot as plt
-import plot_helper
+import aopp_deconv_tool.plot_helper as plot_helper
 
 
 def print_iterable(iterable, prefix='[', sep='\n\t',suffix='\n]'):

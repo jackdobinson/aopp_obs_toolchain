@@ -8,26 +8,26 @@ import matplotlib as mpl
 mpl.use('TKagg')
 import matplotlib.pyplot as plt
 
+import aopp_deconv_tool.astropy_helper as aph
+import aopp_deconv_tool.astropy_helper.fits.header
+from aopp_deconv_tool.astropy_helper.fits.specifier import FitsSpecifier
+import aopp_deconv_tool.numpy_helper as nph
+import aopp_deconv_tool.numpy_helper.axes
+import aopp_deconv_tool.numpy_helper.slice
+import aopp_deconv_tool.numpy_helper.array
+from aopp_deconv_tool.algorithm.deconv.lucy_richardson import LucyRichardson
+import aopp_deconv_tool.algorithm as algorithm
+import aopp_deconv_tool.algorithm.bad_pixels
+import aopp_deconv_tool.plot_helper as plot_helper
+from aopp_deconv_tool.plot_helper import figure_n_subplots, LimSymAroundValue, DiffClass, LimSymAroundCurrent
+from aopp_deconv_tool.plot_helper.plotters import PlotSet, Histogram, Image, VerticalLine, IterativeLineGraph, HorizontalLine
+from aopp_deconv_tool.plot_helper.base import AxisDataMapping
 
-import astropy_helper as aph
-import astropy_helper.fits.header
-from astropy_helper.fits.specifier import FitsSpecifier
-import numpy_helper as nph
-import numpy_helper.axes
-import numpy_helper.slice
-import numpy_helper.array
-from algorithm.deconv.lucy_richardson import LucyRichardson
-import algorithm.bad_pixels
-import plot_helper
-from plot_helper import figure_n_subplots, LimSymAroundValue, DiffClass, LimSymAroundCurrent
-from plot_helper.plotters import PlotSet, Histogram, Image, VerticalLine, IterativeLineGraph, HorizontalLine
-from plot_helper.base import AxisDataMapping
-
-
-import test_data
 import scientest
 import scientest.decorators
 import scientest.cfg.settings
+
+import test_data
 
 algo_basic_test_data = SimpleNamespace(
 	n_iter = 10,

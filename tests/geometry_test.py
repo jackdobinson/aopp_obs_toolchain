@@ -1,10 +1,10 @@
 import numpy as np
 
-import numpy_helper as nph
-import numpy_helper.array.mask
+import aopp_deconv_tool.numpy_helper as nph
+import aopp_deconv_tool.numpy_helper.array.mask
 
-import geometry as geo
-import geometry.shape
+import aopp_deconv_tool.geometry as geo
+import aopp_deconv_tool.geometry.shape
 
 import matplotlib.pyplot as plt
 

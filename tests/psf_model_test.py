@@ -1,18 +1,24 @@
 
 
-import cfg.logs
-_lgr = cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
-import psf_model
+
+import numpy as np
+
+from aopp_deconv_tool.geometry.shape import Circle
+from aopp_deconv_tool.optics.geometric.optical_component import OpticalComponentSet, Aperture, Obstruction,Refractor
+from aopp_deconv_tool.optics.telescope_model import optical_transfer_function_of_optical_component_set
+from aopp_deconv_tool.optics.turbulence_model import phase_psd_von_karman_turbulence
+from aopp_deconv_tool.optics.adaptive_optics_model import phase_psd_fetick_2019_moffat_function
+from aopp_deconv_tool.instrument_model.vlt import VLT
+import aopp_deconv_tool.psf_model as psf_model
+
+import aopp_deconv_tool.cfg.logs
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+
+
 
 def test_psf_model_produces_plots():
-	import numpy as np
-	from geometry.shape import Circle
-	from optics.geometric.optical_component import OpticalComponentSet, Aperture, Obstruction,Refractor
-	from optics.telescope_model import optical_transfer_function_of_optical_component_set
-	from optics.turbulence_model import phase_psd_von_karman_turbulence
-	from optics.adaptive_optics_model import phase_psd_fetick_2019_moffat_function
-	from instrument_model.vlt import VLT
+	
 	
 	
 	
