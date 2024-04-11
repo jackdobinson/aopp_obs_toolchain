@@ -70,9 +70,8 @@ type T_PSF_Result_Postprocessor_Callable = Callable[
 	T_PSF_Data_NumpyArray
 ]
 
-# A scipy-compatible callable has all of it's "fitable" paramters in a single tuple, and other paramters are ones that are held constant
-# it should return a numpy array that we can compare with our reference data
-type T_Scipy_Compatble_Callable = Callable[[tuple[float,...], ...], T_PSF_Data_NumpyArray] 
+# A callable that accepts a dictionary of fitted parameter values
+type T_Fitted_Parameter_Callable = Callable[[dict[str,float], ...], T_PSF_Data_NumpyArray] 
 
 
 
@@ -105,36 +104,52 @@ def prior_param_args_from_param_spec(
 
 
 class ParamsAndPsfModelDependencyInjector:
+	"""
+	Subclass this and overwrite it's methods to get something that works like something in the ".../examples/psf_model_example.py" script.
+	"""
 	def __init__(self, psf_data : T_PSF_Data_NumpyArray):
 		self.psf_data = psf_data
-		self._psf_model = NotImplemented
-		self._params = NotImplemented # PriorParamSet()
+		self._psf_model = NotImplemented # this will be defined here in a subclass
+		self._params = NotImplemented # PriorParamSet(), this will be defined here in a subclass
 	
 	def get_psf_model_name(self):
+		"""
+		Returns the name of the PSF model. Defaults to the class name.
+		"""
 		return self._psf_model.__class__.__name__
 
 	def get_parameters(self) -> PriorParamSet:
+		"""
+		Returns the PriorParamSet that represents the parameters for the `self._psf_model`
+		"""
 		return self._params
 	
-	def get_psf_model_flattened_callable(self) -> T_PSF_Model_Flattened_Callable : 
+	def get_psf_model_flattened_callable(self) -> T_PSF_Model_Flattened_Callable :
+		"""
+		Returns a wrapper around `self._psf_model` that accepts all of it's parameters as simple-data arguments (no lists or objects)
+		"""
 		NotImplemented
 	
-	def get_psf_result_postprocessor(self) -> None | T_PSF_Result_Postprocessor_Callable : 
+	def get_psf_result_postprocessor(self) -> None | T_PSF_Result_Postprocessor_Callable :
+		"""
+		Returns a callable that postprocesses the result from `self._psf_model`
+		"""
 		NotImplemented
 	
-	def get_scipy_compatible_callable(self) -> T_Scipy_Compatble_Callable:
+	def get_fitted_parameters_callable(self) -> T_Fitted_Parameter_Callable:
 		"""
-		Return a scipy-compatible callable has all of it's "fitable" parameters in a single tuple, and constant 
-		parameters are default-valued. The callable has the attributes `var_param_name_order` and 
-		`const_param_name_order` which give the order of the fitable and default-valued parameters respectively.
+		Return a callable that accepts a dictionary of fitted parameteter values
 		"""
-		scipy_compatible_callable, var_param_name_order, const_param_name_order = self.get_parameters().wrap_callable_for_scipy_parameter_order(self.get_psf_model_flattened_callable())
-		scipy_compatible_callable.var_param_name_order = var_param_name_order
-		scipy_compatible_callable.const_param_name_order = const_param_name_order
-		return scipy_compatible_callable
+		def fitted_parameters_callable(fitted_params : dict[str,float]):
+			return self._params.apply_to_callable(self.get_psf_model_flattened_callable(), fitted_params, self._params.consts)
+		
+		return fitted_parameters_callable
 
 
 class RadialPSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
+	"""
+	Models the PSF as a radial histogram with `nbins` from point (`x`,`y`)
+	"""
 	
 	def __init__(self, psf_data):
 		
@@ -185,7 +200,9 @@ class RadialPSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
 
 
 class GaussianPSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
-	
+	"""
+	Models the PSF as a 2d gaussian with mean (`x`,`y`), standard deviation `sigma` an offset `const` from zero, and a multiplication factor `factor`
+	"""
 	
 	def __init__(self, psf_data):
 		
@@ -241,7 +258,9 @@ class GaussianPSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
 
 
 class TurbulencePSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
-	
+	"""
+	Models the PSF as the result of von-karman turbulence. Assumes the PSF is at the center of the model.
+	"""
 	
 	def __init__(self, psf_data):
 		super().__init__(psf_data)
@@ -294,7 +313,9 @@ class TurbulencePSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
 
 
 class MUSEAdaptiveOpticsPSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
-
+	"""
+	Models the PSF using a model of the adaptive optics MUSE instrument on the VLT telescope.
+	"""
 	
 	def __init__(self, 
 			psf_data, 

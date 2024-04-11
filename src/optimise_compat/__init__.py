@@ -70,7 +70,7 @@ class PriorParam:
 
 class PriorParamSet:
 	"""
-	A collection of PriorParam instances
+	A collection of PriorParam instances, used to define the fitting region for a fitting function.
 	"""
 	def __init__(self, *prior_params):
 		self.prior_params = list(prior_params)
@@ -96,7 +96,10 @@ class PriorParamSet:
 	def __len__(self):
 		return len(self.prior_params)
 	
-	def get_linear_transform_to_domain(self, param_names, in_domain):
+	def get_linear_transform_to_domain(self, param_names : tuple[str] | list[str], in_domain : tuple[float,float] | list[float,float] | np.ndarray[[2,'N'],float]):
+		"""
+		Gets a linear transform from some input domain to some output domain for a set of parameter names
+		"""
 		n = len(param_names)
 		if type(in_domain) == tuple or type(in_domain)==list:
 			in_domain = np.array([in_domain,]*n).T
@@ -108,17 +111,29 @@ class PriorParamSet:
 	
 	@property
 	def variable_params(self):
+		"""
+		The names of the variable parameters
+		"""
 		return tuple(self.prior_params[i] for i in self.all_param_index_to_variable_param_index_map.keys())
 		
 	@property
 	def constant_params(self):
+		"""
+		The names of the constant parameters
+		"""
 		return tuple(self.prior_params[i] for i in self.all_param_index_to_constant_param_index_map.keys())
 	
 	@property
 	def consts(self):
+		"""
+		Returns a dictionary of the constant parameter names and values
+		"""
 		return dict((p.name,p.const_value) for p in self.constant_params)
 	
 	def __getitem__(self, k : str | int):
+		"""
+		Retrieves a parameter by name or index
+		"""
 		if type(k) == str:
 			return self.prior_params[self.param_name_index_map[k]]
 		elif type(k) == int:
@@ -127,6 +142,9 @@ class PriorParamSet:
 			raise IndexError(f'Unknown index type {type(k)} to PriorParamSet')
 	
 	def append(self, p : PriorParam):
+		"""
+		Adds a PriorParam to the set 
+		"""
 		i = len(self.all_param_index_to_variable_param_index_map)
 		j = len(self.all_param_index_to_constant_param_index_map)
 		k = len(self.prior_params)
@@ -140,10 +158,18 @@ class PriorParamSet:
 	
 	@staticmethod
 	def get_arg_names_of_callable(
-			acallable,
+			acallable : Callable,
 			arg_names : list[str,...] | None = None # names of the arguments to `acallable`, in the correct order as if from inspect.signature(acallable).parameters.keys()
 		):
+		"""
+		Returns the argument names of the passed callable, if the callable has a "arg_names" attribute, returns that otherwise uses the inspect module.
 		
+		# ARGUMENTS #
+			acallable : Callable
+				Some callable to get the argument names of
+			arg_names : None | list[str,...]
+				If not None, returns this instead of doing any work. Useful if you know exactly what the argument names of the callable are.
+		"""
 		if arg_names is None:
 			if hasattr(acallable, 'arg_names'):
 				_lgr.debug(f'{acallable.arg_names=}')
@@ -163,6 +189,16 @@ class PriorParamSet:
 			not_found_value : Any = None,
 			arg_names : list[str,...] | None = None # names of the arguments to `acallable`, in the correct order as if from inspect.signature(acallable).parameters.keys()
 		):
+		"""
+		Given some callable `acallable`, that accepts `arg_names`. Call it with the values for those arguments provided in `variable_param_values`,
+		`const_param_values`, `defaults`, `not_found_value`. Where that list is in order of preference (e.g. an argument in both `const_param_values` and `defaults`
+		will have the value specified in `const_param_values`.
+		
+		If `arg_names` is None, will try and infer the argument names of `acallable` via `self.get_arg_names_of_callable()`.
+		"""
+		_lgr.debug(f'{defaults=}')
+		_lgr.debug(f'{const_param_values=}')
+		_lgr.debug(f'{variable_param_values=}')
 		arg_names = self.get_arg_names_of_callable(acallable, arg_names)
 		param_value_dict = {**defaults, **const_param_values, **variable_param_values} # variables overwrite consts which overwrite defaults if there's a conflict
 		arg_values = tuple(param_value_dict.get(x,not_found_value) for x in arg_names)

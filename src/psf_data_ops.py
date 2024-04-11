@@ -130,7 +130,10 @@ def normalise(
 
 
 def objective_function_factory(model_flattened_callable, data, err, mode='minimise'):
-	
+	"""
+	Given a model function, some data, and the error on that data; returns an objective function that
+	for either 'minimise'-ing or 'maximise'-ing the difference/similarity of the model and data.
+	"""
 	match mode:
 		case 'minimise':
 			def model_badness_of_fit_callable(*args, **kwargs):
@@ -153,7 +156,11 @@ def objective_function_factory(model_flattened_callable, data, err, mode='minimi
 	return
 
 def scipy_fitting_function_factory(scipy_func):
-	
+	"""
+	Given some function that implements the same protocol as [scipy minimise](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html#scipy.optimize.minimize)
+	returns a callable that accepts a PriorParamSet, a scipy-compatible objective function, a list of variable parameters, a list of constant parameters, and
+	returns the fitted variable parameters.
+	"""
 	def scipy_fitting_function(params, objective_function, var_param_name_order, const_param_name_order):
 		result = scipy_func(
 			objective_function,
@@ -173,6 +180,9 @@ def fit_to_data(
 		objective_function_factory : Callable[[Callable[P,np.ndarray[S[N],T]], np.ndarray[S[N],T], np.ndarray[S[N],T]], Callable[Q,float]] = functools.partial(objective_function_factory, mode='minimise'),
 		plot_mode : str | bool | None = None
 	) -> tuple[np.ndarray[S[N],T], dict[str,Any], dict[str,Any]]:
+	"""
+	Fits a model to some data with some error on that data.
+	"""
 	
 	model_scipyCompat_callable, var_param_name_order, const_param_name_order = params.wrap_callable_for_scipy_parameter_order(
 		flattened_psf_model_callable, 

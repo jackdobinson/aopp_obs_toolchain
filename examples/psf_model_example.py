@@ -165,6 +165,8 @@ if __name__=='__main__':
 				(9.244E-7, 450),
 			)
 			
+			# Set to `True` if we just want to re-plot an existing result set
+			skip_calculation_flag = False 
 			
 			result_set_directory = Path('ultranest_logs')
 			
@@ -186,18 +188,21 @@ if __name__=='__main__':
 				
 				di = MUSEAdaptiveOpticsPSFModelDependencyInjector(
 					psf_data,
-					var_params=['alpha','factor','f_ao', 'ao_correction_frac_offset', 'ao_correction_amplitude'],
-					const_params=[],
+					var_params=['alpha','factor', 'ao_correction_frac_offset', 'ao_correction_amplitude', ],
+					const_params=['f_ao', 'r0'],
 					initial_values={'wavelength':wavelength}
 				)
 				psf_model_name = di.get_psf_model_name()
 				params = di.get_parameters()
 				psf_model_callable = di.get_psf_model_flattened_callable()
 				psf_result_postprocess = di.get_psf_result_postprocessor()
-				result_callables.append(di.get_scipy_compatible_callable())
+				result_callables.append(di.get_fitted_parameters_callable())
 				
 				result_set.metadata['constant_parameters'] = [p.to_dict() for p in params.constant_params]
 				result_set.save_metadata()
+				
+				if skip_calculation_flag:
+					continue
 				
 				
 				if initial_median_noise_estimate is None:
