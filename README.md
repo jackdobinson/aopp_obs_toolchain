@@ -360,4 +360,5 @@ In whatever test directory you want, run the examples with:
 
 * `python <REPO_DIR>/examples/amateur_data_deconv_comparison.py`, will output to `<REPO_DIR>/example_data/amateur_data/set_0/comparison_deconv`
 
-These should all complete and write files to their outputs just as if you ran them in the development environment
+These should all complete and write files to their outputs just as if you ran them in the development environment. You might want
+to delete the contents of the output directories before running so you can see the new files being created.
