@@ -317,19 +317,47 @@ Files are searched if:
 
 ## Building the Package ##
 
-Run the command `python -m build` from the `<REPO>` directory. The `<REPO>/dist` and `<REPO>/aopp_deconv_tool.egg-info` folders
+Run the command `python -m build` from the `<REPO_DIR>` directory. The `<REPO_DIR>/dist` and `<REPO_DIR>/aopp_deconv_tool.egg-info` folders
 should be created. These contain the built package files.
 
 ## Uploading the Package to Pypi ##
 
-From the `<REPO>` directory, run **ONE** of the following commands:
+From the `<REPO_DIR>` directory, run **ONE** of the following commands:
 
 * `python3 -m twine upload --repository testpypi -u <USERNAME> -p <PASSWORD> dist/*` to upload to the **TEST** python package index
 
-* `python3 -m twine upload --repository pypi -u <USERNAME> -p <PASSWORD> dist/*` to upload to the **REAL** python package index
+* `python3 -m twine upload -u <USERNAME> -p <PASSWORD> dist/*` to upload to the **REAL** python package index
 
 Use `__token__` for `<USERNAME>`, and an API Token value for `<PASSWORD>` (including the `pypi-` prefix). See 
 [this guide for uploading to the package index](https://packaging.python.org/en/latest/tutorials/packaging-projects/#uploading-the-distribution-archives) 
 for more information.
 
 Verify the package uploaded correctly by going to `https://test.pypi.org/project/aopp-deconv-tool/`.
+
+## Test the package uploaded correctly ##
+
+Create a NEW virtual environment to test the package in. If you use the one in this repository it will just
+use the defaults we have set up for development.
+
+If using the **TEST** python package index, run the following command:
+
+* `pip cache purge && pip install --index-url https://test.pypi.org/simple/ --no-deps aopp-deconv-tool`
+
+* NOTE: This will NOT install the dependencies (as the **TEST** python package index probably does not have them).
+  Therefore, install them yourself using `pip install -r <REPO_DIR>/requirements/deconv.txt`.
+
+If using the **REAL** python package index, run the following command:
+
+* `pip install aopp-deconv-tool`
+
+### run the examples using the newly installed package ###
+
+In whatever test directory you want, run the examples with:
+
+* `python <REPO_DIR>/examples/psf_model_example.py`, will output to `./ultranest_logs`
+
+* `python <REPO_DIR>/examples/amateur_data_analysis.py`, will output to `<REPO_DIR>/example_data/amateur_data/set_0/output`
+
+* `python <REPO_DIR>/examples/amateur_data_deconv_comparison.py`, will output to `<REPO_DIR>/example_data/amateur_data/set_0/comparison_deconv`
+
+These should all complete and write files to their outputs just as if you ran them in the development environment

@@ -1,9 +1,2 @@
-build #  needed to build the project
-twine #  needed to upload the packaged project to Pypi
-numpy
-astropy
-scipy
-matplotlib
-ultranest
-h5py
-scikit-image
+-r ./requirements/build.txt # only needed for building and sending to Pypi
+-r ./requirements/deconv.txt # required for aopp_deconv_tool package

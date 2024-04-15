@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aopp_deconv_tool"
-version = "0.1.0"
+version = "0.1.1" # Increment this whenever we upload a new version to Pypi (or the test pypi).
 dependencies = [
 	"numpy",
 	"astropy",
@@ -38,5 +38,11 @@ classifiers = [
 [project.urls]
 #Homepage = ""
 
-[tool.setuptools.packages]
-find = {} # Use default parameters to find package to build
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.packages.find]
+where = ["src"]  # ["."] by default
+#include = ["*"]  # ["*"] by default
+#exclude = []  # empty by default
+#namespaces = false  # true by default

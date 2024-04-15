@@ -1,0 +1,2 @@
+build #  only needed to build the project
+twine #  only needed to upload the packaged project to Pypi

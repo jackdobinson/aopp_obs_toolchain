@@ -8,9 +8,5 @@ test_output/
 /example_data
 ultranest_logs/
 plots/
-plots
-plots/log_ultranest_result.png
-plots/ultranest_result.png
-plots/ultranest_result.png
-plots/ultranest_result.png
-plots/ultranest_result.png
+**/*egg-info/
+dist/
