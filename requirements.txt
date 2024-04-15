@@ -1,4 +1,5 @@
-build
+build #  needed to build the project
+twine #  needed to upload the packaged project to Pypi
 numpy
 astropy
 scipy

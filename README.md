@@ -315,3 +315,21 @@ Files are searched if:
     lucy_richardson_test::test_runs_for_basic_data ------------------------------------------------------------------- Passed
     ```
 
+## Building the Package ##
+
+Run the command `python -m build` from the `<REPO>` directory. The `<REPO>/dist` and `<REPO>/aopp_deconv_tool.egg-info` folders
+should be created. These contain the built package files.
+
+## Uploading the Package to Pypi ##
+
+From the `<REPO>` directory, run **ONE** of the following commands:
+
+* `python3 -m twine upload --repository testpypi -u <USERNAME> -p <PASSWORD> dist/*` to upload to the **TEST** python package index
+
+* `python3 -m twine upload --repository pypi -u <USERNAME> -p <PASSWORD> dist/*` to upload to the **REAL** python package index
+
+Use `__token__` for `<USERNAME>`, and an API Token value for `<PASSWORD>` (including the `pypi-` prefix). See 
+[this guide for uploading to the package index](https://packaging.python.org/en/latest/tutorials/packaging-projects/#uploading-the-distribution-archives) 
+for more information.
+
+Verify the package uploaded correctly by going to `https://test.pypi.org/project/aopp-deconv-tool/`.
