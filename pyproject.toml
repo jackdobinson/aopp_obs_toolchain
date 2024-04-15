@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aopp_deconv_tool"
+version = "0.1.0"
+dependencies = [
+	"numpy"
+	"astropy"
+	"scipy"
+	"matplotlib"
+	"ultranest"
+	"h5py"
+	"scikit-image"
+]
+
+authors = [
+	{name = "Jack Dobinson", email = "jack.dobinson@physics.ox.ac.uk"}
+]
+description = "Tool for performing deconvolution (using LucyRichardson and ModifiedClean algorithms), PSF fitting and filtering, and data manipulation for 2d images and 3d datacubes."
+readme = "README.md"
+requires-python = ">= 3.12"
+keywords = ["deconvolution", "ModifiedClean"]
+classifiers = [
+	"License :: OSI Approved :: MIT License",
+	"Programming Language :: Python :: 3.12",
+	"Development Status :: 3 - Alpha",
+	"Environment :: Console",
+	"Intended Audience :: Science/Research",
+	"Natural Language :: English"
+	"Operating System :: Unix",
+	"Operating System :: Microsoft :: Windows",
+	"Topic :: Scientific/Engineering :: Image Processing",
+	"Topic :: Scientific/Engineering :: Astronomy"	
+]
+
+[project.urls]
+Homepage = ""
+
+[tool.setuptools.packages]
+find = {} # Use default parameters to find package to build

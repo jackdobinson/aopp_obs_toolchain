@@ -1,9 +1,17 @@
-# aopp_obs_toolchain
+# aopp_obs_toolchain #
+
+A set of tools for dealing with observational data from CCD and IFU instruments.
+
+## aopp_deconv_tool ##
+
+Deconvolution algorithms, PSF fitting, image (and psf) filtering, and other data operations to support deconvolution.
 
 
 ## Development Environment Setup ##
 
 This section details how to set up a development environment for this project.
+
+### placeholder definitions ###
 
 Placeholders:
 
@@ -56,7 +64,15 @@ Placeholders:
 
 #### default installation as a single command ####
 
-Use the following command to install the desired version of python and do the steps above, NOTE: use [CTRL]+[SHIFT]+[V] when pasting into the terminal.
+Use the following command to install the desired version of python and do the steps above.
+
+* Alter the "PYTHON_INSTALL_DIRECTORY" variable to install python in a different place
+
+* Alter the "REPO_DIR" variable to put the repository in a different place
+
+* Alter the "VENV_PREFIX" variable to have a different prefix for the virtual environment
+
+* NOTE: use [CTRL]+[SHIFT]+[V] when pasting into the terminal to avoid strangeness.
 
 ```
 PYTHON_VERSION=(3 12 2) && \
@@ -75,7 +91,7 @@ PYTHON_VERSION_STR="${PYTHON_VERSION[0]}.${PYTHON_VERSION[1]}.${PYTHON_VERSION[2
 echo "${PYTHON_VERSION_STR}" && \
 VENV_DIR="${REPO_DIR:?}/${VENV_PREFIX:?}_${PYTHON_VERSION_STR:?}" && \
 DOWNLOAD_URL="https://www.python.org/ftp/python/${PYTHON_VERSION_STR:?}/Python-${PYTHON_VERSION_STR:?}.tgz" && \
-PYTHON_VERSION_INSTALL_DIR="${PYTHON_INSTALL_DIRECTORY:?python install directory required}/python${PYTHON_VERSION_STR:?}" && \
+PYTHON_VERSION_INSTALL_DIR="${PYTHON_INSTALL_DIRECTORY:?}/python${PYTHON_VERSION_STR:?}" && \
 echo "PYTHON_VERSION_INSTALL_DIR=${PYTHON_VERSION_INSTALL_DIR:?}" && \
 mkdir -p ${PYTHON_VERSION_INSTALL_DIR:?} && \
 PYTHON_VERSION_SOURCE_DIR="${PYTHON_VERSION_INSTALL_DIR:?}/Python-${PYTHON_VERSION_STR:?}" && \
