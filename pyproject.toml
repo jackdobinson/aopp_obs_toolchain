@@ -6,13 +6,13 @@ build-backend = "setuptools.build_meta"
 name = "aopp_deconv_tool"
 version = "0.1.0"
 dependencies = [
-	"numpy"
-	"astropy"
-	"scipy"
-	"matplotlib"
-	"ultranest"
-	"h5py"
-	"scikit-image"
+	"numpy",
+	"astropy",
+	"scipy",
+	"matplotlib",
+	"ultranest",
+	"h5py",
+	"scikit-image",
 ]
 
 authors = [
@@ -28,7 +28,7 @@ classifiers = [
 	"Development Status :: 3 - Alpha",
 	"Environment :: Console",
 	"Intended Audience :: Science/Research",
-	"Natural Language :: English"
+	"Natural Language :: English",
 	"Operating System :: Unix",
 	"Operating System :: Microsoft :: Windows",
 	"Topic :: Scientific/Engineering :: Image Processing",
@@ -36,7 +36,7 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = ""
+#Homepage = ""
 
 [tool.setuptools.packages]
 find = {} # Use default parameters to find package to build
