@@ -1,4 +1,9 @@
+"""
+Dependency injectors make communicating with the routines in `psf_data_ops.py` more managable
+by providing a consistent interface. As long as the dependency injector provides parameters
+and functions as specified in this file, the fitting functions should work.
 
+"""
 
 
 

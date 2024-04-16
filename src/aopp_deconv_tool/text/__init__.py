@@ -9,6 +9,10 @@ import textwrap
 
 import aopp_deconv_tool.cast as cast
 
+import aopp_deconv_tool.cfg.logs
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'INFO')
+
+
 newline='\n'
 tab='\t'
 
@@ -31,6 +35,10 @@ def to_tuple(x : str, t : type[type] | Iterable[type]):
 			of `x` to the corresponding element of `t`
 	"""
 	assert type(x) == str
+	
+	# if x ends with a comma, remove it
+	if x.endswith(','):
+		x = x[:-1]
 	
 	if isinstance(t, type):
 		# assume tuple homogeneous
@@ -83,7 +91,7 @@ def split_around_brackets(x : str, sep : str = ','):
 	stack = []
 	idx = 0
 	for i, c in enumerate(x):
-		print(i,c)
+		_lgr.debug(i,c)
 		if c == sep and bstate.total()==0: 
 			stack.append(x[idx:i])
 			idx = i+1

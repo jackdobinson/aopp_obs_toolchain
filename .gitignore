@@ -10,3 +10,4 @@ ultranest_logs/
 plots/
 **/*egg-info/
 dist/
+deconv.fits

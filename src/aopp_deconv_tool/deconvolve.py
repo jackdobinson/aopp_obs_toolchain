@@ -1,0 +1,103 @@
+"""
+Script that deconvolves the first argument with the second argument
+
+Example invocation: 
+	`python -m aopp_deconv_tool.deconvolve './example_data/test_rebin.fits{DATA}[10:12]{CELESTIAL:(1,2)}' './example_data/fit_example_psf_000.fits[10:12]{CELESTIAL:(1,2)}'`
+"""
+
+import sys
+from pathlib import Path
+from typing import Literal
+
+import numpy as np
+from astropy.io import fits
+
+import aopp_deconv_tool.astropy_helper as aph
+import aopp_deconv_tool.astropy_helper.fits.specifier
+import aopp_deconv_tool.astropy_helper.fits.header
+import aopp_deconv_tool.numpy_helper as nph
+import aopp_deconv_tool.numpy_helper.axes
+import aopp_deconv_tool.numpy_helper.slice
+import aopp_deconv_tool.psf_data_ops as psf_data_ops
+
+from aopp_deconv_tool.algorithm.deconv.clean_modified import CleanModified
+from aopp_deconv_tool.algorithm.deconv.lucy_richardson import LucyRichardson
+
+
+import aopp_deconv_tool.cfg.logs
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+
+def run(
+		obs_fits_spec : aph.fits.specifier.FitsSpecifier,
+		psf_fits_spec : aph.fits.specifier.FitsSpecifier,
+		output_path : str | Path = './deconv.fits',
+		deconv_class : Literal[CleanModified] | Literal[LucyRichardson] = CleanModified,
+	):
+	
+	deconvolver = deconv_class()
+
+	# Open the fits files
+	with fits.open(Path(obs_fits_spec.path)) as obs_hdul, fits.open(Path(obs_fits_spec.path)) as psf_hdul:
+		
+		# pull out the data we want
+		obs_data = obs_hdul[obs_fits_spec.ext].data
+		psf_data = psf_hdul[psf_fits_spec.ext].data
+		
+		# Create holders for deconvolution products
+		deconv_components = np.full_like(obs_data, np.nan)
+		deconv_residual = np.full_like(obs_data, np.nan)
+		
+		# Loop over the index range specified by `obs_fits_spec` and `psf_fits_spec`
+		for obs_idx, psf_idx in zip(
+			nph.slice.iter_indices(obs_data, obs_fits_spec.slices, obs_fits_spec.axes['CELESTIAL']),
+			nph.slice.iter_indices(psf_data, psf_fits_spec.slices, psf_fits_spec.axes['CELESTIAL'])
+		):
+			# Ensure that we actually have data in this part of the cube
+			if np.all(np.isnan(obs_data[obs_idx])) or np.all(np.isnan(psf_data[psf_idx])):
+				_lgr.warn('All NAN obs or psf layer detected. Skipping...')
+			
+			# perform any normalisation and processing
+			normed_psf = psf_data_ops.normalise(np.nan_to_num(psf_data[psf_idx]))
+			processed_obs = np.nan_to_num(obs_data[obs_idx])
+			
+			# Store the deconvolution products in the arrays we created earlier
+			deconv_components[obs_idx], deconv_residual[obs_idx], deconv_iters = deconvolver(processed_obs, normed_psf)
+			
+		
+		# Save the parameters we used. NOTE: we are only saving the LAST set of parameters as they are all the same
+		# in this case. However, if they vary with index they should be recorded with index as well.
+		deconv_params = deconvolver.get_parameters()
+		
+		# Make sure we get all the observaiton header data as well as the deconvolution parameters
+		hdr = obs_hdul[obs_fits_spec.ext].header
+		hdr.update(aph.fits.header.DictReader({
+			'psf_file' : psf_fits_spec.path, # record the PSF file we used
+			**deconv_params # record the deconvolution parameters we used
+		}))
+	
+	# Save the deconvolution products to a FITS file
+	hdu_components = fits.PrimaryHDU(
+		header = hdr,
+		data = deconv_components
+	)
+	hdu_residual = fits.ImageHDU(
+		header = hdr,
+		data = deconv_residual,
+		name = 'RESIDUAL'
+	)
+	hdul_output = fits.HDUList([
+		hdu_components,
+		hdu_residual
+	])
+	hdul_output.writeto(output_path, overwrite=True)
+
+
+
+if __name__ == '__main__':
+
+	# Get the fits specifications from the command-line arguments
+	obs_fits_spec = aph.fits.specifier.parse(sys.argv[1], ['CELESTIAL'])
+	psf_fits_spec = aph.fits.specifier.parse(sys.argv[2], ['CELESTIAL'])
+	output_path = './deconv.fits' if len(sys.argv) < 4 else sys.argv[3]
+	run(obs_fits_spec, psf_fits_spec, output_path=output_path)
+	

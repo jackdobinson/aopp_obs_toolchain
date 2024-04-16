@@ -35,6 +35,10 @@ def ssa_intepolate_at_mask(
 		3) For each pixel, only combine SSA components when the |score| < 'some value'
 		This should ensure that 'extreme' values for that pixel are ignored and the 
 		reconstructed pixel value is more similar to the surrounding pixels.
+	
+	This should help when interpolating across a e.g. "hot" pixel as the components
+	that contribute to the "hotness" will be ignored and the components that are more
+	similar to the surroundings will contribute.
 	"""
 	# set up arrays and defaults
 	stop = ssa.X_ssa.shape[0] if stop is None else stop

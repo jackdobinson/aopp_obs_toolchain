@@ -5,6 +5,10 @@ import astropy as ap
 
 from aopp_deconv_tool.numpy_helper.axes import AxesOrdering
 
+import aopp_deconv_tool.cfg.logs
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+
+
 class DictReader:
 	"""
 	Put a dictionary into a format that we can insert into a FITS header file.

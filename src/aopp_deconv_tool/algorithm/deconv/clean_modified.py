@@ -19,17 +19,60 @@ _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 @dc.dataclass(slots=True,repr=False)
 class CleanModified(Base):
 	"""
-	A modified verison of the CLEAN algorithm, designed to account for non-point objects better
+	A modified verison of the CLEAN algorithm, designed to account for extended emission.
+	
+	# ARGUMENTS #
+		n_iter : int = 1000
+			Number of iterations to perform
+		loop_gain : float = 0.02
+			Fraction of emission that could be accounted for by a PSF added to components with each iteration.
+			Higher values are faster but unstable
+		threshold : float = 0.3
+			Fraction of maximum brightness of residual above which pixels will be included in CLEAN step, if 
+			negative will use the "maximum fractional difference otsu threshold". 0.3 is a  good default value, 
+			if stippling becomes an issue, reduce or set to a negative value. Lower positive numbers will 
+			require more iterations, but give a more "accurate" result.
+		n_positive_iter : int = 0
+			Number of iterations to do that only "adds" emission, before switching to "adding and subtracting" 
+			emission.
+		noise_std : float = 1E-1
+			Estimate of the deviation of the noise present in the observation
+		rms_frac_threshold : float = 1E-3
+			Fraction of original RMS of residual at which iteration is stopped, lower values continue iteration 
+			for longer.
+		fabs_frac_threshold : float = 1E-3
+			Fraction of original Absolute Brightest Pixel of residual at which iteration is stopped, lower 
+			values continue iteration for longer.
+		max_stat_increase : float = np.inf
+			Maximum fractional increase of a statistic before terminating
+		min_frac_stat_delta : float = 1E-3
+			Minimum fractional standard deviation of statistics before assuming no progress is being made and 
+			terminating iteration.
+		give_best_result : bool = True
+			If True, will return the best (measured by statistics) result instead of final result.
+	
+	# RETURNS #
+		A "CleanModified" instance. Run the model using the __call__(...) method.
+		e.g.
+		```
+		from aopp_deconv_tool.algorithm.deconv.clean_modified import CleanModified
+		
+		deconvolver = CleanModified()
+		...
+		deconv_components, deconv_residual, deconv_iters = deconvolver(processed_obs, normed_psf)
+		
+		```
+		See `aopp_deconv_tool.deconvolve` for a full example.
 	"""
 	n_iter 				: int 	= 1000	# Number of iterations
 	loop_gain 			: float = 0.02	# Fraction of emission that could be accounted for by a PSF added to components each iteration. Higher values are faster, but unstable.
 	threshold 			: float = 0.3	# Fraction of maximum brightness of residual above which pixels will be included in CLEAN step, if negative will use the maximum fractional difference otsu threshold. 0.3 is a  good default value, if stippling becomes an issue, reduce or set to a negative value. Lower positive numbers will require more iterations, but give a more "accurate" result.
 	n_positive_iter 	: int 	= 0		# Number of iterations to do that only "adds" emission, before switching to "adding and subtracting" emission
-	noise_std 			: float = 1E-2	# Estimate of the deviation of the noise present in the observation
-	rms_frac_threshold 	: float = 1E-1	# Fraction of original RMS of residual at which iteration is stopped, lower values continue iteration for longer.
-	fabs_frac_threshold : float = 1E-1	# Fraction of original Absolute Brightest Pixel of residual at which iteration is stopped, lower values continue iteration for longer.
+	noise_std 			: float = 1E-1	# Estimate of the deviation of the noise present in the observation
+	rms_frac_threshold 	: float = 1E-3	# Fraction of original RMS of residual at which iteration is stopped, lower values continue iteration for longer.
+	fabs_frac_threshold : float = 1E-3	# Fraction of original Absolute Brightest Pixel of residual at which iteration is stopped, lower values continue iteration for longer.
 	max_stat_increase	: float = np.inf# Maximum fractional increase of a statistic before terminating
-	min_frac_stat_delta	: float = 1E-2 	# Minimum fractional standard deviation of statistics before assuming no progress is being made and terminating iteration
+	min_frac_stat_delta	: float = 1E-3 	# Minimum fractional standard deviation of statistics before assuming no progress is being made and terminating iteration
 	give_best_result	: bool  = True 	# If True, will return the best (measured by statistics) result instead of final result.
 	
 	# private attributes

@@ -17,6 +17,9 @@ import aopp_deconv_tool.numpy_helper.slice
 import aopp_deconv_tool.astropy_helper as aph
 import aopp_deconv_tool.astropy_helper.fits.header
 
+import aopp_deconv_tool.cfg.logs
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'INFO')
+
 
 FitsSpecifier = namedtuple('FitsSpecifier', ('path', 'ext', 'slices', 'axes'))
 
@@ -89,10 +92,10 @@ def parse_axes_type_list(axes_type_list : str, axes_types: list[str] | tuple[str
 	
 	# first split on commas
 	axes = {}
-	#print(f"{text.split_around_brackets(axes_type_list)=}")
+	#_lgr.debug(f"{text.split_around_brackets(axes_type_list)=}")
 	for i, axes_type_str in enumerate(text.split_around_brackets(axes_type_list)):
 		# axes_type_str = "axes_type_1:(ax11,ax12,...)" or "(ax11,ax12,...)"
-		#print(f'{axes_type_str=}')
+		#_lgr.debug(f'{axes_type_str=}')
 		n_colon = axes_type_str.count(':')
 		if n_colon == 0:
 			axtype, axtuple_str = (axes_types[i], axes_type_str)
@@ -115,10 +118,15 @@ def parse(specifier : str, axes_types : list[str]):
 	f"""
 	Parses a string that specifies a fits file, extension, and slices.
 	
-	Arguments:
+	# ARGUMENTS #
 		specifier : str
 			A FITS specifier string, has the following format:
 				{text.indent(get_help(axes_types), 4)}
+		axes_types : list[str]
+			A list of axes types that we expect. Should be a list of entries from `axes_type_info.keys()`
+	
+	# RETURNS #
+		FitsSpecifier(path, ext, slices, axes)
 			
 	"""
 	help_string = get_help(axes_types)
@@ -144,12 +152,12 @@ def parse(specifier : str, axes_types : list[str]):
 			axes_type_list = specifier[i:j+1]
 			specifier = specifier[:i]
 			j = i-1
-		#print(f'{axes_type_list=}')	
+		#_lgr.debug(f'{axes_type_list=}')	
 		if axes_type_list is not None:
 			axes = parse_axes_type_list(axes_type_list, axes_types)
 		else:
 			axes = None
-		#print(f'{axes=}')
+		#_lgr.debug(f'{axes=}')
 			
 			
 		

@@ -9,6 +9,10 @@ import aopp_deconv_tool.numpy_helper.axes
 
 import aopp_deconv_tool.cast as cast
 
+import aopp_deconv_tool.cfg.logs
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'INFO')
+
+
 def around_center(big_shape : tuple[int,...], small_shape : tuple[int,...]) -> tuple[slice,...]:
 	"""
 	returns a slice of a in the shape of b about the center of a
@@ -49,9 +53,9 @@ def get_indices(
 	if slice_tuple is None:
 		slice_tuple = tuple([slice(None)]*a.ndim)
 	
-	print(f'BEFORE {slice_tuple=}')
+	_lgr.debug(f'BEFORE {slice_tuple=}')
 	slice_tuple = unsqueeze(slice_tuple) # want a.ndim == a[sliced_idxs].ndim
-	print(f'AFTER {slice_tuple=}')
+	_lgr.debug(f'AFTER {slice_tuple=}')
 	
 	slice_idxs = np.indices(a.shape)[(slice(None),*slice_tuple)] 
 	
@@ -81,16 +85,16 @@ def iter_indices(
 	"""
 	
 	group = tuple(group)
-	print(f'{a.shape=} {slice_tuple=} {group=} {squeeze=}')
+	_lgr.debug(f'{a.shape=} {slice_tuple=} {group=} {squeeze=}')
 	sliced_idxs = get_indices(a, slice_tuple, as_tuple=False)
 	
-	print(f'BEFORE {sliced_idxs.shape=}')
+	_lgr.debug(f'BEFORE {sliced_idxs.shape=}')
 	if squeeze:
 		sliced_idxs = nph.axes.merge(sliced_idxs, tuple(1+x for x in nph.axes.not_in(a,group)), 0)
 	else:
 		sliced_idxs = np.moveaxis(sliced_idxs, (1+x for x in group), (x for x in range(len(group),sliced_idxs.ndim)))
 		sliced_idxs = np.moveaxis(sliced_idxs, 0, -(len(group)+1))
 		
-	print(f'AFTER {sliced_idxs.shape=}')
+	_lgr.debug(f'AFTER {sliced_idxs.shape=}')
 	return (tuple(x) for x in sliced_idxs)
 	
