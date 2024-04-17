@@ -764,7 +764,20 @@ class LineRegionPanel(BasePanel, CallbackMixin):
 	
 
 class SSAViewer:
-	def __init__(self, parent_figure=None, pf_gridspec = None, gridspec_index = 0, window_title='Image Viewer'):
+	"""
+	Graphical front-end to the singular spectrum analysis routines in the `aopp_deconv_tool.py_ssa` module.
+	Shows the input data, the eigenvalues of the SSA components, an aggregate of SSA components, and a residual
+	between the aggregate and the input data.
+	
+	Accepts numpy arrays to the `SSAViewer.show(image:np.ndarray)` method. Ouputs numpy arrays (`.npy` file)
+	or TIFF (`.tif` file) images.
+	"""
+	def __init__(self, 
+			parent_figure : mpl.figure.Figure | None = None, 
+			pf_gridspec : mpl.gridspec.GridSpec | None = None, 
+			gridspec_index : int = 0, 
+			window_title :str = 'Image Viewer'
+		):
 		
 		
 		self.parent_figure = plt.figure(figsize=(15,10), layout='constrained') if parent_figure is None else parent_figure
@@ -872,7 +885,7 @@ class SSAViewer:
 		_lgr.debug(f'Feedback written.')
 		return True
 
-	def set_image_plane_range_from_evalue_panel_region(self, r_min, r_max):
+	def set_image_plane_range_from_evalue_panel_region(self, r_min : int, r_max : int):
 		if r_min is None:
 			r_min = 0
 		if r_max is None:
@@ -881,12 +894,12 @@ class SSAViewer:
 		self.ssa_aggregate_viewer.main_axes_im.set_data(np.nansum(self.ssa_aggregate_viewer.main_axes_image_data[int(r_min):int(r_max)], axis=0))
 		self.set_residual_data(self.input_image_viewer.get_displayed_data(),self.ssa_aggregate_viewer.get_displayed_data())
 
-	def set_image_plane_range_from_aggregator(self, agg):
+	def set_image_plane_range_from_aggregator(self, agg : tuple[int,int]):
 		x = agg.image_plane_slider.get_value()
 		self.set_residual_data(self.input_image_viewer.get_displayed_data(),agg.get_displayed_data())
 		self.ssa_evalue_panel.set_region(x[0],x[1]+1)
 
-	def set_residual_data(self, obs_data, model_data):
+	def set_residual_data(self, obs_data : np.ndarray, model_data : np.ndarray):
 		residual = obs_data - model_data
 		self.ssa_residual_viewer.frozen_clims = (
 			min(np.nanmin(obs_data), np.nanmin(residual)),
@@ -895,18 +908,21 @@ class SSAViewer:
 		self.ssa_residual_viewer.set_data(residual)
 		
 
-	def set_window_title(self, title):
+	def set_window_title(self, title : str):
 		if title is not None:
 			self.figure.canvas.manager.set_window_title(title)
 
-	def show(self, data=None, title=None):
+	def show(self, data : np.ndarray = None, title : str = None):
+		"""
+		Show the SSA decomposition of `data` with `title`
+		"""
 		plt.figure(self.parent_figure)
 		
 		self.set_data(data)
 		
 		plt.show()
 	
-	def set_data(self, data):
+	def set_data(self, data : np.ndarray):
 		self.input_data = data
 		
 		self.input_image_viewer.set_data(self.input_data)
