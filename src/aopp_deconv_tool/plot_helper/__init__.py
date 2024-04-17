@@ -18,6 +18,9 @@ def output(
 		figure : mpl.figure.Figure | str | int | None = None, # The figure to operate on, default is current figure
 		**kwargs # arguments to pass when saving figure, see plt.savefig(...)
 	):
+	"""
+	Outputs the passed figure to a file `fname`, interactively `show` it, and close it afterwards
+	"""
 	if figure is not None:
 		plt.figure(figure)
 		
@@ -87,6 +90,9 @@ def create_figure_with_subplots(nr, nc, nax=None ,size=6, squeeze=False, figure=
 	return(f, a.flatten() if flatten else a)
 
 def figure_n_subplots(n, figure=None, fig_kwargs={}, sp_kwargs={}):
+	"""
+	Create a figure with `n` subplots arranged in a rectangle that has the lowest aspect ratio
+	"""
 	return(create_figure_with_subplots(
 		*lowest_aspect_ratio_rectangle_of_at_least_area(n), 
 		nax=n, size=6, squeeze=False, figure=figure, flatten=True,

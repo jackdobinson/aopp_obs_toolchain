@@ -15,7 +15,7 @@ def pupil_function_of_optical_component_set(
 		supersample_factor : float,
 		ocs : OpticalComponentSet,
 		scale : tuple[float,...],
-	):
+	) -> PupilFunction:
 	"""
 	Get the pupil function of an optical component set
 	"""
@@ -33,7 +33,7 @@ def optical_transfer_function_of_optical_component_set(
 		supersample_factor : float,
 		ocs : OpticalComponentSet,
 		scale : tuple[float,...],
-	):
+	) -> OpticalTransferFunction:
 	_lgr.debug(f'{shape=} {scale=}')
 	pupil_function_axes = tuple(np.fft.fftshift(np.fft.fftfreq(sh, sc/sh)) for sh, sc in zip(shape,scale))
 	pupil_function_scale = np.array([x[-1] - x[0] for x in pupil_function_axes])

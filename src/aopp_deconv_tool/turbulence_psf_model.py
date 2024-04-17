@@ -23,6 +23,9 @@ import aopp_deconv_tool.cfg.logs
 _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'INFO')
 
 class CCDSensor:
+	"""
+	Class that represents a CCD Sensor
+	"""
 	def __init__(self,
 			shape : S[N],
 			px_transform : np.ndarray[[M,M]] # M = N + 1
@@ -42,6 +45,9 @@ class CCDSensor:
 		return tuple(np.linspace(0+t, s+t, s) for s, t in zip(self.shape, self.px_transform[:-1,-1]))
 		
 class SimpleTelescope:
+	"""
+	Class that represents a simple telescope
+	"""
 	def __init__(self,
 			objective_diameter : float,
 			effective_focal_length : float,
@@ -62,6 +68,9 @@ class SimpleTelescope:
 		
 
 class TurbulencePSFModel:
+	"""
+	Class that represents a PSF as only dependent on turbulence and a simple telescope model
+	"""
 	def __init__(self,
 			telescope_model : SimpleTelescope,
 			turbulence_model : Callable[P, PhasePowerSpectralDensity],

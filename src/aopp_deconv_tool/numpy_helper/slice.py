@@ -21,7 +21,10 @@ def around_center(big_shape : tuple[int,...], small_shape : tuple[int,...]) -> t
 	s_diff = tuple(s1-s2 for s1,s2 in zip(big_shape, small_shape))
 	return(tuple([slice(d//2, s-(d//2+d%2)) for s, d in zip(big_shape,s_diff)]))
 
-def from_string(slice_tuple_str : str):
+def from_string(slice_tuple_str : str) -> tuple[slice,...]:
+	"""
+	Build a tuple of slices from a string representation
+	"""
 	try:
 		return tuple(slice(*tuple(cast.to(z,int) if z != '' else None for z in y.split(':'))) for y in slice_tuple_str.split(','))
 	except Exception as e:
@@ -29,9 +32,17 @@ def from_string(slice_tuple_str : str):
 		raise
 
 def squeeze(slice_tuple: tuple[slice | int,...]) -> tuple[slice | int]:
+	"""
+	Given a tuple of slices (`slice_tuple`), if a slice only selects a single index, replace it with an index instead.
+	e.g. [10:100, 13:14, 50:60] -> [10:100, 13, 50:60]
+	"""
 	return tuple(s.start if type(s) is slice and ((s.stop - s.start) == (1 if s.step is None else s.step)) else s for s in slice_tuple )
 
 def unsqueeze(slice_tuple: tuple[slice | int,...]) -> tuple[slice]:
+	"""
+	Given a tuple of slices and indices (`slice_tuple`), replace all indices with a slice from i->i+1
+	e.g. [10:100, 13, 50:60] -> [10:100, 13:14, 50:60]
+	"""
 	return tuple(slice(s,s+1) if type(s) is int else s for s in slice_tuple)
 
 def get_indices(

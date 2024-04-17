@@ -14,6 +14,9 @@ from astropy.io import fits
 
 
 def calc(counts, bin_edges):
+	"""
+	Calculates the inter-class-variance for a histogram with `counts` at all `bin_edges`
+	"""
 	ns = np.linspace(0, counts.size-1, counts.size)
 	inter_class_variance = np.zeros_like(bin_edges, dtype=float)
 	for i in range(0,bin_edges.size):
@@ -25,10 +28,16 @@ def calc(counts, bin_edges):
 	return(inter_class_variance)
 
 def threshold(bin_edges, icv):
+	"""
+	Given the `bin_edges` of a histogram and the inter-class-variance at those edges, returns the edge with the maximum inter-class-variance
+	"""
 	return(bin_edges[np.nanargmax(icv)] if np.any(~np.isnan(icv)) else np.nan)
 
 
 def n_thresholds(data, n):
+	"""
+	Calculates `n` otsu-thresholds for `data`. Automatically calculates the bin edges depending on the sqrt of the number of datapoints
+	"""
 	ots = np.zeros((n,))
 	for i in range(n):
 		counts, bin_edges = np.histogram(
@@ -42,6 +51,9 @@ def n_thresholds(data, n):
 
 
 def frac_per_fpix_threshold(data, frac_per_fpix=15, n_max=10, on_fail='return_last'):
+	"""
+	Calculates the fraction of pixels included in `n_max` otsu thresholds
+	"""
 	s = np.nansum(data)
 	n = np.sum(~np.isnan(data))
 	ot=0
@@ -62,6 +74,9 @@ def frac_per_fpix_threshold(data, frac_per_fpix=15, n_max=10, on_fail='return_la
 	return(None if on_fail != 'return_last' else ot)
 
 def max_frac_per_fpix_threshold(data, n_max=10):
+	"""
+	Calculates the "most selective" otsu threshold out of `n_max` thresholds
+	"""
 	s = np.nansum(data)
 	n = np.sum(~np.isnan(data))
 	ot = np.nanmin(data)
@@ -81,6 +96,9 @@ def max_frac_per_fpix_threshold(data, n_max=10):
 
 
 def max_frac_diff_threshold(data, n_max=10):
+	"""
+	Returns the otsu threshold (of `n_max` thresholds) that selects a group of similarly valued pixels
+	"""
 	ots = np.zeros((n_max,))
 	frac_diffs = np.zeros((n_max,))
 	for i in range(n_max):

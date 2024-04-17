@@ -1,5 +1,5 @@
 """
-Models the observation system in as much detail required to get a PSF.
+Models an adaptive optics observation system in as much detail required to get a PSF.
 """
 import sys
 

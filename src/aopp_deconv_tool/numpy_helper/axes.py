@@ -11,6 +11,9 @@ from contextlib import contextmanager
 
 
 class AxesOrdering:
+	"""
+	A class that can shift between numpy, fits, and fotran axes ordering
+	"""
 	__slots__ = (
 		'_idx',
 		'_n'
@@ -108,7 +111,9 @@ def iter_axes_group(
 		a : np.ndarray,
 		axes : tuple[int,...]
 	):
-	
+	"""
+	Iterate over a group of axes
+	"""
 	with to_end(a, axes) as b:
 		n = b.ndim - len(axes)
 		shape = (*b.shape[:-len(axes)],1)
@@ -128,7 +133,9 @@ def iter_axes_group(
 
 
 def reverse(a : np.ndarray):
-	print(a.ndim)
+	"""
+	Reverse the axes of `a`
+	"""
 	axes = tuple(range(a.ndim))
 	return np.moveaxis(a, axes, axes[::-1])
 

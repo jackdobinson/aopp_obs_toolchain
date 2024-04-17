@@ -2,9 +2,6 @@
 Contains classes that assist with plotting histograms.
 """
 
-"""
-Contains classes that assist with plotting histograms.
-"""
 import sys
 from time import sleep
 from typing import Any
@@ -22,6 +19,9 @@ from aopp_deconv_tool.plot_helper.base import Base, AxisDataMapping
 
 @dc.dataclass(repr=False, eq=False, slots=True)
 class PlotSet:
+	"""
+	Defines a set of plots that can be animated
+	"""
 	fig : mpl.figure.Figure
 	title : str = 'Plot Set'
 	plots : list[Base] = dc.field(default_factory=list)

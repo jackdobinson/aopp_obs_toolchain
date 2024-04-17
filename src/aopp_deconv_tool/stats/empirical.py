@@ -12,6 +12,9 @@ _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
 class EmpiricalDistribution:
+	"""
+	Represents a probability distribution found through empirical data
+	"""
 	def __init__(self, data : np.ndarray):
 		self._data = data
 	

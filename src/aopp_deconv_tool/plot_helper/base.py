@@ -1,5 +1,5 @@
 """
-Defines the public facing interface for plot classes
+Defines the public facing interface for plot classes, used to interface with hooks in aopp_deconv_tool.algorithm.deconv classes
 """
 import dataclasses as dc
 from collections import namedtuple
@@ -16,6 +16,9 @@ import aopp_deconv_tool.plot_helper as plot_helper
 
 @dc.dataclass(repr=False, eq=False, slots=True)
 class AxisDataMapping:
+	"""
+	Defines the relationship between a "datasource" attribute and the axis that it is plotted along
+	"""
 	label : str
 	attribute : str | None = None
 	limit_getter : Callable[[Any],tuple[float,float]] = plot_helper.lim

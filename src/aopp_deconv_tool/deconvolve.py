@@ -33,6 +33,30 @@ def run(
 		output_path : str | Path = './deconv.fits',
 		deconv_class : Literal[CleanModified] | Literal[LucyRichardson] = CleanModified,
 	):
+	"""
+	Given a FitsSpecifier for an observation and a PSF, an output path, and a class that performs deconvolution,
+	deconvolves the observation using the PSF.
+	
+	# ARGUMENTS #
+		obs_fits_spec : aph.fits.specifier.FitsSpecifier
+			FITS file specifier for observation data, format is PATH{EXT}[SLICE](AXES).
+			Where:
+				PATH : str
+					The path to the FITS file
+				EXT : str | int
+					The name or number of the FITS extension (defaults to PRIMARY)
+				SLICE : "python slice format" (i.e. [1:5, 5:10:2])
+					Slice of the FITS extension data to use (defaults to all data)
+				AXES : tuple[int,...]
+					Axes of the FITS extension that are "spatial" or "celestial" (i.e. RA, DEC),
+					by default will try to infer them from the FITS extension header.
+		psf_fits_spec : aph.fits.specifier.FitsSpecifier
+			FITS file specifier for PSF data, format is same as above
+		output_path : str = './deconv.fits'
+			Path to output deconvolution to.
+		deconv_class : Type
+			Class to use for deconvolving, defaults to CleanModified
+	"""
 	
 	deconvolver = deconv_class()
 

@@ -17,6 +17,10 @@ N = TypeVar('N',bound=int)
 import matplotlib.pyplot as plt
 
 class GaussianPSFModel:
+	"""
+	Class defines a gaussian where the shape and type are fixed at instantiaion, but the mean, standard deviation, and offset are calculated
+	by the instance. This is useful for putting into an optimising function as the underlying array storage is only created once.
+	"""
 	def __init__(self,
 			shape : S[N],
 			dtype : T
