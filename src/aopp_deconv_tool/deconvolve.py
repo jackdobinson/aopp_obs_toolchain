@@ -119,9 +119,44 @@ def run(
 
 if __name__ == '__main__':
 
+	class HelpString:
+		def __init__(self, *args):
+			self.help = list(args)
+
+		def prepend(self, str):
+			self.help = [str] + self.help
+			return None
+			
+		def append(self, str):
+			self.help.append(str)
+			return None
+
+		def print_and_exit(self, str=None):
+			if str is not None:
+				self.prepend(str)
+			print('\n'.join(self.help))
+			sys.exit()
+			return
+			
+	help_string = HelpString(__doc__, aph.fits.specifier.get_help(['CELESTIAL']))
+
+	print_help_and_exit_flag = False
+
 	# Get the fits specifications from the command-line arguments
-	obs_fits_spec = aph.fits.specifier.parse(sys.argv[1], ['CELESTIAL'])
-	psf_fits_spec = aph.fits.specifier.parse(sys.argv[2], ['CELESTIAL'])
-	output_path = './deconv.fits' if len(sys.argv) < 4 else sys.argv[3]
+	if len(sys.argv) <= 1:
+		help_string.print_and_exit()
+	
+	if any([any([x==y for y in sys.argv]) for x in ('-h', '-H', '--help', '--Help')]):
+		help_string.print_and_exit()
+		
+	if len(sys.argv) > 4:
+		help_string.print_and_exit(f'A maximum of 3 arguments are accepted: obs_fits_spec, psf_fits_spec, output_path. But {len(sys.argv)-1} were provided')
+	
+	obs_fits_spec = aph.fits.specifier.parse(sys.argv[1], ['CELESTIAL']) if len(sys.argv) > 1 else help_string.print_and_exit('Need 2 arguments, 0 given')
+	psf_fits_spec = aph.fits.specifier.parse(sys.argv[2], ['CELESTIAL']) if len(sys.argv) > 2 else help_string.print_and_exit('Need 2 arguments, 1 given')
+	output_path = sys.argv[3] if len(sys.argv) > 3 else './deconv.fits'
+	
+
+	
 	run(obs_fits_spec, psf_fits_spec, output_path=output_path)
 	
