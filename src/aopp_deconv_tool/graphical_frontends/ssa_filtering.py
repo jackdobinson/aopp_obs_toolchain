@@ -943,12 +943,12 @@ class SSAViewer:
 if __name__ == '__main__':
 	#image = sys.argv[1]
 	
-	if len(sys.argv) < 1:
+	if len(sys.argv) < 2:
 		image = np.sqrt(np.sum(((np.indices((20, 100, 128)).T - np.array([10,50,64])).T)**2, axis=0))
 		for i in range(image.shape[0]):
 			image[i,...] = image[i]**(2*((i+1)/image.shape[0]))
 	else:
-		image = np.array(PIL.image.open(sys.argv[1]))
+		image = np.array(PIL.Image.open(sys.argv[1]))
 		
 		# Can only use greyscale images, so sum along colour axis
 		if image.ndim == 3:

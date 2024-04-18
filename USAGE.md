@@ -281,7 +281,7 @@ instrument fitting.
 ### SSA Filtering ###
 
 Singular Spectrum Analysis is performed by the `SSA` class in the `aopp_deconv_tools.py_ssa` module. An interactive 
-viewer that can show SSA components can be run via `python -m aopp_deoconv_tools.graphical_frontends.ssa_filtering`.
+viewer that can show SSA components can be run via `python -m aopp_deconv_tool.graphical_frontends.ssa_filtering`.
 By default it will show some test data, if you pass an **image** file (i.e. not a FITS file, but a `.jpg` etc.) it
 will use that image instead of the default one.
 
