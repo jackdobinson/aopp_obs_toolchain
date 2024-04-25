@@ -9,6 +9,10 @@ import typing
 import numpy as np
 from contextlib import contextmanager
 
+import aopp_deconv_tool.cfg.logs
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
+
+
 
 class AxesOrdering:
 	"""
@@ -57,6 +61,7 @@ class AxesOrdering:
 		if isinstance(self._idx, typing.Sequence):
 			return(type(self._idx)([self._n - _i for _i in self._idx]))
 		return(self._n - self._idx)
+		
 	@fits.setter
 	def fits(self,value:int)->None:
 		# convert to numpy representation and store
@@ -71,6 +76,7 @@ class AxesOrdering:
 		if isinstance(self._idx, typing.Sequence):
 			return(type(self._idx)([1+_i for _i in self._idx]))
 		return(1+self._idx)
+		
 	@fortran.setter
 	def fortran(self, value:int)->None:
 		if isinstance(value, typing.Sequence):

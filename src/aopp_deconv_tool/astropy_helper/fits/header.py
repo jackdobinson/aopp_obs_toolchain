@@ -1,7 +1,12 @@
 """
 Helper functions to operate on FITS headers.
 """
+import re
+
+import numpy as np
+
 import astropy as ap
+from astropy.wcs import WCS
 
 from aopp_deconv_tool.numpy_helper.axes import AxesOrdering
 
@@ -119,6 +124,68 @@ def get_polarisation_axes(hdr, wcsaxes_label=''):
 
 def get_time_axes(hdr, wcsaxes_label=''):
 	raise NotImplementedError
+
+
+def get_world_coords_of_axis(hdr, ax_idx, wcsaxes_label='', squeeze=True):
+	"""
+	Gets the world coordiates of an axis
+	"""
+	ax_idxs = tuple((x if type(x)==AxesOrdering else AxesOrdering(x, hdr['NAXIS'], 'numpy')) for x in (ax_idx if (type(ax_idx) in (list,tuple)) else (ax_idx,)))
+
+	_lgr.debug(f'{ax_idxs=}')
+
+	wcs = WCS(hdr, key=' ' if wcsaxes_label=='' else wcsaxes_label.upper(), naxis=tuple(x.fits for x in ax_idxs))
+	
+	ss = tuple(slice(0,int(hdr[f'NAXIS{x.fits}'])) for x in ax_idxs)
+	
+	coord_array = np.mgrid[ss].reshape(len(ax_idxs),-1).T
+	
+	return(np.squeeze(wcs.all_pix2world(coord_array, 0)))
+
+def is_CDi_j_present(header, wcsaxes_label=''):
+	# matches "CDi_ja" where i,j are digits of indeterminate length, and a is an optional uppercase letter in wcsaxes_label
+	cdi_j_pattern = re.compile(r'CD\d+_\d+'+wcsaxes_label)
+	for k in header.keys():
+		amatch = cdi_j_pattern.match(k)
+		if amatch is not None:
+			return(True)
+	return(False)
+
+def get_iwc_matrix(hdr, wcsaxes_label=''):
+	"""
+	Get intermediate world coordinate matrix (CDi_j or PCi_j matrix with scaling applied)
+	
+	IRAF does things differently, see <https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.46.2794&rep=rep1&type=pdf>
+	"""
+	naxis = hdr['NAXIS']
+	wcsaxes = hdr.get(f'WCSAXES{wcsaxes_label}',naxis)
+	iwc_mat = np.zeros((wcsaxes,wcsaxes))
+	CD_flag = is_CDi_j_present(hdr, wcsaxes_label)
+	for i in (AxesOrdering(_x,wcsaxes,'numpy') for _x in range(0,wcsaxes)):
+		for j in (AxesOrdering(_x,wcsaxes,'numpy') for _x in range(0,wcsaxes)):
+			#print(i, j)
+			#print(i.numpy, j.numpy)
+			#print(i.fits, j.fits)
+			if CD_flag:
+				iwc_mat[i.numpy,j.numpy] = hdr.get(f'CD{i.fits}_{j.fits}{wcsaxes_label}',0)
+			else:
+				default = 1 if i==j else 0
+				iwc_mat[i.numpy,j.numpy] = hdr.get(f'PC{i.fits}_{j.fits}{wcsaxes_label}',default)*hdr.get('CDELT{i.fits}{wcsaxes_label}',1)
+	return(iwc_mat)
+
+def set_iwc_matrix(hdr, iwc_matrix, wcsaxes_label='', CD_format=None):
+	# for now assume that iwc_matrix is all we are getting, set CDELTi to 1
+	wcsaxes = hdr_get_wcsaxes(hdr, wcsaxes_label)
+	CD_format = is_CDi_j_present(hdr, wcsaxes_label) if CD_format is None else CD_format
+	hdr_mat_str_fmt = ('CD' if CD_format else 'PC')+'{i}_{j}{wcsaxes_label}'
+	hdr_CDELTi_fmt = 'CDELT{i}{wcsaxes_label}'
+	for i in (AxesOrdering(_x,wcsaxes,'numpy') for _x in range(0,wcsaxes)):
+		hdr[hdr_CDELTi_fmt.format(i=i, wcsaxes_label=wcsaxes_label)] = 1.0
+		for j in (AxesOrdering(_x,wcsaxes,'numpy') for _x in range(0,wcsaxes)):
+			hdr[hdr_mat_str_fmt.format(i=i, j=j, wcsaxes_label=wcsaxes_label)] = iwc_matrix[i,j]
+	return
+
+
 
 
 
