@@ -6,6 +6,7 @@ import dataclasses as dc
 from collections import namedtuple
 from typing import Iterable
 import textwrap
+import re
 
 import aopp_deconv_tool.cast as cast
 
@@ -99,3 +100,52 @@ def split_around_brackets(x : str, sep : str = ','):
 		bstate.update(c)
 	stack.append(x[idx:])
 	return(stack)
+
+
+
+initial_whitespace = re.compile(r'^\s*')
+str_break_chars = re.compile(r'\s')
+
+def combine_lines_with_same_indent(x : str, preserve_repeated_empty_lines=False):
+	y = []
+	j=0
+	
+	i_span_current = 0
+	for i,z in enumerate(x.split(newline)):
+		iw_match = initial_whitespace.match(z)
+		i_span = iw_match.span()[1] - iw_match.span()[0]
+		
+		if z.isspace():
+			i_span = -1 if not preserve_repeated_empty_lines else (-1 if i_span_current > 0 else (i_span_current-1))
+		
+		if i_span != i_span_current:
+			j += 1
+			i_span_current = i_span
+		
+		if j >= len(y):
+			y.append(z)
+		else:
+			y[j] += z[i_span:]
+			
+	return newline.join(y)
+
+
+
+def wrap(x : str, width=70):
+	x = combine_lines_with_same_indent(x)
+
+	x.replace(tab, '    ')
+	y = x.split(newline)
+	print(f'{len(y)=}')
+	for i, z in enumerate(y):
+		if len(y[i]) > width:
+			iw_match = initial_whitespace.match(y[i])
+			print(f'{i=} {y[i]=}')
+			print(f'{iw_match=}')
+			iw = iw_match.group() if iw_match is not None else ''
+			b_search = str_break_chars.search(y[i][len(iw):width][::-1])
+			b_idx = width - b_search.span()[0] if b_search is not None else width
+			print(f'{b_search=}')
+			y.insert(i+1, iw+y[i][b_idx:])
+			y[i] = y[i][:b_idx]
+	return newline.join(y)

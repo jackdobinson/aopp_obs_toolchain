@@ -151,6 +151,22 @@ def is_CDi_j_present(header, wcsaxes_label=''):
 			return(True)
 	return(False)
 
+def get_axes_ordering(hdr, axes, ordering='numpy', wcsaxes_label=''):
+	wcsaxes = hdr.get(f'WCSACES{wcsaxes_label}', hdr['NAXIS'])
+	return tuple(AxesOrdering(_x, wcsaxes, ordering) for _x in axes)
+
+def set_axes_transform(hdr, axis, unit, reference_value, delta_value, n_values, reference_pixel=1):
+	new_hdr_keys= {
+		f'CD{axis}_{axis}' : delta_value,	# Turn meters into Angstrom
+		f'CUNIT{axis}' : unit,				# Tell FITS the units
+		f'CRVAL{axis}' : reference_value,	# Set the value of the reference pixel in the spectral direction in the FITS file (center of first bin)
+		f'CRPIX{axis}' : reference_pixel,	# Tell FITS the index of the reference pixel in the spectral direction (first pixel, FITS is 1-index based)
+		f'NAXIS{axis}' : n_values,			# Tell FITS the number of spectral planes
+	}
+	hdr.update(new_hdr_keys) # Update the old header with the new values (in memory, not on disk) so we can use it to write the altered file.
+
+
+
 def get_iwc_matrix(hdr, wcsaxes_label=''):
 	"""
 	Get intermediate world coordinate matrix (CDi_j or PCi_j matrix with scaling applied)

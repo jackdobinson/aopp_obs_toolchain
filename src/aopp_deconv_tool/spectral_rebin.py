@@ -34,6 +34,12 @@ _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
 
+named_spectral_binning_parameters = dict(
+	spex = dict(
+		bin_step = 1E-9,
+		bin_width = 2E-9
+	)
+)
 
 
 def plot_rebin(old_bins, old_data, new_bins, new_data, title=None):
@@ -42,6 +48,8 @@ def plot_rebin(old_bins, old_data, new_bins, new_data, title=None):
 	plt.plot(np.sum(new_bins, axis=0)/2, new_data, label='new_data')
 	plt.legend()
 	plt.show()
+
+
 
 
 def rebin_hdu_over_axis(
@@ -95,35 +103,40 @@ def run(
 
 	new_data = None
 	with fits.open(Path(fits_spec.path)) as data_hdul:
+	
+		#_lgr.debug(f'{fits_spec.ext=}')
+		#raise RuntimeError(f'DEBUGGING')
+	
 		data_hdu = data_hdul[fits_spec.ext]
 	
-		axis =  fits_spec.axes['SPECTRAL'][0]
+		axes_ordering =  aph.fits.header.get_axes_ordering(data_hdu.header, fits_spec.axes['SPECTRAL'])
+		axis = axes_ordering[0].numpy
 	
 		new_spec_bins, new_data = rebin_hdu_over_axis(data_hdu, axis, bin_step, bin_width, operation, plot=False)
 
 	
 	
 		hdr = data_hdu.header
+		axis_fits = axes_ordering[0].fits
 		hdr.update(aph.fits.header.DictReader({
 			'original_file' : Path(fits_spec.path).name, # record the file we used
+			'bin_axis' : axis_fits,
 			'bin_step' : bin_step,
 			'bin_width' : bin_width,
 			'bin_operation' : operation
 		}))
-	
-	
-		new_spec_hdr_keys= dict(
-			CD3_3 = bin_step/1E-10,                       # Turn meters into Angstrom
-			CUNIT3= 'Angstrom',                                # Tell FITS the units
-			CRVAL3 = np.mean(new_spec_bins[:,0])/1E-10,   # Set the value of the reference pixel in the spectral direction in the FITS file (center of first bin)
-			CRPIX3= 1,                                         # Tell FITS the index of the reference pixel in the spectral direction (first pixel, FITS is 1-index based)
-			NAXIS3 = new_spec_bins.shape[1],              # Tell FITS the number of spectral planes
+		
+		aph.fits.header.set_axes_transform(hdr, 
+			axis_fits, 
+			'Angstrom', 
+			np.mean(new_spec_bins[:,0])/1E10,
+			bin_step/1E10,
+			new_spec_bins.shape[1],
+			1
 		)
-		hdr.update(new_spec_hdr_keys) # Update the old header with the new values (in memory, not on disk) so we can use it to write the altered file.
-
 
 	
-	# Save the deconvolution products to a FITS file
+	# Save the products to a FITS file
 	hdu_rebinned = fits.PrimaryHDU(
 		header = hdr,
 		data = new_data
@@ -136,46 +149,33 @@ def run(
 
 
 
+def parse_args(argv):
+	import os
+	import aopp_deconv_tool.text
+	import argparse
+	parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawTextHelpFormatter)
+	
+	parser.add_argument(
+		'fits_spec', 
+		help = aopp_deconv_tool.text.wrap(
+			aph.fits.specifier.get_help(['CELESTIAL']).replace('\t', '    '),
+			os.get_terminal_size().columns - 30
+		)
+	)
+	parser.add_argument('-o', '--output_path', help='Output fits file path. By default is same as fie `fits_spec` path with "_rebin" appended to the filename')
+	
+	args = parser.parse_args(argv)
+	
+	args.fits_spec = aph.fits.specifier.parse(args.fits_spec, ['SPECTRAL'])
+	
+	if args.output_path is None:
+		args.output_path =  (Path(args.fits_spec.path).parent / (str(Path(args.fits_spec.path).stem)+'_rebin'+str(Path(args.fits_spec.path).suffix)))
+	
+	return args
+
 
 if __name__ == '__main__':
-
-	class HelpString:
-		def __init__(self, *args):
-			self.help = list(args)
-
-		def prepend(self, str):
-			self.help = [str] + self.help
-			return None
-			
-		def append(self, str):
-			self.help.append(str)
-			return None
-
-		def print_and_exit(self, str=None):
-			if str is not None:
-				self.prepend(str)
-			print('\n'.join(self.help))
-			sys.exit()
-			return
-			
-	help_string = HelpString(__doc__, aph.fits.specifier.get_help(['CELESTIAL']))
-
-	print_help_and_exit_flag = False
-
-	# Get the fits specifications from the command-line arguments
-	if len(sys.argv) <= 1:
-		help_string.print_and_exit()
+	args = parse_args(sys.argv[1:])
 	
-	if any([any([x==y for y in sys.argv]) for x in ('-h', '-H', '--help', '--Help')]):
-		help_string.print_and_exit()
-		
-	if len(sys.argv) > 3:
-		help_string.print_and_exit(f'A maximum of 2 arguments are accepted: fits_spec, output_path. But {len(sys.argv)-1} were provided')
-	
-	fits_spec = aph.fits.specifier.parse(sys.argv[1], ['SPECTRAL']) if len(sys.argv) > 1 else help_string.print_and_exit('Need 2 arguments, 0 given')
-	output_path = sys.argv[2] if len(sys.argv) > 2 else (Path(fits_spec.path).parent / (str(Path(fits_spec.path).stem)+'_rebin'+str(Path(fits_spec.path).suffix)))
-	
-
-	
-	run(fits_spec, output_path=output_path)
+	run(args.fits_spec, output_path=args.output_path)
 	
