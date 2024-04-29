@@ -21,12 +21,15 @@ _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 def ssa2d_sum_prob_map(
 		ssa, 
-		start=3, 
-		stop=12, 
-		value=0.995, 
+		start=5, 
+		stop=None, 
+		value=0.99, 
+		strategy : Literal['prob_frac_from_median'] | Literal['n_std_dev_from_median'] = 'n_std_dev_from_median',
 		show_plots=0, 
-		transform_value_as : list[Literal['median_prob', 'ppf'],] = [], 
-		weight_by_evals=False
+		transform_value_as : list[Literal['median_prob', 'ppf'],] = ['ppf'], 
+		weight_by_evals=False,
+		smooth_sigma=None,
+		perform_binary_opening : bool = True
 	):
 	"""
 	Computes a bad pixel map from an SSA2D object. Concentrates on hot/cold pixels w.r.t background.
@@ -54,6 +57,14 @@ def ssa2d_sum_prob_map(
 			If None, then will include as many SSA components as are present
 		value
 			A float that describes the quantile that denotes a 'bad pixel'
+		strategy : 'prob_frac_from_median' | 'n_std_dev_from_median'
+			How should we define an 'improbable' pixel?
+				'prob_frac_from_median'
+					Fraction of probability space a pixel is away from 
+					the median value
+				'n_std_dev_from_median'
+					Number of standard deviations a pixel is away from
+					the median value
 		show_plots
 			0 = do not show plots
 			1 = show some plots
@@ -66,6 +77,8 @@ def ssa2d_sum_prob_map(
 			probability > 0.99 are classified as "bad pixels".
 
 			Options are:
+				"identity"
+					Use the value as-is, do not transform it
 				"median_prob"
 					Transform "value" using the same function that we use to
 					change cumulative probabilities of pixels into probability
@@ -78,6 +91,8 @@ def ssa2d_sum_prob_map(
 		weight_by_evals
 			If True, will weight each SSA component pixel probability by
 			the component's eigenvalue when averaging into a combined score.
+		perform_binary_opening : bool = True
+			If True will perform binary opening on the result to remove single pixels
 	# RETURNS #
 		bp_mask
 			A bad pixel mask. Pixels to reject are coded as True.
@@ -96,9 +111,14 @@ def ssa2d_sum_prob_map(
 	
 	# apply pixel->probability function to each SSA component
 	for i in range(0, stop-start):
-		#data_cdf = ut.sp.construct_cdf_from(ssa.X_ssa[i+start].ravel())
-		data_distribution = EmpiricalDistribution(ssa.X_ssa[i+start].ravel())
-		data_probs[i,...] = prob_median_transform_func(data_distribution.cdf(ssa.X_ssa[i+start].ravel()).reshape(ssa.a.shape))
+		match strategy:
+			case 'prob_frac_from_median':
+				data_distribution = EmpiricalDistribution(ssa.X_ssa[i+start].ravel())
+				data_probs[i,...] = prob_median_transform_func(data_distribution.cdf(ssa.X_ssa[i+start].ravel()).reshape(ssa.a.shape))
+			case 'n_std_dev_from_median':
+				data_probs[i,...] = (ssa.X_ssa[i+start] - np.nanmean(ssa.X_ssa[i+start]))/np.nanstd(ssa.X_ssa[i+start])
+			case _:
+				raise RuntimeError(f'Unknown `strategy` for getting probability of a pixel {strategy=}')
 
 	# combine pixel probabilites together, pixels that are "strange" will have correlated distances away from
 	# the median for each SSA component. Therefore, "normal" pixels will tend towards zero when taking the mean of `data_probs`,
@@ -107,7 +127,7 @@ def ssa2d_sum_prob_map(
 	# NOTE: Instead of using `np.fabs` here, I could square the results. It shouldn't make much of a difference apart from adjusting
 	#       the exact values of the `data_probs_sum`.
 	data_probs_sum_func = lambda x, _start, _stop: np.fabs(
-		(1/(_stop-(_start-1))) * np.sum(x[:_stop-(_start-1)], axis=0)
+		np.mean(x[:_stop-(_start-1)], axis=0)
 	)
 	if weight_by_evals:
 		# try weighted by eigenvalues, generally do not want this one but the option is there
@@ -115,6 +135,9 @@ def ssa2d_sum_prob_map(
 			(1/(np.sum((np.diag(ssa.s)**2)[_start:_stop+1]))) * np.sum(((np.diag(ssa.s)**2)[_start:_stop+1])[:,None,None] * x[:_stop-(_start-1)],axis=0)
 		)
 
+	if smooth_sigma is not None:
+		old_data_probs_sum_func = data_probs_sum_func
+		data_probs_sum_func = lambda x, _start, _stop: sp.ndimage.gaussian_filter(old_data_probs_sum_func(x, _start, _stop), smooth_sigma, order=1)
 
 
 	# apply the pixel->probability function to 'value' argument if desired
@@ -140,9 +163,10 @@ def ssa2d_sum_prob_map(
 	if show_plots > 1:
 		nplots = ssa.X_ssa.shape[0]#(stop-start)
 		
-		for i in range(nplots):
+		#for i in range(nplots):
+		for i in range(start, stop):
 			f1, a1 = plot_helper.figure_n_subplots(4)
-			f1.suptitle(f'Sum ssa.X_ssa[{i}] probability maps')
+			f1.suptitle(f'Sum ssa.X_ssa[{i}/{nplots}] probability maps')
 			ax_iter=iter(a1.flatten())
 			
 			with Next(ax_iter) as ax:
@@ -150,21 +174,30 @@ def ssa2d_sum_prob_map(
 				ax.imshow(ssa.X_ssa[i])
 				plot_helper.remove_axes_ticks_and_labels(ax)
 			with Next(ax_iter) as ax:
-				ax.set_title(f'histogram of ssa.X_ssa[{i}]')
+				ax.set_title(f'histogram of ssa.X_ssa[{i}] range [{np.min(ssa.X_ssa[i])}, {np.max(ssa.X_ssa[i])}] sigma {np.std(ssa.X_ssa[i])}')
 				hvals, hbins, hpatches = ax.hist(ssa.X_ssa[i].ravel(), bins=100, density=True)
 				x = np.linspace(np.min(ssa.X_ssa[i]),np.max(ssa.X_ssa[i]), 100)
-				ax.twinx().plot(x, ut.sp.construct_cdf_from(ssa.X_ssa[i].ravel())(x), color='tab:orange', ls='-')
+				ax.twinx().plot(x, EmpiricalDistribution(ssa.X_ssa[i].ravel()).cdf(x), color='tab:orange', ls='-')
 			if i < stop and i >= start:
 				with Next(ax_iter) as ax:
 					ax.set_title(f'probabilities of ssa.X_ssa[{i}]')
-					ax.imshow(data_probs[i-start], vmin=-1, vmax=1)
+					#ax.imshow(data_probs[i-start], vmin=-1, vmax=1)
+					ax.imshow(data_probs[i-start])
 					plot_helper.remove_axes_ticks_and_labels(ax)
 				with Next(ax_iter) as ax:
 					ax.set_title(f'|sum of probabilities of ssa.X_ssa[{start}:{i+1}]|')
-					ax.imshow(data_probs_sum_func(data_probs, start, i), vmin=0, vmax=1)
+					#ax.imshow(data_probs_sum_func(data_probs, start, i), vmin=0, vmax=1)
+					ax.imshow(data_probs_sum_func(data_probs, start, i))
 					plot_helper.remove_axes_ticks_and_labels(ax)
 				
-			plt.savefig(f'ssa_{i}_bad_pixel_prob_maps.png')
+			plot_helper.output(
+				True, 
+				None,
+				#f'ssa_{i}_bad_pixel_prob_maps.png',
+			)
+			
+	if perform_binary_opening:
+		bp_mask = sp.ndimage.binary_opening(bp_mask)
 	return(bp_mask)
 
 
@@ -215,7 +248,11 @@ def pixel_map(
 	if show_plots > 0:
 		interpolated = interpolate_at_mask(img, bp_mask, edges='convolution', method='cubic')
 		plot_pixel_map_test(img, test, cutoff, bp_mask, interpolated, plot_kw=plot_kw)
-		plt.savefig(f'pixel_map_plot.png')
+		plot_helper.output(
+			True,
+			None,
+			#f'pixel_map_plot.png'
+		)
 	return(bp_mask)
 
 
@@ -231,7 +268,8 @@ def plot_pixel_map_test(img, test, cutoff, mask, interp, plot_kw={}):
 		
 	with Next(a2_iter) as ax:
 		ax.set_title(f'pixel choice test function\nsum {np.nansum(test):08.2E} sqrt(sum^2) {np.sqrt(np.nansum(test**2)):08.2E}')
-		ax.imshow(test)
+		#ax.imshow(test)
+		ax.imshow(np.log(test))
 		plot_helper.remove_axes_ticks_and_labels(ax)
 		
 	with Next(a2_iter) as ax:

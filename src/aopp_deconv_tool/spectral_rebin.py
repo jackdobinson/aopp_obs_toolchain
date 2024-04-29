@@ -154,7 +154,7 @@ def parse_args(argv):
 	parser.add_argument(
 		'fits_spec', 
 		help = aopp_deconv_tool.text.wrap(
-			aph.fits.specifier.get_help(['CELESTIAL']).replace('\t', '    '),
+			aph.fits.specifier.get_help(['SPECTRAL']),
 			os.get_terminal_size().columns - 30
 		)
 	)

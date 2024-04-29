@@ -58,6 +58,7 @@ def ssa_intepolate_at_mask(
 	
 	# apply pixel->probability function to each SSA component
 	for i in range(ssa.X_ssa.shape[0]):
+		_lgr.debug(f'i={i}/{ssa.X_ssa.shape[0]}')
 		data_distribution = EmpiricalDistribution(ssa.X_ssa[i].ravel())
 		
 		px_contrib_temp[:] = ssa.X_ssa[i][mask]

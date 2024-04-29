@@ -126,7 +126,7 @@ class SSA:
 		
 		# self.l is the shape of the window
 		self.l = (tuple(nx//4 for nx in self.n) if w_shape is None 
-			else ((w_shape for nx in self.n) if type(w_shape) is int
+			else (tuple(w_shape for nx in self.n) if type(w_shape) is int
 				else w_shape
 			)
 		)
