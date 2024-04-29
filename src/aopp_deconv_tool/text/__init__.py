@@ -136,7 +136,7 @@ def wrap(x : str, width=70, combine_strings_of_same_indent_level=True):
 
 	x.replace(tab, '    ')
 	y = x.split(newline)
-	print(f'{len(y)=}')
+
 	for i, z in enumerate(y):
 		if len(y[i]) > width:
 			iw_match = initial_whitespace.match(y[i])
