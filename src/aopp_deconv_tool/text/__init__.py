@@ -131,8 +131,8 @@ def combine_lines_with_same_indent(x : str, preserve_repeated_empty_lines=False)
 
 
 
-def wrap(x : str, width=70):
-	x = combine_lines_with_same_indent(x)
+def wrap(x : str, width=70, combine_strings_of_same_indent_level=True):
+	x = combine_lines_with_same_indent(x) if combine_strings_of_same_indent_level else x
 
 	x.replace(tab, '    ')
 	y = x.split(newline)
@@ -140,12 +140,9 @@ def wrap(x : str, width=70):
 	for i, z in enumerate(y):
 		if len(y[i]) > width:
 			iw_match = initial_whitespace.match(y[i])
-			print(f'{i=} {y[i]=}')
-			print(f'{iw_match=}')
 			iw = iw_match.group() if iw_match is not None else ''
 			b_search = str_break_chars.search(y[i][len(iw):width][::-1])
 			b_idx = width - b_search.span()[0] if b_search is not None else width
-			print(f'{b_search=}')
 			y.insert(i+1, iw+y[i][b_idx:])
 			y[i] = y[i][:b_idx]
 	return newline.join(y)
