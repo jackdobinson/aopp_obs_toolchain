@@ -2,7 +2,7 @@
 Quick tool for spectrally rebinning a FITS file
 
 TODO:
-* Nicer argument passing.
+* Nicer argument passing [DONE]
 * Operate on all extensions in passed file
 * Have default operations for common extension names (i.e. "DATA" should have operation "mean", "ERROR" should have operation "mean_err")
 * Add table of common rebin parameters. E.g. "spex" resolution, "gemini" resolution, etc.
@@ -153,7 +153,10 @@ def parse_args(argv):
 	import os
 	import aopp_deconv_tool.text
 	import argparse
-	parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawTextHelpFormatter)
+	parser = argparse.ArgumentParser(
+		description=__doc__, 
+		formatter_class=argparse.RawTextHelpFormatter
+	)
 	
 	parser.add_argument(
 		'fits_spec', 
@@ -164,9 +167,20 @@ def parse_args(argv):
 	)
 	parser.add_argument('-o', '--output_path', help='Output fits file path. By default is same as fie `fits_spec` path with "_rebin" appended to the filename')
 	
+	rebin_group = parser.add_mutually_exclusive_group(required=True)
+	rebin_group.add_argument('--rebin_preset', choices=list(named_spectral_binning_parameters.keys()), help='Rebin according to the spectral resolution of the preset')
+	rebin_group.add_argument('--rebin_params', nargs=2, type=float, metavar='float', help='bin_step and bin_width for rebinning operation')
+	
 	args = parser.parse_args(argv)
 	
 	args.fits_spec = aph.fits.specifier.parse(args.fits_spec, ['SPECTRAL'])
+	
+	if args.rebin_preset is not None:
+		for k,v in named_spectral_binning_parameters[args.rebin_preset].items():
+			setattr(args, k, v)
+	if args.rebin_params is not None:
+		setattr(args, 'bin_step', args.rebin_params[0])
+		setattr(args, 'bin_width', args.rebin_params[1])
 	
 	if args.output_path is None:
 		args.output_path =  (Path(args.fits_spec.path).parent / (str(Path(args.fits_spec.path).stem)+'_rebin'+str(Path(args.fits_spec.path).suffix)))
@@ -177,5 +191,5 @@ def parse_args(argv):
 if __name__ == '__main__':
 	args = parse_args(sys.argv[1:])
 	
-	run(args.fits_spec, output_path=args.output_path)
+	run(args.fits_spec, bin_step=args.bin_step, bin_width=args.bin_width, output_path=args.output_path)
 	
