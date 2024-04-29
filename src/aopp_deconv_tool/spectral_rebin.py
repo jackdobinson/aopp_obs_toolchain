@@ -1,12 +1,5 @@
 """
 Quick tool for spectrally rebinning a FITS file
-
-TODO:
-* Nicer argument passing [DONE]
-* Operate on all extensions in passed file
-* Have default operations for common extension names (i.e. "DATA" should have operation "mean", "ERROR" should have operation "mean_err")
-* Add table of common rebin parameters. E.g. "spex" resolution, "gemini" resolution, etc.
-* Add way to load custom rebin parameter definitions
 """
 
 import sys
@@ -167,9 +160,11 @@ def parse_args(argv):
 	)
 	parser.add_argument('-o', '--output_path', help='Output fits file path. By default is same as fie `fits_spec` path with "_rebin" appended to the filename')
 	
+	parser.add_argument('--rebin_operation', choices=['sum', 'mean', 'mean_err'], default='mean', help='Operation to perform when binning.')
+	
 	rebin_group = parser.add_mutually_exclusive_group(required=True)
 	rebin_group.add_argument('--rebin_preset', choices=list(named_spectral_binning_parameters.keys()), help='Rebin according to the spectral resolution of the preset')
-	rebin_group.add_argument('--rebin_params', nargs=2, type=float, metavar='float', help='bin_step and bin_width for rebinning operation')
+	rebin_group.add_argument('--rebin_params', nargs=2, type=float, metavar='float', help='bin_step and bin_width for rebinning operation (meters)')
 	
 	args = parser.parse_args(argv)
 	
@@ -191,5 +186,5 @@ def parse_args(argv):
 if __name__ == '__main__':
 	args = parse_args(sys.argv[1:])
 	
-	run(args.fits_spec, bin_step=args.bin_step, bin_width=args.bin_width, output_path=args.output_path)
+	run(args.fits_spec, bin_step=args.bin_step, bin_width=args.bin_width, operation=args.rebin_operation, output_path=args.output_path)
 	
