@@ -16,6 +16,7 @@ from aopp_deconv_tool.scipy_helper.interp import interpolate_at_mask
 import aopp_deconv_tool.plot_helper as plot_helper
 
 
+
 import aopp_deconv_tool.cfg.logs
 _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
@@ -69,11 +70,12 @@ def ssa_intepolate_at_mask(
 			j = i - start
 
 			# Interpolate the SSA components
-			points = np.indices(ssa.X_ssa[i].shape)
-			p_known = points[:,~mask].T
-			p_unknown = points[:,mask].T
-			known_values = ssa.X_ssa[i][~mask]
-			interp_values = sp.interpolate.griddata(p_known, known_values, p_unknown)
+			#points = np.indices(ssa.X_ssa[i].shape)
+			#p_known = points[:,~mask].T
+			#p_unknown = points[:,mask].T
+			#known_values = ssa.X_ssa[i][~mask]
+			#interp_values = sp.interpolate.griddata(p_known, known_values, p_unknown)
+			interp_values = interpolate_at_mask(ssa.X_ssa[i], mask, edges='convolution')[mask]
 			
 			# Get the distance from the median for each pixel
 			data_probs[j,...] = prob_median_transform_func(data_distribution.cdf(ssa.X_ssa[j].ravel()).reshape(ssa.a.shape))

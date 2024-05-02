@@ -115,7 +115,7 @@ def to_start(a : np.ndarray, axes : tuple[int,...]):
 
 def iter_axes_group(
 		a : np.ndarray,
-		axes : tuple[int,...]
+		axes : tuple[int,...],
 	):
 	"""
 	Iterate over a group of axes

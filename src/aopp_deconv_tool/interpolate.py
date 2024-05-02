@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Literal
 
 import numpy as np
+import scipy as sp
 from astropy.io import fits
 
 import aopp_deconv_tool.astropy_helper as aph
@@ -54,16 +55,55 @@ def set_data_ssa(value):
 	global data_ssa
 	data_ssa = value
 
-def get_bad_pixel_map(a, method):
+def get_bad_pixel_map(
+		a : np.ndarray, 
+		method : Literal['ssa'] | Literal['simple'], 
+		perform_binary_operation : None | list[Literal['opening'] | Literal['closing'] | Literal['dilation'] | Literal['erosion']] = None,
+	) -> np.ndarray:
 	nan_inf_mask = np.isinf(a) | np.isnan(a)
 	match method:
 		case 'ssa':
 			ssa = get_data_ssa(np.nan_to_num(a))
-			bad_pixel_map = ssa2d_sum_prob_map(ssa, value=3, start=0, stop=None, strategy='n_std_dev_from_median', show_plots=1, transform_value_as='identity')
+			bad_pixel_map = ssa2d_sum_prob_map(
+				ssa, 
+				value=1, 
+				start=5, 
+				stop=None, 
+				strategy='n_std_dev_from_median',
+				transform_value_as='identity',
+				show_plots=0
+			)
 		case 'simple':
 			bad_pixel_map = nan_inf_mask
 		case _:
 			raise RuntimeError(f'Unknown value of {method=}')
+	
+	
+	if perform_binary_operation is not None:
+		orig_bp_map = np.array(bad_pixel_map, dtype=bad_pixel_map.dtype)
+		for item in perform_binary_operation:
+			match item:
+				case 'closing':
+					bad_pixel_map = sp.ndimage.binary_closing(bad_pixel_map)
+				case 'opening':
+					bad_pixel_map = sp.ndimage.binary_opening(bad_pixel_map)
+				case 'erosion':
+					bad_pixel_map = sp.ndimage.binary_erosion(bad_pixel_map)
+				case 'dilation':
+					bad_pixel_map = sp.ndimage.binary_dilation(bad_pixel_map)
+				case 'remove_single_pixels':
+					labels, n_labels = sp.ndimage.label(bad_pixel_map)
+					reject_labels = np.zeros_like(bad_pixel_map, dtype=bool)
+					for i in range(n_labels):
+						lbl_mask = labels==i
+						n_pixels = np.count_nonzero(lbl_mask)
+						if n_pixels <= 1:
+							reject_labels[lbl_mask] = True
+					bad_pixel_map[reject_labels] = False
+					
+				case _:
+					raise RuntimeError(f'Unknown binary operation "{item}"')
+	
 	
 	return bad_pixel_map | nan_inf_mask
 
@@ -102,28 +142,35 @@ def run(
 		bad_pixel_map = np.zeros_like(data, dtype=bool)
 		interp_data = np.full_like(data, fill_value=np.nan)
 		
+		bad_pixel_map_binary_operations = ['closing', 'remove_single_pixels']
+		
 		# Loop over the index range specified by `obs_fits_spec` and `psf_fits_spec`
-		for idx in nph.slice.iter_indices(data, fits_spec.slices, fits_spec.axes['CELESTIAL']):
-			_lgr.debug(f'{idx=}')
+		for i, idx in enumerate(nph.slice.iter_indices(data, fits_spec.slices, fits_spec.axes['CELESTIAL'])):
+			_lgr.debug(f'{i=}')
 			set_data_ssa(None)
 			
-			plt.imshow(data[idx])
-			plt.show()
+			#plt.imshow(data[idx])
+			#plt.show()
 			
-			bad_pixel_map[idx] = get_bad_pixel_map(data[idx], bad_pixel_method)
-			plt.imshow(bad_pixel_map[idx])
-			plt.show()
+			bad_pixel_map[idx] = get_bad_pixel_map(data[idx], bad_pixel_method, bad_pixel_map_binary_operations)
+			#plt.imshow(bad_pixel_map[idx])
+			#plt.show()
+			
 			interp_data[idx] = get_interp_at_mask(data[idx], bad_pixel_map[idx], interp_method)
-			plt.imshow(interp_data[idx])
-			plt.show()
+			#plt.imshow(interp_data[idx])
+			#plt.show()
 	
 	
 		hdr = data_hdu.header
-		hdr.update(aph.fits.header.DictReader({
+		param_dict = {
 			'original_file' : Path(fits_spec.path).name, # record the file we used
 			'bad_pixel_method' : bad_pixel_method,
 			'interp_method' : interp_method,
-		}))
+		}
+		for i, x in enumerate(bad_pixel_map_binary_operations):
+			param_dict[f'bad_pixel_map_binary_operations_{i}'] = x
+		
+		hdr.update(aph.fits.header.DictReader(param_dict))
 		
 
 	

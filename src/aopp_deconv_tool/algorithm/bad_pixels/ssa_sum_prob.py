@@ -29,7 +29,6 @@ def ssa2d_sum_prob_map(
 		transform_value_as : list[Literal['median_prob', 'ppf'],] = ['ppf'], 
 		weight_by_evals=False,
 		smooth_sigma=None,
-		perform_binary_opening : bool = True
 	):
 	"""
 	Computes a bad pixel map from an SSA2D object. Concentrates on hot/cold pixels w.r.t background.
@@ -196,8 +195,8 @@ def ssa2d_sum_prob_map(
 				#f'ssa_{i}_bad_pixel_prob_maps.png',
 			)
 			
-	if perform_binary_opening:
-		bp_mask = sp.ndimage.binary_opening(bp_mask)
+	
+		
 	return(bp_mask)
 
 

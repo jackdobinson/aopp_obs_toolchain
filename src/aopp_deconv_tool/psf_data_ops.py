@@ -16,6 +16,10 @@ import aopp_deconv_tool.cfg.logs
 _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
+#DEBUGGING
+import matplotlib.pyplot as plt
+
+
 IntVar = TypeVar('IntVar', bound=int)
 T = TypeVar('T')
 Ts = TypeVarTuple('Ts')
@@ -126,6 +130,111 @@ def normalise(
 	
 	return data
 
+
+
+
+def get_roi_mask(
+		data : np.ndarray, 
+		axes : tuple[int,...], 
+		threshold : float = 1E-2,
+		n_largest_regions : None | int = 1,
+	) -> np.ndarray:
+	"""
+	data : np.ndarray
+		Array to get region of interest of
+	axes : tuple[int,...]
+		Axes to get region of interest along.
+	threshold : float = 1E-2
+		When finding region of interest, only values larger than this fraction of the maximum value are included.
+	n_largest_regions : None | int = 1
+		When finding region of interest, if using a threshold will only the n_largest_regions in the calculation.
+		A region is defined as a contiguous area where value >= `threshold` along `axes`. I.e. in a 3D cube, if
+		we recenter about the COM on the sky (CELESTIAL) axes the regions will be calculated on the sky, not in
+		the spectral axis (for example).
+	"""
+	mask = np.zeros_like(data, dtype=bool)
+	with nph.axes.to_start(data, axes) as (gdata, gaxes), nph.axes.to_start(mask, axes) as (t_mask, t_axes):
+	#with nph.axes.to_end(data, axes) as (gdata, gaxes):
+		t_mask[...] = (gdata > threshold*np.nanmax(gdata, axis=gaxes))
+		
+		if n_largest_regions is not None:
+			for j, (idx, g_mask) in enumerate(nph.axes.iter_axes_group(t_mask, gaxes)):
+				label_map, n_labels = sp.ndimage.label(g_mask[idx])
+				# order labels by number of pixels they contain
+								
+				ordered_labels = list(range(1,n_labels+1)) # label 0 is background
+				ordered_labels.sort(key = lambda x: np.count_nonzero(label_map == x), reverse=True)
+				
+				if n_labels > n_largest_regions:
+					g_mask[idx] *= False
+					for i in range(n_largest_regions):
+						g_mask[idx] |= (label_map == ordered_labels[i])
+				
+	return mask
+
+def get_center_of_mass_offsets(
+	data : np.ndarray, 
+		axes : tuple[int,...], 
+		roi_mask : np.ndarray | None = None,
+	) -> np.ndarray:
+	"""
+	data : np.ndarray
+		Array to recenter
+	axes : tuple[int,...]
+		Axes to get center of mass and recenter along.
+	roi_mask : np.ndarray | None = None
+		Mask for the region of interest. If present will restrict calculations to this region.
+	"""
+	not_axes = tuple(i for i in range(data.ndim) if i not in axes)
+	indices = np.indices(data.shape)
+	com_offsets = np.moveaxis((np.nansum(indices*data[None,...]*roi_mask[None,...], axis=tuple(a+1 for a in axes))/np.nansum(data*roi_mask, axis=axes))[axes,...], 0, -1)
+	
+	return com_offsets
+
+def apply_offsets(
+		data : np.ndarray, 
+		axes : tuple[int,...], 
+		offsets : np.ndarray
+	) -> np.ndarray:
+	"""
+	data : np.ndarray
+		Array to recenter
+	axes : tuple[int,...]
+		Axes to get center of mass and recenter along.
+	offsets : np.ndarray
+		Offsets to apply to data, will shift data's grid by this amount.
+	"""
+
+	
+	for _i, (idx, gdata) in enumerate(nph.axes.iter_axes_group(data, axes)):
+		_lgr.debug(f'{_i=}')
+		_lgr.debug(f'{idx=}')
+		_lgr.debug(f'{gdata[idx].shape=}')
+		
+		
+		# calculate center of mass
+		#com_idxs = tuple(np.nansum(data[idx]*indices)/np.nansum(data[idx]) for indices in np.indices(data[idx].shape))
+		#center_to_com_offset = np.array([com_i - s/2 for s, com_i in zip(gdata[idx].shape, com_idxs[idx][::-1])])
+		center_to_com_offset = np.array([s/2 - com_i for s, com_i in zip(gdata[idx].shape, offsets[idx])])
+		_lgr.debug(f'{idx=} {offsets[idx]=} {center_to_com_offset=}')
+		
+		# regrid so that center of mass lies on an exact pixel
+		old_points = tuple(np.linspace(0,s-1,s) for s in gdata[idx].shape)
+		interp = sp.interpolate.RegularGridInterpolator(
+			old_points, 
+			gdata[idx], 
+			method='linear', 
+			bounds_error=False, 
+			fill_value=0
+		)
+	
+		# have to reverse center_to_com_offset here
+		new_points = tuple(p-center_to_com_offset[i] for i,p in enumerate(old_points))
+		_lgr.debug(f'{[s.size for s in new_points]=}')
+		new_points = np.array(np.meshgrid(*new_points)).T
+		_lgr.debug(f'{[s.size for s in old_points]=} {gdata[idx].shape=} {new_points.shape=}')
+		gdata[idx] = interp(new_points)
+	return gdata
 
 
 

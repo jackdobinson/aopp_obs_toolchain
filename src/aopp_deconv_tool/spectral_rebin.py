@@ -162,8 +162,8 @@ def parse_args(argv):
 	
 	parser.add_argument('--rebin_operation', choices=['sum', 'mean', 'mean_err'], default='mean', help='Operation to perform when binning.')
 	
-	rebin_group = parser.add_mutually_exclusive_group(required=True)
-	rebin_group.add_argument('--rebin_preset', choices=list(named_spectral_binning_parameters.keys()), help='Rebin according to the spectral resolution of the preset')
+	rebin_group = parser.add_mutually_exclusive_group(required=False)
+	rebin_group.add_argument('--rebin_preset', choices=list(named_spectral_binning_parameters.keys()), default='spex', help='Rebin according to the spectral resolution of the preset')
 	rebin_group.add_argument('--rebin_params', nargs=2, type=float, metavar='float', help='bin_step and bin_width for rebinning operation (meters)')
 	
 	args = parser.parse_args(argv)
