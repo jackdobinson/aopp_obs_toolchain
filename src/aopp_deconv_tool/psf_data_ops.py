@@ -130,7 +130,33 @@ def normalise(
 	
 	return data
 
-
+def get_outlier_mask(
+		data : np.ndarray,
+		axes : tuple[int,...],
+		n_sigma : float = 5,
+	):
+	
+	outlier_mask = np.zeros_like(data, dtype=bool)
+	
+	for _i, (idx, gdata) in enumerate(nph.axes.iter_axes_group(data, axes)):
+		mean = np.nanmean(gdata[idx])
+		std = np.nanstd(gdata[idx])
+		
+		outlier_mask[idx] = np.fabs(gdata[idx] - mean) > n_sigma*std
+		
+		label_map, n_labels = sp.ndimage.label(outlier_mask[idx])
+		# order labels by number of pixels they contain
+						
+		ordered_labels = list(range(1,n_labels+1)) # label 0 is background
+		ordered_labels.sort(key = lambda x: np.count_nonzero(label_map == x), reverse=True)
+		
+		# Only keep the largest region as we expect everything to have one (and only one) calibration source.
+		outlier_mask[idx] *= False
+		for i in range(1,n_labels):
+			outlier_mask[idx] |= (label_map == ordered_labels[i])
+		
+		
+	return outlier_mask
 
 
 def get_roi_mask(

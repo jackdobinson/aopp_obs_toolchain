@@ -33,6 +33,7 @@ def run(
 		output_path,
 		threshold : float = 1E-2,
 		n_largest_regions : None | int = 1,
+		n_sigma : float = 5
 	):
 	
 	axes = fits_spec.axes['CELESTIAL']
@@ -44,24 +45,39 @@ def run(
 		#raise RuntimeError(f'DEBUGGING')
 	
 		data_hdu = data_hdul[fits_spec.ext]
-		data = data_hdu.data
-	
-		roi_mask = psf_data_ops.get_roi_mask(data[fits_spec.slices], axes, threshold, n_largest_regions)
-		com_offsets = psf_data_ops.get_center_of_mass_offsets(data[fits_spec.slices], axes, roi_mask)
-		normalised_data = psf_data_ops.apply_offsets(data[fits_spec.slices], axes, com_offsets)
-		roi_mask = psf_data_ops.apply_offsets(roi_mask, axes, com_offsets)
-	
-		# Loop over the index range specified by `obs_fits_spec` and `psf_fits_spec`
-		#for i, idx in enumerate(nph.slice.iter_indices(data, fits_spec.slices, fits_spec.axes['CELESTIAL'])):
-		#	_lgr.debug(f'{i=}')
-			
-	
-	
+		data = data_hdu.data[fits_spec.slices]
 		hdr = data_hdu.header
+		
+		
+		# Ensure data is of odd shape
+		data = nph.array.ensure_odd_shape(data, axes)
+		for ax in axes:
+			aph.fits.header.set_axes_transform(hdr, ax, n_values = data.shape[ax])
+	
+		
+		# Remove any outliers
+		outlier_mask = psf_data_ops.get_outlier_mask(data[fits_spec.slices], axes, n_sigma)
+		data[outlier_mask] = np.nan
+		
+		# Center around center of mass
+		roi_mask = psf_data_ops.get_roi_mask(data, axes, threshold, n_largest_regions)
+		com_offsets = psf_data_ops.get_center_of_mass_offsets(data, axes, roi_mask)
+		normalised_data = psf_data_ops.apply_offsets(data, axes, com_offsets)
+	
+		# Recenter masks the same way for easy comparison
+		roi_mask = psf_data_ops.apply_offsets(roi_mask, axes, com_offsets)
+		outlier_mask = psf_data_ops.apply_offsets(outlier_mask, axes, com_offsets)
+		
+		# Normalise to unit sum
+		original_sum = np.nansum(normalised_data, axis=axes)
+		with nph.axes.to_start(normalised_data, axes) as (gdata, gaxes):
+			gdata /= original_sum
+		
 		param_dict = {
 			'original_file' : Path(fits_spec.path).name, # record the file we used
 			'roi_mask.threshold' : threshold,
 			'roi_mask.n_largest_regions' : n_largest_regions,
+			'outlier_mask.n_sigma' : n_sigma,
 		}
 		
 		hdr.update(aph.fits.header.DictReader(param_dict))
@@ -78,10 +94,24 @@ def run(
 		data = roi_mask.astype(int),
 		name = 'ROI_MASK'
 	)
+	hdu_outlier_mask = fits.ImageHDU(
+		header = hdr,
+		data = outlier_mask.astype(int),
+		name = 'OUTLIER_MASK'
+	)
+	hdu_original_sum = fits.BinTableHDU.from_columns(
+		columns = [
+			fits.Column(name='original_total_sum', format='D', array=original_sum),
+		],
+		name = 'ORIG_SUM',
+		header = None,
+	)
 	
 	hdul_output = fits.HDUList([
 		hdu_normalised_data,
 		hdu_roi_mask,
+		hdu_outlier_mask,
+		hdu_original_sum,
 	])
 	hdul_output.writeto(output_path, overwrite=True)
 
