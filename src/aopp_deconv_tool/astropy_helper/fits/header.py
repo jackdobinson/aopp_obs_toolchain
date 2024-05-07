@@ -42,21 +42,43 @@ class DictReader:
 	
 	def __init__(self,
 			adict: dict,
-			mode : str = 'standard', # 'hierarch' | 'standard'
+			mode : str = 'standard', # 'hierarch' | 'standard',
+			prefix : str = None,
+			pkey_count_start : int = 0
 		):
+		self.prefix = prefix
 		self.adict = adict
 		self.mode = mode
+		self._key_count_start = pkey_count_start
+		
 
 	def __iter__(self):
 		self.fits_dict = {}
-		self.key_count = 0
+		self.key_count = self._key_count_start
 		if self.mode == 'hierarch':
-			self._to_fits_hierarch_format(self.adict, prefix='HIERARCH')
+			self._to_fits_hierarch_format(
+				self.adict, 
+				prefix=(' '.join(['HIERARCH',self.prefix])) if self.prefix is not None else 'HIERARCH'
+			)
 		elif self.mode == 'standard':
-			self._to_fits_format(self.adict, prefix=None)
+			self._to_fits_format(self.adict, prefix=self.prefix)
 		else:
 			raise RuntimeError(f"Unknown mode \"{self.mode}\" for creating FITS header cards from a dictionary, known modes are ('hierarch', 'standard').")
 		return(iter(self.fits_dict.items()))
+
+	@staticmethod
+	def find_max_pkey_n(hdr, n_max=1000):
+		pkey_fmt = 'PKEY{}'
+		pkey_fmt_iter = ((i,) for i in range(n_max))
+		pkey_max = get_key_fmt_max(hdr, pkey_fmt, pkey_fmt_iter)
+		
+		return int(pkey_max[4:])
+	
+	@staticmethod
+	def remove_pkeys(hdr, n_max=1000):
+		pkey_fmt = 'PKEY{}'
+		pkey_fmt_iter = ((i,) for i in range(n_max))
+		remove_key_fmt(hdr, pkey_fmt, pkey_fmt_iter)
 
 	def _to_fits_hierarch_format(self, bdict, prefix=None):
 		for key, value in bdict.items():
@@ -90,6 +112,20 @@ class DictReader:
 		self.key_count += 1
 		return
 
+def remove_key_fmt(hdr : ap.io.fits.Header, key_fmt, key_fmt_arg_iter):
+	last_valid_key = None
+	for items in key_fmt_arg_iter:
+		key = key_fmt.format(*items)
+		hdr.remove(key, ignore_missing=True, remove_all=True)
+	
+
+def get_key_fmt_max(hdr : ap.io.fits.Header, key_fmt, key_fmt_arg_iter) -> str:
+	last_valid_key = None
+	for items in key_fmt_arg_iter:
+		key = key_fmt.format(*items)
+		if key in hdr:
+			last_valid_key = key
+	return last_valid_key
 
 def get_celestial_axes(hdr : ap.io.fits.Header, wcsaxes_label=''):
 	placeholders = ('x','y')

@@ -12,8 +12,10 @@ import aopp_deconv_tool.numpy_helper.array
 import aopp_deconv_tool.numpy_helper.slice
 from aopp_deconv_tool.optimise_compat import PriorParamSet
 
+from aopp_deconv_tool.stats.empirical import EmpiricalDistribution
+
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'INFO')
 
 
 #DEBUGGING
@@ -130,11 +132,146 @@ def normalise(
 	
 	return data
 
+
+def remove_offset(data, axes, mask, model_name='norm'):
+	
+	is_bad = np.isnan(data) | np.isinf(data)
+	_lgr.debug(f'{is_bad.shape=}')
+	
+	
+	match model_name:
+		case 'norm':
+			model = sp.stats.norm
+		case 'gennorm':
+			model = sp.stats.gennorm
+		case _:
+			raise RuntimeError(f'Unknown {model_name=} when fitting background for offset removal')
+	
+	param_names = ([x.strip() for x in model.shapes.split(',')] if model.shapes is not None else []) + ['loc', 'scale']
+	
+	
+	nm_j_to_i = []
+	noise_model_offsets = []
+	noise_model_parameters = []
+	noise_model_cdf = []
+	noise_model_cdf_residual = []
+	
+	for i, (idx, gdata) in enumerate(nph.axes.iter_axes_group(data, axes)):
+		if i % 10 == 0:
+			_lgr.info(f'{i=}')
+		_lgr.debug(f'{gdata[idx].shape=}')
+		_lgr.debug(f'{mask[idx].shape=}')
+		good_data = gdata[idx][mask[idx] & ~is_bad[idx]]
+		_lgr.debug(f'{good_data.shape=}')
+		
+		if np.all(np.isnan(good_data)):
+			_lgr.info(f'Skipping {i}^th offset calculation as whole slice is NANs')
+			noise_model_offsets.append(np.nan)
+			noise_model_parameters.append(dict([(k,np.nan) for k in param_names]))
+			
+			continue
+			
+		gd_distrib = EmpiricalDistribution(good_data.flatten())
+		v, cdf = gd_distrib.whole_cdf()
+		_lgr.debug(f'{v.shape=} {cdf.shape=}')
+		
+		
+		params = model.fit(good_data)
+		_lgr.debug(f'{param_names=} {params=}')
+		noise_model_parameters.append(dict(zip(param_names, params)))
+		_lgr.debug(f'{noise_model_parameters[-1]=}')
+		noise_model_offsets.append(noise_model_parameters[-1]['loc'])
+		
+		good_data -= noise_model_offsets[-1]
+		#gd_distrib = EmpiricalDistribution(good_data.flatten())
+		#v, cdf = gd_distrib.whole_cdf()
+		params = model.fit(good_data)
+		
+		noise_model_parameters[-1].update(dict(zip(param_names, params)))
+	
+	noise_model_at_values = []#np.linspace(np.nanmin(data), np.nanmax(data), 500)
+		
+	for i, (idx, gdata) in enumerate(nph.axes.iter_axes_group(data, axes)):
+		if i % 100 == 0:
+			_lgr.info(f'{i=}')
+		good_data = gdata[idx][mask[idx] & ~is_bad[idx]]
+		if np.all(np.isnan(good_data)):
+			noise_model_at_values.append(np.full((500,), fill_value=np.nan))
+			noise_model_cdf.append(np.full((500,), fill_value=np.nan))
+			noise_model_cdf_residual.append(np.full((500,), fill_value=np.nan))
+			continue
+		gd_distrib = EmpiricalDistribution(good_data.flatten())
+		
+		noise_model_at_values.append(np.linspace(np.nanmin(good_data), np.nanmax(good_data), 500))
+		noise_model_cdf.append(model(*noise_model_parameters[i].values()).cdf(noise_model_at_values[i]))
+		noise_model_cdf_residual.append(noise_model_cdf[i] - gd_distrib.cdf(noise_model_at_values[i]))	
+	
+	
+	return noise_model_offsets, noise_model_parameters, noise_model_at_values, noise_model_cdf, noise_model_cdf_residual
+
+
+def trim_around_center(
+		data : np.ndarray,
+		axes : tuple[int,...],
+		output_shape : tuple[int,...]
+	) -> np.ndarray:
+	"""
+	# ARGUMENTS #
+	
+	data : np.ndarray
+		Data to trim around center pixel, will remove pixels that are greater than shape[i]/2 from the center pixel.
+	axes : tuple[int,...]
+		Axes over which to operate
+	output_shape : tuple[int,...]
+		Desired shape of `axes` after trimming
+	"""
+	_lgr.debug(f'{data.shape=}')
+	_lgr.debug(f'{axes=}')
+	_lgr.debug(f'{output_shape=}')
+	old_shape = data.shape
+	new_shape = list(old_shape)
+	for i in range(data.ndim):
+		if i in axes:
+			j = axes.index(i)
+			new_shape[i] = output_shape[j]
+		else:
+			new_shape[i] = old_shape[i]
+	new_shape = tuple(new_shape)
+	
+	
+	slices = [slice(None)]*data.ndim
+	for i in range(data.ndim):
+		if i in axes:
+			center_idx = data.shape[i]//2
+			lo_idx = center_idx - new_shape[i]//2
+			hi_idx = center_idx + new_shape[i]//2 + 1
+			slices[i] = slice(lo_idx,hi_idx)
+		else:
+			slices[i] = slice(None)
+	
+	slices = tuple(slices)
+	_lgr.debug(f'{slices=}')
+	
+	
+	return data[slices]
+	
+
+
 def get_outlier_mask(
 		data : np.ndarray,
 		axes : tuple[int,...],
 		n_sigma : float = 5,
-	):
+	) -> np.ndarray:
+	"""
+	# ARGUMENTS #
+	
+	data : np.ndarray
+		Data to get outlier mask of.
+	axes : tuple[int,...]
+		Axes over which to get outlier mask
+	n_sigma : float =  5
+		Number of standard deviations away from the mean a member of `data` must be to be considered an outlier
+	"""
 	
 	outlier_mask = np.zeros_like(data, dtype=bool)
 	
@@ -260,7 +397,7 @@ def apply_offsets(
 		new_points = np.array(np.meshgrid(*new_points)).T
 		_lgr.debug(f'{[s.size for s in old_points]=} {gdata[idx].shape=} {new_points.shape=}')
 		gdata[idx] = interp(new_points)
-	return gdata
+	return data
 
 
 

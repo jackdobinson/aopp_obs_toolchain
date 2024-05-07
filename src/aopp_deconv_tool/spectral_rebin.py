@@ -111,13 +111,19 @@ def run(
 	
 		hdr = data_hdu.header
 		axis_fits = axes_ordering[0].fits
-		hdr.update(aph.fits.header.DictReader({
+		param_dict = {
 			'original_file' : Path(fits_spec.path).name, # record the file we used
 			'bin_axis' : axis_fits,
 			'bin_step' : bin_step,
 			'bin_width' : bin_width,
 			'bin_operation' : operation
-		}))
+		}
+		
+		hdr.update(aph.fits.header.DictReader(
+			param_dict,
+			prefix='spectral_rebin',
+			pkey_count_start=aph.fits.header.DictReader.find_max_pkey_n(hdr)
+		))
 		
 		aph.fits.header.set_axes_transform(hdr, 
 			axis_fits, 

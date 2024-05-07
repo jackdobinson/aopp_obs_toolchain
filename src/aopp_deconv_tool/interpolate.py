@@ -170,8 +170,12 @@ def run(
 		for i, x in enumerate(bad_pixel_map_binary_operations):
 			param_dict[f'bad_pixel_map_binary_operations_{i}'] = x
 		
-		hdr.update(aph.fits.header.DictReader(param_dict))
-		
+		hdr.update(aph.fits.header.DictReader(
+			param_dict,
+			prefix='interpolate',
+			pkey_count_start=aph.fits.header.DictReader.find_max_pkey_n(hdr)
+		))
+				
 
 	
 	# Save the products to a FITS file

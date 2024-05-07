@@ -18,6 +18,10 @@ class EmpiricalDistribution:
 	def __init__(self, data : np.ndarray):
 		self._data = data
 	
+	def whole_cdf(self) -> tuple[np.ndarray, np.ndarray]:
+		sorted_data = np.sort(self._data)
+		return sorted_data, self.cdf(sorted_data)
+	
 	def cdf(self, value : Number | np.ndarray) -> Number | np.ndarray:
 		"""
 		Returns the cumulative density of `value` (i.e. fraction of datapoints less than `value`), can be passed an array.
