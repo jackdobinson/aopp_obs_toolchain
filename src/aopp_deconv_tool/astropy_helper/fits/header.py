@@ -72,7 +72,7 @@ class DictReader:
 		pkey_fmt_iter = ((i,) for i in range(n_max))
 		pkey_max = get_key_fmt_max(hdr, pkey_fmt, pkey_fmt_iter)
 		
-		return int(pkey_max[4:])
+		return int(pkey_max[4:]) if pkey_max is not None else 0
 	
 	@staticmethod
 	def remove_pkeys(hdr, n_max=1000):

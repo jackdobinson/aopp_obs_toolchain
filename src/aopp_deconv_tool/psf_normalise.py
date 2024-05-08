@@ -157,17 +157,6 @@ def run(
 			header = None,
 		))
 		
-		"""
-		hdus.append(fits.BinTableHDU.from_columns(
-			header = None,
-			name='NOISE_MODEL_CDF_VALUES',
-			columns= [
-				fits.Column(name=f'noise_model_cdf_values', format=f'D', array=noise_model_at_values)
-			]
-			
-		))
-		"""
-		
 		hdus.append(fits.ImageHDU(
 			header=None,
 			name='NOISE_MODEL_CDF_VALUES',

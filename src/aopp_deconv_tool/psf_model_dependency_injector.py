@@ -22,7 +22,7 @@ from aopp_deconv_tool.gaussian_psf_model import GaussianPSFModel
 from aopp_deconv_tool.radial_psf_model import RadialPSFModel
 from aopp_deconv_tool.turbulence_psf_model import TurbulencePSFModel, SimpleTelescope, CCDSensor
 from aopp_deconv_tool.optics.turbulence_model import phase_psd_von_karman_turbulence as turbulence_model
-from aopp_deconv_tool.psf_model import PSFModel as AOInstrumentPSFModel
+from aopp_deconv_tool.adaptive_optics_psf_model import PSFModel as AOInstrumentPSFModel
 from aopp_deconv_tool.optics.turbulence_model import phase_psd_von_karman_turbulence
 from aopp_deconv_tool.optics.adaptive_optics_model import phase_psd_fetick_2019_moffat_function
 from aopp_deconv_tool.instrument_model.vlt import VLT

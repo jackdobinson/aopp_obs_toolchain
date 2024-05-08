@@ -110,6 +110,13 @@ class PriorParamSet:
 		return linear_transform_factory(in_domain, out_domain)
 	
 	@property
+	def all_params(self):
+		"""
+		The names of all paramters
+		"""
+		return (*self.variable_params, *self.constant_params)
+	
+	@property
 	def variable_params(self):
 		"""
 		The names of the variable parameters

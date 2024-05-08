@@ -128,8 +128,8 @@ def run(
 		aph.fits.header.set_axes_transform(hdr, 
 			axis_fits, 
 			'Angstrom', 
-			np.mean(new_spec_bins[:,0])/1E10,
-			bin_step/1E10,
+			np.mean(new_spec_bins[:,0])/1E-10,
+			bin_step/1E-10,
 			new_spec_bins.shape[1],
 			1
 		)

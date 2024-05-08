@@ -15,7 +15,7 @@ class RadialPSFModel:
 	
 	def __call__(self, x, y, nbins):
 		r_max = max(*self.data.shape)
-		
+		nbins = int(nbins)
 		self.r_values = np.zeros((nbins,))
 		self.r_bins = np.zeros((nbins,2))
 		self.r_bins[:,1] = np.logspace(0, np.log10(r_max), nbins)
