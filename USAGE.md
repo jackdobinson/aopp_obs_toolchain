@@ -95,7 +95,7 @@ in all code snippets. Alter this appropriately if using windows or a non-suggest
 
 ### Creating and Activating a Virtual Environment ###
 
-A virtual environment isolates the packages you are using form a project from your normal environment and other virtual environments.
+A virtual environment isolates the packages you are using for a project from your normal environment and other virtual environments.
 Generally they are created in a directory which we will call `<VENV_DIR>`, and then activated and deactivated as required. NOTE:
 *anaconda python* has slightly different commands for managing virtual environments, and uses **names** of virtual environments instead
 of **directories**, however the concept and the idea of activating and deactivating them remains the same dispite the slightly different
@@ -107,8 +107,7 @@ NOTE: I will assume python version `3.12.2` for the rest of this guide but this 
 
 #### Check Python Installation ####
 
-With [Python installed](#installing-python), make sure you have the correct version via `${HOME}/python/python3.12/bin/python3 --version`. The command should
-not print `Python 3.12.2`, or whichever version you expect.
+With [Python installed](#installing-python), make sure you have the correct version via `${HOME}/python/python3.12/bin/python3 --version`. The command should print `Python 3.12.2`, or whichever version you expect.
 
 #### Check Anaconda Python Installation ####
 
