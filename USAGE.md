@@ -198,6 +198,72 @@ NOTE: It can be useful to look through the source files, see the appendix for ho
 
 See the `examples` folder of the github. 
 
+## Commandline Scripts ##
+
+### Spectral Rebinning ##
+
+Invoke via `python -m aopp_deconv_tool.spectral_rebin`. Use the `-h` option to see the help message.
+
+This routine accepts a FITS file specifier, it will spectrally rebin the fits extension and output a new fits file.
+
+### Interpolation ##
+
+Invoke via `python -m aopp_deconv_tool.interpolate`. Use the `-h` option to see the help message.
+
+Accepts a FTIS file specifier, will find bad pixels and interpolate over them. The strategies used are
+dependent on the options given to the program.
+
+bad pixel strategies:
+	ssa
+		Uses singular spectrum analysis to determine bad pixels. Useful for situations where artifacts are not
+		seperable from the science data via a simple brightness threshold. Also interpolates over INF and NAN pixels.
+	simple
+		Only interpolates over INF and NAN pixels
+
+interpolation strategies:
+	scipy
+		Uses scipy routines to interpolate over the bad pixels. Uses a convolution technique to assist with edge effect problems.
+	ssa
+		[EXPERIMENTAL] Interpolates over SSA components only where extreme values are present. Testing has shown this to give
+		results more similar to the underlying test data than `scipy`, but is substantially slower and requires parameter
+		fiddling to give any substantial improvement.
+
+### PSF Normalisation ###
+
+Invoke via `python -m aopp_deconv_tool.psf_normalise`. Use the `-h` option to see the help message.
+
+Peforms the following operations:
+* Ensures image shape is odd, so there is a definite central pixel
+* Removes any outliers (based on the `sigma` option)
+* Recenters the image around the center of mass (uses the `threshold` and `n_largest_regions` options)
+* Optionally trims the image to a desired shape around the center of mass to reduce data volume and speed up subsequent steps
+* Normalises the image to sum to 1
+
+
+### PSF Model Fitting ###
+
+Invoke via `python -m aopp_deconv_tool.psf_normalise`. Use the `-h` option to see the help message.
+NOTE: The `--model` option sets the model to fit. To see which parameters a model accepts use the `--model_help` option [NOTE: CHECK THIS WORKS]
+
+Specifying the `--method` option sets the routine used for fitting. Two are available `scipy.minimize` (default) and `ultranest`.
+
+scipy.minimize
+	A simple gradient descent solver. Fast and useful when the optimal solution is close to the passed starting parameters.
+
+ultranest
+	Nested sampling. Much slower (but can be sped up), but works when the optimal solution has local maxima/minima that
+	would trap `scipy.minimize`. Currently the `muse_ao` model only finds a good solution with this method.
+
+### Deconvolution ###
+
+Invoke via `python -m aopp_deconv_tool.deconvolve`. Use the `-h` option to see the help message.
+NOTE: the `--parameter_help` option will show the help message for the deconvolution parameters [NOTE: CHECK THIS WORKS]
+
+Assumes the observation data has no NAN or INF pixels, assumes the PSF data is centered and sums to 1. Use the `--plot` option
+to see an progress plot that updates every 10 iterations of the MODIFIED_CLEAN algorithm, useful for working out what different
+parameters do.
+
+
 ## Deconvolution ##
 
 The main deconvolution routines are imported via

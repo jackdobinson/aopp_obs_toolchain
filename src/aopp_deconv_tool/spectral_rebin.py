@@ -161,7 +161,7 @@ def parse_args(argv):
 		'fits_spec', 
 		help = aopp_deconv_tool.text.wrap(
 			aph.fits.specifier.get_help(['SPECTRAL']),
-			os.get_terminal_size().columns - 30
+			os.get_terminal_size().columns - 50
 		)
 	)
 	parser.add_argument('-o', '--output_path', help='Output fits file path. By default is same as fie `fits_spec` path with "_rebin" appended to the filename')

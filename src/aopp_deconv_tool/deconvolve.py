@@ -279,7 +279,7 @@ def parse_args(argv):
 	import aopp_deconv_tool.text
 	import argparse
 	
-	DEFAULT_OUTPUT_TAG = '_modelled'
+	DEFAULT_OUTPUT_TAG = '_deconv'
 	DESIRED_FITS_AXES = ['CELESTIAL']
 	
 	parser = argparse.ArgumentParser(

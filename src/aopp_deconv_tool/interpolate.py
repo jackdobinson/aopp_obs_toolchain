@@ -216,7 +216,7 @@ def parse_args(argv):
 	parser.add_argument('--bad_pixel_method', choices=['ssa', 'simple'], default='ssa', help='Strategy to use when finding bad pixels to interpolate over')
 	#parser.add_argument('--bad_pixel_args', nargs='*', help='Arguments to be passed to `--bad_pixel_method`')
 
-	parser.add_argument('--interp_method', choices=['ssa', 'scipy'], default='ssa', help='Strategy to use when interpolating')
+	parser.add_argument('--interp_method', choices=['ssa', 'scipy'], default='scipy', help='Strategy to use when interpolating')
 
 
 	args = parser.parse_args(argv)

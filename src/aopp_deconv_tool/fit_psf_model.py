@@ -344,7 +344,7 @@ def parse_args(argv):
 
 	parser.add_argument('--model', type=str, default='radial', choices=tuple(psf_models.keys()), help='Model to fit to PSF data. Default="radial"')
 
-	parser.add_argument('--method', type=str, default='ultranest', choices=FITTING_METHODS, help='What method should we use to perform the fitting (default="ultranest")')
+	parser.add_argument('--method', type=str, default='scipy.minimize', choices=FITTING_METHODS, help='What method should we use to perform the fitting (default="scipy.minimize")')
 
 	args, psf_model_args = parser.parse_known_args(argv)
 	
