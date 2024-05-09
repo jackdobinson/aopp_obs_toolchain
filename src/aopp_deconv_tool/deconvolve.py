@@ -213,10 +213,15 @@ def run(
 		
 		# Make sure we get all the observaiton header data as well as the deconvolution parameters
 		hdr = obs_hdul[obs_fits_spec.ext].header
-		hdr.update(aph.fits.header.DictReader({
-			'psf_file' : psf_fits_spec.path, # record the PSF file we used
-			**deconv_params # record the deconvolution parameters we used
-		}))
+		hdr.update(aph.fits.header.DictReader(
+			{
+				'obs_file' : obs_fits_spec.path,
+				'psf_file' : psf_fits_spec.path, # record the PSF file we used
+				**deconv_params # record the deconvolution parameters we used
+			},
+			prefix='deconv',
+			pkey_count_start=aph.fits.header.DictReader.find_max_pkey_n(hdr)
+		))
 	
 	# Save the deconvolution products to a FITS file
 	hdu_components = fits.PrimaryHDU(
@@ -303,7 +308,7 @@ def parse_args(argv):
 		)
 	)
 	
-	parser.add_argument('-o', '--output_path', help=f'Output fits file path. By default is same as fie `fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
+	parser.add_argument('-o', '--output_path', help=f'Output fits file path. By default is same as the `fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
 	parser.add_argument('--plot', action='store_true', default=False, help='If present will show progress plots of the deconvolution')
 	
 	args, deconv_args = parser.parse_known_args(argv)
