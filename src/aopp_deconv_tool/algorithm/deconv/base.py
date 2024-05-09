@@ -26,24 +26,24 @@ class Base:
 	
 	# Input Paramterers
 	n_iter : int = 10 # Number of iterations before exit
-	verbosity : int = 0 # How verbose messages should be
+	verbosity : int = dc.field(default=0, metadata={'description':'How verbose messages should be'})
 	
 	# Hooks for callbacks at various parts of the algorithm.
 	pre_init_hooks \
 		: list[Callable[[Any, np.ndarray, np.ndarray],None]] \
-		= dc.field(default_factory=lambda : [], repr=False, hash=False, compare=False) # callbacks before initialisation
+		= dc.field(default_factory=lambda : [], init=False, repr=False, hash=False, compare=False) # callbacks before initialisation
 	post_init_hooks \
 		: list[Callable[[Any, np.ndarray, np.ndarray],None]] \
-		= dc.field(default_factory=lambda : [], repr=False, hash=False, compare=False) # callbacks after initialisation
+		= dc.field(default_factory=lambda : [], init=False, repr=False, hash=False, compare=False) # callbacks after initialisation
 	pre_iter_hooks \
 		: list[Callable[[Any, np.ndarray, np.ndarray],None]] \
-		= dc.field(default_factory=lambda : [], repr=False, hash=False, compare=False) # callbacks at the start of each iteration
+		= dc.field(default_factory=lambda : [], init=False, repr=False, hash=False, compare=False) # callbacks at the start of each iteration
 	post_iter_hooks \
 		: list[Callable[[Any, np.ndarray, np.ndarray],None]] \
-		= dc.field(default_factory=lambda : [], repr=False, hash=False, compare=False) # callbacks at the end of each iteration
+		= dc.field(default_factory=lambda : [], init=False, repr=False, hash=False, compare=False) # callbacks at the end of each iteration
 	final_hooks \
 		: list[Callable[[Any, np.ndarray, np.ndarray],None]] \
-		= dc.field(default_factory=lambda : [], repr=False, hash=False, compare=False) # callbacks after the final iteration
+		= dc.field(default_factory=lambda : [], init=False, repr=False, hash=False, compare=False) # callbacks after the final iteration
 	
 	# State attributes visible from outside class
 	progress_string : str = dc.field(default="Ended prematurely: Class not initialised.", init=False, repr=False, hash=False, compare=False) # reason that iteration was terminated

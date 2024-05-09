@@ -132,6 +132,7 @@ def run(
 		output_path : str | Path = './deconv.fits',
 		deconv_class : Literal[CleanModified] | Literal[LucyRichardson] = CleanModified,
 		plot : bool = True,
+		deconv_args : list[str,...] = []
 	):
 	"""
 	Given a FitsSpecifier for an observation and a PSF, an output path, and a class that performs deconvolution,
@@ -159,11 +160,12 @@ def run(
 		plot : bool = True
 			If `True` will plot the deconvolution progress
 	"""
-	
-	deconvolver = deconv_class()
+	deconv_params = parse_deconv_args(deconv_class, deconv_args)
+	_lgr.debug(f'{deconv_params=}')
+	deconvolver = deconv_class(**deconv_params)
 
 	# Open the fits files
-	with fits.open(Path(obs_fits_spec.path)) as obs_hdul, fits.open(Path(obs_fits_spec.path)) as psf_hdul:
+	with fits.open(Path(obs_fits_spec.path)) as obs_hdul, fits.open(Path(psf_fits_spec.path)) as psf_hdul:
 		
 		# pull out the data we want
 		obs_data = obs_hdul[obs_fits_spec.ext].data
@@ -179,8 +181,14 @@ def run(
 			nph.slice.iter_indices(psf_data, psf_fits_spec.slices, psf_fits_spec.axes['CELESTIAL'])
 		):
 		
+		
 			# Set up plotting if we want it
 			if plot:
+				#plt.figure()
+				#plt.imshow(obs_data[obs_idx])
+				#plt.figure()
+				#plt.imshow(psf_data[psf_idx])
+				#plt.show()
 				plt.close('all')
 				plot_set = create_plot_set(deconvolver)
 				deconvolver.post_iter_hooks = []
@@ -227,48 +235,100 @@ def run(
 	hdul_output.writeto(output_path, overwrite=True)
 
 
+def parse_deconv_args(deconv_class, argv):
+	import argparse
+	import dataclasses as dc
+	import re
+	
+	# Use this to grab only the first part of the docstring as that should be a short
+	# description of the class
+	re_empty_line = re.compile(r'^\s*$\s*', flags=re.MULTILINE)
+	
+	parser = argparse.ArgumentParser(
+		description=re_empty_line.split(deconv_class.__doc__,2)[1], 
+		formatter_class=argparse.RawTextHelpFormatter,
+		add_help=False
+	)
+	def on_parser_error(err_str):
+		print(err_str)
+		parser.print_help()
+		sys.exit(1)
+	
+	parser.error = on_parser_error
+	
+	for field in dc.fields(deconv_class):
+		if field.init != True:
+			continue
+		field_default = field.default if field.default != dc.MISSING else (field.default_factory() if field.default_factory != dc.MISSING else None)
+		parser.add_argument(
+			'--'+field.name, 
+			type=field.type, 
+			default= field_default,
+			help=field.metadata.get('description', 'DESCRIPTION NOT FOUND') + f' (default = {field_default})',
+			metavar=str(field.type)[8:-2]
+		)
+	
+	deconv_args = parser.parse_args(argv)
+	
+	return vars(deconv_args)
+	
+	
+
+def parse_args(argv):
+	import os
+	import aopp_deconv_tool.text
+	import argparse
+	
+	DEFAULT_OUTPUT_TAG = '_modelled'
+	DESIRED_FITS_AXES = ['CELESTIAL']
+	
+	parser = argparse.ArgumentParser(
+		description=__doc__, 
+		formatter_class=argparse.RawTextHelpFormatter
+	)
+	
+	parser.add_argument(
+		'obs_fits_spec', 
+		help = aopp_deconv_tool.text.wrap(
+			aph.fits.specifier.get_help(DESIRED_FITS_AXES).replace('\t', '    '),
+			os.get_terminal_size().columns - 30
+		)
+	)
+	
+	parser.add_argument(
+		'psf_fits_spec', 
+		help = aopp_deconv_tool.text.wrap(
+			aph.fits.specifier.get_help(DESIRED_FITS_AXES).replace('\t', '    '),
+			os.get_terminal_size().columns - 30
+		)
+	)
+	
+	parser.add_argument('-o', '--output_path', help=f'Output fits file path. By default is same as fie `fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
+	parser.add_argument('--plot', action='store_true', default=False, help='If present will show progress plots of the deconvolution')
+	
+	args, deconv_args = parser.parse_known_args(argv)
+	
+	args.obs_fits_spec = aph.fits.specifier.parse(args.obs_fits_spec, DESIRED_FITS_AXES)
+	args.psf_fits_spec = aph.fits.specifier.parse(args.psf_fits_spec, DESIRED_FITS_AXES)
+	
+	if args.output_path is None:
+		args.output_path =  (Path(args.obs_fits_spec.path).parent / (str(Path(args.obs_fits_spec.path).stem)+DEFAULT_OUTPUT_TAG+str(Path(args.obs_fits_spec.path).suffix)))
+	
+	
+	return args, deconv_args
+
 
 if __name__ == '__main__':
 
-	class HelpString:
-		def __init__(self, *args):
-			self.help = list(args)
-
-		def prepend(self, str):
-			self.help = [str] + self.help
-			return None
-			
-		def append(self, str):
-			self.help.append(str)
-			return None
-
-		def print_and_exit(self, str=None):
-			if str is not None:
-				self.prepend(str)
-			print('\n'.join(self.help))
-			sys.exit()
-			return
-			
-	help_string = HelpString(__doc__, aph.fits.specifier.get_help(['CELESTIAL']))
-
-	print_help_and_exit_flag = False
-
-	# Get the fits specifications from the command-line arguments
-	if len(sys.argv) <= 1:
-		help_string.print_and_exit()
-	
-	if any([any([x==y for y in sys.argv]) for x in ('-h', '-H', '--help', '--Help')]):
-		help_string.print_and_exit()
-		
-	if len(sys.argv) > 5:
-		help_string.print_and_exit(f'A maximum of 3 arguments are accepted: obs_fits_spec, psf_fits_spec, output_path, plot. But {len(sys.argv)-1} were provided')
-	
-	obs_fits_spec = aph.fits.specifier.parse(sys.argv[1], ['CELESTIAL']) if len(sys.argv) > 1 else help_string.print_and_exit('Need 2 arguments, 0 given')
-	psf_fits_spec = aph.fits.specifier.parse(sys.argv[2], ['CELESTIAL']) if len(sys.argv) > 2 else help_string.print_and_exit('Need 2 arguments, 1 given')
-	output_path = sys.argv[3] if len(sys.argv) > 3 else './deconv.fits'
-	plot = bool(sys.argv[3]) if len(sys.argv) > 4 else False
+	args, deconv_args = parse_args(sys.argv[1:])
 	
 
 	
-	run(obs_fits_spec, psf_fits_spec, output_path=output_path, plot=plot)
+	run(
+		args.obs_fits_spec, 
+		args.psf_fits_spec, 
+		output_path = args.output_path, 
+		plot = args.plot,
+		deconv_args = deconv_args,
+	)
 	

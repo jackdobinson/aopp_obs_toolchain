@@ -64,16 +64,16 @@ class CleanModified(Base):
 		```
 		See `aopp_deconv_tool.deconvolve` for a full example.
 	"""
-	n_iter 				: int 	= 1000	# Number of iterations
-	loop_gain 			: float = 0.02	# Fraction of emission that could be accounted for by a PSF added to components each iteration. Higher values are faster, but unstable.
-	threshold 			: float = 0.3	# Fraction of maximum brightness of residual above which pixels will be included in CLEAN step, if negative will use the maximum fractional difference otsu threshold. 0.3 is a  good default value, if stippling becomes an issue, reduce or set to a negative value. Lower positive numbers will require more iterations, but give a more "accurate" result.
-	n_positive_iter 	: int 	= 0		# Number of iterations to do that only "adds" emission, before switching to "adding and subtracting" emission
-	noise_std 			: float = 1E-1	# Estimate of the deviation of the noise present in the observation
-	rms_frac_threshold 	: float = 1E-3	# Fraction of original RMS of residual at which iteration is stopped, lower values continue iteration for longer.
-	fabs_frac_threshold : float = 1E-3	# Fraction of original Absolute Brightest Pixel of residual at which iteration is stopped, lower values continue iteration for longer.
-	max_stat_increase	: float = np.inf# Maximum fractional increase of a statistic before terminating
-	min_frac_stat_delta	: float = 1E-3 	# Minimum fractional standard deviation of statistics before assuming no progress is being made and terminating iteration
-	give_best_result	: bool  = True 	# If True, will return the best (measured by statistics) result instead of final result.
+	n_iter 				: int 	= dc.field(default=1000, 	metadata={'description': 'Number of iterations'})
+	loop_gain 			: float = dc.field(default=0.02, 	metadata={'description':'Fraction of emission that could be accounted for by a PSF added to components each iteration. Higher values are faster, but unstable.'})
+	threshold 			: float = dc.field(default=0.3, 	metadata={'description':'Fraction of maximum brightness of residual above which pixels will be included in CLEAN step, if negative will use the maximum fractional difference otsu threshold. 0.3 is a  good default value, if stippling becomes an issue, reduce or set to a negative value. Lower positive numbers will require more iterations, but give a more "accurate" result.'})
+	n_positive_iter 	: int 	= dc.field(default=0, 		metadata={'description':'Number of iterations to do that only "adds" emission, before switching to "adding and subtracting" emission'})
+	noise_std 			: float = dc.field(default=1E-1, 	metadata={'description':'Estimate of the deviation of the noise present in the observation'})
+	rms_frac_threshold 	: float = dc.field(default=1E-2, 	metadata={'description':'Fraction of original RMS of residual at which iteration is stopped, lower values continue iteration for longer.'})
+	fabs_frac_threshold : float = dc.field(default=1E-2, 	metadata={'description':'Fraction of original Absolute Brightest Pixel of residual at which iteration is stopped, lower values continue iteration for longer.'})
+	max_stat_increase	: float = dc.field(default=np.inf, 	metadata={'description':'Maximum fractional increase of a statistic before terminating'})
+	min_frac_stat_delta	: float = dc.field(default=1E-3, 	metadata={'description':'Minimum fractional standard deviation of statistics before assuming no progress is being made and terminating iteration'})
+	give_best_result	: bool  = dc.field(default=True, 	metadata={'description':'If True, will return the best (measured by statistics) result instead of final result.'})
 	
 	# private attributes
 	_obs : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False)
@@ -176,6 +176,7 @@ class CleanModified(Base):
 			self._get_pixel_threshold = lambda : im_proc.otsu_thresholding.max_frac_diff_threshold(self._residual_copy)
 		else:
 			self._get_pixel_threshold = lambda : self.threshold*np.nanmax(self._px_choice_img_ptr.val)
+			#self._get_pixel_threshold = lambda : self.threshold*np.nanmax(sp.ndimage.gaussian_filter(self._px_choice_img_ptr.val, sigma=2))
 
 		return
 	
@@ -235,7 +236,40 @@ class CleanModified(Base):
 		self._pixel_threshold = self._get_pixel_threshold()
 		self._selected_map[...] = (self._px_choice_img_ptr.val > self._pixel_threshold)
 		
+		#min_region_size = 5
+		#self._selected_map[...] = (sp.ndimage.grey_closing(self._px_choice_img_ptr.val, size=(min_region_size,min_region_size)) > self._pixel_threshold)
+		#self._selected_map[...] = (sp.ndimage.gaussian_filter(self._px_choice_img_ptr.val, sigma=2) > self._pixel_threshold)
+		
+		
+		# erode then dilate chosen pixels to remove single pixels, algorithm must have regions
+		# of at least the size of the PSF to operate upon
+		#for i in range(min_region_size):
+		#	self._selected_map = sp.ndimage.binary_closing(self._selected_map, iterations=min_region_size//2)
+		#self._selected_map = sp.ndimage.binary_dilation(self._selected_map, iterations=min_region_size//2)
+		#self._selected_map = sp.ndimage.binary_erosion(self._selected_map, iterations=min_region_size)
+		#self._selected_map = sp.ndimage.binary_dilation(self._selected_map, iterations=min_region_size)
+		#self._selected_map = sp.ndimage.gaussian_filter(self._selected_map.astype(float), sigma=2) > 0.01
+		
+		"""
+		label_map, n_labels = sp.ndimage.label(self._selected_map)
+		# order labels by number of pixels they contain
+						
+		ordered_labels = list(range(1,n_labels+1)) # label 0 is background
+		ordered_labels.sort(key = lambda x: np.count_nonzero(label_map == x), reverse=True)
+		
+		self._selected_map *= False
+		for i in range(n_labels):
+			if np.count_nonzero(label_map == ordered_labels[i]) >= min_region_size:
+				self._selected_map |= (label_map == ordered_labels[i])
+		"""
+		
+		
+		
 		self._selected_px[self._selected_map] = self._residual[self._selected_map]*self.loop_gain
+		
+		#self._selected_px[...] = sp.ndimage.median_filter(self._selected_px, size=5)
+		#self._selected_px[...] = sp.ndimage.gaussian_filter(self._selected_px, sigma=1)
+		
 		# TESTING DIFFERENT STRATEGIES
 		# This one may have better convergence statistics, I should check it
 		#rma = np.nanmax(np.abs(self._residual))
@@ -277,4 +311,5 @@ class CleanModified(Base):
 		else:
 			self._tmp_r[...] = np.fabs(self._residual)
 			self._px_choice_img_ptr.val = self._tmp_r
+		
 		return

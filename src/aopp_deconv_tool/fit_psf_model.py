@@ -220,7 +220,8 @@ def run(
 			
 			match method:
 				case 'ultranest':
-					num_live_points = 200
+					# NOTE: Alter the parameters here to make the nested sampling more exact/take longer vs less exact/run faster
+					num_live_points = 20
 					result_set.metadata['constant_parameters'] = [p.to_dict() for p in params.constant_params]
 					result_set.save_metadata()
 					fitting_function = fitting_function_factory(
@@ -229,8 +230,8 @@ def run(
 							'run_num' : j
 						},
 						sampler_run_kwargs = {
-							'max_iters' : 2000, #500, # 2000,
-							'max_ncalls' : 10000, #5000
+							'max_iters' : 500, #500, # 2000,
+							'max_ncalls' : 5000, #5000
 							'frac_remain' : 1E-2,
 							'Lepsilon' : 1E-1,
 							'min_num_live_points' : num_live_points, #20, #80
