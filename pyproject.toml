@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aopp_deconv_tool"
-version = "0.1.10" # Increment this whenever we upload a new version to Pypi (or the test pypi).
+version = "0.1.17" # Increment this whenever we upload a new version to Pypi (or the test pypi).
 dependencies = [
 	"numpy",
 	"astropy",
@@ -19,7 +19,7 @@ authors = [
 	{name = "Jack Dobinson", email = "jack.dobinson@physics.ox.ac.uk"}
 ]
 description = "Tool for performing deconvolution (using LucyRichardson and ModifiedClean algorithms), PSF fitting and filtering, and data manipulation for 2d images and 3d datacubes."
-readme = "USAGE.md"
+readme = {file = "USAGE.md", content-type = "text/markdown"}
 requires-python = ">= 3.12"
 keywords = ["deconvolution", "ModifiedClean"]
 classifiers = [

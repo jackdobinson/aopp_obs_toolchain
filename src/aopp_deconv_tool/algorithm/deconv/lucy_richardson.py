@@ -87,6 +87,8 @@ class LucyRichardson(Base):
 		else:
 			return(self._residual) 
 	
+	def get_iters(self):
+		return self._i
 	
 	def _iter(self, obs, psf):
 		"""

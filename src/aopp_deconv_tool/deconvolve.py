@@ -131,6 +131,7 @@ def run(
 		psf_fits_spec : aph.fits.specifier.FitsSpecifier,
 		output_path : str | Path = './deconv.fits',
 		deconv_class : Literal[CleanModified] | Literal[LucyRichardson] = CleanModified,
+		#deconv_class : Literal[CleanModified] | Literal[LucyRichardson] = LucyRichardson,
 		plot : bool = True,
 		deconv_args : list[str,...] = []
 	):

@@ -318,7 +318,10 @@ Files are searched if:
 ## Building the Package ##
 
 Run the command `python -m build` from the `<REPO_DIR>` directory. The `<REPO_DIR>/dist` and `<REPO_DIR>/aopp_deconv_tool.egg-info` folders
-should be created. These contain the built package files.
+should be created. These contain the built package files. 
+
+NOTE: When rebuilding, you may want to use `rm ./dist/*; python -m build` instead, as otherwise the
+previous build information will stick around.
 
 ## Uploading the Package to Pypi ##
 

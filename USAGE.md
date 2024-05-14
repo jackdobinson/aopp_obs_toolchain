@@ -1,8 +1,10 @@
-# aopp_obs-toolchain #
+# aopp_obs_toolchain <a id="aopp_obs_toolchain"></a> #
 
 Eventually this will consist of multiple packages, for now it just consists of aopp_deconv_tool.
 
-## TODO ##
+See the [github](https://github.com/jackdobinson/aopp_obs_toolchain) for more details about the internal workings.
+
+## TODO <a id="todo"></a>  ##
 
 * Python virtual environment setup guide [DONE]
 
@@ -17,15 +19,22 @@ Eventually this will consist of multiple packages, for now it just consists of a
 * Get some **small** example files and add them to the package to be used with example deconvolution script.
   - Look up python package index's policy on hosting example data files
   - Zenodo - Site for uploading and sharing data.
-  - Also try using the shared storage
+  - NOTE: Are on shared storage at the moment
 
-* Deconvolution example code + files
+* Deconvolution example code + files [DONE]
 
-* PSF fitting example + files
+* PSF fitting example + files [DONE]
 
 * SSA filtering example
 
-## Python Installation and Virtual Environment Setup ##
+* Usage information updates:
+  - Recreate all heading links by hand as PYPI doesn't understand markdown section links, have to use embedded HTML as `<a id="section-link-text"></a>` [DONE]
+  - Add link to github [DONE]
+  - Add information about what python REPL is [DONE]
+  - Add information about python slice syntax where required [DONE]
+
+
+## Python Installation and Virtual Environment Setup <a id="python-installation-and-virtual-environment-setup"></a>  ##
 
 As Python is used by many operating systems as part of its tool-chain it's a good idea to avoid
 fiddling with the "system" installation (so you don't unintentionally overwrite packages or 
@@ -37,7 +46,7 @@ and its own versions of the other bits it needs.
 This package was developed using Python 3.12.2. Therefore, you need a Python 3.12.2 (or later)
 installation, and ideally a *virtual environment* to run it in.
 
-### Installing Python ###
+### Installing Python <a id="installing-python"></a>  ###
 
 It is recommended that you **do not add the installed python to your path**. If you do, the operating system may/will find the installed version
 before the operating system's expected version. And as our new installation almost certainly doesn't have the packages the operating system requires,
@@ -64,12 +73,12 @@ locations or an equivalent relative location if not using the suggested install 
 NOTE: I will assume a linux installation in this guide, so the executable will be at `${HOME}/python/python3.12/bin/python3`
 in all code snippets. Alter this appropriately if using windows or a non-suggested installation location.
 
-#### Windows/Mac Installation Instructions ####
+#### Windows/Mac Installation Instructions <a id="windows/mac-installation-instructions"></a> ####
 
 * Download and run an installer from [the official Python site](https://www.python.org/downloads/).
 
 
-#### Unix/Linux Installation Instructions ####
+#### Unix/Linux Installation Instructions <a id="unix/linux-installation-instructions"></a> ####
 
 * **IF** you have `sudo` access [see the appendix for a test for sudo access](#sudo-access-test), try one of the following:
 
@@ -93,7 +102,7 @@ in all code snippets. Alter this appropriately if using windows or a non-suggest
 
 
 
-### Creating and Activating a Virtual Environment ###
+### Creating and Activating a Virtual Environment <a id="creating-and-activating-a-virtual-environment"></a> ###
 
 A virtual environment isolates the packages you are using for a project from your normal environment and other virtual environments.
 Generally they are created in a directory which we will call `<VENV_DIR>`, and then activated and deactivated as required. NOTE:
@@ -105,29 +114,29 @@ NOTE: For the rest of this guide, *python* refers to a manual Python installatio
 NOTE: I will assume python version `3.12.2` for the rest of this guide but this will also work for different versions as long as the
       version number is changed appropriately.
 
-#### Check Python Installation ####
+#### Check Python Installation <a id="check-python-installation"></a> ####
 
 With [Python installed](#installing-python), make sure you have the correct version via `${HOME}/python/python3.12/bin/python3 --version`. The command should print `Python 3.12.2`, or whichever version you expect.
 
-#### Check Anaconda Python Installation ####
+#### Check Anaconda Python Installation <a id="check-anaconda-python-installation"></a> ####
 
 If using *anaconda python* check that everything is installed correctly by using the command `conda --version`. This should print
 a string like `conda X.Y.Z`, where X,Y,Z are the version number of anaconda.
 
-#### Creating a Python Virtual Environment ####
+#### Creating a Python Virtual Environment <a id="creating-a-python-virtual-environment"></a> ####
 
 To create a virtual environment use the command `${HOME}/python/python3.12/bin/python3 -m venv <VENV_DIR>`, where `<VENV_DIR>` is the directory
 you want the virtual environment to be in. E.g. `${HOME}/python/python3.12/bin/python3 -m venv .venv_3.12.2` will create the virtual
 environment in the directory `.venv_3.12.2` in the current folder (NOTE: the `.` infront of the directory
 name will make it hidden by default).
 
-#### Creating an Anaconda Python Virtual Environment ####
+#### Creating an Anaconda Python Virtual Environment <a id="creating-an-anaconca-python-virtual-environment"></a> ####
 
 *Anaconda Python* manages many of the background details for you. Use the command `conda create -n <VENV_NAME> python=3.12.2`, where
 `<VENV_NAME>` is the name of the virtual environment to create. E.g. `conda create -n venv_3.12.2 python=3.12.2`
 
 
-#### Activating and Deactivating a Python Virtual Environment ####
+#### Activating and Deactivating a Python Virtual Environment <a id="activating-and-deactivating-a-python-virtual-environment"></a> ####
 
 The process of activating the virtual environment varies depending on the terminal shell you are using.
 On the command line, use one of the following commands:
@@ -154,7 +163,7 @@ To check everything is working, enter the following commands (NOTE: the full pat
 
 To deactivate the environment, use the command `deactivate`. Your prompt should return to normal.
 
-#### Activating and Deactivating an Anaconda Python Virtual Environment ####
+#### Activating and Deactivating an Anaconda Python Virtual Environment <a id="activating-and-deactivating-an-anaconda-python-virtual-environment"></a> ####
 
 *Anaconda python* has a simpler way of activating a virtual environment. Use the command `conda activate <VENV_NAME>`, your prompt
 should change to have something like `(<VENV_NAME>)` infront of it. Use `python --version` to check that the activated environment
@@ -164,7 +173,7 @@ To deactivate the environment, use the command `conda deactivate`. Your prompt s
 
 
 
-## Installing the Package via Pip ##
+## Installing the Package via Pip <a id="installing-the-package-via-pip"></a> ##
 
 NOTE: If using *anaconda python* you **may** be able to use `conda install` instead of `pip` but I have not tested this. Conda [should behave well](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#installing-non-conda-packages) when using packages installed via `pip`.
 
@@ -187,25 +196,25 @@ To update the package to it's newest version use:
 * `python -m pip install --upgrade aopp_deconv_tool`
 
 
-# aopp_deconv_tool #
+# aopp_deconv_tool <a id="aopp_deconv_tool"></a> #
 
 This tool provides deconvolution, psf fitting, and ssa filtering routines.
 
 NOTE: It can be useful to look through the source files, see the appendix for how to find [the package's source files location](#location-of-package-source-files)
 
-## Examples ##
+## Examples <a id="examples"></a> ##
 
 See the `examples` folder of the github. 
 
-## Commandline Scripts ##
+## Commandline Scripts <a id="commandline-scripts"></a> ##
 
-### Spectral Rebinning ##
+### Spectral Rebinning <a id="spectral-rebinning-script"></a> ##
 
 Invoke via `python -m aopp_deconv_tool.spectral_rebin`. Use the `-h` option to see the help message.
 
 This routine accepts a FITS file specifier, it will spectrally rebin the fits extension and output a new fits file.
 
-### Interpolation ##
+### Interpolation <a id="interpolation-script"></a> ##
 
 Invoke via `python -m aopp_deconv_tool.interpolate`. Use the `-h` option to see the help message.
 
@@ -227,7 +236,7 @@ interpolation strategies:
 		results more similar to the underlying test data than `scipy`, but is substantially slower and requires parameter
 		fiddling to give any substantial improvement.
 
-### PSF Normalisation ###
+### PSF Normalisation <a id="psf-normalisation-script"></a> ###
 
 Invoke via `python -m aopp_deconv_tool.psf_normalise`. Use the `-h` option to see the help message.
 
@@ -239,7 +248,7 @@ Peforms the following operations:
 * Normalises the image to sum to 1
 
 
-### PSF Model Fitting ###
+### PSF Model Fitting <a id="psf-model-fitting-script"></a> ###
 
 Invoke via `python -m aopp_deconv_tool.psf_normalise`. Use the `-h` option to see the help message.
 NOTE: The `--model` option sets the model to fit. To see which parameters a model accepts use the `--model_help` option [NOTE: CHECK THIS WORKS]
@@ -253,7 +262,7 @@ ultranest
 	Nested sampling. Much slower (but can be sped up), but works when the optimal solution has local maxima/minima that
 	would trap `scipy.minimize`. Currently the `muse_ao` model only finds a good solution with this method.
 
-### Deconvolution ###
+### Deconvolution <a id="deconvolution-script"></a> ###
 
 Invoke via `python -m aopp_deconv_tool.deconvolve`. Use the `-h` option to see the help message.
 NOTE: the `--parameter_help` option will show the help message for the deconvolution parameters [NOTE: CHECK THIS WORKS]
@@ -263,7 +272,15 @@ to see an progress plot that updates every 10 iterations of the MODIFIED_CLEAN a
 parameters do.
 
 
-## Deconvolution ##
+## Using the Package in Code <a id="using-the-package-in-code"></a> ##
+
+The commandline scripts provide a blueprint of how the various routines can be used. However sometimes more customisation is
+needed. Below is a quick overview of the main routines and how they function. 
+
+NOTE: You can always [get help within python](#getting-documentation-from-within-python) as the classes and functions have docstrings.
+
+
+### Deconvolution <a id="deconvolution-code"></a> ###
 
 The main deconvolution routines are imported via
 
@@ -272,25 +289,15 @@ from aopp_deconv_tool.algorithm.deconv.clean_modified import CleanModified
 from aopp_deconv_tool.algorithm.deconv.lucy_richardson import LucyRichardson
 ```
 
-They have docstrings available, e.g. `help(CleanModified)` at the Python REPL will
-tell you details about how they work.
+`CleanModified` is the class implementeing the MODIFIED_CLEAN algorithm, the `LucyRichardson` class implements the Lucy-Richardson algorithm.
 
-There is a script `aopp_deconv_tool.deconvolve` that performs deconvolution using CleanModified on
-two files passed to it (the first argument is the observation, the second is the PSF). The output
-is saved to `./deconv.fits`. Invoke it with `python -m aopp_deconv_tool.deconvolve <OBS> <PSF>`.
-By default, it will assume it should use the PRIMARY fits extension, and deconvolve everything.
-If you want it to use a different one, pass the files as `'./path/to/file.fits{EXTENSION_NAME_OR_NUMBER}[10:12](1,2)'`.
-Where `EXTENSION_NAME_OR_NUMBER` is the name or number of the extension to use, `[10:12]` is an example of
-a slice (in Python slice format) of the extension cube to use, and `(1,2)` specifies which axes are the 'image' axes
-i.e. RA and DEC (i.e. CELESTIAL) axes. NOTE: the `(1,2)` can be omitted, and it will try and guess the correct ones.
-
-## PSF Fitting ##
+### PSF Fitting <a id="psf-fitting-code"></a> ###
 
 The main PSF fitting routines are in `aopp_deconv_tools.psf_model_dependency_injector`, and `aopp_deconv_tools.psf_data_ops`. 
 The examples on the github deal with this area. Specifically `<REPO_DIR>/examples/psf_model_example.py` for adaptive optics
 instrument fitting.
 
-## SSA Filtering ##
+### SSA Filtering <a id="ssa-filtering-code"></a> ###
 
 Singular Spectrum Analysis is performed by the `SSA` class in the `aopp_deconv_tools.py_ssa` module. An interactive 
 viewer that can show SSA components can be run via `python -m aopp_deconv_tool.graphical_frontends.ssa_filtering`.
@@ -305,11 +312,11 @@ to interpolate data by interpolating between SSA components, only when the value
 to be interpolated is not an extreme value. See the docstring for more details.
 
 
-# APPENDICES #
+# APPENDICES <a id="appendices"></a> #
 
-## APPENDIX: Snippets ##
+## APPENDIX: Snippets <a id="appendix:-snippets"></a> ##
 
-### Sudo Access Test ###
+### Sudo Access Test <a id="sudo-access-test"></a>  ###
 
 Enter the following commands at the command line:
 
@@ -318,7 +325,7 @@ Enter the following commands at the command line:
 
 If, after entering your password, you see the same output for both commands, you have `sudo` access. Otherwise, you do not.
 
-### Location of package source files ###
+### Location of package source files <a id="location-of-package-source-files"></a> ### 
 
 To find the location of the package's files, run the following command:
 
@@ -327,9 +334,95 @@ To find the location of the package's files, run the following command:
 This will output the *site packages* directory for the python executable. The package's
 files will be in the `aopp_deconv_tool` subdirectory.
 
-## APPENDIX: Scripts ##
+### Getting documentation from within python <a id="getting-documentation-from-within-python"></a> ###
 
-### Linux Installation Bash Script ###
+Python's command line, often called the "Read-Evaluate-Print-Loop (REPL)", has a built-in help system. 
+
+To get the help information for a class, function, or object use the following code. Note, `>>>` denotes the
+python REPL (i.e. the command line you get when you type the `python` command), and `$` denotes the shell 
+commandline. 
+
+This example is for the built-in `os` module, but should work with any python object.
+
+```
+$ python
+... # prints information about the python version etc. here
+>>> import os
+>>> help(os)
+... # prints out the docstring of the 'os' module
+```
+
+### Python slice syntax <a id="python-slice-syntax"></a> ###
+
+When specifying subsets of datacubes, it is useful to be able to select a N-square (i.e., square, cube, tesseract) 
+region to operate upon to reduce data volume and therefore processing time. [Python and numpy's slicing syntax](https://www.w3schools.com/python/numpy/numpy_array_slicing.asp)
+is a nice way to represent these operations. A quick explanation of the synatx follows.
+
+Let `a` be a 1 dimensional array, such that `a = np.array([10,11,15,16,19,20])`, selecting an element of the array
+is done via square brackets `a[1]` is the 1^th element, and as python is 0-indexed is equal to 11 for our example array.
+
+Slicing is also done via square brackets, instead of a number (that would select and element), we pass a slice. Slices are
+defined via the format `<start>:<stop>:<step>`. Where `<start>` is the first index to include in the slice, `<stop>` is the
+first index to **not** include in the slice, and `<step>` is what to add to the previously included index to get the next
+included index.
+
+E.g. 
+* `2:5:1` includes the indices 2,3,4 in the slice. So `a[2:5:1]` would select 15,16,19.
+* `0:4:2` includes the indices 0,2 in the slice. So `a[0:4:2]` would select 10,15.
+
+Eveything in a slice is optional exept the first colon. The defaults of everything are as follows:
+* `<start>` defaults to 0
+* `<stop>` defaults to the last + 1 index in the array. As python supports negative indexing (-ve indices "wrap around", with 
+  -1 being the index **after** the largest index) this is often called the -1^th index, or that `<stop>` defaults to -1.
+* `<step>` defaults to 1
+
+Therefore, the slice `:` selects all of the array, and the slice `::-1` selects all of the array, but reverses the ordering.
+
+When dealing with N-dimensional arrays, indexing accepts a tuple. 
+E.g. for a 2-dimensional array `b=np.array([[10,11,15],[16,19,20],[33,35,36]])`, 
+* `b[1,2]` is equal to 20
+* `b[2,1]` is equal to 35
+
+Similarly, slicing an N-dimensional array uses tuples of slices. E.g.
+```
+>>> b
+array([[10, 11, 15],
+       [16, 19, 20],
+       [33, 35, 36]])
+>>> b[::-1,:]
+array([[33, 35, 36],
+       [16, 19, 20],
+       [10, 11, 15]])
+>>> b[1:2,::-1]
+array([[20, 19, 16]])
+```
+
+Slices and indices can be mixed, so you can slice one dimension and select an index from another. E.g.
+```
+>>> b[:1, 2]
+array([15])
+>>> b[::-1, 0]
+array([33, 16, 10])
+>>> b[0,::-1]
+array([15, 11, 10])
+```
+
+There is a `slice` object in Python that can be used to programatically create slices, it's prototype is `slice(start,stop,step)`,
+but only `stop` is required, and if `stop=None` the slice will continue until the end of the array dimension. Slice objects
+are almost interchangeable with the slice syntax. E.g.
+```
+>>> s = slice(2)
+>>> b[s,0]
+array([10, 16])
+>>> b[:2,0]
+array([10, 16])
+```
+
+
+## APPENDIX: Scripts <a id="appendix:-scripts"></a> ##
+
+
+### Linux Installation Bash Script <a id="linux-installation-bash-script"></a>  ###
 
 Below is an example *bash* script for building python from source and configuring a virtual environment.
 Use it via copying the code into a file (recommended name `install_python.sh`). If Python's dependencies

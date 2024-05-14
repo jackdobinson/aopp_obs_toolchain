@@ -136,9 +136,9 @@ class Base:
 		
 			
 		return(
-			self._components,
-			self._residual,
-			self._i
+			self.get_components(),
+			self.get_residual(),
+			self.get_iters()
 		)
 	
 	def _init_algorithm(self, obs : np.ndarray, psf : np.ndarray) -> None:

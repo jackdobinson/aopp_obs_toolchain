@@ -74,6 +74,7 @@ class CleanModified(Base):
 	max_stat_increase	: float = dc.field(default=np.inf, 	metadata={'description':'Maximum fractional increase of a statistic before terminating'})
 	min_frac_stat_delta	: float = dc.field(default=1E-3, 	metadata={'description':'Minimum fractional standard deviation of statistics before assuming no progress is being made and terminating iteration'})
 	give_best_result	: bool  = dc.field(default=True, 	metadata={'description':'If True, will return the best (measured by statistics) result instead of final result.'})
+	clean_beam_sigma	: float = dc.field(default=0, 		metadata={'description':'If not zero, will convolve the components with a gaussian with this sigma, useful for regularising the result'})
 	
 	# private attributes
 	_obs : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False)
@@ -102,7 +103,13 @@ class CleanModified(Base):
 
 	def get_components(self) -> np.ndarray:
 		#return(self._components)
-		return(self._components_best if self.give_best_result else self._components)
+		if self.clean_beam_sigma == 0:
+			return(self._components_best if self.give_best_result else self._components)
+		else:
+			return sp.ndimage.gaussian_filter(
+				(self._components_best if self.give_best_result else self._components),
+				self.clean_beam_sigma
+			)
 	def get_residual(self) -> np.ndarray:
 		#return(self._residual)
 		return self._obs - sp.signal.fftconvolve(self.get_components(), self._psf, mode='same')/self._flux_correction_factor
