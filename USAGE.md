@@ -473,7 +473,7 @@ options:
 
 #### Extra Information ####
 
-Information listed at the end is usually clarification about the formatting of string-based arguments and/or any other information that would be required to use the script/program.
+Information listed at the end is usually clarification about the formatting of string-based arguments and/or any other information that would be required to use the script/program. For example, in the above fill argument description example the FITS SPECIFIER format information is added to the end as extra information.
 
 
 
