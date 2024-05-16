@@ -347,7 +347,7 @@ The underlying algorithm does the following:
 * `--rebin_operation`
   - `sum` sums the old bins into the new bins, use when you have a measurement like "counts"
   - `mean` averages the old bins into the new bins, use when you have a measurement like "counts per frequency"
-  - `mean_err` averages the square of the old bins into the new bins, use when you have standard deviations of a measurement like "counts per frequency"
+  - `mean_err` averages the square of the old bins into the new bins then square roots, use when you have standard deviations of a measurement like "counts per frequency"
 
 * `--rebin_params`
   - Takes two floats, `bin_step` and `bin_width`. Defines the new bin sizes, values are in SI units.
