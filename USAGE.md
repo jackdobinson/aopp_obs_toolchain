@@ -285,6 +285,78 @@ Invoke via `python -m aopp_deconv_tool.spectral_rebin`.
 
 This routine accepts a FITS file specifier, it will spectrally rebin the fits extension and output a new fits file.
 
+The underlying algorithm does the following:
+
+* We have a 3d dataset. In the FITS file we get points that correspond to each pixel center, not a bin or region (so really we have point-cloud data, but hey). Model each pixel as a flat-topped box where the box varies with height depending on the pixel value. The edge of a pixel is defined as half-way to the next pixel, or the same distance again past the center if we are looking at an edge pixel. In other words, we have a histogram.
+```
+  Value
+    ^
+    |    _ _
+    |  _| | |
+    |_|     |_
+    |         |_
+    ----------------> Pixel Center
+```
+
+* We want to rebin to a different spectral resolution, mostly to reduce the data volume and let everything run in a decent timescale. Therefore, we define three things, and `offset`, a `bin_width`, and a `bin_step`. `offset` is the difference between the starting point of the new bins, `bin_width` is the width of the new bins, `bin_step` is the distance between the start of one bin and the beginning of the next. NOTE: most of the time `bin_width` = `bin_step`, but sometimes they do not. A picture of a general example is below
+
+```
+	#############################################################
+	NOTE: This is a general case and not accurate for a FITS file as we don't have bin-edges, just the centers. Therefore we assume bin_width=bin_step.
+	input_grid    : |---^---|   |---^---|   |---^---|   |---^---|
+	              :       |---^---|   |---^---|   |---^---|   	
+	
+	bin_width     : |-------|
+
+	bin_step      : |-----|
+
+	#############################################################
+
+	output_grid   :     |--------^-------|    |--------^-------|
+	              :                |--------^-------|
+	
+	offset        : |---|
+
+	new_bin_width :     |----------------|
+	
+	new_bin_step  :     |----------|
+
+
+	#############################################################
+
+	"|" = bin edge
+
+	"^" = bin center
+
+	width
+		The distance between the start and end of a bin
+	
+	step
+		The distance between the start of two consencutive bins
+
+	offset
+		The distance between the start/end of the new grid and the start/end of the old grid
+```
+
+* All we have to do is work out which old bins are wholly included in the new bins, and which old bins are fractionally included in the new bins. Once we have that information, we assume that that as the bins are flat-topped fractional bins send a fraction of their value to each new bin covering them. This isn't quite right if we have overlapping bins on the input side. However, we never have that information for a FITS file so we always assume the bins are non-overlapping.
+
+* The summing of old bins into new bins is fine if you are working with e.g. raw counts. But if the data is in e.g. counts per frequency, you then need to then divide by the number of bins you just added together (which is not necessarily an integer, or larger than one) as e.g. the total number of counts you have has gone up, but so has the number of frequencies they are spread over.
+
+#### Module Arguments ####
+
+* `--rebin_operation`
+  - `sum` sums the old bins into the new bins, use when you have a measurement like "counts"
+  - `mean` averages the old bins into the new bins, use when you have a measurement like "counts per frequency"
+  - `mean_err` averages the square of the old bins into the new bins, use when you have standard deviations of a measurement like "counts per frequency"
+
+* `--rebin_params`
+  - Takes two floats, `bin_step` and `bin_width`. Defines the new bin sizes, values are in SI units.
+
+* `--rebin_preset`
+  - Is a named preset that defines `bin_step` and `bin_width`. Presets are:
+    + `spex`: `bin_step` = 1E-9, `bin_width` = 2E-9
+
+
 ### Interpolation <a id="interpolation-script"></a> ##
 
 Invoke via `python -m aopp_deconv_tool.interpolate`.

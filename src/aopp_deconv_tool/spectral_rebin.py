@@ -71,7 +71,7 @@ def rebin_hdu_over_axis(
 			new_data = (regrid_data.T/regrid_bin_weights).T
 		case 'mean_err':
 			regrid_data, regrid_bin_weights = nph.array.grid.regrid(data_hdu.data**2, old_bins, new_bins, axis)
-			new_data = (regrid_data.T/(regrid_bin_weights**2)).T
+			new_data = np.sqrt((regrid_data.T/(regrid_bin_weights)).T)
 		case _:
 			raise RuntimeError(f'Unknown binning operation "{operation}"')
 	
