@@ -115,7 +115,7 @@ def combine_lines_with_same_indent(x : str, preserve_repeated_empty_lines=False)
 		iw_match = initial_whitespace.match(z)
 		i_span = iw_match.span()[1] - iw_match.span()[0]
 		
-		if z.isspace():
+		if z.isspace() or len(z)==0:
 			i_span = -1 if not preserve_repeated_empty_lines else (-1 if i_span_current > 0 else (i_span_current-1))
 		
 		if i_span != i_span_current:
@@ -132,7 +132,7 @@ def combine_lines_with_same_indent(x : str, preserve_repeated_empty_lines=False)
 
 
 def wrap(x : str, width=70, combine_strings_of_same_indent_level=True):
-	x = combine_lines_with_same_indent(x) if combine_strings_of_same_indent_level else x
+	x = combine_lines_with_same_indent(x, preserve_repeated_empty_lines=False) if combine_strings_of_same_indent_level else x
 
 	x.replace(tab, '    ')
 	y = x.split(newline)

@@ -351,7 +351,7 @@ def parse_args(argv):
 	args.fits_spec = aph.fits.specifier.parse(args.fits_spec, DESIRED_FITS_AXES)
 	
 	if args.output_path is None:
-		args.output_path =  (Path(args.fits_spec.path).parent / (str(Path(args.fits_spec.path).stem)+DEFAULT_OUTPUT_TAG+str(Path(args.fits_spec.path).suffix)))
+		args.output_path =  (Path(args.fits_spec.path).parent / (str(Path(args.fits_spec.path).stem)+DEFAULT_OUTPUT_TAG+f'_{args.model}'+str(Path(args.fits_spec.path).suffix)))
 	
 	
 	set_psf_model_dependency_injector(args.model, args.fits_spec)

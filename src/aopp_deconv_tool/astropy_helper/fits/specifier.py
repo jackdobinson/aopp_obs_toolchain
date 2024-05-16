@@ -18,7 +18,7 @@ import aopp_deconv_tool.astropy_helper as aph
 import aopp_deconv_tool.astropy_helper.fits.header
 
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'INFO')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
 FitsSpecifier = namedtuple('FitsSpecifier', ('path', 'ext', 'slices', 'axes'))
@@ -34,37 +34,51 @@ axes_type_info={
 }
 
 help_fmt = """\
-Format:
-	`.../path/to/a.fits{{ext}}[slice0,slice1,...]{{axes_type_1:(ax11,ax12,...),axes_type_2:(ax21,ax22,...)}}
-	
-	Where:
-		.../path/to/a.fits
-			A path to a FITS file. Must be present.
-		ext : str | int
-			Fits extension, either a string or an index. If not present, will assume PRIMARY hdu, (hdu index 0)
-		sliceM : str
-			Slice of Mth axis in the normal python `start:stop:step` format. If not present will assume slice(None) for an axis.
-		axes_type_N : axes_type
-			Type of the Nth axes set. Axes types are detailed below. They are used to tell a program what to do with
-			an axis when normal FITS methods of description fail (or as a backup). Note, the type (and enclosing curly backets
-			`{{}}` can be ommited if a program only accepts one or two axes types. In that case, the specified axes will be
-			assumed to be of the first type specified in the documentation, and the remaining axes of the second type (if there
-			is a second type).
-		axNL : int
-			Axes of the extension that are of the specified type. If not present, will assume all axes are of the first type
-			specified in the documentation.
-	
-	Accepted axes_type:
-		{axes_types}
+# FITS SPECIFIER #
+
+	A string that describes which FITS file to load, the extension (i.e backplane) to use, the slices (i.e. sub-regions)
+	that should be operated upon, and (if required) the semantic meaning of the data axes.
+
+	Format:
+		.../path/to/a.fits{{ext}}[slice0,slice1,...]{{axes_type_1:(ax11,ax12,...),axes_type_2:(ax21,ax22,...)}}
 		
-	
-	Examples:
-		~/home/datasets/MUSE/neptune_obs_1.fits{{DATA}}[100:200,:,:](1,2)
-			Selects the "DATA" extension, slices the 0th axis from 100->200 leaving the others untouched, and signals that axes 1 and 2 are important e.g. they are the RA-DEC axes.
-		~/home/datasets/MUSE/neptune_obs_1.fits{{DATA}}[100:200](1,2)
-			Does the same thing as above, but omits un-needed slice specifiers.
-		~/home/datasets/MUSE/neptune_obs_1.fits{{DATA}}[100:200]{{CELESTIAL:(1,2)}}
-			Again, same as above, but adds explicit axes type.
+		Where:
+			.../path/to/a.fits
+				A path to a FITS file. Must be present.
+			ext : str | int
+				Fits extension, either a string or an index. If not present, will assume PRIMARY hdu, (hdu index 0)
+			sliceM : str
+				Slice of Mth axis in the normal python `start:stop:step` format. If not present will assume slice(None) for an axis.
+			axes_type_N : axes_type
+				Type of the Nth axes set. Axes types are detailed below. They are used to tell a program what to do with
+				an axis when normal FITS methods of description fail (or as a backup). Note, the type (and enclosing curly backets
+				`{{}}` can be ommited if a program only accepts one or two axes types. In that case, the specified axes will be
+				assumed to be of the first type specified in the documentation, and the remaining axes of the second type (if there
+				is a second type).
+			axNL : int
+				Axes of the extension that are of the specified type. If not present, will assume all axes are of the first type
+				specified in the documentation.
+		
+		Accepted axes_type:
+			{axes_types}
+			
+		NOTE: As the format for a FITS specifier uses characters that a terminal application may interpret as special characters,
+			e.g. square/curly/round brackets, and colons. It can be better to wrap specifiers in quotes or single quotes. When
+			doing this, it is important to un-escape any previously escaped characters.
+			For example, specifies with timestamps in them would normally have the colons escaped, but when wrapped in quotes
+			this is not required. E.g. the specifier ./example_data/MUSE.2019-10-17T23\:46\:14.117_normalised.fits(1,2) will not
+			play nice with the bash shell due to the brackets. However, wrapping it in single quotes and removing the escaping
+			slashes from the colons means it will work. E.g. './example_data/MUSE.2019-10-17T23:46:14.117_normalised.fits(1,2)'
+		
+		Examples:
+			~/home/datasets/MUSE/neptune_obs_1.fits{{DATA}}[100:200,:,:](1,2)
+				Selects the "DATA" extension, slices the 0th axis from 100->200 leaving the others untouched, and signals that axes 1 and 2 are important e.g. they are the RA-DEC axes.
+			
+			~/home/datasets/MUSE/neptune_obs_1.fits{{DATA}}[100:200](1,2)
+				Does the same thing as above, but omits un-needed slice specifiers.
+			
+			~/home/datasets/MUSE/neptune_obs_1.fits{{DATA}}[100:200]{{CELESTIAL:(1,2)}}
+				Again, same as above, but adds explicit axes type.
 """
 
 def get_help(axes_types : list[str]):
@@ -157,8 +171,13 @@ def parse(specifier : str, axes_types : list[str]):
 			axes = parse_axes_type_list(axes_type_list, axes_types)
 		else:
 			axes = None
-		#_lgr.debug(f'{axes=}')
-			
+		_lgr.debug(f'{axes=}')
+		if axes is not None:
+			for k,v in axes.items():
+				if len(v) == 0:
+					raise RuntimeError(f'Could not work out axes "{k}" automatically, please specify axes explicitly')
+		else:
+			raise RuntimeError(f'Could not work out axes automatically, please specify axes explicitly')
 			
 		
 		# get slice information

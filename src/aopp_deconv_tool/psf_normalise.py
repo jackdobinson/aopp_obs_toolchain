@@ -225,6 +225,7 @@ def parse_args(argv):
 	
 	if args.output_path is None:
 		args.output_path =  (Path(args.fits_spec.path).parent / (str(Path(args.fits_spec.path).stem)+DEFAULT_OUTPUT_TAG+str(Path(args.fits_spec.path).suffix)))
+	
 	if args.background_noise_model == 'none':
 		args.background_noise_model = None
 	

@@ -25,8 +25,7 @@ class Base:
 	"""
 	
 	# Input Paramterers
-	n_iter : int = 10 # Number of iterations before exit
-	verbosity : int = dc.field(default=0, metadata={'description':'How verbose messages should be'})
+	n_iter 			: int	= dc.field(default=100, 	metadata={'description':'Number of iterations'})
 	
 	# Hooks for callbacks at various parts of the algorithm.
 	pre_init_hooks \
@@ -46,13 +45,13 @@ class Base:
 		= dc.field(default_factory=lambda : [], init=False, repr=False, hash=False, compare=False) # callbacks after the final iteration
 	
 	# State attributes visible from outside class
-	progress_string : str = dc.field(default="Ended prematurely: Class not initialised.", init=False, repr=False, hash=False, compare=False) # reason that iteration was terminated
+	progress_string : str 				= dc.field(default="Ended prematurely: Class not initialised.", init=False, repr=False, hash=False, compare=False) # reason that iteration was terminated
 	
 	# Internal attributes
-	_i : int = dc.field(init=False, repr=False, hash=False, compare=False) # iteration counter
-	_components : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False) # result of the deconvolution
-	_residual : np.ndarray = dc.field(init=False, repr=False, hash=False, compare=False) # residual (obs - _components) of the deconvolution
-	_last_parameters : dict[str,Any] = dc.field(init=False, repr=False, hash=False, compare=False) # parameters used for last call
+	_i : int 							= dc.field(init=False, repr=False, hash=False, compare=False) # iteration counter
+	_components : np.ndarray 			= dc.field(init=False, repr=False, hash=False, compare=False) # result of the deconvolution
+	_residual : np.ndarray 				= dc.field(init=False, repr=False, hash=False, compare=False) # residual (obs - _components) of the deconvolution
+	_last_parameters : dict[str,Any] 	= dc.field(init=False, repr=False, hash=False, compare=False) # parameters used for last call
 	
 	def get_parameters(self):
 		return self._last_parameters

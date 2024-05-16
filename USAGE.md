@@ -206,17 +206,88 @@ NOTE: It can be useful to look through the source files, see the appendix for ho
 
 See the `examples` folder of the github. 
 
+## FITS Specifier <a id="fits-specifier"></a> ##
+
+When operating on a FITS file there are often multiple extensions, the axes ordering is unknown, and you may only need a subset of the data. Therefore, where possible scripts accept a *fits specifier* instead of a path. The format is a follows:
+
+A string that describes which FITS file to load, the extension (i.e backplane) name or number to use enclosed in curly brackets, the slices (i.e. sub-regions) that should be operated upon in [python slice syntax](#python-slice-syntax), and the data axes to operate on as a [tuple](#python-tuple-syntax) or as a [python dictionary](https://docs.python.org/3/tutorial/datastructures.html#dictionaries) with strings as keys and [tuples](#python-tuple-syntax) as values.
+
+See the appendix for a [quick introduction to the FITS format](#fits-file-format-information) for a description of why this information is needed.
+
+```
+Format:
+
+	path_to_fits_file{ext}[slice0,slice1,...,sliceM](ax1,ax2,...,axL)
+
+	OR
+
+	path_to_fits_file{ext}[slice0,slice1,...,sliceM]{axes_type_1:(ax11,ax12,...,ax1L),...,axes_type_N:(axN1,axN2,...,axNL)}
+
+	NOTE: everything that is not "path_to_fits_file" is optional and will use default values if not present.
+
+	Where:
+		path_to_fits_file : str
+			A path to a FITS file. Must be present.
+		ext : str | int = 0
+			Fits extension, either a string or an index. If not present, will assume PRIMARY hdu, (hdu index 0)
+		sliceM : str = `:`
+			Slice of Mth axis in the normal python `start:stop:step` format. If not present use all of an axis.
+		axes_type_N : axes_type = inferred from context (sometimes not possible)
+			Type of the Nth axes set. Axes types are detailed below. They are used to tell a program what to do with
+			an axis when normal FITS methods of description fail (or as a backup). Note, the type (and enclosing curly backets
+			`{{}}` can be ommited if a program only accepts one or two axes types. In that case, the specified axes will be
+			assumed to be of the first type specified in the documentation, and the remaining axes of the second type (if there
+			is a second type).
+		axNL : int = inferred from headers in FITS file (sometimes not possible)
+			Axes of the extension that are of the specified type. If not present, will assume all axes are of the first type
+			specified in the documentation.
+
+	Accepted axes_type:
+		SPECTRAL
+			wavelength/frequency varies along this axis
+		CELESTIAL
+			sky position varies along this axis
+		POLARISATION
+			polarisation varies along this axis, could be linear or circular
+		TIME
+			time varies along this axis
+
+	NOTE: Not all scripts require all axes types to be specified. In fact almost all of them just require the CELESTIAL axes.
+		And even then, they can often infer the correct values. The help information for a script should say which axes types
+		it needs specified.
+		
+	NOTE: As the format for a FITS specifier uses characters that a terminal application may interpret as special characters,
+		e.g. square/curly/round brackets, and colons. It can be better to wrap specifiers in quotes or single quotes. When
+		doing this, it is important to un-escape any previously escaped characters.
+		For example, specifies with timestamps in them would normally have the colons escaped, but when wrapped in quotes
+		this is not required. E.g. the specifier ./example_data/MUSE.2019-10-17T23\:46\:14.117_normalised.fits(1,2) will not
+		play nice with the bash shell due to the brackets. However, wrapping it in single quotes and removing the escaping
+		slashes from the colons means it will work. E.g. './example_data/MUSE.2019-10-17T23:46:14.117_normalised.fits(1,2)'
+
+	Examples:
+		~/home/datasets/MUSE/neptune_obs_1.fits{DATA}[100:200,:,:](1,2)
+			Selects the "DATA" extension, slices the 0th axis from 100->200 leaving the others untouched, and passes axes 1 and 2. For example, the script may require the celestial axes, and in this case axes 1 and 2 are the RA and DEC axes.
+		
+		~/home/datasets/MUSE/neptune_obs_1.fits{DATA}[100:200](1,2)
+			Does the same thing as above, but omits un-needed slice specifiers.
+		
+		~/home/datasets/MUSE/neptune_obs_1.fits{DATA}[100:200]{CELESTIAL:(1,2)}
+			Again, same as above, but adds explicit axes type.
+```
+
 ## Commandline Scripts <a id="commandline-scripts"></a> ##
+
+When running commandline scripts, use the `-h` option to see the help message. The appendix has a [overview of help message syntax](#overview-of-help-message-syntax).
 
 ### Spectral Rebinning <a id="spectral-rebinning-script"></a> ##
 
-Invoke via `python -m aopp_deconv_tool.spectral_rebin`. Use the `-h` option to see the help message.
+Invoke via `python -m aopp_deconv_tool.spectral_rebin`. 
 
 This routine accepts a FITS file specifier, it will spectrally rebin the fits extension and output a new fits file.
 
 ### Interpolation <a id="interpolation-script"></a> ##
 
-Invoke via `python -m aopp_deconv_tool.interpolate`. Use the `-h` option to see the help message.
+Invoke via `python -m aopp_deconv_tool.interpolate`.
 
 Accepts a FTIS file specifier, will find bad pixels and interpolate over them. The strategies used are
 dependent on the options given to the program.
@@ -238,7 +309,7 @@ interpolation strategies:
 
 ### PSF Normalisation <a id="psf-normalisation-script"></a> ###
 
-Invoke via `python -m aopp_deconv_tool.psf_normalise`. Use the `-h` option to see the help message.
+Invoke via `python -m aopp_deconv_tool.psf_normalise`.
 
 Peforms the following operations:
 * Ensures image shape is odd, so there is a definite central pixel
@@ -250,7 +321,8 @@ Peforms the following operations:
 
 ### PSF Model Fitting <a id="psf-model-fitting-script"></a> ###
 
-Invoke via `python -m aopp_deconv_tool.psf_normalise`. Use the `-h` option to see the help message.
+Invoke via `python -m aopp_deconv_tool.fit_psf_model`.
+
 NOTE: The `--model` option sets the model to fit. To see which parameters a model accepts use the `--model_help` option [NOTE: CHECK THIS WORKS]
 
 Specifying the `--method` option sets the routine used for fitting. Two are available `scipy.minimize` (default) and `ultranest`.
@@ -314,6 +386,137 @@ to be interpolated is not an extreme value. See the docstring for more details.
 
 # APPENDICES <a id="appendices"></a> #
 
+## APPENDIX: Supplimentary Information <a id="appendix:-supplimentary-information"></a> ##
+
+### Overview of Help Message Syntax <a id="overview-of-help-message-syntax"></a> ###
+
+Python scripts use the [argparse](https://docs.python.org/3/library/argparse.html) standard library module to parse commandline arguments. This generates help messages that follow a fairly standard syntax. Unfortunately there is no accepted standard, but [some style guides are available](https://docs.oracle.com/cd/E19455-01/806-2914/6jc3mhd5q/index.html).
+
+The help message consists of the following sections:
+* A "usage" line
+* A quick description of the script, possibly with an example invocation.
+* Positional and Keyword argument descriptions
+* Any extra information that would be useful to the user.
+
+#### The Usage Line ####
+
+Contains a short description of the invocation syntax. 
+
+* Starts with `usage: <script_name>` where `<script_name>` is the name of the script being invoked. 
+* Then keyword arguments are listed, followed by positional arguments (sometimes these are reversed). 
+  - There are two types of keyword arguments, *short* and *long*, usually to save space only the *short* name is in the usage line.
+    + *short* denoted by a single dash followed by a single letter, e.g. `-h`.
+    + *long* denoted by two dashes followed by a string, e.g. `--help`.
+* Optional arguments are denoted by square brackets `[]`.
+* A set of choices of arguments that are mutually exclusive are separated by a pipe `|`
+* A grouping of arguments (e.g. for required arguments that are mutually exclusive) is done with round brackets `()`
+* A keyword argument that requires a value will have one of the following after it:
+  - An uppercase name that denotes the kind of value e.g. `NAME` 
+  - A data type that denotes the value e.g. `float` or `int` or `string`
+  - A set of choices of literal values (one of which must be chosen) is denoted by curly brackets `{}`, e.g. `{1,2,3}` or `{choice1,choice2}`.
+
+Example: `usage: deconvolve.py [-h] [-o OUTPUT_PATH] [--plot] [--deconv_method {clean_modified,lucy_richardson}] obs_fits_spec psf_fits_spec`
+
+* The script file is `deconvolve.py`
+* The `-h` `-o` `--plot` `--deconv_method` keyword arguments are optional
+* The `--deconv_method` argument accepts one of the values `clean_modified` or `lucy_richardson`
+* The keyword arguments are `obs_fits_spec` and `psf_fits_spec`
+
+Example: `usage: spectral_rebin.py [-h] [-o OUTPUT_PATH] [--rebin_operation {sum,mean,mean_err}] [--rebin_preset {spex} | --rebin_params float float] fits_spec`
+
+* The script file is `spectral_rebin.py`
+* The all of the keyword arguments `-h` `-o` `--rebin_operation` `--rebin_preset` `-rebin_params` are optional
+* The single positional argument is `fits_spec` 
+* The `--rebin_operation` argument has a choice of values `sum`,`mean`,`mean_err`
+* The `--rebin_preset` and `--rebin_params` arguments are mutually exclusive, only one of them can be passed
+* The `--rebin_preset` argument only accepts one value `spex`
+* The `--rebin_params` argument accepts two values that should be floats
+
+
+#### The Quick Description ####
+
+The goal of the quick description is to summarise the intent of the program/script, and possibly give some guidance on how to invoke it.
+
+#### Argument Descriptions ####
+
+Usually these are grouped into two sections `positional arguments` and `options` (personally I would call them keyword arguments, as they can sometimes be required) but they follow the same syntax.
+
+* The argument name, or names if it has more than one.
+* Any parameters to the argument (for keyword arguments).
+* A description of the argument, and ideally the default value of the argument.
+
+Example:
+
+```
+--rebin_operation {sum,mean,mean_err}
+                        Operation to perform when binning.
+```
+* Argument is a keyword argument (starts with `--`)
+* Argument name is 'rebin_operation'
+* Accepts one of `sum`,`mean`,`mean_err`
+* Description is `Operation to perform when binning.`
+
+A full argument description looks like this:
+```
+positional arguments:
+  obs_fits_spec         The observation's (i.e. science target) FITS SPECIFIER, see the end of the help message for more information
+  psf_fits_spec         The psf's (i.e. calibration target) FITS SPECIFIER, see the end of the help message for more information
+
+options:
+  -h, --help            show this help message and exit
+  -o OUTPUT_PATH, --output_path OUTPUT_PATH
+                        Output fits file path. By default is same as the `fits_spec` path with "_deconv" appended to the filename (default: None)
+  --plot                If present will show progress plots of the deconvolution (default: False)
+  --deconv_method {clean_modified,lucy_richardson}
+                        Which method to use for deconvolution. For more information, pass the deconvolution method and the "--info" argument. (default: clean_modified)
+```
+
+#### Extra Information ####
+
+Information listed at the end is usually clarification about the formatting of string-based arguments and/or any other information that would be required to use the script/program.
+
+
+
+### FITS File Format Information <a id="fits-file-format-information"></a> ###
+
+Documentation for the Flexible Image Transport System (FITS) file format is hosted at [NASA's Goddard Space Flight Center](https://fits.gsfc.nasa.gov/fits_standard.html), please refer to that as the authoratative source of information. What follows is a brief description of the format to aid understanding, see below for a [schematic of a fits file](#fits-file-schematic).
+
+A FITS file consists of one or more *header data units" (HDUs). An HDU contains header and (optionally) data information. The first HDU in a file is the "primary" HDU, and others are "extension" HDUs. The primary HDU always holds image data, extension HDUs can hold other types of data (not just images, but tables and anything else specified by the standard). An HDU always has a number which describes it's order in the FITS file, and can optionally have a name. Naming an HDU is always a good idea as it helps users navigate the file. NOTE: The terms "extension", "HDU", and "backplane" are used fairly interchangably to mean HDU
+
+Within each HDU there is header-data and (optionally) binary-data. The header-data consists of keys and values stored as restricted [ASCII](https://en.wikipedia.org/wiki/ASCII) strings of 80 characters in total. I.e. the whole key+value string must be 80 characters, they can be padded with spaces on the right. Practically, you can have as many header key-value entries as you have memory for. There are some reserved keys that define how the binary data of the HDU is to be interpreted. NOTE: Keys can only consist of uppercase latin letters, underscores, dashes, and numerals. The binary-data of an HDU is stored bin-endian, and intended to be read as a byte stream. The header-data descibes how to read the binary-data, the most common data is image data and tabular data.
+
+Fits image HDUs (and the primary HDU) define the image data via the following header keywords.
+
+BITPIX
+: The magnitude is the number of bits in each pixel value. Negative values are floats, positive values are integers.
+
+NAXIS
+: The number of axes the image data has, from 0->999 (inclusive).
+
+NAXISn
+: The number of elements along axis "n" of the image.
+
+Relating an axis to a coordinate system is done via more keywords that define a world coordinate system (WCS), that maps integer pixel indices to floating-point coordinates in, for example, time, sky position, spectral frequency, etc. The specifications for this are suggestions rather than rules, and non-conforming FITS files are not too hard to find. As details are what the spec is for, here is a high-level overview. Pixel indices are linearly transformed into "intermediate pixel coordinates", which are rescaled to physical units as "intermediate world coordinates", which are then projected/offset/have some (possibly non-linear) function applied to get them to "world coordinates". The CTYPE keyword for an axis describes what kind of axis it is, i.e. sky-position, spectral frequency, time, etc.
+
+Therefore, when using a FITS file it is important to specify which HDU (extension) to use, which axes of an image correspond to what physical coordinates, and sometimes what subset of the binary-data we want to operate upon.
+
+#### Fits File Schematic <a id="fits-file-schematic"></a> ####
+```
+FITS FILE
+|- Primary HDU
+|  |- header data
+|  |- binary data (optional)
+|- Extension HDU (optional)
+|  |- header data
+|  |- binary data (optional)
+|- Extension HDU (optional)
+|  |- header data
+|  |- binary data (optional)
+.
+.
+.
+```
+
 ## APPENDIX: Snippets <a id="appendix:-snippets"></a> ##
 
 ### Sudo Access Test <a id="sudo-access-test"></a>  ###
@@ -352,11 +555,53 @@ $ python
 ... # prints out the docstring of the 'os' module
 ```
 
+### Pyhton tuple syntax <a id="python-tuple-syntax"></a> ###
+
+Tuples are ordered collections of hetrogenuous items. They are denoted by separating each element with a comma and enclosing the whole thing in round brackets. Tuples can be nested.
+
+Examples:
+* `(1,2,3)`
+* `('cat', 7, 'dog', 9)`
+* `(5.55, ('x', 'y', 0), 888, 'abc', 'def')`
+
 ### Python slice syntax <a id="python-slice-syntax"></a> ###
 
 When specifying subsets of datacubes, it is useful to be able to select a N-square (i.e., square, cube, tesseract) 
 region to operate upon to reduce data volume and therefore processing time. [Python and numpy's slicing syntax](https://www.w3schools.com/python/numpy/numpy_array_slicing.asp)
 is a nice way to represent these operations. A quick explanation of the synatx follows.
+
+#### Important Points ####
+
+* Python arrays are zero-indexed. I.e the first element of an array has the index `0`.
+
+* Negative indices count backwards from the end of the array. If you have `N` entries in an array, `-1` becomes `N-1`, so the slice 
+  `0:-1` selects the whole array except the last element.
+
+* Python slices have the format `start:stop:step` when they are used to index arrays via square brackets, e.g. `a[5:25:2]`
+  returns a slice of the object `a`. Slices can also be defined by the `slice` object via `slice(start,stop,step)`, e.g.
+  `a[slice(5,25,2)]` returns the same slice of object `a` as the last example.
+
+* The `start`, `stop`, and `step` parameters generate indices of an array by iteratively adding `step` to `start` until the
+  value is equal to or greater than `stop`. I.e. `selected_indices = start + step * i` where `i = {0, 1, ..., N-1}`, 
+  `N = CEILING[(stop - start) / step]`.
+  
+* Mathematically, a slice specifies a [half-open interval](https://en.wikipedia.org/wiki/Interval_(mathematics)),
+  the `step` of a slice selects every `step` entry of that interval. I.e. they include their start point but not their end point, 
+  and only select every `step` elements of the interval. E.g. `5:25:2` selects the elements at the indices {5,7,9,11,13,15,17,19,21,23}
+
+* By default `start` is zero, `stop` is the number of elements in the array, and `step` is one.
+
+* Only the first colon in a slice is required to define it. The slice `:` is equivalent to the slice `0:N:1`, where `N` is the number
+  of elements in the object being sliced. E.g. `a[:]` selects all the elements of `a`.
+
+* Negative parameters to `start` and `stop` work the same way as negative indices. Negative values to `step` reverse the default values
+  of `start` and `stop`, but otherwise work in the same way as positive values.
+  
+* A slice never extends beyond the beginning or end of an array. I.e. even though negative numbers are valid parameters, a slice that
+  would result in an index *before* it's `start` will be empty (i.e. select no elements of the array). E.g. If we have an array with 5
+  entries, the slice `1:3:-1` **does not** select {1, 0, 4}, it is empty.
+
+#### Details ####
 
 Let `a` be a 1 dimensional array, such that `a = np.array([10,11,15,16,19,20])`, selecting an element of the array
 is done via square brackets `a[1]` is the 1^th element, and as python is 0-indexed is equal to 11 for our example array.

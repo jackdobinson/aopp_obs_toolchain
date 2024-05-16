@@ -34,6 +34,11 @@ import aopp_deconv_tool.cfg.logs
 _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
+deconv_methods = {
+	'clean_modified' : CleanModified,
+	'lucy_richardson' : LucyRichardson
+}
+
 def create_plot_set(deconvolver, cadence = 10):
 	fig, axes = plot_helper.figure_n_subplots(8)
 	axes_iter = iter(axes)
@@ -131,7 +136,6 @@ def run(
 		psf_fits_spec : aph.fits.specifier.FitsSpecifier,
 		output_path : str | Path = './deconv.fits',
 		deconv_class : Literal[CleanModified] | Literal[LucyRichardson] = CleanModified,
-		#deconv_class : Literal[CleanModified] | Literal[LucyRichardson] = LucyRichardson,
 		plot : bool = True,
 		deconv_args : list[str,...] = []
 	):
@@ -262,10 +266,14 @@ def parse_deconv_args(deconv_class, argv):
 	
 	parser.error = on_parser_error
 	
+	parser.add_argument('--info', action='store_true', default=False, help='Show this information message')
+	
 	for field in dc.fields(deconv_class):
 		if field.init != True:
 			continue
+			
 		field_default = field.default if field.default != dc.MISSING else (field.default_factory() if field.default_factory != dc.MISSING else None)
+		
 		parser.add_argument(
 			'--'+field.name, 
 			type=field.type, 
@@ -275,6 +283,12 @@ def parse_deconv_args(deconv_class, argv):
 		)
 	
 	deconv_args = parser.parse_args(argv)
+	
+	if deconv_args.info:
+		parser.print_help()
+		sys.exit()
+	
+	delattr(deconv_args, 'info')
 	
 	return vars(deconv_args)
 	
@@ -287,30 +301,36 @@ def parse_args(argv):
 	
 	DEFAULT_OUTPUT_TAG = '_deconv'
 	DESIRED_FITS_AXES = ['CELESTIAL']
+	FITS_SPECIFIER_HELP = aopp_deconv_tool.text.wrap(
+		aph.fits.specifier.get_help(DESIRED_FITS_AXES).replace('\t', '    '),
+		os.get_terminal_size().columns - 30
+	)
+	
+	
+	class ArgFormatter (argparse.RawTextHelpFormatter, argparse.ArgumentDefaultsHelpFormatter):
+		def __init__(self, *args, **kwargs):
+			super().__init__(*args, **kwargs)
 	
 	parser = argparse.ArgumentParser(
 		description=__doc__, 
-		formatter_class=argparse.RawTextHelpFormatter
+		formatter_class=ArgFormatter,
+		epilog=FITS_SPECIFIER_HELP
 	)
 	
 	parser.add_argument(
-		'obs_fits_spec', 
-		help = aopp_deconv_tool.text.wrap(
-			aph.fits.specifier.get_help(DESIRED_FITS_AXES).replace('\t', '    '),
-			os.get_terminal_size().columns - 30
-		)
+		'obs_fits_spec',
+		help = 'The observation\'s (i.e. science target) FITS SPECIFIER, see the end of the help message for more information'
 	)
 	
 	parser.add_argument(
 		'psf_fits_spec', 
-		help = aopp_deconv_tool.text.wrap(
-			aph.fits.specifier.get_help(DESIRED_FITS_AXES).replace('\t', '    '),
-			os.get_terminal_size().columns - 30
-		)
+		help = 'The psf\'s (i.e. calibration target) FITS SPECIFIER, see the end of the help message for more information'
 	)
 	
-	parser.add_argument('-o', '--output_path', help=f'Output fits file path. By default is same as the `fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
+	parser.add_argument('-o', '--output_path', type=str, help=f'Output fits file path. By default is same as the `fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
 	parser.add_argument('--plot', action='store_true', default=False, help='If present will show progress plots of the deconvolution')
+	parser.add_argument('--deconv_method', type=str, choices=deconv_methods.keys(), default='clean_modified', help='Which method to use for deconvolution. For more information, pass the deconvolution method and the "--info" argument.') 
+	
 	
 	args, deconv_args = parser.parse_known_args(argv)
 	
@@ -335,6 +355,7 @@ if __name__ == '__main__':
 		args.psf_fits_spec, 
 		output_path = args.output_path, 
 		plot = args.plot,
+		deconv_class = deconv_methods[args.deconv_method],
 		deconv_args = deconv_args,
 	)
 	

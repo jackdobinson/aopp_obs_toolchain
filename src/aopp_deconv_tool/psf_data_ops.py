@@ -367,7 +367,9 @@ def apply_offsets(
 	offsets : np.ndarray
 		Offsets to apply to data, will shift data's grid by this amount.
 	"""
-
+	_lgr.debug(f'{data.shape=}')
+	_lgr.debug(f'{axes=}')
+	_lgr.debug(f'{offsets.shape=}')
 	
 	for _i, (idx, gdata) in enumerate(nph.axes.iter_axes_group(data, axes)):
 		_lgr.debug(f'{_i=}')
