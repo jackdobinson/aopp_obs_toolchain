@@ -1,0 +1,281 @@
+\hypertarget{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet}{}\doxysection{aopp\+\_\+deconv\+\_\+tool.\+optimise\+\_\+compat.\+Prior\+Param\+Set Class Reference}
+\label{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet}\index{aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_aa1fc25253fb90cf4a514e13bfcc8dc86}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, $\ast$\mbox{\hyperlink{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a7c1b79dd6006d30b47e3a16ac0842a62}{prior\+\_\+params}})
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_ad6f05162d6a853ae0e1a695db8cef33d}{\+\_\+\+\_\+getitem\+\_\+\+\_\+}} (self, str$\vert$int k)
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_aa924064ef72a8bf643cbf28a5582d49d}{\+\_\+\+\_\+len\+\_\+\+\_\+}} (self)
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a605cd38c00855ad7e8bdc63967c2ee40}{\+\_\+\+\_\+repr\+\_\+\+\_\+}} (self)
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_acba24b9b0a914eb238be2c880bfa9f47}{all\+\_\+params}} (self)
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a166fead3e7511142804eac4863756163}{append}} (self, \mbox{\hyperlink{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParam}{Prior\+Param}} p)
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a1b3d9f725143419fa4bb7bdd1ada1f1d}{constant\+\_\+params}} (self)
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_ac9c4f8057a83fb85fa1327bd2a8b0ea3}{consts}} (self)
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_ab3ec78e2d92c92d474f639049df4c40c}{get\+\_\+linear\+\_\+transform\+\_\+to\+\_\+domain}} (self, tuple\mbox{[}str\mbox{]}$\vert$list\mbox{[}str\mbox{]} param\+\_\+names, tuple\mbox{[}float, float\mbox{]}$\vert$list\mbox{[}float, float\mbox{]}$\vert$np.\+ndarray\mbox{[}\mbox{[}2, \textquotesingle{}N\textquotesingle{}\mbox{]}, float\mbox{]} in\+\_\+domain)
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a225f6473f403e0a427a48938933b4004}{keys}} (self, acallable, $\ast$dict\mbox{[}str, str\mbox{]} arg\+\_\+to\+\_\+param\+\_\+name\+\_\+map=\{\}, constant\+\_\+params\+\_\+as\+\_\+defaults=True, list\mbox{[}str,...\mbox{]}$\vert$None arg\+\_\+names=None \# names of the arguments to \`{}acallable\`{}, in, the, correct, order, as, if, from, inspect, signature, acallable)
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a18872eb92e73d65008f3bee26442a83a}{keys}} (self, Callable\mbox{[}\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1optimise__compat_a57a902383fd6a55b9f3078dacec9db5e}{P}}, Any\mbox{]} acallable, dict\mbox{[}str, Any\mbox{]} variable\+\_\+param\+\_\+values, dict\mbox{[}str, Any\mbox{]} const\+\_\+param\+\_\+values, dict\mbox{[}str, Any\mbox{]} defaults=\{\}, Any not\+\_\+found\+\_\+value=None, list\mbox{[}str,...\mbox{]}$\vert$None arg\+\_\+names=None \# names of the arguments to \`{}acallable\`{}, in, the, correct, order, as, if, from, inspect, signature, acallable)
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a4a78eeca045be8a46db5bbaee4584472}{variable\+\_\+params}} (self)
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a15d2444cc2b3e4aee00c1aa0d8874558}{wrap\+\_\+callable\+\_\+for\+\_\+ultranest\+\_\+parameter\+\_\+order}} (self, acallable, dict\mbox{[}str, str\mbox{]} arg\+\_\+to\+\_\+param\+\_\+name\+\_\+map=\{\})
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a5f8955a0c0c2d986a96796ae12e0dc5d}{keys}} (Callable acallable, list\mbox{[}str,...\mbox{]}$\vert$None arg\+\_\+names=None \# names of the arguments to \`{}acallable\`{}, in, the, correct, order, as, if, from, inspect, signature, acallable)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_aaf81c1f5c2726e39532faac9e5b6f8e3}{all\+\_\+param\+\_\+index\+\_\+to\+\_\+constant\+\_\+param\+\_\+index\+\_\+map}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a20ee29d1b8556468ccf068c8ccd491ab}{all\+\_\+param\+\_\+index\+\_\+to\+\_\+variable\+\_\+param\+\_\+index\+\_\+map}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_aa0f6866c6b2a7cc92c41c3fa1c884c71}{param\+\_\+name\+\_\+index\+\_\+map}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a7c1b79dd6006d30b47e3a16ac0842a62}{prior\+\_\+params}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}    A collection of PriorParam instances, used to define the fitting region for a fitting function.\end{DoxyVerb}
+ 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_aa1fc25253fb90cf4a514e13bfcc8dc86}\label{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_aa1fc25253fb90cf4a514e13bfcc8dc86}} 
+\index{aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+optimise\+\_\+compat.\+Prior\+Param\+Set.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{$\ast$}]{prior\+\_\+params }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_ad6f05162d6a853ae0e1a695db8cef33d}\label{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_ad6f05162d6a853ae0e1a695db8cef33d}} 
+\index{aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}!\_\_getitem\_\_@{\_\_getitem\_\_}}
+\index{\_\_getitem\_\_@{\_\_getitem\_\_}!aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}}
+\doxysubsubsection{\texorpdfstring{\_\_getitem\_\_()}{\_\_getitem\_\_()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+optimise\+\_\+compat.\+Prior\+Param\+Set.\+\_\+\+\_\+getitem\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{str $\vert$ int}]{k }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Retrieves a parameter by name or index\end{DoxyVerb}
+ \mbox{\Hypertarget{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_aa924064ef72a8bf643cbf28a5582d49d}\label{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_aa924064ef72a8bf643cbf28a5582d49d}} 
+\index{aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}!\_\_len\_\_@{\_\_len\_\_}}
+\index{\_\_len\_\_@{\_\_len\_\_}!aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}}
+\doxysubsubsection{\texorpdfstring{\_\_len\_\_()}{\_\_len\_\_()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+optimise\+\_\+compat.\+Prior\+Param\+Set.\+\_\+\+\_\+len\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a605cd38c00855ad7e8bdc63967c2ee40}\label{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a605cd38c00855ad7e8bdc63967c2ee40}} 
+\index{aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}!\_\_repr\_\_@{\_\_repr\_\_}}
+\index{\_\_repr\_\_@{\_\_repr\_\_}!aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}}
+\doxysubsubsection{\texorpdfstring{\_\_repr\_\_()}{\_\_repr\_\_()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+optimise\+\_\+compat.\+Prior\+Param\+Set.\+\_\+\+\_\+repr\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_acba24b9b0a914eb238be2c880bfa9f47}\label{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_acba24b9b0a914eb238be2c880bfa9f47}} 
+\index{aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}!all\_params@{all\_params}}
+\index{all\_params@{all\_params}!aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}}
+\doxysubsubsection{\texorpdfstring{all\_params()}{all\_params()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+optimise\+\_\+compat.\+Prior\+Param\+Set.\+all\+\_\+params (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        The names of all paramters\end{DoxyVerb}
+ Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d9/d34/classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_acba24b9b0a914eb238be2c880bfa9f47_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a166fead3e7511142804eac4863756163}\label{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a166fead3e7511142804eac4863756163}} 
+\index{aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}!append@{append}}
+\index{append@{append}!aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}}
+\doxysubsubsection{\texorpdfstring{append()}{append()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+optimise\+\_\+compat.\+Prior\+Param\+Set.\+append (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{\mbox{\hyperlink{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParam}{Prior\+Param}}}]{p }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Adds a PriorParam to the set \end{DoxyVerb}
+ \mbox{\Hypertarget{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a1b3d9f725143419fa4bb7bdd1ada1f1d}\label{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a1b3d9f725143419fa4bb7bdd1ada1f1d}} 
+\index{aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}!constant\_params@{constant\_params}}
+\index{constant\_params@{constant\_params}!aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}}
+\doxysubsubsection{\texorpdfstring{constant\_params()}{constant\_params()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+optimise\+\_\+compat.\+Prior\+Param\+Set.\+constant\+\_\+params (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        The names of the constant parameters\end{DoxyVerb}
+ Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d9/d34/classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a1b3d9f725143419fa4bb7bdd1ada1f1d_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d9/d34/classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a1b3d9f725143419fa4bb7bdd1ada1f1d_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_ac9c4f8057a83fb85fa1327bd2a8b0ea3}\label{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_ac9c4f8057a83fb85fa1327bd2a8b0ea3}} 
+\index{aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}!consts@{consts}}
+\index{consts@{consts}!aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}}
+\doxysubsubsection{\texorpdfstring{consts()}{consts()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+optimise\+\_\+compat.\+Prior\+Param\+Set.\+consts (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Returns a dictionary of the constant parameter names and values\end{DoxyVerb}
+ Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d9/d34/classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_ac9c4f8057a83fb85fa1327bd2a8b0ea3_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_ab3ec78e2d92c92d474f639049df4c40c}\label{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_ab3ec78e2d92c92d474f639049df4c40c}} 
+\index{aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}!get\_linear\_transform\_to\_domain@{get\_linear\_transform\_to\_domain}}
+\index{get\_linear\_transform\_to\_domain@{get\_linear\_transform\_to\_domain}!aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}}
+\doxysubsubsection{\texorpdfstring{get\_linear\_transform\_to\_domain()}{get\_linear\_transform\_to\_domain()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+optimise\+\_\+compat.\+Prior\+Param\+Set.\+get\+\_\+linear\+\_\+transform\+\_\+to\+\_\+domain (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{tuple\mbox{[}str\mbox{]} $\vert$ list\mbox{[}str\mbox{]}}]{param\+\_\+names,  }\item[{tuple\mbox{[}float,float\mbox{]} $\vert$ list\mbox{[}float,float\mbox{]} $\vert$ np.\+ndarray\mbox{[}\mbox{[}2,\textquotesingle{}N\textquotesingle{}\mbox{]},float\mbox{]}}]{in\+\_\+domain }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Gets a linear transform from some input domain to some output domain for a set of parameter names\end{DoxyVerb}
+ Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d9/d34/classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_ab3ec78e2d92c92d474f639049df4c40c_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a5f8955a0c0c2d986a96796ae12e0dc5d}\label{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a5f8955a0c0c2d986a96796ae12e0dc5d}} 
+\index{aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}!keys@{keys}}
+\index{keys@{keys}!aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}}
+\doxysubsubsection{\texorpdfstring{keys()}{keys()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+optimise\+\_\+compat.\+Prior\+Param\+Set.\+keys (\begin{DoxyParamCaption}\item[{Callable}]{acallable,  }\item[{list\mbox{[}str,...\mbox{]} $\vert$ None }]{arg\+\_\+names = {\ttfamily None~\#~names~of~the~arguments~to~\`{}acallable\`{}},  }\item[{}]{in,  }\item[{}]{the,  }\item[{}]{correct,  }\item[{}]{order,  }\item[{}]{as,  }\item[{}]{if,  }\item[{}]{from,  }\item[{}]{inspect,  }\item[{}]{signature,  }\item[{}]{acallable }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\begin{DoxyVerb}        Returns the argument names of the passed callable, if the callable has a "arg_names" attribute, returns that otherwise uses the inspect module.
+        
+        # ARGUMENTS #
+            acallable : Callable
+                Some callable to get the argument names of
+            arg_names : None | list[str,...]
+                If not None, returns this instead of doing any work. Useful if you know exactly what the argument names of the callable are.\end{DoxyVerb}
+ Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d9/d34/classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a5f8955a0c0c2d986a96796ae12e0dc5d_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a225f6473f403e0a427a48938933b4004}\label{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a225f6473f403e0a427a48938933b4004}} 
+\index{aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}!keys@{keys}}
+\index{keys@{keys}!aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}}
+\doxysubsubsection{\texorpdfstring{keys()}{keys()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+optimise\+\_\+compat.\+Prior\+Param\+Set.\+keys (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{acallable,  }\item[{$\ast$dict\mbox{[}str,str\mbox{]} }]{arg\+\_\+to\+\_\+param\+\_\+name\+\_\+map = {\ttfamily \{\}},  }\item[{}]{constant\+\_\+params\+\_\+as\+\_\+defaults = {\ttfamily True},  }\item[{list\mbox{[}str,...\mbox{]} $\vert$ None }]{arg\+\_\+names = {\ttfamily None~\#~names~of~the~arguments~to~\`{}acallable\`{}},  }\item[{}]{in,  }\item[{}]{the,  }\item[{}]{correct,  }\item[{}]{order,  }\item[{}]{as,  }\item[{}]{if,  }\item[{}]{from,  }\item[{}]{inspect,  }\item[{}]{signature,  }\item[{}]{acallable }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Put in a callable with some arguments `callable(arg1, arg2, arg3,...)`, returns a callable 
+        that packs all variable params as the first argument, and all const params as the other arguments.
+        
+        i.e. 
+        accepts callable: 
+            `callable(arg1, arg2, arg3, arg4, ...)`
+        returns callable: 
+            `callable((arg1,arg3,...), arg2, arg4, ...)`
+        
+        # RETURNS #
+            new_callable
+                A wrapper that accepts all variable parameters as the first argument, and all constant parameters as the other arguments
+            var_params
+                A list of the variable parameters in the first argument of `new_callable`, in the order they are present in the first argument
+            const_params
+                A list of the constant parameters that make up the rest of the arguments to `new_callable`, in the order they are present in the argument list.\end{DoxyVerb}
+ \mbox{\Hypertarget{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a18872eb92e73d65008f3bee26442a83a}\label{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a18872eb92e73d65008f3bee26442a83a}} 
+\index{aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}!keys@{keys}}
+\index{keys@{keys}!aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}}
+\doxysubsubsection{\texorpdfstring{keys()}{keys()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+optimise\+\_\+compat.\+Prior\+Param\+Set.\+keys (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{Callable\mbox{[}\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1optimise__compat_a57a902383fd6a55b9f3078dacec9db5e}{P}}, Any\mbox{]}}]{acallable,  }\item[{dict\mbox{[}str,Any\mbox{]}}]{variable\+\_\+param\+\_\+values,  }\item[{dict\mbox{[}str,Any\mbox{]}}]{const\+\_\+param\+\_\+values,  }\item[{dict\mbox{[}str, Any\mbox{]} }]{defaults = {\ttfamily \{\}},  }\item[{Any }]{not\+\_\+found\+\_\+value = {\ttfamily None},  }\item[{list\mbox{[}str,...\mbox{]} $\vert$ None }]{arg\+\_\+names = {\ttfamily None~\#~names~of~the~arguments~to~\`{}acallable\`{}},  }\item[{}]{in,  }\item[{}]{the,  }\item[{}]{correct,  }\item[{}]{order,  }\item[{}]{as,  }\item[{}]{if,  }\item[{}]{from,  }\item[{}]{inspect,  }\item[{}]{signature,  }\item[{}]{acallable }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Given some callable `acallable`, that accepts `arg_names`. Call it with the values for those arguments provided in `variable_param_values`,
+        `const_param_values`, `defaults`, `not_found_value`. Where that list is in order of preference (e.g. an argument in both `const_param_values` and `defaults`
+        will have the value specified in `const_param_values`.
+        
+        If `arg_names` is None, will try and infer the argument names of `acallable` via `self.get_arg_names_of_callable()`.\end{DoxyVerb}
+ \mbox{\Hypertarget{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a4a78eeca045be8a46db5bbaee4584472}\label{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a4a78eeca045be8a46db5bbaee4584472}} 
+\index{aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}!variable\_params@{variable\_params}}
+\index{variable\_params@{variable\_params}!aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}}
+\doxysubsubsection{\texorpdfstring{variable\_params()}{variable\_params()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+optimise\+\_\+compat.\+Prior\+Param\+Set.\+variable\+\_\+params (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        The names of the variable parameters\end{DoxyVerb}
+ Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d9/d34/classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a4a78eeca045be8a46db5bbaee4584472_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d9/d34/classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a4a78eeca045be8a46db5bbaee4584472_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a15d2444cc2b3e4aee00c1aa0d8874558}\label{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a15d2444cc2b3e4aee00c1aa0d8874558}} 
+\index{aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}!wrap\_callable\_for\_ultranest\_parameter\_order@{wrap\_callable\_for\_ultranest\_parameter\_order}}
+\index{wrap\_callable\_for\_ultranest\_parameter\_order@{wrap\_callable\_for\_ultranest\_parameter\_order}!aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}}
+\doxysubsubsection{\texorpdfstring{wrap\_callable\_for\_ultranest\_parameter\_order()}{wrap\_callable\_for\_ultranest\_parameter\_order()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+optimise\+\_\+compat.\+Prior\+Param\+Set.\+wrap\+\_\+callable\+\_\+for\+\_\+ultranest\+\_\+parameter\+\_\+order (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{acallable,  }\item[{dict\mbox{[}str,str\mbox{]} }]{arg\+\_\+to\+\_\+param\+\_\+name\+\_\+map = {\ttfamily \{\}} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Put in a callable with some arguments `callable(arg1, arg2, arg3,...)`, returns a callable 
+        that packs all params as the first argument.
+        
+        i.e. 
+        accepts callable: 
+            `callable(arg1, arg2, arg3, arg4, ...)`
+        
+        returns callable: 
+            `callable(
+                (arg1,arg3, arg2, arg4, ...)
+            )`
+        
+        # RETURNS #
+            new_callable
+                Wrapper that accepts arguments as a single tuple
+            param_names
+                Parameters names in the order they go into `new_callable`\end{DoxyVerb}
+ 
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_aaf81c1f5c2726e39532faac9e5b6f8e3}\label{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_aaf81c1f5c2726e39532faac9e5b6f8e3}} 
+\index{aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}!all\_param\_index\_to\_constant\_param\_index\_map@{all\_param\_index\_to\_constant\_param\_index\_map}}
+\index{all\_param\_index\_to\_constant\_param\_index\_map@{all\_param\_index\_to\_constant\_param\_index\_map}!aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}}
+\doxysubsubsection{\texorpdfstring{all\_param\_index\_to\_constant\_param\_index\_map}{all\_param\_index\_to\_constant\_param\_index\_map}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+optimise\+\_\+compat.\+Prior\+Param\+Set.\+all\+\_\+param\+\_\+index\+\_\+to\+\_\+constant\+\_\+param\+\_\+index\+\_\+map}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a20ee29d1b8556468ccf068c8ccd491ab}\label{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a20ee29d1b8556468ccf068c8ccd491ab}} 
+\index{aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}!all\_param\_index\_to\_variable\_param\_index\_map@{all\_param\_index\_to\_variable\_param\_index\_map}}
+\index{all\_param\_index\_to\_variable\_param\_index\_map@{all\_param\_index\_to\_variable\_param\_index\_map}!aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}}
+\doxysubsubsection{\texorpdfstring{all\_param\_index\_to\_variable\_param\_index\_map}{all\_param\_index\_to\_variable\_param\_index\_map}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+optimise\+\_\+compat.\+Prior\+Param\+Set.\+all\+\_\+param\+\_\+index\+\_\+to\+\_\+variable\+\_\+param\+\_\+index\+\_\+map}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_aa0f6866c6b2a7cc92c41c3fa1c884c71}\label{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_aa0f6866c6b2a7cc92c41c3fa1c884c71}} 
+\index{aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}!param\_name\_index\_map@{param\_name\_index\_map}}
+\index{param\_name\_index\_map@{param\_name\_index\_map}!aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}}
+\doxysubsubsection{\texorpdfstring{param\_name\_index\_map}{param\_name\_index\_map}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+optimise\+\_\+compat.\+Prior\+Param\+Set.\+param\+\_\+name\+\_\+index\+\_\+map}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a7c1b79dd6006d30b47e3a16ac0842a62}\label{classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet_a7c1b79dd6006d30b47e3a16ac0842a62}} 
+\index{aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}!prior\_params@{prior\_params}}
+\index{prior\_params@{prior\_params}!aopp\_deconv\_tool.optimise\_compat.PriorParamSet@{aopp\_deconv\_tool.optimise\_compat.PriorParamSet}}
+\doxysubsubsection{\texorpdfstring{prior\_params}{prior\_params}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+optimise\+\_\+compat.\+Prior\+Param\+Set.\+prior\+\_\+params}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/aopp\+\_\+deconv\+\_\+tool/optimise\+\_\+compat/\mbox{\hyperlink{optimise__compat_2____init_____8py}{\+\_\+\+\_\+init\+\_\+\+\_\+.\+py}}\end{DoxyCompactItemize}

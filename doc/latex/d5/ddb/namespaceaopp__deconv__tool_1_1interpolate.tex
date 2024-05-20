@@ -1,0 +1,179 @@
+\hypertarget{namespaceaopp__deconv__tool_1_1interpolate}{}\doxysection{aopp\+\_\+deconv\+\_\+tool.\+interpolate Namespace Reference}
+\label{namespaceaopp__deconv__tool_1_1interpolate}\index{aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1interpolate_a480b68450d8f49b2e86d4c9f573c6c9e}{get\+\_\+bad\+\_\+pixel\+\_\+map}} (np.\+ndarray a, Literal\mbox{[}\textquotesingle{}ssa\textquotesingle{}\mbox{]}$\vert$Literal\mbox{[}\textquotesingle{}simple\textquotesingle{}\mbox{]} method, None$\vert$list\mbox{[}Literal\mbox{[}\textquotesingle{}opening\textquotesingle{}\mbox{]}$\vert$Literal\mbox{[}\textquotesingle{}closing\textquotesingle{}\mbox{]}$\vert$Literal\mbox{[}\textquotesingle{}dilation\textquotesingle{}\mbox{]}$\vert$Literal\mbox{[}\textquotesingle{}erosion\textquotesingle{}\mbox{]}\mbox{]} perform\+\_\+binary\+\_\+operation=None)
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1interpolate_a97bffddcfd46d2fbaea79aaf1cc6d6a4}{get\+\_\+data\+\_\+ssa}} (a, $\ast$$\ast$kwargs)
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1interpolate_a340c73134a56d5761c123e5ea1c02637}{get\+\_\+interp\+\_\+at\+\_\+mask}} (a, mask, method)
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1interpolate_abf004ff77536f8a4c52a86709a9ae800}{parse\+\_\+args}} (argv)
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1interpolate_ad7bd4cbc6bac7697f58b5e50297e6bf6}{run}} (\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1interpolate_a3ffeae1cf8fabd3e7c63a0ceb5ecb2d5}{fits\+\_\+spec}}, \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1interpolate_a257a281a28d6a85cd919adf12664c1e0}{output\+\_\+path}}, \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1interpolate_af5f62b18737b2939e29b29795ecb733d}{bad\+\_\+pixel\+\_\+method}}=\textquotesingle{}ssa\textquotesingle{}, \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1interpolate_a17316356c6d67a6f9cea85db86ec7bd8}{interp\+\_\+method}}=\textquotesingle{}ssa\textquotesingle{})
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1interpolate_a49e85b0362c2c9f5f40b228a6a44f11e}{set\+\_\+data\+\_\+ssa}} (value)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1interpolate_aef6a76e967ad73d32051a3ae3a62829a}{\+\_\+lgr}} = \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1cfg_1_1logs_a858779f4bf60872f01cc77b643fedc79}{aopp\+\_\+deconv\+\_\+tool.\+cfg.\+logs.\+get\+\_\+logger\+\_\+at\+\_\+level}}(\+\_\+\+\_\+name\+\_\+\+\_\+, \textquotesingle{}DEBUG\textquotesingle{})
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1interpolate_a1083826e8a7aa400698688f699183edd}{args}} = \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1interpolate_abf004ff77536f8a4c52a86709a9ae800}{parse\+\_\+args}}(sys.\+argv\mbox{[}1\+:\mbox{]})
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1interpolate_af5f62b18737b2939e29b29795ecb733d}{bad\+\_\+pixel\+\_\+method}}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1interpolate_a5848aa960cc5132a989ec0fb3c152910}{data\+\_\+ssa}} = None
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1interpolate_a3ffeae1cf8fabd3e7c63a0ceb5ecb2d5}{fits\+\_\+spec}}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1interpolate_a17316356c6d67a6f9cea85db86ec7bd8}{interp\+\_\+method}}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1interpolate_a257a281a28d6a85cd919adf12664c1e0}{output\+\_\+path}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Quick tool for interpolating data in a FITS file
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1interpolate_a480b68450d8f49b2e86d4c9f573c6c9e}\label{namespaceaopp__deconv__tool_1_1interpolate_a480b68450d8f49b2e86d4c9f573c6c9e}} 
+\index{aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}!get\_bad\_pixel\_map@{get\_bad\_pixel\_map}}
+\index{get\_bad\_pixel\_map@{get\_bad\_pixel\_map}!aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}}
+\doxysubsubsection{\texorpdfstring{get\_bad\_pixel\_map()}{get\_bad\_pixel\_map()}}
+{\footnotesize\ttfamily  np.\+ndarray aopp\+\_\+deconv\+\_\+tool.\+interpolate.\+get\+\_\+bad\+\_\+pixel\+\_\+map (\begin{DoxyParamCaption}\item[{np.\+ndarray}]{a,  }\item[{Literal\mbox{[}\textquotesingle{}ssa\textquotesingle{}\mbox{]} $\vert$ Literal\mbox{[}\textquotesingle{}simple\textquotesingle{}\mbox{]}}]{method,  }\item[{None $\vert$ list\mbox{[}Literal\mbox{[}\textquotesingle{}opening\textquotesingle{}\mbox{]} $\vert$ Literal\mbox{[}\textquotesingle{}closing\textquotesingle{}\mbox{]} $\vert$ Literal\mbox{[}\textquotesingle{}dilation\textquotesingle{}\mbox{]} $\vert$ Literal\mbox{[}\textquotesingle{}erosion\textquotesingle{}\mbox{]}\mbox{]} }]{perform\+\_\+binary\+\_\+operation = {\ttfamily None} }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d5/ddb/namespaceaopp__deconv__tool_1_1interpolate_a480b68450d8f49b2e86d4c9f573c6c9e_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d5/ddb/namespaceaopp__deconv__tool_1_1interpolate_a480b68450d8f49b2e86d4c9f573c6c9e_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1interpolate_a97bffddcfd46d2fbaea79aaf1cc6d6a4}\label{namespaceaopp__deconv__tool_1_1interpolate_a97bffddcfd46d2fbaea79aaf1cc6d6a4}} 
+\index{aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}!get\_data\_ssa@{get\_data\_ssa}}
+\index{get\_data\_ssa@{get\_data\_ssa}!aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}}
+\doxysubsubsection{\texorpdfstring{get\_data\_ssa()}{get\_data\_ssa()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+interpolate.\+get\+\_\+data\+\_\+ssa (\begin{DoxyParamCaption}\item[{}]{a,  }\item[{$\ast$$\ast$}]{kwargs }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d5/ddb/namespaceaopp__deconv__tool_1_1interpolate_a97bffddcfd46d2fbaea79aaf1cc6d6a4_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1interpolate_a340c73134a56d5761c123e5ea1c02637}\label{namespaceaopp__deconv__tool_1_1interpolate_a340c73134a56d5761c123e5ea1c02637}} 
+\index{aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}!get\_interp\_at\_mask@{get\_interp\_at\_mask}}
+\index{get\_interp\_at\_mask@{get\_interp\_at\_mask}!aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}}
+\doxysubsubsection{\texorpdfstring{get\_interp\_at\_mask()}{get\_interp\_at\_mask()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+interpolate.\+get\+\_\+interp\+\_\+at\+\_\+mask (\begin{DoxyParamCaption}\item[{}]{a,  }\item[{}]{mask,  }\item[{}]{method }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d5/ddb/namespaceaopp__deconv__tool_1_1interpolate_a340c73134a56d5761c123e5ea1c02637_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d5/ddb/namespaceaopp__deconv__tool_1_1interpolate_a340c73134a56d5761c123e5ea1c02637_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1interpolate_abf004ff77536f8a4c52a86709a9ae800}\label{namespaceaopp__deconv__tool_1_1interpolate_abf004ff77536f8a4c52a86709a9ae800}} 
+\index{aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}!parse\_args@{parse\_args}}
+\index{parse\_args@{parse\_args}!aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}}
+\doxysubsubsection{\texorpdfstring{parse\_args()}{parse\_args()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+interpolate.\+parse\+\_\+args (\begin{DoxyParamCaption}\item[{}]{argv }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d5/ddb/namespaceaopp__deconv__tool_1_1interpolate_abf004ff77536f8a4c52a86709a9ae800_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1interpolate_ad7bd4cbc6bac7697f58b5e50297e6bf6}\label{namespaceaopp__deconv__tool_1_1interpolate_ad7bd4cbc6bac7697f58b5e50297e6bf6}} 
+\index{aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}!run@{run}}
+\index{run@{run}!aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}}
+\doxysubsubsection{\texorpdfstring{run()}{run()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+interpolate.\+run (\begin{DoxyParamCaption}\item[{}]{fits\+\_\+spec,  }\item[{}]{output\+\_\+path,  }\item[{}]{bad\+\_\+pixel\+\_\+method = {\ttfamily \textquotesingle{}ssa\textquotesingle{}},  }\item[{}]{interp\+\_\+method = {\ttfamily \textquotesingle{}ssa\textquotesingle{}} }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d5/ddb/namespaceaopp__deconv__tool_1_1interpolate_ad7bd4cbc6bac7697f58b5e50297e6bf6_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1interpolate_a49e85b0362c2c9f5f40b228a6a44f11e}\label{namespaceaopp__deconv__tool_1_1interpolate_a49e85b0362c2c9f5f40b228a6a44f11e}} 
+\index{aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}!set\_data\_ssa@{set\_data\_ssa}}
+\index{set\_data\_ssa@{set\_data\_ssa}!aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}}
+\doxysubsubsection{\texorpdfstring{set\_data\_ssa()}{set\_data\_ssa()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+interpolate.\+set\+\_\+data\+\_\+ssa (\begin{DoxyParamCaption}\item[{}]{value }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d5/ddb/namespaceaopp__deconv__tool_1_1interpolate_a49e85b0362c2c9f5f40b228a6a44f11e_icgraph}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1interpolate_aef6a76e967ad73d32051a3ae3a62829a}\label{namespaceaopp__deconv__tool_1_1interpolate_aef6a76e967ad73d32051a3ae3a62829a}} 
+\index{aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}!\_lgr@{\_lgr}}
+\index{\_lgr@{\_lgr}!aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}}
+\doxysubsubsection{\texorpdfstring{\_lgr}{\_lgr}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+interpolate.\+\_\+lgr = \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1cfg_1_1logs_a858779f4bf60872f01cc77b643fedc79}{aopp\+\_\+deconv\+\_\+tool.\+cfg.\+logs.\+get\+\_\+logger\+\_\+at\+\_\+level}}(\+\_\+\+\_\+name\+\_\+\+\_\+, \textquotesingle{}DEBUG\textquotesingle{})\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1interpolate_a1083826e8a7aa400698688f699183edd}\label{namespaceaopp__deconv__tool_1_1interpolate_a1083826e8a7aa400698688f699183edd}} 
+\index{aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}!args@{args}}
+\index{args@{args}!aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}}
+\doxysubsubsection{\texorpdfstring{args}{args}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+interpolate.\+args = \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1interpolate_abf004ff77536f8a4c52a86709a9ae800}{parse\+\_\+args}}(sys.\+argv\mbox{[}1\+:\mbox{]})}
+
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1interpolate_af5f62b18737b2939e29b29795ecb733d}\label{namespaceaopp__deconv__tool_1_1interpolate_af5f62b18737b2939e29b29795ecb733d}} 
+\index{aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}!bad\_pixel\_method@{bad\_pixel\_method}}
+\index{bad\_pixel\_method@{bad\_pixel\_method}!aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}}
+\doxysubsubsection{\texorpdfstring{bad\_pixel\_method}{bad\_pixel\_method}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+interpolate.\+bad\+\_\+pixel\+\_\+method}
+
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1interpolate_a5848aa960cc5132a989ec0fb3c152910}\label{namespaceaopp__deconv__tool_1_1interpolate_a5848aa960cc5132a989ec0fb3c152910}} 
+\index{aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}!data\_ssa@{data\_ssa}}
+\index{data\_ssa@{data\_ssa}!aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}}
+\doxysubsubsection{\texorpdfstring{data\_ssa}{data\_ssa}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+interpolate.\+data\+\_\+ssa = None}
+
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1interpolate_a3ffeae1cf8fabd3e7c63a0ceb5ecb2d5}\label{namespaceaopp__deconv__tool_1_1interpolate_a3ffeae1cf8fabd3e7c63a0ceb5ecb2d5}} 
+\index{aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}!fits\_spec@{fits\_spec}}
+\index{fits\_spec@{fits\_spec}!aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}}
+\doxysubsubsection{\texorpdfstring{fits\_spec}{fits\_spec}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+interpolate.\+fits\+\_\+spec}
+
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1interpolate_a17316356c6d67a6f9cea85db86ec7bd8}\label{namespaceaopp__deconv__tool_1_1interpolate_a17316356c6d67a6f9cea85db86ec7bd8}} 
+\index{aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}!interp\_method@{interp\_method}}
+\index{interp\_method@{interp\_method}!aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}}
+\doxysubsubsection{\texorpdfstring{interp\_method}{interp\_method}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+interpolate.\+interp\+\_\+method}
+
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1interpolate_a257a281a28d6a85cd919adf12664c1e0}\label{namespaceaopp__deconv__tool_1_1interpolate_a257a281a28d6a85cd919adf12664c1e0}} 
+\index{aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}!output\_path@{output\_path}}
+\index{output\_path@{output\_path}!aopp\_deconv\_tool.interpolate@{aopp\_deconv\_tool.interpolate}}
+\doxysubsubsection{\texorpdfstring{output\_path}{output\_path}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+interpolate.\+output\+\_\+path}
+

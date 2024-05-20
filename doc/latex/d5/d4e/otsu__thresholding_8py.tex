@@ -1,0 +1,37 @@
+\hypertarget{otsu__thresholding_8py}{}\doxysection{src/aopp\+\_\+deconv\+\_\+tool/image\+\_\+processing/otsu\+\_\+thresholding.py File Reference}
+\label{otsu__thresholding_8py}\index{src/aopp\_deconv\_tool/image\_processing/otsu\_thresholding.py@{src/aopp\_deconv\_tool/image\_processing/otsu\_thresholding.py}}
+\doxysubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1image__processing_1_1otsu__thresholding}{aopp\+\_\+deconv\+\_\+tool.\+image\+\_\+processing.\+otsu\+\_\+thresholding}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1image__processing_1_1otsu__thresholding_a2413532439200b57adce2b8c5b50a785}{aopp\+\_\+deconv\+\_\+tool.\+image\+\_\+processing.\+otsu\+\_\+thresholding.\+calc}} (counts, bin\+\_\+edges)
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1image__processing_1_1otsu__thresholding_a22f5d4f005f2218b64302951d3873b9a}{aopp\+\_\+deconv\+\_\+tool.\+image\+\_\+processing.\+otsu\+\_\+thresholding.\+frac\+\_\+per\+\_\+fpix\+\_\+threshold}} (data, frac\+\_\+per\+\_\+fpix=15, n\+\_\+max=10, on\+\_\+fail=\textquotesingle{}return\+\_\+last\textquotesingle{})
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1image__processing_1_1otsu__thresholding_ab26822a35e0322a9f2d0f1de155814c9}{aopp\+\_\+deconv\+\_\+tool.\+image\+\_\+processing.\+otsu\+\_\+thresholding.\+max\+\_\+frac\+\_\+diff\+\_\+threshold}} (data, n\+\_\+max=10)
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1image__processing_1_1otsu__thresholding_a87f611c8cf03a9f630bc495f2e0cb411}{aopp\+\_\+deconv\+\_\+tool.\+image\+\_\+processing.\+otsu\+\_\+thresholding.\+max\+\_\+frac\+\_\+per\+\_\+fpix\+\_\+threshold}} (data, n\+\_\+max=10)
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1image__processing_1_1otsu__thresholding_a207be5bc810a1726583a0e53a91a4dd8}{aopp\+\_\+deconv\+\_\+tool.\+image\+\_\+processing.\+otsu\+\_\+thresholding.\+n\+\_\+thresholds}} (data, n)
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1image__processing_1_1otsu__thresholding_aa6ca62c3d059ab6a82b443936fdf40b3}{aopp\+\_\+deconv\+\_\+tool.\+image\+\_\+processing.\+otsu\+\_\+thresholding.\+plot\+\_\+repeats}} (data, n=4)
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1image__processing_1_1otsu__thresholding_ac76e74a8dc1b47b8b7034aea5328a62a}{aopp\+\_\+deconv\+\_\+tool.\+image\+\_\+processing.\+otsu\+\_\+thresholding.\+polynomial}} (coef, x)
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1image__processing_1_1otsu__thresholding_abdbe5216a6f3901aad2e2220cbf92b61}{aopp\+\_\+deconv\+\_\+tool.\+image\+\_\+processing.\+otsu\+\_\+thresholding.\+threshold}} (bin\+\_\+edges, icv)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1image__processing_1_1otsu__thresholding_abcc32b3a64f902f6beefe733106b0ee2}{aopp\+\_\+deconv\+\_\+tool.\+image\+\_\+processing.\+otsu\+\_\+thresholding.\+\_\+lgr}} = \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1cfg_1_1logs_a858779f4bf60872f01cc77b643fedc79}{aopp\+\_\+deconv\+\_\+tool.\+cfg.\+logs.\+get\+\_\+logger\+\_\+at\+\_\+level}}(\+\_\+\+\_\+name\+\_\+\+\_\+, \textquotesingle{}DEBUG\textquotesingle{})
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1image__processing_1_1otsu__thresholding_aaf463b5d9fe5c1b63cdb22c3510416cd}{aopp\+\_\+deconv\+\_\+tool.\+image\+\_\+processing.\+otsu\+\_\+thresholding.\+data}} = np.\+abs(hdul\mbox{[}1\mbox{]}.data\mbox{[}data\+\_\+idx\mbox{]})
+\item 
+int \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1image__processing_1_1otsu__thresholding_a347e884e69924bb96e4f0cdd7bf19d14}{aopp\+\_\+deconv\+\_\+tool.\+image\+\_\+processing.\+otsu\+\_\+thresholding.\+data\+\_\+idx}} = 26
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1image__processing_1_1otsu__thresholding_a713b49842eafb66b1bfb0a8775351e4c}{aopp\+\_\+deconv\+\_\+tool.\+image\+\_\+processing.\+otsu\+\_\+thresholding.\+fpath}} = os.\+path.\+expanduser(\char`\"{}$\sim$/scratch/general\+\_\+testing/telecope\+\_\+data/obs10\+\_\+\+MUSE.\+2019-\/10-\/18T00\+:32\+:18.\+867/DATACUBE\+\_\+\+FINAL\+\_\+\+SMOOTH\+\_\+10.\+fits\char`\"{})
+\end{DoxyCompactItemize}

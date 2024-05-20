@@ -1,0 +1,246 @@
+\hypertarget{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel}{}\doxysection{aopp\+\_\+deconv\+\_\+tool.\+adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+PSFModel Class Reference}
+\label{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel}\index{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_af13391db4d5eb7df1ee7da6094623dc4}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, Callable\mbox{[}\mbox{[}tuple\mbox{[}int,...\mbox{]}, float, float,...\mbox{]}, Optical\+Transfer\+Function\mbox{]}$\vert$Optical\+Transfer\+Function \mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a0caca9fc754498f933a63a70eccafcf6}{telescope\+\_\+otf\+\_\+model}}, Callable\mbox{[}\mbox{[}np.\+ndarray,...\mbox{]}, Phase\+Power\+Spectral\+Density\mbox{]}$\vert$Phase\+Power\+Spectral\+Density \mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a835a9775d79bf011ae93da42a43645ad}{atmospheric\+\_\+turbulence\+\_\+psd\+\_\+model}}, Callable\mbox{[}\mbox{[}np.\+ndarray,...\mbox{]}, Phase\+Power\+Spectral\+Density\mbox{]}$\vert$Phase\+Power\+Spectral\+Density \mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a652442502b1643f408756fbb562c40f8}{adaptive\+\_\+optics\+\_\+psd\+\_\+model}}, Instrument\+Base \# \mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a8e322a68cc5d591675353dd0dff984dd}{instrument}} used to take observation \mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a8e322a68cc5d591675353dd0dff984dd}{instrument}}, defines, certain, scale, parameters)
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a8961d8be199d6d4fb4e8c29ab44c09c5}{\+\_\+\+\_\+call\+\_\+\+\_\+}} (self, \mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a3d69b9280748565e0c5ad0dc9713ef74}{telescope\+\_\+otf\+\_\+model\+\_\+args}}, \mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a603e5d9fd9a9f9f347d80447db2bfcca}{atmospheric\+\_\+turbulence\+\_\+psd\+\_\+model\+\_\+args}}, \mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_ad05f36fe2152d1ef799c987ee358dcae}{adaptive\+\_\+optics\+\_\+psd\+\_\+model\+\_\+args}}, \mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a0fbe22d14a2960a9e647ec3b82465abe}{f\+\_\+ao}}, \mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a4ce72bb517ba070af46bcce025520cd9}{ao\+\_\+correction\+\_\+amplitude}}=1, \mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_aedb0097bc7c9d59b2e2a000bbd46460c}{ao\+\_\+correction\+\_\+frac\+\_\+offset}}=0, \mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a06f31cdc6538f839ebb93caf1743e0b9}{s\+\_\+factor}}=0, \mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a79b0a7d4fa617fb7f094810529cf6883}{mode}}=\textquotesingle{}adjust\textquotesingle{})
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_ab210ba593a73b426e07a0d6b6276efe8}{ao\+\_\+corrections\+\_\+to\+\_\+phase\+\_\+psd}} (self, phase\+\_\+psd, ao\+\_\+phase\+\_\+psd, \mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a0fbe22d14a2960a9e647ec3b82465abe}{f\+\_\+ao}}, \mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a4ce72bb517ba070af46bcce025520cd9}{ao\+\_\+correction\+\_\+amplitude}}=1, \mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_aedb0097bc7c9d59b2e2a000bbd46460c}{ao\+\_\+correction\+\_\+frac\+\_\+offset}}=0)
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_ab96767ba47b09eec52cef36d52833187}{at}} (self, wavelength, plots=True)
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a0a1ae3c23f76a399de2932dd7759e625}{optical\+\_\+transfer\+\_\+fuction\+\_\+from\+\_\+phase\+\_\+psd}} (self, phase\+\_\+psd, \mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a79b0a7d4fa617fb7f094810529cf6883}{mode}}=\textquotesingle{}classic\textquotesingle{}, \mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a06f31cdc6538f839ebb93caf1743e0b9}{s\+\_\+factor}}=0)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a9b5b450bc4930f8def349f3d63e4d651}{adaptive\+\_\+optics\+\_\+psd}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a652442502b1643f408756fbb562c40f8}{adaptive\+\_\+optics\+\_\+psd\+\_\+model}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_ad05f36fe2152d1ef799c987ee358dcae}{adaptive\+\_\+optics\+\_\+psd\+\_\+model\+\_\+args}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a4ce72bb517ba070af46bcce025520cd9}{ao\+\_\+correction\+\_\+amplitude}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_aedb0097bc7c9d59b2e2a000bbd46460c}{ao\+\_\+correction\+\_\+frac\+\_\+offset}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_af4583af30e9e5f16713a3878a4fec007}{atmospheric\+\_\+turbulence\+\_\+psd}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a835a9775d79bf011ae93da42a43645ad}{atmospheric\+\_\+turbulence\+\_\+psd\+\_\+model}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a603e5d9fd9a9f9f347d80447db2bfcca}{atmospheric\+\_\+turbulence\+\_\+psd\+\_\+model\+\_\+args}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_aa175ebd8b233c4fcc989ad37017ed1a5}{expansion\+\_\+factor}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a0fbe22d14a2960a9e647ec3b82465abe}{f\+\_\+ao}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a8e322a68cc5d591675353dd0dff984dd}{instrument}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a79b0a7d4fa617fb7f094810529cf6883}{mode}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a06f31cdc6538f839ebb93caf1743e0b9}{s\+\_\+factor}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_aed90d412452ac318d644d3fddf022c08}{shape}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a9e4ecd0976abe1c466f17520812f23eb}{specific\+\_\+model\+\_\+ready}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a2389d77e519e0991283a0bb94eb2d70e}{supersample\+\_\+factor}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a69a88c157cc626edd82fbac9513b0f9b}{telescope\+\_\+otf}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a0caca9fc754498f933a63a70eccafcf6}{telescope\+\_\+otf\+\_\+model}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a3d69b9280748565e0c5ad0dc9713ef74}{telescope\+\_\+otf\+\_\+model\+\_\+args}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}    Class that calculates a model point spread function.\end{DoxyVerb}
+ 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_af13391db4d5eb7df1ee7da6094623dc4}\label{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_af13391db4d5eb7df1ee7da6094623dc4}} 
+\index{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+PSFModel.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{     Callable\mbox{[}\mbox{[}tuple\mbox{[}int,...\mbox{]}, float,float,...\mbox{]},Optical\+Transfer\+Function\mbox{]}     $\vert$ Optical\+Transfer\+Function}]{telescope\+\_\+otf\+\_\+model,  }\item[{     Callable\mbox{[}\mbox{[}np.\+ndarray,...\mbox{]},Phase\+Power\+Spectral\+Density\mbox{]}     $\vert$ Phase\+Power\+Spectral\+Density}]{atmospheric\+\_\+turbulence\+\_\+psd\+\_\+model,  }\item[{     Callable\mbox{[}\mbox{[}np.\+ndarray, ...\mbox{]}, Phase\+Power\+Spectral\+Density\mbox{]}     $\vert$ Phase\+Power\+Spectral\+Density}]{adaptive\+\_\+optics\+\_\+psd\+\_\+model,  }\item[{Instrument\+Base \# \mbox{\hyperlink{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a8e322a68cc5d591675353dd0dff984dd}{instrument}} used to take observation}]{instrument,  }\item[{}]{defines,  }\item[{}]{certain,  }\item[{}]{scale,  }\item[{}]{parameters }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a8961d8be199d6d4fb4e8c29ab44c09c5}\label{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a8961d8be199d6d4fb4e8c29ab44c09c5}} 
+\index{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}!\_\_call\_\_@{\_\_call\_\_}}
+\index{\_\_call\_\_@{\_\_call\_\_}!aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}}
+\doxysubsubsection{\texorpdfstring{\_\_call\_\_()}{\_\_call\_\_()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+PSFModel.\+\_\+\+\_\+call\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{telescope\+\_\+otf\+\_\+model\+\_\+args,  }\item[{}]{atmospheric\+\_\+turbulence\+\_\+psd\+\_\+model\+\_\+args,  }\item[{}]{adaptive\+\_\+optics\+\_\+psd\+\_\+model\+\_\+args,  }\item[{}]{f\+\_\+ao,  }\item[{}]{ao\+\_\+correction\+\_\+amplitude = {\ttfamily 1},  }\item[{}]{ao\+\_\+correction\+\_\+frac\+\_\+offset = {\ttfamily 0},  }\item[{}]{s\+\_\+factor = {\ttfamily 0},  }\item[{}]{mode = {\ttfamily \textquotesingle{}adjust\textquotesingle{}} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Calculate psf in terms of rho/wavelength for given parameters. 
+        We are making an implicit assumption that all of the calculations can be
+        done in rho/wavelength units.\end{DoxyVerb}
+ \mbox{\Hypertarget{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_ab210ba593a73b426e07a0d6b6276efe8}\label{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_ab210ba593a73b426e07a0d6b6276efe8}} 
+\index{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}!ao\_corrections\_to\_phase\_psd@{ao\_corrections\_to\_phase\_psd}}
+\index{ao\_corrections\_to\_phase\_psd@{ao\_corrections\_to\_phase\_psd}!aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}}
+\doxysubsubsection{\texorpdfstring{ao\_corrections\_to\_phase\_psd()}{ao\_corrections\_to\_phase\_psd()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+PSFModel.\+ao\+\_\+corrections\+\_\+to\+\_\+phase\+\_\+psd (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{phase\+\_\+psd,  }\item[{}]{ao\+\_\+phase\+\_\+psd,  }\item[{}]{f\+\_\+ao,  }\item[{}]{ao\+\_\+correction\+\_\+amplitude = {\ttfamily 1},  }\item[{}]{ao\+\_\+correction\+\_\+frac\+\_\+offset = {\ttfamily 0} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Apply adaptive optics corrections to the phase power spectrum distribution of the atmosphere\end{DoxyVerb}
+ Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dc/def/classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_ab210ba593a73b426e07a0d6b6276efe8_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_ab96767ba47b09eec52cef36d52833187}\label{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_ab96767ba47b09eec52cef36d52833187}} 
+\index{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}!at@{at}}
+\index{at@{at}!aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}}
+\doxysubsubsection{\texorpdfstring{at()}{at()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+PSFModel.\+at (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{wavelength,  }\item[{}]{plots = {\ttfamily True} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Calculate psf for a given angular scale and wavelength, i.e. convert
+        from rho/wavelength units to rho units.\end{DoxyVerb}
+ Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dc/def/classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_ab96767ba47b09eec52cef36d52833187_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a0a1ae3c23f76a399de2932dd7759e625}\label{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a0a1ae3c23f76a399de2932dd7759e625}} 
+\index{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}!optical\_transfer\_fuction\_from\_phase\_psd@{optical\_transfer\_fuction\_from\_phase\_psd}}
+\index{optical\_transfer\_fuction\_from\_phase\_psd@{optical\_transfer\_fuction\_from\_phase\_psd}!aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}}
+\doxysubsubsection{\texorpdfstring{optical\_transfer\_fuction\_from\_phase\_psd()}{optical\_transfer\_fuction\_from\_phase\_psd()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+PSFModel.\+optical\+\_\+transfer\+\_\+fuction\+\_\+from\+\_\+phase\+\_\+psd (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{phase\+\_\+psd,  }\item[{}]{mode = {\ttfamily \textquotesingle{}classic\textquotesingle{}},  }\item[{}]{s\+\_\+factor = {\ttfamily 0} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        From a phase power spectral distribution, derive an optical transfer function.\end{DoxyVerb}
+ Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dc/def/classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a0a1ae3c23f76a399de2932dd7759e625_icgraph}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a9b5b450bc4930f8def349f3d63e4d651}\label{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a9b5b450bc4930f8def349f3d63e4d651}} 
+\index{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}!adaptive\_optics\_psd@{adaptive\_optics\_psd}}
+\index{adaptive\_optics\_psd@{adaptive\_optics\_psd}!aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}}
+\doxysubsubsection{\texorpdfstring{adaptive\_optics\_psd}{adaptive\_optics\_psd}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+PSFModel.\+adaptive\+\_\+optics\+\_\+psd}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a652442502b1643f408756fbb562c40f8}\label{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a652442502b1643f408756fbb562c40f8}} 
+\index{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}!adaptive\_optics\_psd\_model@{adaptive\_optics\_psd\_model}}
+\index{adaptive\_optics\_psd\_model@{adaptive\_optics\_psd\_model}!aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}}
+\doxysubsubsection{\texorpdfstring{adaptive\_optics\_psd\_model}{adaptive\_optics\_psd\_model}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+PSFModel.\+adaptive\+\_\+optics\+\_\+psd\+\_\+model}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_ad05f36fe2152d1ef799c987ee358dcae}\label{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_ad05f36fe2152d1ef799c987ee358dcae}} 
+\index{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}!adaptive\_optics\_psd\_model\_args@{adaptive\_optics\_psd\_model\_args}}
+\index{adaptive\_optics\_psd\_model\_args@{adaptive\_optics\_psd\_model\_args}!aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}}
+\doxysubsubsection{\texorpdfstring{adaptive\_optics\_psd\_model\_args}{adaptive\_optics\_psd\_model\_args}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+PSFModel.\+adaptive\+\_\+optics\+\_\+psd\+\_\+model\+\_\+args}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a4ce72bb517ba070af46bcce025520cd9}\label{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a4ce72bb517ba070af46bcce025520cd9}} 
+\index{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}!ao\_correction\_amplitude@{ao\_correction\_amplitude}}
+\index{ao\_correction\_amplitude@{ao\_correction\_amplitude}!aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}}
+\doxysubsubsection{\texorpdfstring{ao\_correction\_amplitude}{ao\_correction\_amplitude}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+PSFModel.\+ao\+\_\+correction\+\_\+amplitude}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_aedb0097bc7c9d59b2e2a000bbd46460c}\label{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_aedb0097bc7c9d59b2e2a000bbd46460c}} 
+\index{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}!ao\_correction\_frac\_offset@{ao\_correction\_frac\_offset}}
+\index{ao\_correction\_frac\_offset@{ao\_correction\_frac\_offset}!aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}}
+\doxysubsubsection{\texorpdfstring{ao\_correction\_frac\_offset}{ao\_correction\_frac\_offset}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+PSFModel.\+ao\+\_\+correction\+\_\+frac\+\_\+offset}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_af4583af30e9e5f16713a3878a4fec007}\label{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_af4583af30e9e5f16713a3878a4fec007}} 
+\index{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}!atmospheric\_turbulence\_psd@{atmospheric\_turbulence\_psd}}
+\index{atmospheric\_turbulence\_psd@{atmospheric\_turbulence\_psd}!aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}}
+\doxysubsubsection{\texorpdfstring{atmospheric\_turbulence\_psd}{atmospheric\_turbulence\_psd}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+PSFModel.\+atmospheric\+\_\+turbulence\+\_\+psd}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a835a9775d79bf011ae93da42a43645ad}\label{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a835a9775d79bf011ae93da42a43645ad}} 
+\index{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}!atmospheric\_turbulence\_psd\_model@{atmospheric\_turbulence\_psd\_model}}
+\index{atmospheric\_turbulence\_psd\_model@{atmospheric\_turbulence\_psd\_model}!aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}}
+\doxysubsubsection{\texorpdfstring{atmospheric\_turbulence\_psd\_model}{atmospheric\_turbulence\_psd\_model}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+PSFModel.\+atmospheric\+\_\+turbulence\+\_\+psd\+\_\+model}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a603e5d9fd9a9f9f347d80447db2bfcca}\label{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a603e5d9fd9a9f9f347d80447db2bfcca}} 
+\index{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}!atmospheric\_turbulence\_psd\_model\_args@{atmospheric\_turbulence\_psd\_model\_args}}
+\index{atmospheric\_turbulence\_psd\_model\_args@{atmospheric\_turbulence\_psd\_model\_args}!aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}}
+\doxysubsubsection{\texorpdfstring{atmospheric\_turbulence\_psd\_model\_args}{atmospheric\_turbulence\_psd\_model\_args}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+PSFModel.\+atmospheric\+\_\+turbulence\+\_\+psd\+\_\+model\+\_\+args}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_aa175ebd8b233c4fcc989ad37017ed1a5}\label{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_aa175ebd8b233c4fcc989ad37017ed1a5}} 
+\index{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}!expansion\_factor@{expansion\_factor}}
+\index{expansion\_factor@{expansion\_factor}!aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}}
+\doxysubsubsection{\texorpdfstring{expansion\_factor}{expansion\_factor}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+PSFModel.\+expansion\+\_\+factor}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a0fbe22d14a2960a9e647ec3b82465abe}\label{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a0fbe22d14a2960a9e647ec3b82465abe}} 
+\index{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}!f\_ao@{f\_ao}}
+\index{f\_ao@{f\_ao}!aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}}
+\doxysubsubsection{\texorpdfstring{f\_ao}{f\_ao}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+PSFModel.\+f\+\_\+ao}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a8e322a68cc5d591675353dd0dff984dd}\label{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a8e322a68cc5d591675353dd0dff984dd}} 
+\index{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}!instrument@{instrument}}
+\index{instrument@{instrument}!aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}}
+\doxysubsubsection{\texorpdfstring{instrument}{instrument}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+PSFModel.\+instrument}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a79b0a7d4fa617fb7f094810529cf6883}\label{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a79b0a7d4fa617fb7f094810529cf6883}} 
+\index{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}!mode@{mode}}
+\index{mode@{mode}!aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}}
+\doxysubsubsection{\texorpdfstring{mode}{mode}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+PSFModel.\+mode}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a06f31cdc6538f839ebb93caf1743e0b9}\label{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a06f31cdc6538f839ebb93caf1743e0b9}} 
+\index{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}!s\_factor@{s\_factor}}
+\index{s\_factor@{s\_factor}!aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}}
+\doxysubsubsection{\texorpdfstring{s\_factor}{s\_factor}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+PSFModel.\+s\+\_\+factor}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_aed90d412452ac318d644d3fddf022c08}\label{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_aed90d412452ac318d644d3fddf022c08}} 
+\index{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}!shape@{shape}}
+\index{shape@{shape}!aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}}
+\doxysubsubsection{\texorpdfstring{shape}{shape}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+PSFModel.\+shape}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a9e4ecd0976abe1c466f17520812f23eb}\label{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a9e4ecd0976abe1c466f17520812f23eb}} 
+\index{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}!specific\_model\_ready@{specific\_model\_ready}}
+\index{specific\_model\_ready@{specific\_model\_ready}!aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}}
+\doxysubsubsection{\texorpdfstring{specific\_model\_ready}{specific\_model\_ready}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+PSFModel.\+specific\+\_\+model\+\_\+ready}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a2389d77e519e0991283a0bb94eb2d70e}\label{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a2389d77e519e0991283a0bb94eb2d70e}} 
+\index{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}!supersample\_factor@{supersample\_factor}}
+\index{supersample\_factor@{supersample\_factor}!aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}}
+\doxysubsubsection{\texorpdfstring{supersample\_factor}{supersample\_factor}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+PSFModel.\+supersample\+\_\+factor}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a69a88c157cc626edd82fbac9513b0f9b}\label{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a69a88c157cc626edd82fbac9513b0f9b}} 
+\index{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}!telescope\_otf@{telescope\_otf}}
+\index{telescope\_otf@{telescope\_otf}!aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}}
+\doxysubsubsection{\texorpdfstring{telescope\_otf}{telescope\_otf}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+PSFModel.\+telescope\+\_\+otf}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a0caca9fc754498f933a63a70eccafcf6}\label{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a0caca9fc754498f933a63a70eccafcf6}} 
+\index{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}!telescope\_otf\_model@{telescope\_otf\_model}}
+\index{telescope\_otf\_model@{telescope\_otf\_model}!aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}}
+\doxysubsubsection{\texorpdfstring{telescope\_otf\_model}{telescope\_otf\_model}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+PSFModel.\+telescope\+\_\+otf\+\_\+model}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a3d69b9280748565e0c5ad0dc9713ef74}\label{classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel_a3d69b9280748565e0c5ad0dc9713ef74}} 
+\index{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}!telescope\_otf\_model\_args@{telescope\_otf\_model\_args}}
+\index{telescope\_otf\_model\_args@{telescope\_otf\_model\_args}!aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel@{aopp\_deconv\_tool.adaptive\_optics\_psf\_model.PSFModel}}
+\doxysubsubsection{\texorpdfstring{telescope\_otf\_model\_args}{telescope\_otf\_model\_args}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+PSFModel.\+telescope\+\_\+otf\+\_\+model\+\_\+args}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/aopp\+\_\+deconv\+\_\+tool/\mbox{\hyperlink{adaptive__optics__psf__model_8py}{adaptive\+\_\+optics\+\_\+psf\+\_\+model.\+py}}\end{DoxyCompactItemize}

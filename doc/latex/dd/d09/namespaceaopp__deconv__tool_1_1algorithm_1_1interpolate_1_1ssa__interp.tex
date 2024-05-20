@@ -1,0 +1,59 @@
+\hypertarget{namespaceaopp__deconv__tool_1_1algorithm_1_1interpolate_1_1ssa__interp}{}\doxysection{aopp\+\_\+deconv\+\_\+tool.\+algorithm.\+interpolate.\+ssa\+\_\+interp Namespace Reference}
+\label{namespaceaopp__deconv__tool_1_1algorithm_1_1interpolate_1_1ssa__interp}\index{aopp\_deconv\_tool.algorithm.interpolate.ssa\_interp@{aopp\_deconv\_tool.algorithm.interpolate.ssa\_interp}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1algorithm_1_1interpolate_1_1ssa__interp_a3870328369bd6304c562145fdc92848d}{ssa\+\_\+intepolate\+\_\+at\+\_\+mask}} (ssa, mask, start=0, stop=None, value=0.\+5, show\+\_\+plots=0)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1algorithm_1_1interpolate_1_1ssa__interp_aa31efcf9612cd6e70d6ce6bfd9098516}{\+\_\+lgr}} = \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1cfg_1_1logs_a858779f4bf60872f01cc77b643fedc79}{aopp\+\_\+deconv\+\_\+tool.\+cfg.\+logs.\+get\+\_\+logger\+\_\+at\+\_\+level}}(\+\_\+\+\_\+name\+\_\+\+\_\+, \textquotesingle{}DEBUG\textquotesingle{})
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Uses SSA to get values for interpolation of data
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1algorithm_1_1interpolate_1_1ssa__interp_a3870328369bd6304c562145fdc92848d}\label{namespaceaopp__deconv__tool_1_1algorithm_1_1interpolate_1_1ssa__interp_a3870328369bd6304c562145fdc92848d}} 
+\index{aopp\_deconv\_tool.algorithm.interpolate.ssa\_interp@{aopp\_deconv\_tool.algorithm.interpolate.ssa\_interp}!ssa\_intepolate\_at\_mask@{ssa\_intepolate\_at\_mask}}
+\index{ssa\_intepolate\_at\_mask@{ssa\_intepolate\_at\_mask}!aopp\_deconv\_tool.algorithm.interpolate.ssa\_interp@{aopp\_deconv\_tool.algorithm.interpolate.ssa\_interp}}
+\doxysubsubsection{\texorpdfstring{ssa\_intepolate\_at\_mask()}{ssa\_intepolate\_at\_mask()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+algorithm.\+interpolate.\+ssa\+\_\+interp.\+ssa\+\_\+intepolate\+\_\+at\+\_\+mask (\begin{DoxyParamCaption}\item[{}]{ssa,  }\item[{}]{mask,  }\item[{}]{start = {\ttfamily 0},  }\item[{}]{stop = {\ttfamily None},  }\item[{}]{value = {\ttfamily 0.5},  }\item[{}]{show\+\_\+plots = {\ttfamily 0} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}    Using SSA for interpolation. E.g. 
+        1) pass in a set of pixels
+        2) Calculate the 'difference from median of SSA component' score for each pixel
+        3) For each pixel, only combine SSA components when the |score| < 'some value'
+        This should ensure that 'extreme' values for that pixel are ignored and the 
+        reconstructed pixel value is more similar to the surrounding pixels.
+    
+    This should help when interpolating across a e.g. "hot" pixel as the components
+    that contribute to the "hotness" will be ignored and the components that are more
+    similar to the surroundings will contribute.\end{DoxyVerb}
+ Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dd/d09/namespaceaopp__deconv__tool_1_1algorithm_1_1interpolate_1_1ssa__interp_a3870328369bd6304c562145fdc92848d_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dd/d09/namespaceaopp__deconv__tool_1_1algorithm_1_1interpolate_1_1ssa__interp_a3870328369bd6304c562145fdc92848d_icgraph}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1algorithm_1_1interpolate_1_1ssa__interp_aa31efcf9612cd6e70d6ce6bfd9098516}\label{namespaceaopp__deconv__tool_1_1algorithm_1_1interpolate_1_1ssa__interp_aa31efcf9612cd6e70d6ce6bfd9098516}} 
+\index{aopp\_deconv\_tool.algorithm.interpolate.ssa\_interp@{aopp\_deconv\_tool.algorithm.interpolate.ssa\_interp}!\_lgr@{\_lgr}}
+\index{\_lgr@{\_lgr}!aopp\_deconv\_tool.algorithm.interpolate.ssa\_interp@{aopp\_deconv\_tool.algorithm.interpolate.ssa\_interp}}
+\doxysubsubsection{\texorpdfstring{\_lgr}{\_lgr}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+algorithm.\+interpolate.\+ssa\+\_\+interp.\+\_\+lgr = \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1cfg_1_1logs_a858779f4bf60872f01cc77b643fedc79}{aopp\+\_\+deconv\+\_\+tool.\+cfg.\+logs.\+get\+\_\+logger\+\_\+at\+\_\+level}}(\+\_\+\+\_\+name\+\_\+\+\_\+, \textquotesingle{}DEBUG\textquotesingle{})\hspace{0.3cm}{\ttfamily [private]}}
+

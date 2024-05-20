@@ -1,0 +1,137 @@
+\hypertarget{namespaceaopp__deconv__tool_1_1text}{}\doxysection{aopp\+\_\+deconv\+\_\+tool.\+text Namespace Reference}
+\label{namespaceaopp__deconv__tool_1_1text}\index{aopp\_deconv\_tool.text@{aopp\_deconv\_tool.text}}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classaopp__deconv__tool_1_1text_1_1BracketState}{Bracket\+State}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1text_a5b208e43cdecac49460b4ced231aa4a6}{combine\+\_\+lines\+\_\+with\+\_\+same\+\_\+indent}} (str x, preserve\+\_\+repeated\+\_\+empty\+\_\+lines=False)
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1text_a32675e006859e2a2131bd272a36c0af5}{indent}} (str x, int n, str s=\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1text_a705a38a08d7bb801f3d91c2dac24fa8f}{tab}})
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1text_abf52b7750a475396425f05232ef42bab}{split\+\_\+around\+\_\+brackets}} (str x, str sep=\textquotesingle{},\textquotesingle{})
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1text_afa3ce4dceb5cfae001a9bfdcc1396f79}{to\+\_\+tuple}} (str x, type\mbox{[}type\mbox{]}$\vert$Iterable\mbox{[}type\mbox{]} t)
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1text_ae13da0dd246571ccd435ba5f64904bfe}{wrap}} (str x, width=70, combine\+\_\+strings\+\_\+of\+\_\+same\+\_\+indent\+\_\+level=True)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1text_ac8f5d7cc447e4aab4a0a47b58c1793a2}{\+\_\+lgr}} = \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1cfg_1_1logs_a858779f4bf60872f01cc77b643fedc79}{aopp\+\_\+deconv\+\_\+tool.\+cfg.\+logs.\+get\+\_\+logger\+\_\+at\+\_\+level}}(\+\_\+\+\_\+name\+\_\+\+\_\+, \textquotesingle{}INFO\textquotesingle{})
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1text_aa648c5bee4a86a8e2be072ec2425ab21}{initial\+\_\+whitespace}} = re.\+compile(r\textquotesingle{}$^\wedge$\textbackslash{}s$\ast$\textquotesingle{})
+\item 
+string \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1text_afa23e42b85213d0663ba10d1dd831e62}{newline}} = \textquotesingle{}\textbackslash{}n\textquotesingle{}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1text_ad903a378740f89346d19b179089b4915}{str\+\_\+break\+\_\+chars}} = re.\+compile(r\textquotesingle{}\textbackslash{}s\textquotesingle{})
+\item 
+string \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1text_a705a38a08d7bb801f3d91c2dac24fa8f}{tab}} = \textquotesingle{}\textbackslash{}t\textquotesingle{}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Text wrapping, filling, formatting, indenting etc.
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1text_a5b208e43cdecac49460b4ced231aa4a6}\label{namespaceaopp__deconv__tool_1_1text_a5b208e43cdecac49460b4ced231aa4a6}} 
+\index{aopp\_deconv\_tool.text@{aopp\_deconv\_tool.text}!combine\_lines\_with\_same\_indent@{combine\_lines\_with\_same\_indent}}
+\index{combine\_lines\_with\_same\_indent@{combine\_lines\_with\_same\_indent}!aopp\_deconv\_tool.text@{aopp\_deconv\_tool.text}}
+\doxysubsubsection{\texorpdfstring{combine\_lines\_with\_same\_indent()}{combine\_lines\_with\_same\_indent()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+text.\+combine\+\_\+lines\+\_\+with\+\_\+same\+\_\+indent (\begin{DoxyParamCaption}\item[{str}]{x,  }\item[{}]{preserve\+\_\+repeated\+\_\+empty\+\_\+lines = {\ttfamily False} }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d8/d5b/namespaceaopp__deconv__tool_1_1text_a5b208e43cdecac49460b4ced231aa4a6_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1text_a32675e006859e2a2131bd272a36c0af5}\label{namespaceaopp__deconv__tool_1_1text_a32675e006859e2a2131bd272a36c0af5}} 
+\index{aopp\_deconv\_tool.text@{aopp\_deconv\_tool.text}!indent@{indent}}
+\index{indent@{indent}!aopp\_deconv\_tool.text@{aopp\_deconv\_tool.text}}
+\doxysubsubsection{\texorpdfstring{indent()}{indent()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+text.\+indent (\begin{DoxyParamCaption}\item[{str}]{x,  }\item[{int}]{n,  }\item[{str }]{s = {\ttfamily \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1text_a705a38a08d7bb801f3d91c2dac24fa8f}{tab}}} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}    Indent all lines in `x` by `n` copys of string `s`\end{DoxyVerb}
+ \mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1text_abf52b7750a475396425f05232ef42bab}\label{namespaceaopp__deconv__tool_1_1text_abf52b7750a475396425f05232ef42bab}} 
+\index{aopp\_deconv\_tool.text@{aopp\_deconv\_tool.text}!split\_around\_brackets@{split\_around\_brackets}}
+\index{split\_around\_brackets@{split\_around\_brackets}!aopp\_deconv\_tool.text@{aopp\_deconv\_tool.text}}
+\doxysubsubsection{\texorpdfstring{split\_around\_brackets()}{split\_around\_brackets()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+text.\+split\+\_\+around\+\_\+brackets (\begin{DoxyParamCaption}\item[{str}]{x,  }\item[{str }]{sep = {\ttfamily \textquotesingle{},\textquotesingle{}} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}    Split on a separator `sep`, do not split on any separator inside any types
+    of bracket.\end{DoxyVerb}
+ \mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1text_afa3ce4dceb5cfae001a9bfdcc1396f79}\label{namespaceaopp__deconv__tool_1_1text_afa3ce4dceb5cfae001a9bfdcc1396f79}} 
+\index{aopp\_deconv\_tool.text@{aopp\_deconv\_tool.text}!to\_tuple@{to\_tuple}}
+\index{to\_tuple@{to\_tuple}!aopp\_deconv\_tool.text@{aopp\_deconv\_tool.text}}
+\doxysubsubsection{\texorpdfstring{to\_tuple()}{to\_tuple()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+text.\+to\+\_\+tuple (\begin{DoxyParamCaption}\item[{str}]{x,  }\item[{type\mbox{[}type\mbox{]} $\vert$ Iterable\mbox{[}type\mbox{]}}]{t }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}    Converts a text representation of a tuple to a tuple of the specified type.
+    
+    Arguments:
+        x : str
+            string to convert to a tuple
+        t : type[type] | Iterable[type]
+            Type of tuple to convert to. If `t` is not an iterable, then will
+            convert to a homogeneous tuple, otherwise will convert each element
+            of `x` to the corresponding element of `t`\end{DoxyVerb}
+ \mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1text_ae13da0dd246571ccd435ba5f64904bfe}\label{namespaceaopp__deconv__tool_1_1text_ae13da0dd246571ccd435ba5f64904bfe}} 
+\index{aopp\_deconv\_tool.text@{aopp\_deconv\_tool.text}!wrap@{wrap}}
+\index{wrap@{wrap}!aopp\_deconv\_tool.text@{aopp\_deconv\_tool.text}}
+\doxysubsubsection{\texorpdfstring{wrap()}{wrap()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+text.\+wrap (\begin{DoxyParamCaption}\item[{str}]{x,  }\item[{}]{width = {\ttfamily 70},  }\item[{}]{combine\+\_\+strings\+\_\+of\+\_\+same\+\_\+indent\+\_\+level = {\ttfamily True} }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d8/d5b/namespaceaopp__deconv__tool_1_1text_ae13da0dd246571ccd435ba5f64904bfe_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d8/d5b/namespaceaopp__deconv__tool_1_1text_ae13da0dd246571ccd435ba5f64904bfe_icgraph}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1text_ac8f5d7cc447e4aab4a0a47b58c1793a2}\label{namespaceaopp__deconv__tool_1_1text_ac8f5d7cc447e4aab4a0a47b58c1793a2}} 
+\index{aopp\_deconv\_tool.text@{aopp\_deconv\_tool.text}!\_lgr@{\_lgr}}
+\index{\_lgr@{\_lgr}!aopp\_deconv\_tool.text@{aopp\_deconv\_tool.text}}
+\doxysubsubsection{\texorpdfstring{\_lgr}{\_lgr}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+text.\+\_\+lgr = \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1cfg_1_1logs_a858779f4bf60872f01cc77b643fedc79}{aopp\+\_\+deconv\+\_\+tool.\+cfg.\+logs.\+get\+\_\+logger\+\_\+at\+\_\+level}}(\+\_\+\+\_\+name\+\_\+\+\_\+, \textquotesingle{}INFO\textquotesingle{})\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1text_aa648c5bee4a86a8e2be072ec2425ab21}\label{namespaceaopp__deconv__tool_1_1text_aa648c5bee4a86a8e2be072ec2425ab21}} 
+\index{aopp\_deconv\_tool.text@{aopp\_deconv\_tool.text}!initial\_whitespace@{initial\_whitespace}}
+\index{initial\_whitespace@{initial\_whitespace}!aopp\_deconv\_tool.text@{aopp\_deconv\_tool.text}}
+\doxysubsubsection{\texorpdfstring{initial\_whitespace}{initial\_whitespace}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+text.\+initial\+\_\+whitespace = re.\+compile(r\textquotesingle{}$^\wedge$\textbackslash{}s$\ast$\textquotesingle{})}
+
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1text_afa23e42b85213d0663ba10d1dd831e62}\label{namespaceaopp__deconv__tool_1_1text_afa23e42b85213d0663ba10d1dd831e62}} 
+\index{aopp\_deconv\_tool.text@{aopp\_deconv\_tool.text}!newline@{newline}}
+\index{newline@{newline}!aopp\_deconv\_tool.text@{aopp\_deconv\_tool.text}}
+\doxysubsubsection{\texorpdfstring{newline}{newline}}
+{\footnotesize\ttfamily string aopp\+\_\+deconv\+\_\+tool.\+text.\+newline = \textquotesingle{}\textbackslash{}n\textquotesingle{}}
+
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1text_ad903a378740f89346d19b179089b4915}\label{namespaceaopp__deconv__tool_1_1text_ad903a378740f89346d19b179089b4915}} 
+\index{aopp\_deconv\_tool.text@{aopp\_deconv\_tool.text}!str\_break\_chars@{str\_break\_chars}}
+\index{str\_break\_chars@{str\_break\_chars}!aopp\_deconv\_tool.text@{aopp\_deconv\_tool.text}}
+\doxysubsubsection{\texorpdfstring{str\_break\_chars}{str\_break\_chars}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+text.\+str\+\_\+break\+\_\+chars = re.\+compile(r\textquotesingle{}\textbackslash{}s\textquotesingle{})}
+
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1text_a705a38a08d7bb801f3d91c2dac24fa8f}\label{namespaceaopp__deconv__tool_1_1text_a705a38a08d7bb801f3d91c2dac24fa8f}} 
+\index{aopp\_deconv\_tool.text@{aopp\_deconv\_tool.text}!tab@{tab}}
+\index{tab@{tab}!aopp\_deconv\_tool.text@{aopp\_deconv\_tool.text}}
+\doxysubsubsection{\texorpdfstring{tab}{tab}}
+{\footnotesize\ttfamily string aopp\+\_\+deconv\+\_\+tool.\+text.\+tab = \textquotesingle{}\textbackslash{}t\textquotesingle{}}
+

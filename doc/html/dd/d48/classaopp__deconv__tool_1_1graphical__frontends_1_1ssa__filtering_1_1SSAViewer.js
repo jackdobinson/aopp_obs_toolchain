@@ -1,0 +1,26 @@
+var classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer =
+[
+    [ "__init__", "dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#a2160f8276421581e21048e797d18a028", null ],
+    [ "save_aggregated_ssa_components", "dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#a651392e30957f54faaca90c7e59bc64a", null ],
+    [ "set_data", "dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#aa90260847843bd95e424306bf26bc620", null ],
+    [ "set_image_plane_range_from_aggregator", "dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#ab811d5ac9685634589aaa0f91cb17f9d", null ],
+    [ "set_image_plane_range_from_evalue_panel_region", "dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#a36c8afce98bc966aa88d1c9c680efff2", null ],
+    [ "set_residual_data", "dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#aec62019447fbc16f782b08d35cbba980", null ],
+    [ "set_window_title", "dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#a6eabe9290fbb468b893e1c9c264ad29c", null ],
+    [ "show", "dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#a7507dee8ce74c985371256e8a870dfab", null ],
+    [ "f_gridspec", "dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#a11b63a5fd421180c45e7cde208279f2a", null ],
+    [ "figure", "dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#a9316b1e6ecf012b4e3c159ddb68a9aed", null ],
+    [ "input_data", "dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#a30b605aef6819008dcd33a70d82b2188", null ],
+    [ "input_image_viewer", "dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#a91ce1eea5b169c35fa5d9d19e911e140", null ],
+    [ "parent_figure", "dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#ad692f93568efdf6d0113e2883ab14581", null ],
+    [ "pf_gridspec", "dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#a53b72dbd2de96da9fb3801ac526c3d01", null ],
+    [ "save_button", "dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#a37f38d08fb85ee59e81808e06f62758e", null ],
+    [ "save_checks", "dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#a29ae24b2ba9d9bbf0f7066b5e93d6ba6", null ],
+    [ "save_feedback_text", "dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#a06e71839e6fc939d010d0bd773cf7ea5", null ],
+    [ "save_path_text", "dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#aff387a3921f93a52234a11225d8f821c", null ],
+    [ "ssa", "dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#a201c71f8e8741240fe1ebd97a5c78263", null ],
+    [ "ssa_aggregate_viewer", "dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#afdbfbbf292c722f05b5c29f0a7008c99", null ],
+    [ "ssa_data", "dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#a9a530bb82a704dc2669df2db75789401", null ],
+    [ "ssa_evalue_panel", "dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#a59a3ee4bb0a00967c908d8a010775f04", null ],
+    [ "ssa_residual_viewer", "dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#afba20d2761f7c5ebc2b0c4087ccca505", null ]
+];

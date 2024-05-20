@@ -1,0 +1,156 @@
+\hypertarget{namespaceaopp__deconv__tool_1_1mfunc}{}\doxysection{aopp\+\_\+deconv\+\_\+tool.\+mfunc Namespace Reference}
+\label{namespaceaopp__deconv__tool_1_1mfunc}\index{aopp\_deconv\_tool.mfunc@{aopp\_deconv\_tool.mfunc}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1mfunc_a5cbfab661bdc048db0bc75f7951a3105}{entropy\+\_\+adj}} (np.\+ndarray components, np.\+ndarray$\vert$float$\vert$int model, np.\+ndarray$\vert$float$\vert$int error=1 \# this could be absorbed into alpha if we need to only have 2 arguments)
+\item 
+np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1mfunc_a338cb86dc268cef695ca198d41c81752}{entropy\+\_\+pos}} (np.\+ndarray components, np.\+ndarray$\vert$float$\vert$int model)
+\item 
+np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1mfunc_a97f11862f5ad9e1154aaa55989b99fcb}{entropy\+\_\+pos\+\_\+neg}} (np.\+ndarray components, np.\+ndarray$\vert$float$\vert$int error)
+\item 
+np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1mfunc_a191b13f70ba7e23598e2b98ed29ab7fb}{entropy\+\_\+rel}} (np.\+ndarray components, np.\+ndarray$\vert$float$\vert$int model)
+\item 
+np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1mfunc_a926faa3c350bdb67b9c16f7285351553}{generalised\+\_\+least\+\_\+squares}} (np.\+ndarray components, np.\+ndarray dirty\+\_\+img, np.\+ndarray$\vert$float$\vert$int cov\+\_\+mat, np.\+ndarray response)
+\item 
+np.\+matrix \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1mfunc_a1cbb37bad041332bc4f9ff58cfe221c3}{generalised\+\_\+least\+\_\+squares\+\_\+mat}} (np.\+matrix components, np.\+matrix dirty\+\_\+img, np.\+matrix cov\+\_\+mat, np.\+matrix response)
+\item 
+np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1mfunc_aadf619422119b1b6c1e394cad98fe186}{generalised\+\_\+least\+\_\+squares\+\_\+preconv}} (np.\+ndarray estimate, np.\+ndarray dirty\+\_\+img, np.\+ndarray$\vert$float$\vert$int cov\+\_\+mat)
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1mfunc_a2278800f4d74ae28100faeb52c995575}{Number}}$\vert$np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1mfunc_a891e413a7daf0728944d1a1318d02e64}{logistic\+\_\+function}} (\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1mfunc_a2278800f4d74ae28100faeb52c995575}{Number}}$\vert$np.\+ndarray x, \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1mfunc_a2278800f4d74ae28100faeb52c995575}{Number}} left\+\_\+limit=0, \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1mfunc_a2278800f4d74ae28100faeb52c995575}{Number}} right\+\_\+limit=1, \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1mfunc_a2278800f4d74ae28100faeb52c995575}{Number}} transition\+\_\+scale=1, \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1mfunc_a2278800f4d74ae28100faeb52c995575}{Number}} center=0)
+\item 
+np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1mfunc_ae3b78e3c62436695a92fa6fab29dc87c}{regularised\+\_\+least\+\_\+squares}} (np.\+ndarray components, np.\+ndarray dirty\+\_\+img, np.\+ndarray$\vert$float$\vert$int error, np.\+ndarray$\vert$float$\vert$int alpha, np.\+ndarray response, np.\+ndarray$\vert$float$\vert$int$\vert$None model=None, Callable\mbox{[}\mbox{[}np.\+ndarray, np.\+ndarray$\vert$float$\vert$int\mbox{]}, np.\+ndarray\mbox{]} regularising\+\_\+func=\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1mfunc_a5cbfab661bdc048db0bc75f7951a3105}{entropy\+\_\+adj}})
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1mfunc_a2278800f4d74ae28100faeb52c995575}{Number}} = float $\vert$ int
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Module containing small mathematical functions that are useful in lots of contexts
+
+
+
+## Helpers for deconvolution routines ##
+
+Working Definitions:
+    components
+        The pixel values of the underlying "real" image, i.e. our 'hypothetical' image
+    model
+        A "guess" as to what the underlying "real" image should be. Should be either
+        a physically informed model (e.g. a synthetic image of Neptune) or the pixel
+        values expected from an empty field (e.g. RMS noise values).
+    estimate
+        Our current estimate of the dirty_img (observation), is a convolution 
+        between the PSF and the components
+    dirty_img
+        The observation we are trying to deconvolve
+    psf
+        The (or an estimate of) the point spread function that transforms the
+        underlying "real" image into the dirty_img (observation)
+    error
+        The estimate of the error on the value of each pixel in the dirty_img 
+        (observation). Should either be an RMS value, or a pixel map of values.
+        Make the error for a pixel large if you want the solution to relax to the
+        model values.
+        
+Useful Concepts:
+    entropy
+        A measure of how much extra information you have to add to a model.
+        More information = more negative value.\end{DoxyVerb}
+ 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1mfunc_a5cbfab661bdc048db0bc75f7951a3105}\label{namespaceaopp__deconv__tool_1_1mfunc_a5cbfab661bdc048db0bc75f7951a3105}} 
+\index{aopp\_deconv\_tool.mfunc@{aopp\_deconv\_tool.mfunc}!entropy\_adj@{entropy\_adj}}
+\index{entropy\_adj@{entropy\_adj}!aopp\_deconv\_tool.mfunc@{aopp\_deconv\_tool.mfunc}}
+\doxysubsubsection{\texorpdfstring{entropy\_adj()}{entropy\_adj()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+mfunc.\+entropy\+\_\+adj (\begin{DoxyParamCaption}\item[{np.\+ndarray}]{components,  }\item[{np.\+ndarray $\vert$ float $\vert$ int}]{model,  }\item[{np.\+ndarray $\vert$ float $\vert$ int }]{error = {\ttfamily 1~\#~this~could~be~absorbed~into~alpha~if~we~need~to~only~have~2~arguments} }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d2/d6e/namespaceaopp__deconv__tool_1_1mfunc_a5cbfab661bdc048db0bc75f7951a3105_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1mfunc_a338cb86dc268cef695ca198d41c81752}\label{namespaceaopp__deconv__tool_1_1mfunc_a338cb86dc268cef695ca198d41c81752}} 
+\index{aopp\_deconv\_tool.mfunc@{aopp\_deconv\_tool.mfunc}!entropy\_pos@{entropy\_pos}}
+\index{entropy\_pos@{entropy\_pos}!aopp\_deconv\_tool.mfunc@{aopp\_deconv\_tool.mfunc}}
+\doxysubsubsection{\texorpdfstring{entropy\_pos()}{entropy\_pos()}}
+{\footnotesize\ttfamily  np.\+ndarray aopp\+\_\+deconv\+\_\+tool.\+mfunc.\+entropy\+\_\+pos (\begin{DoxyParamCaption}\item[{np.\+ndarray}]{components,  }\item[{np.\+ndarray $\vert$ float $\vert$ int   }]{model }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1mfunc_a97f11862f5ad9e1154aaa55989b99fcb}\label{namespaceaopp__deconv__tool_1_1mfunc_a97f11862f5ad9e1154aaa55989b99fcb}} 
+\index{aopp\_deconv\_tool.mfunc@{aopp\_deconv\_tool.mfunc}!entropy\_pos\_neg@{entropy\_pos\_neg}}
+\index{entropy\_pos\_neg@{entropy\_pos\_neg}!aopp\_deconv\_tool.mfunc@{aopp\_deconv\_tool.mfunc}}
+\doxysubsubsection{\texorpdfstring{entropy\_pos\_neg()}{entropy\_pos\_neg()}}
+{\footnotesize\ttfamily  np.\+ndarray aopp\+\_\+deconv\+\_\+tool.\+mfunc.\+entropy\+\_\+pos\+\_\+neg (\begin{DoxyParamCaption}\item[{np.\+ndarray}]{components,  }\item[{np.\+ndarray $\vert$ float $\vert$ int   }]{error }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d2/d6e/namespaceaopp__deconv__tool_1_1mfunc_a97f11862f5ad9e1154aaa55989b99fcb_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1mfunc_a191b13f70ba7e23598e2b98ed29ab7fb}\label{namespaceaopp__deconv__tool_1_1mfunc_a191b13f70ba7e23598e2b98ed29ab7fb}} 
+\index{aopp\_deconv\_tool.mfunc@{aopp\_deconv\_tool.mfunc}!entropy\_rel@{entropy\_rel}}
+\index{entropy\_rel@{entropy\_rel}!aopp\_deconv\_tool.mfunc@{aopp\_deconv\_tool.mfunc}}
+\doxysubsubsection{\texorpdfstring{entropy\_rel()}{entropy\_rel()}}
+{\footnotesize\ttfamily  np.\+ndarray aopp\+\_\+deconv\+\_\+tool.\+mfunc.\+entropy\+\_\+rel (\begin{DoxyParamCaption}\item[{np.\+ndarray}]{components,  }\item[{np.\+ndarray $\vert$ float $\vert$ int   }]{model }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1mfunc_a926faa3c350bdb67b9c16f7285351553}\label{namespaceaopp__deconv__tool_1_1mfunc_a926faa3c350bdb67b9c16f7285351553}} 
+\index{aopp\_deconv\_tool.mfunc@{aopp\_deconv\_tool.mfunc}!generalised\_least\_squares@{generalised\_least\_squares}}
+\index{generalised\_least\_squares@{generalised\_least\_squares}!aopp\_deconv\_tool.mfunc@{aopp\_deconv\_tool.mfunc}}
+\doxysubsubsection{\texorpdfstring{generalised\_least\_squares()}{generalised\_least\_squares()}}
+{\footnotesize\ttfamily  np.\+ndarray aopp\+\_\+deconv\+\_\+tool.\+mfunc.\+generalised\+\_\+least\+\_\+squares (\begin{DoxyParamCaption}\item[{np.\+ndarray}]{components,  }\item[{np.\+ndarray}]{dirty\+\_\+img,  }\item[{np.\+ndarray $\vert$ float $\vert$ int}]{cov\+\_\+mat,  }\item[{np.\+ndarray   }]{response }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d2/d6e/namespaceaopp__deconv__tool_1_1mfunc_a926faa3c350bdb67b9c16f7285351553_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1mfunc_a1cbb37bad041332bc4f9ff58cfe221c3}\label{namespaceaopp__deconv__tool_1_1mfunc_a1cbb37bad041332bc4f9ff58cfe221c3}} 
+\index{aopp\_deconv\_tool.mfunc@{aopp\_deconv\_tool.mfunc}!generalised\_least\_squares\_mat@{generalised\_least\_squares\_mat}}
+\index{generalised\_least\_squares\_mat@{generalised\_least\_squares\_mat}!aopp\_deconv\_tool.mfunc@{aopp\_deconv\_tool.mfunc}}
+\doxysubsubsection{\texorpdfstring{generalised\_least\_squares\_mat()}{generalised\_least\_squares\_mat()}}
+{\footnotesize\ttfamily  np.\+matrix aopp\+\_\+deconv\+\_\+tool.\+mfunc.\+generalised\+\_\+least\+\_\+squares\+\_\+mat (\begin{DoxyParamCaption}\item[{np.\+matrix}]{components,  }\item[{np.\+matrix}]{dirty\+\_\+img,  }\item[{np.\+matrix}]{cov\+\_\+mat,  }\item[{np.\+matrix   }]{response }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1mfunc_aadf619422119b1b6c1e394cad98fe186}\label{namespaceaopp__deconv__tool_1_1mfunc_aadf619422119b1b6c1e394cad98fe186}} 
+\index{aopp\_deconv\_tool.mfunc@{aopp\_deconv\_tool.mfunc}!generalised\_least\_squares\_preconv@{generalised\_least\_squares\_preconv}}
+\index{generalised\_least\_squares\_preconv@{generalised\_least\_squares\_preconv}!aopp\_deconv\_tool.mfunc@{aopp\_deconv\_tool.mfunc}}
+\doxysubsubsection{\texorpdfstring{generalised\_least\_squares\_preconv()}{generalised\_least\_squares\_preconv()}}
+{\footnotesize\ttfamily  np.\+ndarray aopp\+\_\+deconv\+\_\+tool.\+mfunc.\+generalised\+\_\+least\+\_\+squares\+\_\+preconv (\begin{DoxyParamCaption}\item[{np.\+ndarray}]{estimate,  }\item[{np.\+ndarray}]{dirty\+\_\+img,  }\item[{np.\+ndarray $\vert$ float $\vert$ int}]{cov\+\_\+mat }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1mfunc_a891e413a7daf0728944d1a1318d02e64}\label{namespaceaopp__deconv__tool_1_1mfunc_a891e413a7daf0728944d1a1318d02e64}} 
+\index{aopp\_deconv\_tool.mfunc@{aopp\_deconv\_tool.mfunc}!logistic\_function@{logistic\_function}}
+\index{logistic\_function@{logistic\_function}!aopp\_deconv\_tool.mfunc@{aopp\_deconv\_tool.mfunc}}
+\doxysubsubsection{\texorpdfstring{logistic\_function()}{logistic\_function()}}
+{\footnotesize\ttfamily  \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1mfunc_a2278800f4d74ae28100faeb52c995575}{Number}} $\vert$ np.\+ndarray aopp\+\_\+deconv\+\_\+tool.\+mfunc.\+logistic\+\_\+function (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1mfunc_a2278800f4d74ae28100faeb52c995575}{Number}} $\vert$ np.\+ndarray}]{x,  }\item[{\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1mfunc_a2278800f4d74ae28100faeb52c995575}{Number}} }]{left\+\_\+limit = {\ttfamily 0},  }\item[{\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1mfunc_a2278800f4d74ae28100faeb52c995575}{Number}} }]{right\+\_\+limit = {\ttfamily 1},  }\item[{\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1mfunc_a2278800f4d74ae28100faeb52c995575}{Number}} }]{transition\+\_\+scale = {\ttfamily 1},  }\item[{\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1mfunc_a2278800f4d74ae28100faeb52c995575}{Number}} }]{center = {\ttfamily 0} }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1mfunc_ae3b78e3c62436695a92fa6fab29dc87c}\label{namespaceaopp__deconv__tool_1_1mfunc_ae3b78e3c62436695a92fa6fab29dc87c}} 
+\index{aopp\_deconv\_tool.mfunc@{aopp\_deconv\_tool.mfunc}!regularised\_least\_squares@{regularised\_least\_squares}}
+\index{regularised\_least\_squares@{regularised\_least\_squares}!aopp\_deconv\_tool.mfunc@{aopp\_deconv\_tool.mfunc}}
+\doxysubsubsection{\texorpdfstring{regularised\_least\_squares()}{regularised\_least\_squares()}}
+{\footnotesize\ttfamily  np.\+ndarray aopp\+\_\+deconv\+\_\+tool.\+mfunc.\+regularised\+\_\+least\+\_\+squares (\begin{DoxyParamCaption}\item[{np.\+ndarray}]{components,  }\item[{np.\+ndarray}]{dirty\+\_\+img,  }\item[{np.\+ndarray $\vert$ float $\vert$ int}]{error,  }\item[{np.\+ndarray $\vert$ float $\vert$ int}]{alpha,  }\item[{np.\+ndarray}]{response,  }\item[{np.\+ndarray $\vert$ float $\vert$ int $\vert$ None          }]{model = {\ttfamily None},  }\item[{Callable\mbox{[}\mbox{[}np.\+ndarray, np.\+ndarray $\vert$ float $\vert$ int\mbox{]}, np.\+ndarray\mbox{]}  }]{regularising\+\_\+func = {\ttfamily \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1mfunc_a5cbfab661bdc048db0bc75f7951a3105}{entropy\+\_\+adj}}} }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d2/d6e/namespaceaopp__deconv__tool_1_1mfunc_ae3b78e3c62436695a92fa6fab29dc87c_cgraph}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1mfunc_a2278800f4d74ae28100faeb52c995575}\label{namespaceaopp__deconv__tool_1_1mfunc_a2278800f4d74ae28100faeb52c995575}} 
+\index{aopp\_deconv\_tool.mfunc@{aopp\_deconv\_tool.mfunc}!Number@{Number}}
+\index{Number@{Number}!aopp\_deconv\_tool.mfunc@{aopp\_deconv\_tool.mfunc}}
+\doxysubsubsection{\texorpdfstring{Number}{Number}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+mfunc.\+Number = float $\vert$ int}
+

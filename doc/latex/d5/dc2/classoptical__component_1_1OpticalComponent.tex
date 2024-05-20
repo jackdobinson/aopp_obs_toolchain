@@ -1,0 +1,126 @@
+\hypertarget{classoptical__component_1_1OpticalComponent}{}\doxysection{optical\+\_\+component.\+Optical\+Component Class Reference}
+\label{classoptical__component_1_1OpticalComponent}\index{optical\_component.OpticalComponent@{optical\_component.OpticalComponent}}
+
+
+Inheritance diagram for optical\+\_\+component.\+Optical\+Component\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d0/d99/classoptical__component_1_1OpticalComponent__inherit__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classoptical__component_1_1OpticalComponent_a5169541eea0d2d79d75acddb6583f652}{str}} \mbox{\hyperlink{classoptical__component_1_1OpticalComponent_ad8a613f2e59f64ba1d53c7292c445f58}{\+\_\+\+\_\+str\+\_\+\+\_\+}} (self)
+\item 
+Light\+Beam \mbox{\hyperlink{classoptical__component_1_1OpticalComponent_ac43e95000e49e3386763ef385cbcc27b}{out\+\_\+light\+\_\+beam}} (self, Light\+Beam in\+\_\+light\+\_\+beam)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classoptical__component_1_1OpticalComponent_a038fb0d9cb8aa193519c2624a82af43c}{bool}}
+\item 
+\mbox{\hyperlink{classoptical__component_1_1OpticalComponent_a433ae3f39ad29b4f9ba28cc45c3956e9}{compare}}
+\item 
+\mbox{\hyperlink{classoptical__component_1_1OpticalComponent_ac7a54bb959d95ceef51e33eee67593cc}{default}}
+\item 
+\mbox{\hyperlink{classoptical__component_1_1OpticalComponent_ae2b404ced83cec283b0405ccd7a24d24}{False}}
+\item 
+\mbox{\hyperlink{classoptical__component_1_1OpticalComponent_a27d823eaef6ef35b2876261742779248}{float}}
+\item 
+\mbox{\hyperlink{classoptical__component_1_1OpticalComponent_ad1c0b3c56164ec1c10eaaa090d1d7089}{init}}
+\item 
+\mbox{\hyperlink{classoptical__component_1_1OpticalComponent_a0c562fe7504a618b6249159f85800a1f}{repr}}
+\item 
+\mbox{\hyperlink{classoptical__component_1_1OpticalComponent_a5169541eea0d2d79d75acddb6583f652}{str}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}    Represents a component of an optical system. As I am working in "optical
+    distance of the undeviated ray", there are only 3 basic things to model. 
+    Apertures, obstructions, and reflector/refractors (which have the same 
+    behaviour on optical distance).\end{DoxyVerb}
+ 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classoptical__component_1_1OpticalComponent_ad8a613f2e59f64ba1d53c7292c445f58}\label{classoptical__component_1_1OpticalComponent_ad8a613f2e59f64ba1d53c7292c445f58}} 
+\index{optical\_component.OpticalComponent@{optical\_component.OpticalComponent}!\_\_str\_\_@{\_\_str\_\_}}
+\index{\_\_str\_\_@{\_\_str\_\_}!optical\_component.OpticalComponent@{optical\_component.OpticalComponent}}
+\doxysubsubsection{\texorpdfstring{\_\_str\_\_()}{\_\_str\_\_()}}
+{\footnotesize\ttfamily  \mbox{\hyperlink{classoptical__component_1_1OpticalComponent_a5169541eea0d2d79d75acddb6583f652}{str}} optical\+\_\+component.\+Optical\+Component.\+\_\+\+\_\+str\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        A textual representation of this component\end{DoxyVerb}
+ 
+
+Reimplemented in \mbox{\hyperlink{classoptical__component_1_1Obstruction_a5fc4bcd5dc8a32db47898cd126378ca3}{optical\+\_\+component.\+Obstruction}}, \mbox{\hyperlink{classoptical__component_1_1Aperture_a45c805eb8a1c73a5a05c56fbd822a04a}{optical\+\_\+component.\+Aperture}}, and \mbox{\hyperlink{classoptical__component_1_1Refractor_add7134a8d886dfa9021d5babf0d1f650}{optical\+\_\+component.\+Refractor}}.
+
+\mbox{\Hypertarget{classoptical__component_1_1OpticalComponent_ac43e95000e49e3386763ef385cbcc27b}\label{classoptical__component_1_1OpticalComponent_ac43e95000e49e3386763ef385cbcc27b}} 
+\index{optical\_component.OpticalComponent@{optical\_component.OpticalComponent}!out\_light\_beam@{out\_light\_beam}}
+\index{out\_light\_beam@{out\_light\_beam}!optical\_component.OpticalComponent@{optical\_component.OpticalComponent}}
+\doxysubsubsection{\texorpdfstring{out\_light\_beam()}{out\_light\_beam()}}
+{\footnotesize\ttfamily  Light\+Beam optical\+\_\+component.\+Optical\+Component.\+out\+\_\+light\+\_\+beam (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{Light\+Beam}]{in\+\_\+light\+\_\+beam }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        For an incident light beam `in_light_beam`, calculate the parameters of 
+        a beam after passing through this component.\end{DoxyVerb}
+ 
+
+Reimplemented in \mbox{\hyperlink{classoptical__component_1_1Obstruction_a047f3df6799989eced45a2b384a598a9}{optical\+\_\+component.\+Obstruction}}, \mbox{\hyperlink{classoptical__component_1_1Aperture_acee3228d118688f0b282fa0dd2174407}{optical\+\_\+component.\+Aperture}}, and \mbox{\hyperlink{classoptical__component_1_1Refractor_a293fba1fb4f24bd778083583bc6d9db7}{optical\+\_\+component.\+Refractor}}.
+
+
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{classoptical__component_1_1OpticalComponent_a038fb0d9cb8aa193519c2624a82af43c}\label{classoptical__component_1_1OpticalComponent_a038fb0d9cb8aa193519c2624a82af43c}} 
+\index{optical\_component.OpticalComponent@{optical\_component.OpticalComponent}!bool@{bool}}
+\index{bool@{bool}!optical\_component.OpticalComponent@{optical\_component.OpticalComponent}}
+\doxysubsubsection{\texorpdfstring{bool}{bool}}
+{\footnotesize\ttfamily optical\+\_\+component.\+Optical\+Component.\+bool\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{classoptical__component_1_1OpticalComponent_a433ae3f39ad29b4f9ba28cc45c3956e9}\label{classoptical__component_1_1OpticalComponent_a433ae3f39ad29b4f9ba28cc45c3956e9}} 
+\index{optical\_component.OpticalComponent@{optical\_component.OpticalComponent}!compare@{compare}}
+\index{compare@{compare}!optical\_component.OpticalComponent@{optical\_component.OpticalComponent}}
+\doxysubsubsection{\texorpdfstring{compare}{compare}}
+{\footnotesize\ttfamily optical\+\_\+component.\+Optical\+Component.\+compare\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{classoptical__component_1_1OpticalComponent_ac7a54bb959d95ceef51e33eee67593cc}\label{classoptical__component_1_1OpticalComponent_ac7a54bb959d95ceef51e33eee67593cc}} 
+\index{optical\_component.OpticalComponent@{optical\_component.OpticalComponent}!default@{default}}
+\index{default@{default}!optical\_component.OpticalComponent@{optical\_component.OpticalComponent}}
+\doxysubsubsection{\texorpdfstring{default}{default}}
+{\footnotesize\ttfamily optical\+\_\+component.\+Optical\+Component.\+default\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{classoptical__component_1_1OpticalComponent_ae2b404ced83cec283b0405ccd7a24d24}\label{classoptical__component_1_1OpticalComponent_ae2b404ced83cec283b0405ccd7a24d24}} 
+\index{optical\_component.OpticalComponent@{optical\_component.OpticalComponent}!False@{False}}
+\index{False@{False}!optical\_component.OpticalComponent@{optical\_component.OpticalComponent}}
+\doxysubsubsection{\texorpdfstring{False}{False}}
+{\footnotesize\ttfamily optical\+\_\+component.\+Optical\+Component.\+False\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{classoptical__component_1_1OpticalComponent_a27d823eaef6ef35b2876261742779248}\label{classoptical__component_1_1OpticalComponent_a27d823eaef6ef35b2876261742779248}} 
+\index{optical\_component.OpticalComponent@{optical\_component.OpticalComponent}!float@{float}}
+\index{float@{float}!optical\_component.OpticalComponent@{optical\_component.OpticalComponent}}
+\doxysubsubsection{\texorpdfstring{float}{float}}
+{\footnotesize\ttfamily optical\+\_\+component.\+Optical\+Component.\+float\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{classoptical__component_1_1OpticalComponent_ad1c0b3c56164ec1c10eaaa090d1d7089}\label{classoptical__component_1_1OpticalComponent_ad1c0b3c56164ec1c10eaaa090d1d7089}} 
+\index{optical\_component.OpticalComponent@{optical\_component.OpticalComponent}!init@{init}}
+\index{init@{init}!optical\_component.OpticalComponent@{optical\_component.OpticalComponent}}
+\doxysubsubsection{\texorpdfstring{init}{init}}
+{\footnotesize\ttfamily optical\+\_\+component.\+Optical\+Component.\+init\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{classoptical__component_1_1OpticalComponent_a0c562fe7504a618b6249159f85800a1f}\label{classoptical__component_1_1OpticalComponent_a0c562fe7504a618b6249159f85800a1f}} 
+\index{optical\_component.OpticalComponent@{optical\_component.OpticalComponent}!repr@{repr}}
+\index{repr@{repr}!optical\_component.OpticalComponent@{optical\_component.OpticalComponent}}
+\doxysubsubsection{\texorpdfstring{repr}{repr}}
+{\footnotesize\ttfamily optical\+\_\+component.\+Optical\+Component.\+repr\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{classoptical__component_1_1OpticalComponent_a5169541eea0d2d79d75acddb6583f652}\label{classoptical__component_1_1OpticalComponent_a5169541eea0d2d79d75acddb6583f652}} 
+\index{optical\_component.OpticalComponent@{optical\_component.OpticalComponent}!str@{str}}
+\index{str@{str}!optical\_component.OpticalComponent@{optical\_component.OpticalComponent}}
+\doxysubsubsection{\texorpdfstring{str}{str}}
+{\footnotesize\ttfamily optical\+\_\+component.\+Optical\+Component.\+str\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/aopp\+\_\+deconv\+\_\+tool/optics/geometric/\mbox{\hyperlink{optical__component_8py}{optical\+\_\+component.\+py}}\end{DoxyCompactItemize}

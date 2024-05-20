@@ -1,0 +1,478 @@
+\hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA}{}\doxysection{aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA Class Reference}
+\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA}\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a56263bfe4243febdc4dad39e1833d599}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_ab7ecf40d27cebadcb837d1f99a1d0866}{Array\+\_\+1D}}$\vert$\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1c3f14834c300547f1b13292e5267b36}{Array\+\_\+2D}} \mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_ad82cb7d570f34426a168b706df61df08}{a}}, None$\vert$int$\vert$tuple\mbox{[}\mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a52786c4e67e03957c0cfc0eed489a585}{N}}\mbox{]}$\vert$tuple\mbox{[}\mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a52786c4e67e03957c0cfc0eed489a585}{N}}, \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a3538f9cde5bda22fd8554c35b306f147}{M}}\mbox{]} w\+\_\+shape=None, \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a18995cfc9096e13dff5f183dc9fb193f}{SVD\+\_\+\+Strategy\+\_\+\+Literals}} svd\+\_\+strategy=\textquotesingle{}eigval\textquotesingle{}, \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a4b470bcdd3934c3577574bfa6b62f592}{Reverse\+\_\+\+Mapping\+\_\+\+Strategy\+\_\+\+Literals}} rev\+\_\+mapping=\textquotesingle{}fft\textquotesingle{}, dict\mbox{[}str, Any\mbox{]} \mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_abf388d922c34cb9debad353a72b38002}{grouping}}=\{ \textquotesingle{}mode\textquotesingle{}\+:\textquotesingle{}elementary\textquotesingle{}\}, None$\vert$int n\+\_\+eigen\+\_\+values=None)
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1c3f14834c300547f1b13292e5267b36}{Array\+\_\+2D}} \mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a116709b20b95929c4c1c98027c3882f8}{embed}} (self, \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_ab7ecf40d27cebadcb837d1f99a1d0866}{Array\+\_\+1D}}$\vert$\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1c3f14834c300547f1b13292e5267b36}{Array\+\_\+2D}} \mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_ad82cb7d570f34426a168b706df61df08}{a}})
+\item 
+list\mbox{[}list\mbox{[}int\mbox{]}\mbox{]} \mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a3027493a341a2f190c48e51c96744399}{get\+\_\+grouping}} (self, \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a80d3ee4dd560798a66c3599951db1c8f}{Grouping\+\_\+\+Mode\+\_\+\+Literals}} mode=\textquotesingle{}elementary\textquotesingle{}, $\ast$$\ast$kwargs)
+\item 
+tuple\mbox{[}\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a615de3c799d10113e32c945b5164f0c8}{Array\+\_\+3D}}, \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1c3f14834c300547f1b13292e5267b36}{Array\+\_\+2D}}, \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1c3f14834c300547f1b13292e5267b36}{Array\+\_\+2D}}, \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1c3f14834c300547f1b13292e5267b36}{Array\+\_\+2D}}\mbox{]} \mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a110c99155bede0b32a43f1fd047c0ab1}{group}} (self)
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_aaff54721af0d9ec713eac1ae66c7fbfe}{plot\+\_\+all}} (self, n\+\_\+max=36)
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a367dfe951e79610446d6499ef21aa0e4}{plot\+\_\+eigenvectors}} (self, n\+\_\+max=None)
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a492392837ce55bd9cf8c4d5ea4739b77}{plot\+\_\+factorvectors}} (self, n\+\_\+max=None)
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_af12ca837d22d0820153248f4857cfa51}{plot\+\_\+ssa}} (self, \mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a34dfc45f4aa1ccead4f2d7cd04b857a3}{n}}=4, noise\+\_\+estimate=None)
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a8e45248a8d5b33734f84b5e054f6a404}{plot\+\_\+svd}} (self, recomp\+\_\+n=None)
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a21d125695aa58e390b4587ee8d615c94}{plot\+\_\+trajectory\+\_\+decomp}} (self, n\+\_\+max=None)
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a4b3e9610d642445e2f55474f0ecb9415}{plot\+\_\+trajectory\+\_\+groups}} (self, n\+\_\+max=None)
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1c3f14834c300547f1b13292e5267b36}{Array\+\_\+2D}}$\vert$\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a615de3c799d10113e32c945b5164f0c8}{Array\+\_\+3D}} \mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_aae96d3dab057d77761935bafcb4fb84a}{quasi\+\_\+hankelisation}} (self)
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1c3f14834c300547f1b13292e5267b36}{Array\+\_\+2D}}$\vert$\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a615de3c799d10113e32c945b5164f0c8}{Array\+\_\+3D}} \mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_ad081203f3d62552d821e66ed70971109}{reverse\+\_\+mapping}} (self)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1c3f14834c300547f1b13292e5267b36}{Array\+\_\+2D}} \mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a2b5086ae5649dedc85df3459818d920b}{diagsums}} (\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1c3f14834c300547f1b13292e5267b36}{Array\+\_\+2D}} \mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_ad82cb7d570f34426a168b706df61df08}{a}}, \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1c3f14834c300547f1b13292e5267b36}{Array\+\_\+2D}} b, \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a90406dd3474760be5dd5b21e14a14192}{Convolution\+\_\+\+Mode\+\_\+literals}} mode=\textquotesingle{}full\textquotesingle{}, int$\vert$float fac=1)
+\item 
+def \mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a5375f23dc7ea8ede49402c195c7e4f6d}{eigval\+\_\+svd}} (\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1c3f14834c300547f1b13292e5267b36}{Array\+\_\+2D}} \mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a9354154cc3a20e5f3c4698603fbb48e2}{X}}, None$\vert$int n\+\_\+eigen\+\_\+values=None)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_ad82cb7d570f34426a168b706df61df08}{a}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_abe5dadc79a69f58b6ee8cec5e283c0c2}{d}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_abf388d922c34cb9debad353a72b38002}{grouping}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a0bd1edf736874f4e9870e4529192eeea}{k}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a61f95c14f2ce339c3a4b4473f3ab6ecb}{K}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_acd23bea6f93c6189258a32ce6fe38699}{l}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a9bfddec5a3ad7f4ef8a065f2c58a8ba9}{L}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_ac79ac2105aab80a49b43fed893b364f0}{m}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a34dfc45f4aa1ccead4f2d7cd04b857a3}{n}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a52786c4e67e03957c0cfc0eed489a585}{N}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_abac7630dce95f20bc6244e5a2e912b78}{ndim}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a815f8f305962b3a147070af38bde1bb7}{s}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_acccc4dd6ea771ea350b2212d0152084c}{s\+\_\+g}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_aaf78e2b1d1fb71913401f810ac5833d9}{v\+\_\+star}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a9354154cc3a20e5f3c4698603fbb48e2}{X}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a7fe9f8344d5c461037da060083a77591}{X\+\_\+decomp}}
+\item 
+\mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_ac1305cbe874c687da0a805a2111fa338}{X\+\_\+ssa}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a56263bfe4243febdc4dad39e1833d599}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a56263bfe4243febdc4dad39e1833d599}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_ab7ecf40d27cebadcb837d1f99a1d0866}{Array\+\_\+1D}} $\vert$ \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1c3f14834c300547f1b13292e5267b36}{Array\+\_\+2D}}}]{a,  }\item[{None $\vert$ int $\vert$ tuple\mbox{[}\mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a52786c4e67e03957c0cfc0eed489a585}{N}}\mbox{]} $\vert$ tuple\mbox{[}\mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a52786c4e67e03957c0cfc0eed489a585}{N}},\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a3538f9cde5bda22fd8554c35b306f147}{M}}\mbox{]} }]{w\+\_\+shape = {\ttfamily None},  }\item[{\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a18995cfc9096e13dff5f183dc9fb193f}{SVD\+\_\+\+Strategy\+\_\+\+Literals}} }]{svd\+\_\+strategy = {\ttfamily \textquotesingle{}eigval\textquotesingle{}},  }\item[{\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a4b470bcdd3934c3577574bfa6b62f592}{Reverse\+\_\+\+Mapping\+\_\+\+Strategy\+\_\+\+Literals}} }]{rev\+\_\+mapping = {\ttfamily \textquotesingle{}fft\textquotesingle{}},  }\item[{dict\mbox{[}str, Any\mbox{]} }]{grouping = {\ttfamily \{\textquotesingle{}mode\textquotesingle{}\+:\textquotesingle{}elementary\textquotesingle{}\}},  }\item[{None $\vert$ int }]{n\+\_\+eigen\+\_\+values = {\ttfamily None} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Set up initial values of useful constants
+        
+        # ARGUMENTS #
+            
+            a : [nx] | [nx,ny]
+                Array to operate on, should be 1D or 2D. 
+            
+            w_shape : None | int | [wx] | [wx, wy]
+                Window shape to use for SSA, no array is actually created
+                from this shape, it's used as indices to loops etc. If not given,
+                will use a.shape//4 as window size
+            
+            svd_strategy : 'eigval' | 'numpy'
+                How should we calculate single value decomposition, 'eigval' is
+                fastest and uses least memory so it's normally the best choice.
+            
+            rev_mapping : 'fft' | 'direct'
+                How should we reverse the embedding? 'fft' is fastest so normally best.
+            
+            grouping : dict[str, Any]
+                How should we group the tarjectory matricies? Values other than
+                'elementary' do not give exact results. Some modes require extra arguments
+                detailed below:
+                
+                ## Required Keys ##
+                    'mode' : 'elementary' 
+                                | 'pairs' 
+                                | 'pairs_after_first' 
+                                | 'similar_eigenvalues' 
+                                | 'blocks_of_n'
+                        Required to set the mode, default is 'elementary'. Values other than
+                        'elementary' do not give exact results. Some values require extra
+                        keys.
+                    
+                    ### Required for 'mode'='similar_eigenvalues' ###
+                        'tolerance' : float
+                            Maximum fractional difference that two eigenvalues can have
+                            if their eigenvectors are to be grouped into one eigenvector.
+                    
+                    ### Required for 'mode'='blocks_of_n' ###
+                        'n' : int
+                            Number of eigenvectors to be grouped together in each group.
+                            
+            n_eigen_values : None | int
+                Number of eigenvalues/vectors that should be used in calculations. `None` means
+                to use all of them.
+        
+            
+        # RETURNS #
+        
+            Nothing, but the object will hold the single spectrum analysis of the
+            array 'a' in self.X_ssa\end{DoxyVerb}
+ 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a2b5086ae5649dedc85df3459818d920b}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a2b5086ae5649dedc85df3459818d920b}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!diagsums@{diagsums}}
+\index{diagsums@{diagsums}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{diagsums()}{diagsums()}}
+{\footnotesize\ttfamily  \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1c3f14834c300547f1b13292e5267b36}{Array\+\_\+2D}} aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+diagsums (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1c3f14834c300547f1b13292e5267b36}{Array\+\_\+2D}}}]{a,  }\item[{\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1c3f14834c300547f1b13292e5267b36}{Array\+\_\+2D}}}]{b,  }\item[{\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a90406dd3474760be5dd5b21e14a14192}{Convolution\+\_\+\+Mode\+\_\+literals}} }]{mode = {\ttfamily \textquotesingle{}full\textquotesingle{}},  }\item[{int $\vert$ float }]{fac = {\ttfamily 1} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\begin{DoxyVerb}        Diagonally sum matrices `a` and `b`. This is practically the same as convolution using FFT.
+        
+        # ARGUMENTS #
+            a : Array_2D
+            b : Array_2D
+            mode : Convolution_Mode_literals = 'full'
+                Convolution mode to use
+            fac : int | float = 1
+                Factor to multiply convolution by.
+        
+        # RETURNS #
+            conv : Array_2D
+                Diagonal sum of `a` and `b`\end{DoxyVerb}
+ Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA_a2b5086ae5649dedc85df3459818d920b_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a5375f23dc7ea8ede49402c195c7e4f6d}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a5375f23dc7ea8ede49402c195c7e4f6d}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!eigval\_svd@{eigval\_svd}}
+\index{eigval\_svd@{eigval\_svd}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{eigval\_svd()}{eigval\_svd()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+eigval\+\_\+svd (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1c3f14834c300547f1b13292e5267b36}{Array\+\_\+2D}}}]{X,  }\item[{None $\vert$ int }]{n\+\_\+eigen\+\_\+values = {\ttfamily None} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\begin{DoxyVerb}        Calculate single value decomposition from eigenvalues\end{DoxyVerb}
+ \mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a116709b20b95929c4c1c98027c3882f8}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a116709b20b95929c4c1c98027c3882f8}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!embed@{embed}}
+\index{embed@{embed}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{embed()}{embed()}}
+{\footnotesize\ttfamily  \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1c3f14834c300547f1b13292e5267b36}{Array\+\_\+2D}} aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+embed (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_ab7ecf40d27cebadcb837d1f99a1d0866}{Array\+\_\+1D}} $\vert$ \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1c3f14834c300547f1b13292e5267b36}{Array\+\_\+2D}}}]{a }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Peform embedding of our data, a, into the trajectory matrix, self.X.\end{DoxyVerb}
+ Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA_a116709b20b95929c4c1c98027c3882f8_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA_a116709b20b95929c4c1c98027c3882f8_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a3027493a341a2f190c48e51c96744399}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a3027493a341a2f190c48e51c96744399}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!get\_grouping@{get\_grouping}}
+\index{get\_grouping@{get\_grouping}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{get\_grouping()}{get\_grouping()}}
+{\footnotesize\ttfamily  list\mbox{[}list\mbox{[}int\mbox{]}\mbox{]} aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+get\+\_\+grouping (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a80d3ee4dd560798a66c3599951db1c8f}{Grouping\+\_\+\+Mode\+\_\+\+Literals}} }]{mode = {\ttfamily \textquotesingle{}elementary\textquotesingle{}},  }\item[{$\ast$$\ast$}]{kwargs }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Define how the eigentriples (evals, evecs, fvecs) should be grouped.
+        
+        # ARGUMENTS #
+            mode : str
+                How the grouping will be performed
+            **kwargs : Dict[str,Any]
+                Data required depending upon mode, see SSA.__init__ docstring for details
+        
+        # RETURNS #
+            grouping : list[list[int]]
+                List of indices that will make up each group.\end{DoxyVerb}
+ \mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a110c99155bede0b32a43f1fd047c0ab1}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a110c99155bede0b32a43f1fd047c0ab1}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!group@{group}}
+\index{group@{group}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{group()}{group()}}
+{\footnotesize\ttfamily  tuple\mbox{[}\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a615de3c799d10113e32c945b5164f0c8}{Array\+\_\+3D}}, \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1c3f14834c300547f1b13292e5267b36}{Array\+\_\+2D}}, \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1c3f14834c300547f1b13292e5267b36}{Array\+\_\+2D}}, \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1c3f14834c300547f1b13292e5267b36}{Array\+\_\+2D}}\mbox{]} aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+group (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Perform the actual grouping of decomposed elements
+        
+        Takes lists of indices from `self.grouping`, and sums decomposed elements with those indices
+        i.e. self.grouping=[[0], [1,2,3], [4,5,6,7], [9]]
+        then grouped components are X_g = [ X_0, X_1+X_2+X_3, X_4+X_5+X_6+X_7, X_9]
+        
+        # ARGUMENTS #
+            None, but uses `self.X_decomp`, `self.u`, `self.s`, `self.v_star`, `self.grouping`, `self.d`, `self.m`
+        
+        # RETURNS #
+            X_g : Array_3D
+                Grouped matrixes
+            u_g : Array_2D
+                Grouped left singular vectors
+            v_star_g : Array_2D
+                Grouped right singular vectors
+            s_g : Array_2D
+                Grouped singular values\end{DoxyVerb}
+ \mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_aaff54721af0d9ec713eac1ae66c7fbfe}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_aaff54721af0d9ec713eac1ae66c7fbfe}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!plot\_all@{plot\_all}}
+\index{plot\_all@{plot\_all}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{plot\_all()}{plot\_all()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+plot\+\_\+all (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{n\+\_\+max = {\ttfamily 36} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Plot all details of SSA. Makes lots of plots\end{DoxyVerb}
+ Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA_aaff54721af0d9ec713eac1ae66c7fbfe_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a367dfe951e79610446d6499ef21aa0e4}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a367dfe951e79610446d6499ef21aa0e4}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!plot\_eigenvectors@{plot\_eigenvectors}}
+\index{plot\_eigenvectors@{plot\_eigenvectors}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{plot\_eigenvectors()}{plot\_eigenvectors()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+plot\+\_\+eigenvectors (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{n\+\_\+max = {\ttfamily None} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Plots eigenvectors (left singular vectors) of SSA\end{DoxyVerb}
+ Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA_a367dfe951e79610446d6499ef21aa0e4_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a492392837ce55bd9cf8c4d5ea4739b77}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a492392837ce55bd9cf8c4d5ea4739b77}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!plot\_factorvectors@{plot\_factorvectors}}
+\index{plot\_factorvectors@{plot\_factorvectors}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{plot\_factorvectors()}{plot\_factorvectors()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+plot\+\_\+factorvectors (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{n\+\_\+max = {\ttfamily None} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Plots factorvectors (right singular vectors) of SSA\end{DoxyVerb}
+ Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA_a492392837ce55bd9cf8c4d5ea4739b77_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_af12ca837d22d0820153248f4857cfa51}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_af12ca837d22d0820153248f4857cfa51}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!plot\_ssa@{plot\_ssa}}
+\index{plot\_ssa@{plot\_ssa}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{plot\_ssa()}{plot\_ssa()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+plot\+\_\+ssa (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{n = {\ttfamily 4},  }\item[{}]{noise\+\_\+estimate = {\ttfamily None} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Plots an overview of the SSA results\end{DoxyVerb}
+ Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA_af12ca837d22d0820153248f4857cfa51_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a8e45248a8d5b33734f84b5e054f6a404}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a8e45248a8d5b33734f84b5e054f6a404}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!plot\_svd@{plot\_svd}}
+\index{plot\_svd@{plot\_svd}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{plot\_svd()}{plot\_svd()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+plot\+\_\+svd (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{recomp\+\_\+n = {\ttfamily None} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Plots SVD used in SSA\end{DoxyVerb}
+ Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA_a8e45248a8d5b33734f84b5e054f6a404_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a21d125695aa58e390b4587ee8d615c94}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a21d125695aa58e390b4587ee8d615c94}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!plot\_trajectory\_decomp@{plot\_trajectory\_decomp}}
+\index{plot\_trajectory\_decomp@{plot\_trajectory\_decomp}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{plot\_trajectory\_decomp()}{plot\_trajectory\_decomp()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+plot\+\_\+trajectory\+\_\+decomp (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{n\+\_\+max = {\ttfamily None} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Plots decomposed trajectory matrix of SSA\end{DoxyVerb}
+ Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA_a21d125695aa58e390b4587ee8d615c94_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a4b3e9610d642445e2f55474f0ecb9415}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a4b3e9610d642445e2f55474f0ecb9415}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!plot\_trajectory\_groups@{plot\_trajectory\_groups}}
+\index{plot\_trajectory\_groups@{plot\_trajectory\_groups}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{plot\_trajectory\_groups()}{plot\_trajectory\_groups()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+plot\+\_\+trajectory\+\_\+groups (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{n\+\_\+max = {\ttfamily None} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Plots grouped decomposed trajectory matrix of SSA\end{DoxyVerb}
+ Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA_a4b3e9610d642445e2f55474f0ecb9415_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_aae96d3dab057d77761935bafcb4fb84a}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_aae96d3dab057d77761935bafcb4fb84a}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!quasi\_hankelisation@{quasi\_hankelisation}}
+\index{quasi\_hankelisation@{quasi\_hankelisation}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{quasi\_hankelisation()}{quasi\_hankelisation()}}
+{\footnotesize\ttfamily  \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1c3f14834c300547f1b13292e5267b36}{Array\+\_\+2D}} $\vert$ \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a615de3c799d10113e32c945b5164f0c8}{Array\+\_\+3D}} aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+quasi\+\_\+hankelisation (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Reverses the embedding map, faster than the direct method but less accurate. Is almost always good enough.
+        
+        # RETURNS #
+            X_ssa : Array_2D | Array_3D
+                2D (for 1D input data) or 3D (for 2D input data) singular spectrum analysis components. First index is the component number.\end{DoxyVerb}
+ Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA_aae96d3dab057d77761935bafcb4fb84a_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_ad081203f3d62552d821e66ed70971109}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_ad081203f3d62552d821e66ed70971109}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!reverse\_mapping@{reverse\_mapping}}
+\index{reverse\_mapping@{reverse\_mapping}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{reverse\_mapping()}{reverse\_mapping()}}
+{\footnotesize\ttfamily  \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1c3f14834c300547f1b13292e5267b36}{Array\+\_\+2D}} $\vert$ \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a615de3c799d10113e32c945b5164f0c8}{Array\+\_\+3D}} aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+reverse\+\_\+mapping (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Reverses the embedding map. This version is slow but more accurate, use quasi_hankelisation instead in most applications
+        
+        # RETURNS #
+            X_ssa : Array_2D | Array_3D
+                2D (for 1D input data) or 3D (for 2D input data) singular spectrum analysis components. First index is the component number.\end{DoxyVerb}
+ Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA_ad081203f3d62552d821e66ed70971109_cgraph}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_ad82cb7d570f34426a168b706df61df08}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_ad82cb7d570f34426a168b706df61df08}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!a@{a}}
+\index{a@{a}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{a}{a}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+a}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_abe5dadc79a69f58b6ee8cec5e283c0c2}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_abe5dadc79a69f58b6ee8cec5e283c0c2}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!d@{d}}
+\index{d@{d}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{d}{d}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+d}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_abf388d922c34cb9debad353a72b38002}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_abf388d922c34cb9debad353a72b38002}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!grouping@{grouping}}
+\index{grouping@{grouping}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{grouping}{grouping}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+grouping}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a0bd1edf736874f4e9870e4529192eeea}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a0bd1edf736874f4e9870e4529192eeea}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!k@{k}}
+\index{k@{k}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{k}{k}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+k}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a61f95c14f2ce339c3a4b4473f3ab6ecb}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a61f95c14f2ce339c3a4b4473f3ab6ecb}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!K@{K}}
+\index{K@{K}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{K}{K}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+K}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_acd23bea6f93c6189258a32ce6fe38699}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_acd23bea6f93c6189258a32ce6fe38699}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!l@{l}}
+\index{l@{l}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{l}{l}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+l}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a9bfddec5a3ad7f4ef8a065f2c58a8ba9}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a9bfddec5a3ad7f4ef8a065f2c58a8ba9}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!L@{L}}
+\index{L@{L}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{L}{L}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+L}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_ac79ac2105aab80a49b43fed893b364f0}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_ac79ac2105aab80a49b43fed893b364f0}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!m@{m}}
+\index{m@{m}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{m}{m}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+m}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a34dfc45f4aa1ccead4f2d7cd04b857a3}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a34dfc45f4aa1ccead4f2d7cd04b857a3}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!n@{n}}
+\index{n@{n}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{n}{n}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+n}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a52786c4e67e03957c0cfc0eed489a585}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a52786c4e67e03957c0cfc0eed489a585}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!N@{N}}
+\index{N@{N}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{N}{N}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+N}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_abac7630dce95f20bc6244e5a2e912b78}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_abac7630dce95f20bc6244e5a2e912b78}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!ndim@{ndim}}
+\index{ndim@{ndim}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{ndim}{ndim}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+ndim}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a815f8f305962b3a147070af38bde1bb7}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a815f8f305962b3a147070af38bde1bb7}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!s@{s}}
+\index{s@{s}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{s}{s}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+s}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_acccc4dd6ea771ea350b2212d0152084c}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_acccc4dd6ea771ea350b2212d0152084c}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!s\_g@{s\_g}}
+\index{s\_g@{s\_g}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{s\_g}{s\_g}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+s\+\_\+g}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_aaf78e2b1d1fb71913401f810ac5833d9}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_aaf78e2b1d1fb71913401f810ac5833d9}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!v\_star@{v\_star}}
+\index{v\_star@{v\_star}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{v\_star}{v\_star}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+v\+\_\+star}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a9354154cc3a20e5f3c4698603fbb48e2}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a9354154cc3a20e5f3c4698603fbb48e2}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!X@{X}}
+\index{X@{X}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{X}{X}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+X}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a7fe9f8344d5c461037da060083a77591}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_a7fe9f8344d5c461037da060083a77591}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!X\_decomp@{X\_decomp}}
+\index{X\_decomp@{X\_decomp}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{X\_decomp}{X\_decomp}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+X\+\_\+decomp}
+
+\mbox{\Hypertarget{classaopp__deconv__tool_1_1py__ssa_1_1SSA_ac1305cbe874c687da0a805a2111fa338}\label{classaopp__deconv__tool_1_1py__ssa_1_1SSA_ac1305cbe874c687da0a805a2111fa338}} 
+\index{aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}!X\_ssa@{X\_ssa}}
+\index{X\_ssa@{X\_ssa}!aopp\_deconv\_tool.py\_ssa.SSA@{aopp\_deconv\_tool.py\_ssa.SSA}}
+\doxysubsubsection{\texorpdfstring{X\_ssa}{X\_ssa}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA.\+X\+\_\+ssa}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/aopp\+\_\+deconv\+\_\+tool/\mbox{\hyperlink{py__ssa_8py}{py\+\_\+ssa.\+py}}\end{DoxyCompactItemize}

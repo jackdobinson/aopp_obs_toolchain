@@ -1,0 +1,60 @@
+\hypertarget{py__ssa_8py}{}\doxysection{src/aopp\+\_\+deconv\+\_\+tool/py\+\_\+ssa.py File Reference}
+\label{py__ssa_8py}\index{src/aopp\_deconv\_tool/py\_ssa.py@{src/aopp\_deconv\_tool/py\_ssa.py}}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classaopp__deconv__tool_1_1py__ssa_1_1SSA}{aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SSA}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa}{aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+float \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a989a76a014de9ff900fe3b559b64f70e}{aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+frobenius\+\_\+inner\+\_\+prod}} (np.\+ndarray A, np.\+ndarray B)
+\item 
+float \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a8bd9aa3cd1f0fb908170f4c1257fdc1a}{aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+frobenius\+\_\+norm}} (np.\+ndarray A)
+\item 
+Array\+\_\+2D$\vert$Array\+\_\+3D \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a7af2d22a80671103151158b1330f3d50}{aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+unvectorise\+\_\+mat}} (Array\+\_\+1D a, tuple\mbox{[}int,\mbox{]} m)
+\item 
+Array\+\_\+1D \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a618e14a38875c0fde61dbac5637cde54}{aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+vectorise\+\_\+mat}} (Array\+\_\+2D a)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1a1c2a816213f11d5b08ff421b5ad8b1}{aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+\_\+data}} = data2d.\+astype(np.\+float64)
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a120d65781e9b9493331856b7b7cd4f89}{aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+\_\+lgr}} = \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1cfg_1_1logs_a858779f4bf60872f01cc77b643fedc79}{aopp\+\_\+deconv\+\_\+tool.\+cfg.\+logs.\+get\+\_\+logger\+\_\+at\+\_\+level}}(\+\_\+\+\_\+name\+\_\+\+\_\+, \textquotesingle{}DEBUG\textquotesingle{})
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_ab7ecf40d27cebadcb837d1f99a1d0866}{aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+Array\+\_\+1D}} = np.\+ndarray\mbox{[}\mbox{[}N\mbox{]},T\mbox{]}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1c3f14834c300547f1b13292e5267b36}{aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+Array\+\_\+2D}} = np.\+ndarray\mbox{[}\mbox{[}N,M\mbox{]},T\mbox{]}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a615de3c799d10113e32c945b5164f0c8}{aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+Array\+\_\+3D}} = np.\+ndarray\mbox{[}\mbox{[}N,M,L\mbox{]}, T\mbox{]}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a90406dd3474760be5dd5b21e14a14192}{aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+Convolution\+\_\+\+Mode\+\_\+literals}} = Literal\mbox{[}\textquotesingle{}full\textquotesingle{}\mbox{]} $\vert$ Literal\mbox{[}\textquotesingle{}same\textquotesingle{}\mbox{]} $\vert$ Literal\mbox{[}\textquotesingle{}valid\textquotesingle{}\mbox{]}
+\item 
+list \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a83d9b0a9e61db59bf7d0ffefc7e38596}{aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+eval\+\_\+n\+\_\+set\+\_\+frac}} = \mbox{[}0, 0.\+2, 0.\+5, 0.\+9\mbox{]}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a80d3ee4dd560798a66c3599951db1c8f}{aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+Grouping\+\_\+\+Mode\+\_\+\+Literals}} = Literal\mbox{[}\textquotesingle{}elementary\textquotesingle{}\mbox{]} $\vert$ Literal\mbox{[}\textquotesingle{}pairs\textquotesingle{}\mbox{]} $\vert$ Literal\mbox{[}\textquotesingle{}pairs\+\_\+after\+\_\+first\textquotesingle{}\mbox{]} $\vert$ Literal\mbox{[}\textquotesingle{}similar\+\_\+eigenvalues\textquotesingle{}\mbox{]} $\vert$ Literal\mbox{[}\textquotesingle{}blocks\+\_\+of\+\_\+n\textquotesingle{}\mbox{]}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a2bf707eaaac8c196f365377c4580e3fc}{aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+L}} = Type\+Var(\textquotesingle{}L\textquotesingle{},bound=int)
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a3538f9cde5bda22fd8554c35b306f147}{aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+M}} = Type\+Var(\textquotesingle{}M\textquotesingle{},bound=int)
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a0e521c17bdaa9172be97e4866fc47b9e}{aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+N}} = Type\+Var(\textquotesingle{}N\textquotesingle{},bound=int)
+\item 
+list \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a20ee712936f91a6ca529e7bb3572be47}{aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+n\+\_\+set}} = \mbox{[}int(ssa.\+m$\ast$f) for f in eval\+\_\+n\+\_\+set\+\_\+frac\mbox{]}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a4b470bcdd3934c3577574bfa6b62f592}{aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+Reverse\+\_\+\+Mapping\+\_\+\+Strategy\+\_\+\+Literals}} = Literal\mbox{[}\textquotesingle{}fft\textquotesingle{}\mbox{]} $\vert$ Literal\mbox{[}\textquotesingle{}direct\textquotesingle{}\mbox{]}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a2f66540c876dfd140f025dbf973307e3}{aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+ssa}}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a18995cfc9096e13dff5f183dc9fb193f}{aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+SVD\+\_\+\+Strategy\+\_\+\+Literals}} = Literal\mbox{[}\textquotesingle{}numpy\textquotesingle{}\mbox{]} $\vert$ Literal\mbox{[}\textquotesingle{}eigval\textquotesingle{}\mbox{]}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a1156753b7f9a9543b09f8ebcc5a4c683}{aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+T}} = Type\+Var(\textquotesingle{}T\textquotesingle{})
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1py__ssa_a4a69337ee1264c6bca2857e6b24240c4}{aopp\+\_\+deconv\+\_\+tool.\+py\+\_\+ssa.\+window\+\_\+size}} = tuple(s//10 for s in data2d.\+shape)
+\end{DoxyCompactItemize}

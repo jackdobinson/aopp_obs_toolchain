@@ -1,0 +1,46 @@
+\hypertarget{namespaceaopp__deconv__tool_1_1estimate__noise}{}\doxysection{aopp\+\_\+deconv\+\_\+tool.\+estimate\+\_\+noise Namespace Reference}
+\label{namespaceaopp__deconv__tool_1_1estimate__noise}\index{aopp\_deconv\_tool.estimate\_noise@{aopp\_deconv\_tool.estimate\_noise}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+float \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1estimate__noise_a97743771522249a21b6aba8a1b0b5e99}{corners\+\_\+standard\+\_\+deviation}} (np.\+ndarray a, float corner\+\_\+frac=1/10)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1estimate__noise_a6e711e73b43928956fdead85ab2435a5}{\+\_\+lgr}} = \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1cfg_1_1logs_a858779f4bf60872f01cc77b643fedc79}{aopp\+\_\+deconv\+\_\+tool.\+cfg.\+logs.\+get\+\_\+logger\+\_\+at\+\_\+level}}(\+\_\+\+\_\+name\+\_\+\+\_\+, \textquotesingle{}DEBUG\textquotesingle{})
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Provide various ways of estimating the noise in some data
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1estimate__noise_a97743771522249a21b6aba8a1b0b5e99}\label{namespaceaopp__deconv__tool_1_1estimate__noise_a97743771522249a21b6aba8a1b0b5e99}} 
+\index{aopp\_deconv\_tool.estimate\_noise@{aopp\_deconv\_tool.estimate\_noise}!corners\_standard\_deviation@{corners\_standard\_deviation}}
+\index{corners\_standard\_deviation@{corners\_standard\_deviation}!aopp\_deconv\_tool.estimate\_noise@{aopp\_deconv\_tool.estimate\_noise}}
+\doxysubsubsection{\texorpdfstring{corners\_standard\_deviation()}{corners\_standard\_deviation()}}
+{\footnotesize\ttfamily  float aopp\+\_\+deconv\+\_\+tool.\+estimate\+\_\+noise.\+corners\+\_\+standard\+\_\+deviation (\begin{DoxyParamCaption}\item[{np.\+ndarray}]{a,  }\item[{float }]{corner\+\_\+frac = {\ttfamily 1/10} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}    Uses the "corners" (i.e. extremes in all directions) of array `a` to estimate the noise. This 
+    assumes our signal does not extend all the way to the edges. 
+    
+    # ARGUMENTS #
+        a : np.ndarray
+            Input array to estimate noise of
+        corner_frac : float = 1/10
+            Fraction of the range of `a` that is considered a "corner"
+    
+    # RETURNS #
+        float - Standard deviation of the "corners" of `a`\end{DoxyVerb}
+ 
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1estimate__noise_a6e711e73b43928956fdead85ab2435a5}\label{namespaceaopp__deconv__tool_1_1estimate__noise_a6e711e73b43928956fdead85ab2435a5}} 
+\index{aopp\_deconv\_tool.estimate\_noise@{aopp\_deconv\_tool.estimate\_noise}!\_lgr@{\_lgr}}
+\index{\_lgr@{\_lgr}!aopp\_deconv\_tool.estimate\_noise@{aopp\_deconv\_tool.estimate\_noise}}
+\doxysubsubsection{\texorpdfstring{\_lgr}{\_lgr}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+estimate\+\_\+noise.\+\_\+lgr = \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1cfg_1_1logs_a858779f4bf60872f01cc77b643fedc79}{aopp\+\_\+deconv\+\_\+tool.\+cfg.\+logs.\+get\+\_\+logger\+\_\+at\+\_\+level}}(\+\_\+\+\_\+name\+\_\+\+\_\+, \textquotesingle{}DEBUG\textquotesingle{})\hspace{0.3cm}{\ttfamily [private]}}
+

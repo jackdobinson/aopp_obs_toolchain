@@ -1,0 +1,106 @@
+\hypertarget{namespaceaopp__deconv__tool_1_1psf__normalise}{}\doxysection{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+normalise Namespace Reference}
+\label{namespaceaopp__deconv__tool_1_1psf__normalise}\index{aopp\_deconv\_tool.psf\_normalise@{aopp\_deconv\_tool.psf\_normalise}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__normalise_a3acaf8174cc008c8bf7029fce9df7be0}{parse\+\_\+args}} (argv)
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__normalise_ac183ace77ffaa79038f02ae7c84078a0}{run}} (fits\+\_\+spec, output\+\_\+path, float \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__normalise_a621f379aac2478b935dd1fa383c84d78}{threshold}}=1E-\/2, None$\vert$int \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__normalise_a94e8cd73b475fc2c87aebfacbb20aa58}{n\+\_\+largest\+\_\+regions}}=1, float \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__normalise_a7f952d7aeb93b43a368b81df87b4f604}{background\+\_\+threshold}}=1E-\/3, str \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__normalise_ab18b9c2beb2cbebed5ef21c3ed142f97}{background\+\_\+noise\+\_\+model}}=\textquotesingle{}gennorm\textquotesingle{}, float \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__normalise_a25f0622b70d95dbe70d6a3eee647cacb}{n\+\_\+sigma}}=5, None$\vert$tuple\mbox{[}int,...\mbox{]} \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__normalise_aaa669c22f2a5a67c8c82aa01c33cb36c}{trim\+\_\+to\+\_\+shape}}=None)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__normalise_a126707fd3110bbaf4cab85c0e0b6dba5}{\+\_\+lgr}} = \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1cfg_1_1logs_a858779f4bf60872f01cc77b643fedc79}{aopp\+\_\+deconv\+\_\+tool.\+cfg.\+logs.\+get\+\_\+logger\+\_\+at\+\_\+level}}(\+\_\+\+\_\+name\+\_\+\+\_\+, \textquotesingle{}DEBUG\textquotesingle{})
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__normalise_a3a950ba188c61fa710c27c9995046f40}{args}} = \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__normalise_a3acaf8174cc008c8bf7029fce9df7be0}{parse\+\_\+args}}(sys.\+argv\mbox{[}1\+:\mbox{]})
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__normalise_ab18b9c2beb2cbebed5ef21c3ed142f97}{background\+\_\+noise\+\_\+model}}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__normalise_a7f952d7aeb93b43a368b81df87b4f604}{background\+\_\+threshold}}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__normalise_a94e8cd73b475fc2c87aebfacbb20aa58}{n\+\_\+largest\+\_\+regions}}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__normalise_a25f0622b70d95dbe70d6a3eee647cacb}{n\+\_\+sigma}}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__normalise_a621f379aac2478b935dd1fa383c84d78}{threshold}}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__normalise_aaa669c22f2a5a67c8c82aa01c33cb36c}{trim\+\_\+to\+\_\+shape}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Quick tool for normalising a PSF in a FITS file
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1psf__normalise_a3acaf8174cc008c8bf7029fce9df7be0}\label{namespaceaopp__deconv__tool_1_1psf__normalise_a3acaf8174cc008c8bf7029fce9df7be0}} 
+\index{aopp\_deconv\_tool.psf\_normalise@{aopp\_deconv\_tool.psf\_normalise}!parse\_args@{parse\_args}}
+\index{parse\_args@{parse\_args}!aopp\_deconv\_tool.psf\_normalise@{aopp\_deconv\_tool.psf\_normalise}}
+\doxysubsubsection{\texorpdfstring{parse\_args()}{parse\_args()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+normalise.\+parse\+\_\+args (\begin{DoxyParamCaption}\item[{}]{argv }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{da/de2/namespaceaopp__deconv__tool_1_1psf__normalise_a3acaf8174cc008c8bf7029fce9df7be0_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1psf__normalise_ac183ace77ffaa79038f02ae7c84078a0}\label{namespaceaopp__deconv__tool_1_1psf__normalise_ac183ace77ffaa79038f02ae7c84078a0}} 
+\index{aopp\_deconv\_tool.psf\_normalise@{aopp\_deconv\_tool.psf\_normalise}!run@{run}}
+\index{run@{run}!aopp\_deconv\_tool.psf\_normalise@{aopp\_deconv\_tool.psf\_normalise}}
+\doxysubsubsection{\texorpdfstring{run()}{run()}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+normalise.\+run (\begin{DoxyParamCaption}\item[{}]{fits\+\_\+spec,  }\item[{}]{output\+\_\+path,  }\item[{float }]{threshold = {\ttfamily 1E-\/2},  }\item[{None $\vert$ int }]{n\+\_\+largest\+\_\+regions = {\ttfamily 1},  }\item[{float }]{background\+\_\+threshold = {\ttfamily 1E-\/3},  }\item[{str }]{background\+\_\+noise\+\_\+model = {\ttfamily \textquotesingle{}gennorm\textquotesingle{}},  }\item[{float }]{n\+\_\+sigma = {\ttfamily 5},  }\item[{None $\vert$ tuple\mbox{[}int,...\mbox{]} }]{trim\+\_\+to\+\_\+shape = {\ttfamily None} }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1psf__normalise_a126707fd3110bbaf4cab85c0e0b6dba5}\label{namespaceaopp__deconv__tool_1_1psf__normalise_a126707fd3110bbaf4cab85c0e0b6dba5}} 
+\index{aopp\_deconv\_tool.psf\_normalise@{aopp\_deconv\_tool.psf\_normalise}!\_lgr@{\_lgr}}
+\index{\_lgr@{\_lgr}!aopp\_deconv\_tool.psf\_normalise@{aopp\_deconv\_tool.psf\_normalise}}
+\doxysubsubsection{\texorpdfstring{\_lgr}{\_lgr}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+normalise.\+\_\+lgr = \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1cfg_1_1logs_a858779f4bf60872f01cc77b643fedc79}{aopp\+\_\+deconv\+\_\+tool.\+cfg.\+logs.\+get\+\_\+logger\+\_\+at\+\_\+level}}(\+\_\+\+\_\+name\+\_\+\+\_\+, \textquotesingle{}DEBUG\textquotesingle{})\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1psf__normalise_a3a950ba188c61fa710c27c9995046f40}\label{namespaceaopp__deconv__tool_1_1psf__normalise_a3a950ba188c61fa710c27c9995046f40}} 
+\index{aopp\_deconv\_tool.psf\_normalise@{aopp\_deconv\_tool.psf\_normalise}!args@{args}}
+\index{args@{args}!aopp\_deconv\_tool.psf\_normalise@{aopp\_deconv\_tool.psf\_normalise}}
+\doxysubsubsection{\texorpdfstring{args}{args}}
+{\footnotesize\ttfamily def aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+normalise.\+args = \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__normalise_a3acaf8174cc008c8bf7029fce9df7be0}{parse\+\_\+args}}(sys.\+argv\mbox{[}1\+:\mbox{]})}
+
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1psf__normalise_ab18b9c2beb2cbebed5ef21c3ed142f97}\label{namespaceaopp__deconv__tool_1_1psf__normalise_ab18b9c2beb2cbebed5ef21c3ed142f97}} 
+\index{aopp\_deconv\_tool.psf\_normalise@{aopp\_deconv\_tool.psf\_normalise}!background\_noise\_model@{background\_noise\_model}}
+\index{background\_noise\_model@{background\_noise\_model}!aopp\_deconv\_tool.psf\_normalise@{aopp\_deconv\_tool.psf\_normalise}}
+\doxysubsubsection{\texorpdfstring{background\_noise\_model}{background\_noise\_model}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+normalise.\+background\+\_\+noise\+\_\+model}
+
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1psf__normalise_a7f952d7aeb93b43a368b81df87b4f604}\label{namespaceaopp__deconv__tool_1_1psf__normalise_a7f952d7aeb93b43a368b81df87b4f604}} 
+\index{aopp\_deconv\_tool.psf\_normalise@{aopp\_deconv\_tool.psf\_normalise}!background\_threshold@{background\_threshold}}
+\index{background\_threshold@{background\_threshold}!aopp\_deconv\_tool.psf\_normalise@{aopp\_deconv\_tool.psf\_normalise}}
+\doxysubsubsection{\texorpdfstring{background\_threshold}{background\_threshold}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+normalise.\+background\+\_\+threshold}
+
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1psf__normalise_a94e8cd73b475fc2c87aebfacbb20aa58}\label{namespaceaopp__deconv__tool_1_1psf__normalise_a94e8cd73b475fc2c87aebfacbb20aa58}} 
+\index{aopp\_deconv\_tool.psf\_normalise@{aopp\_deconv\_tool.psf\_normalise}!n\_largest\_regions@{n\_largest\_regions}}
+\index{n\_largest\_regions@{n\_largest\_regions}!aopp\_deconv\_tool.psf\_normalise@{aopp\_deconv\_tool.psf\_normalise}}
+\doxysubsubsection{\texorpdfstring{n\_largest\_regions}{n\_largest\_regions}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+normalise.\+n\+\_\+largest\+\_\+regions}
+
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1psf__normalise_a25f0622b70d95dbe70d6a3eee647cacb}\label{namespaceaopp__deconv__tool_1_1psf__normalise_a25f0622b70d95dbe70d6a3eee647cacb}} 
+\index{aopp\_deconv\_tool.psf\_normalise@{aopp\_deconv\_tool.psf\_normalise}!n\_sigma@{n\_sigma}}
+\index{n\_sigma@{n\_sigma}!aopp\_deconv\_tool.psf\_normalise@{aopp\_deconv\_tool.psf\_normalise}}
+\doxysubsubsection{\texorpdfstring{n\_sigma}{n\_sigma}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+normalise.\+n\+\_\+sigma}
+
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1psf__normalise_a621f379aac2478b935dd1fa383c84d78}\label{namespaceaopp__deconv__tool_1_1psf__normalise_a621f379aac2478b935dd1fa383c84d78}} 
+\index{aopp\_deconv\_tool.psf\_normalise@{aopp\_deconv\_tool.psf\_normalise}!threshold@{threshold}}
+\index{threshold@{threshold}!aopp\_deconv\_tool.psf\_normalise@{aopp\_deconv\_tool.psf\_normalise}}
+\doxysubsubsection{\texorpdfstring{threshold}{threshold}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+normalise.\+threshold}
+
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1psf__normalise_aaa669c22f2a5a67c8c82aa01c33cb36c}\label{namespaceaopp__deconv__tool_1_1psf__normalise_aaa669c22f2a5a67c8c82aa01c33cb36c}} 
+\index{aopp\_deconv\_tool.psf\_normalise@{aopp\_deconv\_tool.psf\_normalise}!trim\_to\_shape@{trim\_to\_shape}}
+\index{trim\_to\_shape@{trim\_to\_shape}!aopp\_deconv\_tool.psf\_normalise@{aopp\_deconv\_tool.psf\_normalise}}
+\doxysubsubsection{\texorpdfstring{trim\_to\_shape}{trim\_to\_shape}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+normalise.\+trim\+\_\+to\+\_\+shape}
+

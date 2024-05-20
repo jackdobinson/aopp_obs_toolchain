@@ -1,0 +1,86 @@
+\hypertarget{classlight__beam_1_1LightBeamSet}{}\doxysection{light\+\_\+beam.\+Light\+Beam\+Set Class Reference}
+\label{classlight__beam_1_1LightBeamSet}\index{light\_beam.LightBeamSet@{light\_beam.LightBeamSet}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{classlight__beam_1_1LightBeamSet_acff5bef6e74d2331c14539e6a7026658}{\+\_\+\+\_\+call\+\_\+\+\_\+}} (self, optical\+\_\+position)
+\item 
+def \mbox{\hyperlink{classlight__beam_1_1LightBeamSet_a3a2d8747141be2e5632caa5f430a3105}{\+\_\+\+\_\+getitem\+\_\+\+\_\+}} (self, idx)
+\item 
+\mbox{\hyperlink{classlight__beam_1_1LightBeam}{Light\+Beam}} \mbox{\hyperlink{classlight__beam_1_1LightBeamSet_a32e2ab0193bce163bc76d6d9d9b7fcb7}{get\+\_\+light\+\_\+beam\+\_\+at\+\_\+position}} (self, optical\+\_\+position)
+\item 
+def \mbox{\hyperlink{classlight__beam_1_1LightBeamSet_acbe21daf01b77b4097a351f26421598d}{get\+\_\+optical\+\_\+position\+\_\+range}} (self)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classlight__beam_1_1LightBeamSet_aa6340da3a5f5ed2a42e44b2c7ab7362d}{default\+\_\+factory}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}    A set of light beams that are present in an optical system. Each beam exists
+    between two components (or before the first and after the final components).
+    
+    Note, a light beam set is defined in optical distance "o", like a beam so the
+    members of a beam set are monotonically increasing in "o".\end{DoxyVerb}
+ 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classlight__beam_1_1LightBeamSet_acff5bef6e74d2331c14539e6a7026658}\label{classlight__beam_1_1LightBeamSet_acff5bef6e74d2331c14539e6a7026658}} 
+\index{light\_beam.LightBeamSet@{light\_beam.LightBeamSet}!\_\_call\_\_@{\_\_call\_\_}}
+\index{\_\_call\_\_@{\_\_call\_\_}!light\_beam.LightBeamSet@{light\_beam.LightBeamSet}}
+\doxysubsubsection{\texorpdfstring{\_\_call\_\_()}{\_\_call\_\_()}}
+{\footnotesize\ttfamily def light\+\_\+beam.\+Light\+Beam\+Set.\+\_\+\+\_\+call\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{optical\+\_\+position }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Get w_a, w_b for light beam that is part of the set at `optical_position`\end{DoxyVerb}
+ Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d5/d45/classlight__beam_1_1LightBeamSet_acff5bef6e74d2331c14539e6a7026658_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classlight__beam_1_1LightBeamSet_a3a2d8747141be2e5632caa5f430a3105}\label{classlight__beam_1_1LightBeamSet_a3a2d8747141be2e5632caa5f430a3105}} 
+\index{light\_beam.LightBeamSet@{light\_beam.LightBeamSet}!\_\_getitem\_\_@{\_\_getitem\_\_}}
+\index{\_\_getitem\_\_@{\_\_getitem\_\_}!light\_beam.LightBeamSet@{light\_beam.LightBeamSet}}
+\doxysubsubsection{\texorpdfstring{\_\_getitem\_\_()}{\_\_getitem\_\_()}}
+{\footnotesize\ttfamily def light\+\_\+beam.\+Light\+Beam\+Set.\+\_\+\+\_\+getitem\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{idx }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Return the `idx`-th beam from the start of the beam set.\end{DoxyVerb}
+ \mbox{\Hypertarget{classlight__beam_1_1LightBeamSet_a32e2ab0193bce163bc76d6d9d9b7fcb7}\label{classlight__beam_1_1LightBeamSet_a32e2ab0193bce163bc76d6d9d9b7fcb7}} 
+\index{light\_beam.LightBeamSet@{light\_beam.LightBeamSet}!get\_light\_beam\_at\_position@{get\_light\_beam\_at\_position}}
+\index{get\_light\_beam\_at\_position@{get\_light\_beam\_at\_position}!light\_beam.LightBeamSet@{light\_beam.LightBeamSet}}
+\doxysubsubsection{\texorpdfstring{get\_light\_beam\_at\_position()}{get\_light\_beam\_at\_position()}}
+{\footnotesize\ttfamily  \mbox{\hyperlink{classlight__beam_1_1LightBeam}{Light\+Beam}} light\+\_\+beam.\+Light\+Beam\+Set.\+get\+\_\+light\+\_\+beam\+\_\+at\+\_\+position (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{optical\+\_\+position }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        For some `optical_position`, return the beam in the set that is at that
+        position.\end{DoxyVerb}
+ Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d5/d45/classlight__beam_1_1LightBeamSet_a32e2ab0193bce163bc76d6d9d9b7fcb7_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classlight__beam_1_1LightBeamSet_acbe21daf01b77b4097a351f26421598d}\label{classlight__beam_1_1LightBeamSet_acbe21daf01b77b4097a351f26421598d}} 
+\index{light\_beam.LightBeamSet@{light\_beam.LightBeamSet}!get\_optical\_position\_range@{get\_optical\_position\_range}}
+\index{get\_optical\_position\_range@{get\_optical\_position\_range}!light\_beam.LightBeamSet@{light\_beam.LightBeamSet}}
+\doxysubsubsection{\texorpdfstring{get\_optical\_position\_range()}{get\_optical\_position\_range()}}
+{\footnotesize\ttfamily def light\+\_\+beam.\+Light\+Beam\+Set.\+get\+\_\+optical\+\_\+position\+\_\+range (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Get the range of optical positions covered by the beams in the set\end{DoxyVerb}
+ 
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{classlight__beam_1_1LightBeamSet_aa6340da3a5f5ed2a42e44b2c7ab7362d}\label{classlight__beam_1_1LightBeamSet_aa6340da3a5f5ed2a42e44b2c7ab7362d}} 
+\index{light\_beam.LightBeamSet@{light\_beam.LightBeamSet}!default\_factory@{default\_factory}}
+\index{default\_factory@{default\_factory}!light\_beam.LightBeamSet@{light\_beam.LightBeamSet}}
+\doxysubsubsection{\texorpdfstring{default\_factory}{default\_factory}}
+{\footnotesize\ttfamily light\+\_\+beam.\+Light\+Beam\+Set.\+default\+\_\+factory\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/aopp\+\_\+deconv\+\_\+tool/optics/geometric/\mbox{\hyperlink{light__beam_8py}{light\+\_\+beam.\+py}}\end{DoxyCompactItemize}

@@ -1,0 +1,123 @@
+\hypertarget{namespacespecifier}{}\doxysection{specifier Namespace Reference}
+\label{namespacespecifier}\index{specifier@{specifier}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{namespacespecifier_ab9105ce40462520d5c00b6aeb9db7fab}{get\+\_\+help}} (list\mbox{[}str\mbox{]} axes\+\_\+types)
+\item 
+def \mbox{\hyperlink{namespacespecifier_ad7b93edfe6773262c52971802589981b}{parse}} (str specifier, list\mbox{[}str\mbox{]} axes\+\_\+types)
+\item 
+def \mbox{\hyperlink{namespacespecifier_a249cecd3b7eadcc36e685f12887a527d}{parse\+\_\+axes\+\_\+type\+\_\+list}} (str axes\+\_\+type\+\_\+list, list\mbox{[}str\mbox{]}$\vert$tuple\mbox{[}str\mbox{]} axes\+\_\+types)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespacespecifier_ab6975e7254d647f8f6680125fec2ef84}{\+\_\+lgr}} = \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1cfg_1_1logs_a858779f4bf60872f01cc77b643fedc79}{aopp\+\_\+deconv\+\_\+tool.\+cfg.\+logs.\+get\+\_\+logger\+\_\+at\+\_\+level}}(\+\_\+\+\_\+name\+\_\+\+\_\+, \textquotesingle{}DEBUG\textquotesingle{})
+\item 
+dictionary \mbox{\hyperlink{namespacespecifier_aa78b934627041e6805b290b722984842}{axes\+\_\+type\+\_\+info}}
+\item 
+\mbox{\hyperlink{namespacespecifier_abbe9460513102d839ba71c37de6db69f}{Axes\+Info}} = namedtuple(\textquotesingle{}Axes\+Info\textquotesingle{}, (\textquotesingle{}description\textquotesingle{}, \textquotesingle{}default\+\_\+callable\textquotesingle{}))
+\item 
+\mbox{\hyperlink{namespacespecifier_a5b2f1a45ae6928c3229f0f5723caba7a}{Fits\+Specifier}} = namedtuple(\textquotesingle{}Fits\+Specifier\textquotesingle{}, (\textquotesingle{}path\textquotesingle{}, \textquotesingle{}ext\textquotesingle{}, \textquotesingle{}slices\textquotesingle{}, \textquotesingle{}axes\textquotesingle{}))
+\item 
+string \mbox{\hyperlink{namespacespecifier_a946b429b5cd93fac7ba5170f1fae7875}{help\+\_\+fmt}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Routine for parsing a string containing the path, extension, slices, and axes
+of a FITS file that we want to operate on.
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespacespecifier_ab9105ce40462520d5c00b6aeb9db7fab}\label{namespacespecifier_ab9105ce40462520d5c00b6aeb9db7fab}} 
+\index{specifier@{specifier}!get\_help@{get\_help}}
+\index{get\_help@{get\_help}!specifier@{specifier}}
+\doxysubsubsection{\texorpdfstring{get\_help()}{get\_help()}}
+{\footnotesize\ttfamily def specifier.\+get\+\_\+help (\begin{DoxyParamCaption}\item[{list\mbox{[}str\mbox{]}}]{axes\+\_\+types }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}    Generates the help string for a list of axes_types.\end{DoxyVerb}
+ Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=309pt]{df/d33/namespacespecifier_ab9105ce40462520d5c00b6aeb9db7fab_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespacespecifier_ad7b93edfe6773262c52971802589981b}\label{namespacespecifier_ad7b93edfe6773262c52971802589981b}} 
+\index{specifier@{specifier}!parse@{parse}}
+\index{parse@{parse}!specifier@{specifier}}
+\doxysubsubsection{\texorpdfstring{parse()}{parse()}}
+{\footnotesize\ttfamily def specifier.\+parse (\begin{DoxyParamCaption}\item[{str}]{specifier,  }\item[{list\mbox{[}str\mbox{]}}]{axes\+\_\+types }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=322pt]{df/d33/namespacespecifier_ad7b93edfe6773262c52971802589981b_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespacespecifier_a249cecd3b7eadcc36e685f12887a527d}\label{namespacespecifier_a249cecd3b7eadcc36e685f12887a527d}} 
+\index{specifier@{specifier}!parse\_axes\_type\_list@{parse\_axes\_type\_list}}
+\index{parse\_axes\_type\_list@{parse\_axes\_type\_list}!specifier@{specifier}}
+\doxysubsubsection{\texorpdfstring{parse\_axes\_type\_list()}{parse\_axes\_type\_list()}}
+{\footnotesize\ttfamily def specifier.\+parse\+\_\+axes\+\_\+type\+\_\+list (\begin{DoxyParamCaption}\item[{str}]{axes\+\_\+type\+\_\+list,  }\item[{list\mbox{[}str\mbox{]} $\vert$ tuple\mbox{[}str\mbox{]}}]{axes\+\_\+types }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}    Parses the axes type list at the end of the specifier string.
+    
+    Arguments:
+        axes_type_list : str
+            "axes_type_1:(ax11,ax22,...),axes_type_2:(ax21,ax22,...)" or "(ax11,ax22)"
+        axes_types : list[str] | tuple[str]
+            List of acceptable axes types\end{DoxyVerb}
+ Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=322pt]{df/d33/namespacespecifier_a249cecd3b7eadcc36e685f12887a527d_icgraph}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{namespacespecifier_ab6975e7254d647f8f6680125fec2ef84}\label{namespacespecifier_ab6975e7254d647f8f6680125fec2ef84}} 
+\index{specifier@{specifier}!\_lgr@{\_lgr}}
+\index{\_lgr@{\_lgr}!specifier@{specifier}}
+\doxysubsubsection{\texorpdfstring{\_lgr}{\_lgr}}
+{\footnotesize\ttfamily specifier.\+\_\+lgr = \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1cfg_1_1logs_a858779f4bf60872f01cc77b643fedc79}{aopp\+\_\+deconv\+\_\+tool.\+cfg.\+logs.\+get\+\_\+logger\+\_\+at\+\_\+level}}(\+\_\+\+\_\+name\+\_\+\+\_\+, \textquotesingle{}DEBUG\textquotesingle{})\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{namespacespecifier_aa78b934627041e6805b290b722984842}\label{namespacespecifier_aa78b934627041e6805b290b722984842}} 
+\index{specifier@{specifier}!axes\_type\_info@{axes\_type\_info}}
+\index{axes\_type\_info@{axes\_type\_info}!specifier@{specifier}}
+\doxysubsubsection{\texorpdfstring{axes\_type\_info}{axes\_type\_info}}
+{\footnotesize\ttfamily dictionary specifier.\+axes\+\_\+type\+\_\+info}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 = \{}
+\DoxyCodeLine{2     \textcolor{stringliteral}{"{}SPECTRAL"{}} : \mbox{\hyperlink{namespacespecifier_abbe9460513102d839ba71c37de6db69f}{AxesInfo}}(\textcolor{stringliteral}{"{}wavelength/frequency varies along this axis"{}}, aph.fits.header.get\_spectral\_axes),}
+\DoxyCodeLine{3     \textcolor{stringliteral}{"{}CELESTIAL"{}} : \mbox{\hyperlink{namespacespecifier_abbe9460513102d839ba71c37de6db69f}{AxesInfo}}(\textcolor{stringliteral}{"{}sky position varies along this axis"{}}, aph.fits.header.get\_celestial\_axes),}
+\DoxyCodeLine{4     \textcolor{stringliteral}{"{}POLARISATION"{}} : \mbox{\hyperlink{namespacespecifier_abbe9460513102d839ba71c37de6db69f}{AxesInfo}}(\textcolor{stringliteral}{"{}polarisation varies along this axis, could be linear of circular"{}}, aph.fits.header.get\_polarisation\_axes),}
+\DoxyCodeLine{5     \textcolor{stringliteral}{"{}TIME"{}} : \mbox{\hyperlink{namespacespecifier_abbe9460513102d839ba71c37de6db69f}{AxesInfo}}(\textcolor{stringliteral}{"{}time varies along this axis"{}}, aph.fits.header.get\_time\_axes),}
+\DoxyCodeLine{6 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{namespacespecifier_abbe9460513102d839ba71c37de6db69f}\label{namespacespecifier_abbe9460513102d839ba71c37de6db69f}} 
+\index{specifier@{specifier}!AxesInfo@{AxesInfo}}
+\index{AxesInfo@{AxesInfo}!specifier@{specifier}}
+\doxysubsubsection{\texorpdfstring{AxesInfo}{AxesInfo}}
+{\footnotesize\ttfamily specifier.\+Axes\+Info = namedtuple(\textquotesingle{}Axes\+Info\textquotesingle{}, (\textquotesingle{}description\textquotesingle{}, \textquotesingle{}default\+\_\+callable\textquotesingle{}))}
+
+\mbox{\Hypertarget{namespacespecifier_a5b2f1a45ae6928c3229f0f5723caba7a}\label{namespacespecifier_a5b2f1a45ae6928c3229f0f5723caba7a}} 
+\index{specifier@{specifier}!FitsSpecifier@{FitsSpecifier}}
+\index{FitsSpecifier@{FitsSpecifier}!specifier@{specifier}}
+\doxysubsubsection{\texorpdfstring{FitsSpecifier}{FitsSpecifier}}
+{\footnotesize\ttfamily specifier.\+Fits\+Specifier = namedtuple(\textquotesingle{}Fits\+Specifier\textquotesingle{}, (\textquotesingle{}path\textquotesingle{}, \textquotesingle{}ext\textquotesingle{}, \textquotesingle{}slices\textquotesingle{}, \textquotesingle{}axes\textquotesingle{}))}
+
+\mbox{\Hypertarget{namespacespecifier_a946b429b5cd93fac7ba5170f1fae7875}\label{namespacespecifier_a946b429b5cd93fac7ba5170f1fae7875}} 
+\index{specifier@{specifier}!help\_fmt@{help\_fmt}}
+\index{help\_fmt@{help\_fmt}!specifier@{specifier}}
+\doxysubsubsection{\texorpdfstring{help\_fmt}{help\_fmt}}
+{\footnotesize\ttfamily string specifier.\+help\+\_\+fmt}
+

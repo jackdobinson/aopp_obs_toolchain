@@ -1,0 +1,143 @@
+\hypertarget{namespaceaopp__deconv__tool_1_1numpy__helper_1_1array_1_1grid}{}\doxysection{aopp\+\_\+deconv\+\_\+tool.\+numpy\+\_\+helper.\+array.\+grid Namespace Reference}
+\label{namespaceaopp__deconv__tool_1_1numpy__helper_1_1array_1_1grid}\index{aopp\_deconv\_tool.numpy\_helper.array.grid@{aopp\_deconv\_tool.numpy\_helper.array.grid}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1numpy__helper_1_1array_1_1grid_aaca825e09ff95aafa08e5ad4b5558a02}{edges\+\_\+from\+\_\+bounds}} (float lbound, float ubound, float steps, float widths, bins\+\_\+extend\+\_\+past\+\_\+ubound=True)
+\item 
+np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1numpy__helper_1_1array_1_1grid_aa8bc323e6dd7757b3171122b6740fff2}{edges\+\_\+from\+\_\+midpoints}} (np.\+ndarray midpoints, bool fix\+\_\+edges=True)
+\item 
+np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1numpy__helper_1_1array_1_1grid_a8cd601e37bab97b155a7c01f1e1c21c8}{regrid}} (np.\+ndarray data, np.\+ndarray input\+\_\+bin\+\_\+edges, np.\+ndarray output\+\_\+bin\+\_\+edges, int axis=0)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1numpy__helper_1_1array_1_1grid_add80fcdfd05ed33668a92e5f128a96cf}{\+\_\+lgr}} = \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1cfg_1_1logs_a858779f4bf60872f01cc77b643fedc79}{aopp\+\_\+deconv\+\_\+tool.\+cfg.\+logs.\+get\+\_\+logger\+\_\+at\+\_\+level}}(\+\_\+\+\_\+name\+\_\+\+\_\+, \textquotesingle{}DEBUG\textquotesingle{})
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Regrids a numpy array.
+
+
+Example of grid definition:
+
+    #############################################################
+
+    input_grid    : |---^---|   |---^---|   |---^---|   |---^---|
+                  :       |---^---|   |---^---|   |---^---|     
+    
+    bin_width     : |-------|
+
+    bin_step      : |-----|
+
+    #############################################################
+
+    output_grid   :     |--------^-------|    |--------^-------|
+                  :                |--------^-------|
+    
+    offset        : |---|
+
+    new_bin_width :     |----------------|
+    
+    new_bin_step  :     |----------|
+
+
+    #############################################################
+
+    "|" = bin edge
+
+    "^" = bin center
+
+    width
+        The distance between the start and end of a bin
+    
+    step
+        The distance between the start of two consencutive bins
+
+    offset
+        The distance between the start/end of the new grid and the start/end of the old grid\end{DoxyVerb}
+ 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1numpy__helper_1_1array_1_1grid_aaca825e09ff95aafa08e5ad4b5558a02}\label{namespaceaopp__deconv__tool_1_1numpy__helper_1_1array_1_1grid_aaca825e09ff95aafa08e5ad4b5558a02}} 
+\index{aopp\_deconv\_tool.numpy\_helper.array.grid@{aopp\_deconv\_tool.numpy\_helper.array.grid}!edges\_from\_bounds@{edges\_from\_bounds}}
+\index{edges\_from\_bounds@{edges\_from\_bounds}!aopp\_deconv\_tool.numpy\_helper.array.grid@{aopp\_deconv\_tool.numpy\_helper.array.grid}}
+\doxysubsubsection{\texorpdfstring{edges\_from\_bounds()}{edges\_from\_bounds()}}
+{\footnotesize\ttfamily  np.\+ndarray aopp\+\_\+deconv\+\_\+tool.\+numpy\+\_\+helper.\+array.\+grid.\+edges\+\_\+from\+\_\+bounds (\begin{DoxyParamCaption}\item[{float}]{lbound,  }\item[{float}]{ubound,  }\item[{float}]{steps,  }\item[{float}]{widths,  }\item[{}]{bins\+\_\+extend\+\_\+past\+\_\+ubound = {\ttfamily True} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}    Get the bin edges of bins defined by a lower bound, upper bound, steps between bins, and widths of each bin.
+
+    # ARGUMENTS #
+        lbound : float
+            Lower bound of the range to create bins on.
+        ubound : float
+            Upper bound of the range to create bins on.
+        steps : float
+            Size of the steps between the starting edge of each bin.
+        widths : float
+            Size of the bins, i.e. distance between the starting edge and ending edge of each bin.
+        bins_extend_past_ubound : bool = True
+            Should the bins be allowed to extend past "ubound" if they could contain values < "ubound".
+            I.e. Could a bin of width = 5, start at ubound-2 and end at ubound+3?
+
+    # RETURNS #
+        edges : np.ndarray[2,N]
+            A 2D numpy array, "edges[0]" holds the starting edges of each bin, 
+            "edges[1]" holds the ending edges of each bin.\end{DoxyVerb}
+ \mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1numpy__helper_1_1array_1_1grid_aa8bc323e6dd7757b3171122b6740fff2}\label{namespaceaopp__deconv__tool_1_1numpy__helper_1_1array_1_1grid_aa8bc323e6dd7757b3171122b6740fff2}} 
+\index{aopp\_deconv\_tool.numpy\_helper.array.grid@{aopp\_deconv\_tool.numpy\_helper.array.grid}!edges\_from\_midpoints@{edges\_from\_midpoints}}
+\index{edges\_from\_midpoints@{edges\_from\_midpoints}!aopp\_deconv\_tool.numpy\_helper.array.grid@{aopp\_deconv\_tool.numpy\_helper.array.grid}}
+\doxysubsubsection{\texorpdfstring{edges\_from\_midpoints()}{edges\_from\_midpoints()}}
+{\footnotesize\ttfamily  np.\+ndarray aopp\+\_\+deconv\+\_\+tool.\+numpy\+\_\+helper.\+array.\+grid.\+edges\+\_\+from\+\_\+midpoints (\begin{DoxyParamCaption}\item[{np.\+ndarray}]{midpoints,  }\item[{bool }]{fix\+\_\+edges = {\ttfamily True} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}    Get bin edges as a 2d-numpy array of shape (2,N), where the
+    0th sub-array is the starting point of each bin, and the 1st sub-array is the ending points.
+
+    # ARGUMENTS #
+        midpoints : np.ndarray[N]
+            Midpoints of bins to find the edges of.
+        fix_edges : bool = True
+            If we should account for bin size when working out the 0th and Nth bin edges.
+
+    # RETURNS #
+        edges : np.ndarray[2,N]
+            A 2D numpy array, "edges[0]" holds the starting edges of each bin, 
+            "edges[1]" holds the ending edges of each bin.\end{DoxyVerb}
+ \mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1numpy__helper_1_1array_1_1grid_a8cd601e37bab97b155a7c01f1e1c21c8}\label{namespaceaopp__deconv__tool_1_1numpy__helper_1_1array_1_1grid_a8cd601e37bab97b155a7c01f1e1c21c8}} 
+\index{aopp\_deconv\_tool.numpy\_helper.array.grid@{aopp\_deconv\_tool.numpy\_helper.array.grid}!regrid@{regrid}}
+\index{regrid@{regrid}!aopp\_deconv\_tool.numpy\_helper.array.grid@{aopp\_deconv\_tool.numpy\_helper.array.grid}}
+\doxysubsubsection{\texorpdfstring{regrid()}{regrid()}}
+{\footnotesize\ttfamily  np.\+ndarray aopp\+\_\+deconv\+\_\+tool.\+numpy\+\_\+helper.\+array.\+grid.\+regrid (\begin{DoxyParamCaption}\item[{np.\+ndarray}]{data,  }\item[{np.\+ndarray}]{input\+\_\+bin\+\_\+edges,  }\item[{np.\+ndarray}]{output\+\_\+bin\+\_\+edges,  }\item[{int }]{axis = {\ttfamily 0} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}    Rebin data from the old bins to a new set of bins, old data is summed into new data bins.
+    Set NANs to zero before summing if you want to treat them that way.
+
+    # ARGUMENTS #
+        data : np.array[...,N,...]
+            The data to be re-gridded. Should make sense to add the data together,
+            N is the size of the axis over which data is to be rebinned. Choice of axis
+            is controlled by "axis" argument.
+        input_bin_edges : np.array[2,N]
+            Edges of the old bins, input_bin_edges[0] are the starts of each bin
+            input_bin_edges[1] are the ends of each bin.
+        output_bin_edges : np.array[2,M]
+            Edges of the new bins, output_bin_edges[0] are the starts of each bin,
+            output_bin_edges[1] are the ends of each bin.
+        axis : int = 0
+            Axis to rebin "data" across.
+
+    # RETURNS #
+        output_bin_values : np.array[...,M,...]
+            Rebinned data values, same shape as "data" except along the rebinned axis.
+        n_bins_combined : np.array[M]
+            Number of original bins combined into each new bin, fractional bins accounted for.\end{DoxyVerb}
+ 
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1numpy__helper_1_1array_1_1grid_add80fcdfd05ed33668a92e5f128a96cf}\label{namespaceaopp__deconv__tool_1_1numpy__helper_1_1array_1_1grid_add80fcdfd05ed33668a92e5f128a96cf}} 
+\index{aopp\_deconv\_tool.numpy\_helper.array.grid@{aopp\_deconv\_tool.numpy\_helper.array.grid}!\_lgr@{\_lgr}}
+\index{\_lgr@{\_lgr}!aopp\_deconv\_tool.numpy\_helper.array.grid@{aopp\_deconv\_tool.numpy\_helper.array.grid}}
+\doxysubsubsection{\texorpdfstring{\_lgr}{\_lgr}}
+{\footnotesize\ttfamily aopp\+\_\+deconv\+\_\+tool.\+numpy\+\_\+helper.\+array.\+grid.\+\_\+lgr = \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1cfg_1_1logs_a858779f4bf60872f01cc77b643fedc79}{aopp\+\_\+deconv\+\_\+tool.\+cfg.\+logs.\+get\+\_\+logger\+\_\+at\+\_\+level}}(\+\_\+\+\_\+name\+\_\+\+\_\+, \textquotesingle{}DEBUG\textquotesingle{})\hspace{0.3cm}{\ttfamily [private]}}
+

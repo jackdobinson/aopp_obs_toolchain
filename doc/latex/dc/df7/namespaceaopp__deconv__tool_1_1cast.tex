@@ -1,0 +1,69 @@
+\hypertarget{namespaceaopp__deconv__tool_1_1cast}{}\doxysection{aopp\+\_\+deconv\+\_\+tool.\+cast Namespace Reference}
+\label{namespaceaopp__deconv__tool_1_1cast}\index{aopp\_deconv\_tool.cast@{aopp\_deconv\_tool.cast}}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classaopp__deconv__tool_1_1cast_1_1CastException}{Cast\+Exception}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+type \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1cast_a300dcf30516e450d08415e15f572bfbe}{to}} (Any x, type atype)
+\item 
+Any \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1cast_ade5cb463643de02daa7c66331d07d05f}{to\+\_\+any}} (Any x, Iterable\mbox{[}type\mbox{]} types)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Contains routines for casting to and from types. Generally useful for simple data marshalling to and from text
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1cast_a300dcf30516e450d08415e15f572bfbe}\label{namespaceaopp__deconv__tool_1_1cast_a300dcf30516e450d08415e15f572bfbe}} 
+\index{aopp\_deconv\_tool.cast@{aopp\_deconv\_tool.cast}!to@{to}}
+\index{to@{to}!aopp\_deconv\_tool.cast@{aopp\_deconv\_tool.cast}}
+\doxysubsubsection{\texorpdfstring{to()}{to()}}
+{\footnotesize\ttfamily  type aopp\+\_\+deconv\+\_\+tool.\+cast.\+to (\begin{DoxyParamCaption}\item[{Any}]{x,  }\item[{type}]{atype }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}    Casts an object to a type
+    
+    Arguments:
+        x : any
+            Object to cast
+        atype : type
+            type to cast to
+    
+    Returns:
+        x casted to `atype`, throws CastException on failure.\end{DoxyVerb}
+ Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dc/df7/namespaceaopp__deconv__tool_1_1cast_a300dcf30516e450d08415e15f572bfbe_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1cast_ade5cb463643de02daa7c66331d07d05f}\label{namespaceaopp__deconv__tool_1_1cast_ade5cb463643de02daa7c66331d07d05f}} 
+\index{aopp\_deconv\_tool.cast@{aopp\_deconv\_tool.cast}!to\_any@{to\_any}}
+\index{to\_any@{to\_any}!aopp\_deconv\_tool.cast@{aopp\_deconv\_tool.cast}}
+\doxysubsubsection{\texorpdfstring{to\_any()}{to\_any()}}
+{\footnotesize\ttfamily  Any aopp\+\_\+deconv\+\_\+tool.\+cast.\+to\+\_\+any (\begin{DoxyParamCaption}\item[{Any}]{x,  }\item[{Iterable\mbox{[}type\mbox{]}}]{types }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}    Casts and object to any of the given types.
+    
+    Arguments:
+        x : Any
+            Object to cast
+        types : Iterable[type]
+            Iterable (e.g. list) of the types to attempt to cast to. Once one
+            cast succeeds, the others are not attempted.
+    
+    Returns:
+        `x` casted to the first type that succeeds. Throws CastException on failure.\end{DoxyVerb}
+ Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dc/df7/namespaceaopp__deconv__tool_1_1cast_ade5cb463643de02daa7c66331d07d05f_cgraph}
+\end{center}
+\end{figure}

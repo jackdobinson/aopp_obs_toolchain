@@ -1,0 +1,56 @@
+\hypertarget{psf__data__ops_8py}{}\doxysection{src/aopp\+\_\+deconv\+\_\+tool/psf\+\_\+data\+\_\+ops.py File Reference}
+\label{psf__data__ops_8py}\index{src/aopp\_deconv\_tool/psf\_data\_ops.py@{src/aopp\_deconv\_tool/psf\_data\_ops.py}}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classaopp__deconv__tool_1_1psf__data__ops_1_1S}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+S}}
+\item 
+class \mbox{\hyperlink{classaopp__deconv__tool_1_1psf__data__ops_1_1S1}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+S1}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_a2969163168d8875a18ecbc78c38594c1}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+apply\+\_\+offsets}} (np.\+ndarray data, tuple\mbox{[}int,...\mbox{]} axes, np.\+ndarray offsets)
+\item 
+tuple\mbox{[}np.\+ndarray\mbox{[}S\mbox{[}N\mbox{]}, T\mbox{]}, dict\mbox{[}str, Any\mbox{]}, dict\mbox{[}str, Any\mbox{]}\mbox{]} \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_a1748b457fcbf82cab1d62a64a5a10c77}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+fit\+\_\+to\+\_\+data}} (Prior\+Param\+Set params, Callable\mbox{[}P, np.\+ndarray\mbox{[}S\mbox{[}N\mbox{]}, T\mbox{]}\mbox{]} flattened\+\_\+psf\+\_\+model\+\_\+callable, np.\+ndarray\mbox{[}S\mbox{[}N\mbox{]}, T\mbox{]} psf\+\_\+data, np.\+ndarray\mbox{[}S\mbox{[}N\mbox{]}, T\mbox{]} psf\+\_\+err, Callable\mbox{[}\mbox{[}Prior\+Param\+Set, Callable\mbox{[}Q, float\mbox{]}\mbox{]}, Q\mbox{]} fitting\+\_\+function, Callable\mbox{[}\mbox{[}Callable\mbox{[}P, np.\+ndarray\mbox{[}S\mbox{[}N\mbox{]}, T\mbox{]}\mbox{]}, np.\+ndarray\mbox{[}S\mbox{[}N\mbox{]}, T\mbox{]}, np.\+ndarray\mbox{[}S\mbox{[}N\mbox{]}, T\mbox{]}\mbox{]}, Callable\mbox{[}Q, float\mbox{]}\mbox{]} objective\+\_\+function\+\_\+factory=functools.\+partial(objective\+\_\+function\+\_\+factory, mode=\textquotesingle{}minimise\textquotesingle{}), str$\vert$bool$\vert$None plot\+\_\+mode=None)
+\item 
+np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_a9119c91cdd8de15604d05bf8944cd8ba}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+get\+\_\+center\+\_\+of\+\_\+mass\+\_\+offsets}} (np.\+ndarray data, tuple\mbox{[}int,...\mbox{]} axes, np.\+ndarray$\vert$None roi\+\_\+mask=None)
+\item 
+np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_ad87a713d2e959d66d3d4ba4ccf24b360}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+get\+\_\+outlier\+\_\+mask}} (np.\+ndarray data, tuple\mbox{[}int,...\mbox{]} axes, float n\+\_\+sigma=5)
+\item 
+np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_af048123fcb4f52be1a5e745f6722107e}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+get\+\_\+roi\+\_\+mask}} (np.\+ndarray data, tuple\mbox{[}int,...\mbox{]} axes, float threshold=1E-\/2, None$\vert$int n\+\_\+largest\+\_\+regions=1)
+\item 
+np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_a77e0b620abe6cdf4232184c7b8552bec}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+normalise}} (np.\+ndarray data, tuple\mbox{[}int,...\mbox{]}$\vert$None axes=None, tuple\mbox{[}int,...\mbox{]}$\vert$None cutout\+\_\+shape=None, recenter\+\_\+around\+\_\+center\+\_\+of\+\_\+mass=False, remove\+\_\+background=True)
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_aeeb273f603fa12765786ad7bdb87ee72}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+objective\+\_\+function\+\_\+factory}} (model\+\_\+flattened\+\_\+callable, data, err, mode=\textquotesingle{}minimise\textquotesingle{})
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_aacf559b49b36bff59b0989d961abc68c}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+remove\+\_\+offset}} (data, axes, mask, model\+\_\+name=\textquotesingle{}norm\textquotesingle{})
+\item 
+def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_a4b3d99f76e3faae7a4a9bdfdcda51df8}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+scipy\+\_\+fitting\+\_\+function\+\_\+factory}} (scipy\+\_\+func)
+\item 
+np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_a1341f48440c941ca947dfc28a66dece2}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+trim\+\_\+around\+\_\+center}} (np.\+ndarray data, tuple\mbox{[}int,...\mbox{]} axes, tuple\mbox{[}int,...\mbox{]} output\+\_\+shape)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_a0f190a442c97f8630deb4ecba62c0567}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+\_\+lgr}} = \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1cfg_1_1logs_a858779f4bf60872f01cc77b643fedc79}{aopp\+\_\+deconv\+\_\+tool.\+cfg.\+logs.\+get\+\_\+logger\+\_\+at\+\_\+level}}(\+\_\+\+\_\+name\+\_\+\+\_\+, \textquotesingle{}INFO\textquotesingle{})
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_ac3bc69177f49ec5ab295933f60d70ad3}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+Int\+Var}} = Type\+Var(\textquotesingle{}Int\+Var\textquotesingle{}, bound=int)
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_acabc8d724f2afc96900803954909e2cb}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+M}} = Type\+Var(\textquotesingle{}N\textquotesingle{},bound=int)
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_aa2ba317c4a10cb2fdb239ba4b64c1be3}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+N}} = Type\+Var(\textquotesingle{}N\textquotesingle{},bound=int)
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_a15f5804637fb8c1c3016236e1256d5b5}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+P}} = Param\+Spec(\textquotesingle{}P\textquotesingle{})
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_a85b769c33a4e2e299654edbc441722e7}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+Q}} = Param\+Spec(\textquotesingle{}Q\textquotesingle{})
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_a57c338d52f42fe8fea6c63b984f8042c}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+T}} = Type\+Var(\textquotesingle{}T\textquotesingle{})
+\item 
+\mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_aa3da58f86ffd7ff453d9d6bfd8f0b3e3}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+Ts}} = Type\+Var\+Tuple(\textquotesingle{}Ts\textquotesingle{})
+\end{DoxyCompactItemize}

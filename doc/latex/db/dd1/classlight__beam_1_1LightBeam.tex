@@ -1,0 +1,130 @@
+\hypertarget{classlight__beam_1_1LightBeam}{}\doxysection{light\+\_\+beam.\+Light\+Beam Class Reference}
+\label{classlight__beam_1_1LightBeam}\index{light\_beam.LightBeam@{light\_beam.LightBeam}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{classlight__beam_1_1LightBeam_a1112a2d95ff2ca0ad88dfb9a534c4005}{\+\_\+\+\_\+call\+\_\+\+\_\+}} (self, optical\+\_\+position)
+\item 
+\mbox{\hyperlink{classlight__beam_1_1LightBeam_a8691d6c6c00fa51c921c955794df47f3}{float}} \mbox{\hyperlink{classlight__beam_1_1LightBeam_a61798760ef53519cbddcd01bb03d55b5}{get\+\_\+focal\+\_\+length}} (self)
+\item 
+bool \mbox{\hyperlink{classlight__beam_1_1LightBeam_a56cd28f36cd225e92798f4c1fe33bc4b}{is\+\_\+null}} (self)
+\item 
+def \mbox{\hyperlink{classlight__beam_1_1LightBeam_a9758493244df77790cb3985a36c85dc6}{w\+\_\+a}} (self, optical\+\_\+position)
+\item 
+def \mbox{\hyperlink{classlight__beam_1_1LightBeam_ad504ae3e40400ea9ee7cd82150c9bb14}{w\+\_\+b}} (self, optical\+\_\+position)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classlight__beam_1_1LightBeam_a8691d6c6c00fa51c921c955794df47f3}{float}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}    A beam of light defined by the two lines that limit the extent of the beam,
+    see (FIG 1). The beam behaves according to geometric optics. Beam position
+    is defined in terms of optica path distance "o". Therefore a beam never goes
+    "backwards".
+    
+    w_a = c_a + o*m_a
+    w_b = c_b + o*m_b
+    
+    w_a - The line that defines the beams "inner" edge, closest to the optical axis
+    w_b - The line that defines the beams "outer" edge, farthest from the optical axis
+    
+    
+    
+    
+    
+    FIG 1 ######################################################################
+    
+          |......................... w_b - outer edge of light beam
+         /|
+        / |
+       /  |       _________________ w_a - iner edge of light beam
+      /   |      X
+     /    |      X
+    *-----|------X----------------- optical axis (o)
+    
+                 ^
+                 Obstruction
+          ^
+          Lens
+    ^
+    Light Source
+    
+    ############################################################################\end{DoxyVerb}
+ 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classlight__beam_1_1LightBeam_a1112a2d95ff2ca0ad88dfb9a534c4005}\label{classlight__beam_1_1LightBeam_a1112a2d95ff2ca0ad88dfb9a534c4005}} 
+\index{light\_beam.LightBeam@{light\_beam.LightBeam}!\_\_call\_\_@{\_\_call\_\_}}
+\index{\_\_call\_\_@{\_\_call\_\_}!light\_beam.LightBeam@{light\_beam.LightBeam}}
+\doxysubsubsection{\texorpdfstring{\_\_call\_\_()}{\_\_call\_\_()}}
+{\footnotesize\ttfamily def light\+\_\+beam.\+Light\+Beam.\+\_\+\+\_\+call\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{optical\+\_\+position }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Calculate the beam envelope at `optical_position`\end{DoxyVerb}
+ Here is the call graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{db/dd1/classlight__beam_1_1LightBeam_a1112a2d95ff2ca0ad88dfb9a534c4005_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classlight__beam_1_1LightBeam_a61798760ef53519cbddcd01bb03d55b5}\label{classlight__beam_1_1LightBeam_a61798760ef53519cbddcd01bb03d55b5}} 
+\index{light\_beam.LightBeam@{light\_beam.LightBeam}!get\_focal\_length@{get\_focal\_length}}
+\index{get\_focal\_length@{get\_focal\_length}!light\_beam.LightBeam@{light\_beam.LightBeam}}
+\doxysubsubsection{\texorpdfstring{get\_focal\_length()}{get\_focal\_length()}}
+{\footnotesize\ttfamily  \mbox{\hyperlink{classlight__beam_1_1LightBeam_a8691d6c6c00fa51c921c955794df47f3}{float}} light\+\_\+beam.\+Light\+Beam.\+get\+\_\+focal\+\_\+length (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        For a beam, calculate the focal length that it's angle w.r.t the 
+        undeviated ray/optical axis would correspond to.\end{DoxyVerb}
+ \mbox{\Hypertarget{classlight__beam_1_1LightBeam_a56cd28f36cd225e92798f4c1fe33bc4b}\label{classlight__beam_1_1LightBeam_a56cd28f36cd225e92798f4c1fe33bc4b}} 
+\index{light\_beam.LightBeam@{light\_beam.LightBeam}!is\_null@{is\_null}}
+\index{is\_null@{is\_null}!light\_beam.LightBeam@{light\_beam.LightBeam}}
+\doxysubsubsection{\texorpdfstring{is\_null()}{is\_null()}}
+{\footnotesize\ttfamily  bool light\+\_\+beam.\+Light\+Beam.\+is\+\_\+null (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        Returns TRUE if the beam is null. I.e. represents no light in a region.\end{DoxyVerb}
+ \mbox{\Hypertarget{classlight__beam_1_1LightBeam_a9758493244df77790cb3985a36c85dc6}\label{classlight__beam_1_1LightBeam_a9758493244df77790cb3985a36c85dc6}} 
+\index{light\_beam.LightBeam@{light\_beam.LightBeam}!w\_a@{w\_a}}
+\index{w\_a@{w\_a}!light\_beam.LightBeam@{light\_beam.LightBeam}}
+\doxysubsubsection{\texorpdfstring{w\_a()}{w\_a()}}
+{\footnotesize\ttfamily def light\+\_\+beam.\+Light\+Beam.\+w\+\_\+a (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{optical\+\_\+position }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        The width (distance from the undeviated ray/optical axis) of the inner edge of the beam envelope\end{DoxyVerb}
+ Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{db/dd1/classlight__beam_1_1LightBeam_a9758493244df77790cb3985a36c85dc6_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{classlight__beam_1_1LightBeam_ad504ae3e40400ea9ee7cd82150c9bb14}\label{classlight__beam_1_1LightBeam_ad504ae3e40400ea9ee7cd82150c9bb14}} 
+\index{light\_beam.LightBeam@{light\_beam.LightBeam}!w\_b@{w\_b}}
+\index{w\_b@{w\_b}!light\_beam.LightBeam@{light\_beam.LightBeam}}
+\doxysubsubsection{\texorpdfstring{w\_b()}{w\_b()}}
+{\footnotesize\ttfamily def light\+\_\+beam.\+Light\+Beam.\+w\+\_\+b (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{optical\+\_\+position }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}        The width (distance from the undeviated ray/optical axis) of the outer edge of the beam envelope\end{DoxyVerb}
+ Here is the caller graph for this function\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{db/dd1/classlight__beam_1_1LightBeam_ad504ae3e40400ea9ee7cd82150c9bb14_icgraph}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{classlight__beam_1_1LightBeam_a8691d6c6c00fa51c921c955794df47f3}\label{classlight__beam_1_1LightBeam_a8691d6c6c00fa51c921c955794df47f3}} 
+\index{light\_beam.LightBeam@{light\_beam.LightBeam}!float@{float}}
+\index{float@{float}!light\_beam.LightBeam@{light\_beam.LightBeam}}
+\doxysubsubsection{\texorpdfstring{float}{float}}
+{\footnotesize\ttfamily light\+\_\+beam.\+Light\+Beam.\+float\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/aopp\+\_\+deconv\+\_\+tool/optics/geometric/\mbox{\hyperlink{light__beam_8py}{light\+\_\+beam.\+py}}\end{DoxyCompactItemize}

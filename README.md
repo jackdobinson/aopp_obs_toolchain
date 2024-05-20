@@ -365,3 +365,13 @@ In whatever test directory you want, run the examples with:
 
 These should all complete and write files to their outputs just as if you ran them in the development environment. You might want
 to delete the contents of the output directories before running so you can see the new files being created.
+
+
+# Generate Documentaion #
+
+To generate the DOXYGEN documentation:
+
+* Ensure [`doxygen` is installed](https://www.doxygen.nl/manual/install.html)
+* Use `cd <REPO>` to get to the repository directory
+* Run the `doxygen` command at the terminal
+* View the documentation by opening `<REPO>/doc/html/index.html` in your browser.
