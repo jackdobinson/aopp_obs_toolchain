@@ -4,6 +4,7 @@ Eventually this will consist of multiple packages, for now it just consists of a
 
 See the [github](https://github.com/jackdobinson/aopp_obs_toolchain) for more details about the internal workings.
 
+If you download the repository, there is doxygen documentation available. See the `README.md` file for more information on how it is generated and how to view it.
 
 ## TODO <a id="todo"></a>  ##
 

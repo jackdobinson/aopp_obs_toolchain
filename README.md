@@ -367,7 +367,7 @@ These should all complete and write files to their outputs just as if you ran th
 to delete the contents of the output directories before running so you can see the new files being created.
 
 
-# Generate Documentaion #
+# Documentaion #
 
 To generate the DOXYGEN documentation:
 
