@@ -22,7 +22,7 @@ import aopp_deconv_tool.numpy_helper.array.grid
 import matplotlib.pyplot as plt
 
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'INFO')
 
 
 
@@ -144,6 +144,7 @@ def run(
 		hdu_rebinned,
 	])
 	hdul_output.writeto(output_path, overwrite=True)
+	_lgr.info(f'Written processed file to "{output_path}"')
 
 
 
@@ -152,19 +153,25 @@ def parse_args(argv):
 	import os
 	import aopp_deconv_tool.text
 	import argparse
+	
+	DEFAULT_OUTPUT_TAG = '_rebin'
+	DESIRED_FITS_AXES = ['SPECTRAL']
+	FITS_SPECIFIER_HELP = aopp_deconv_tool.text.wrap(
+		aph.fits.specifier.get_help(DESIRED_FITS_AXES).replace('\t', '    '),
+		os.get_terminal_size().columns - 30
+	)
+	
 	parser = argparse.ArgumentParser(
 		description=__doc__, 
-		formatter_class=argparse.RawTextHelpFormatter
+		formatter_class=argparse.RawTextHelpFormatter,
+		epilog=FITS_SPECIFIER_HELP
 	)
 	
 	parser.add_argument(
 		'fits_spec', 
-		help = aopp_deconv_tool.text.wrap(
-			aph.fits.specifier.get_help(['SPECTRAL']),
-			os.get_terminal_size().columns - 50
-		)
+		help = 'The FITS SPECIFIER to operate upon, see the end of the help message for more information'
 	)
-	parser.add_argument('-o', '--output_path', help='Output fits file path. By default is same as fie `fits_spec` path with "_rebin" appended to the filename')
+	parser.add_argument('-o', '--output_path', help=f'Output fits file path. By default is same as the `fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
 	
 	parser.add_argument('--rebin_operation', choices=['sum', 'mean', 'mean_err'], default='mean', help='Operation to perform when binning.')
 	
@@ -174,7 +181,7 @@ def parse_args(argv):
 	
 	args = parser.parse_args(argv)
 	
-	args.fits_spec = aph.fits.specifier.parse(args.fits_spec, ['SPECTRAL'])
+	args.fits_spec = aph.fits.specifier.parse(args.fits_spec, DESIRED_FITS_AXES)
 	
 	if args.rebin_preset is not None:
 		for k,v in named_spectral_binning_parameters[args.rebin_preset].items():
@@ -184,7 +191,12 @@ def parse_args(argv):
 		setattr(args, 'bin_width', args.rebin_params[1])
 	
 	if args.output_path is None:
-		args.output_path =  (Path(args.fits_spec.path).parent / (str(Path(args.fits_spec.path).stem)+'_rebin'+str(Path(args.fits_spec.path).suffix)))
+		args.output_path =  (Path(args.fits_spec.path).parent / (str(Path(args.fits_spec.path).stem)+DEFAULT_OUTPUT_TAG+str(Path(args.fits_spec.path).suffix)))
+	
+	print('INPUT PARAMETERS')
+	for k,v in vars(args).items():
+		print(f'    {k} : {v}')
+	print('END')
 	
 	return args
 

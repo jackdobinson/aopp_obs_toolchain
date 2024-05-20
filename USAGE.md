@@ -281,6 +281,8 @@ Format:
 
 When running commandline scripts, use the `-h` option to see the help message. The appendix has a [overview of help message syntax](#overview-of-help-message-syntax).
 
+The examples in this section use [example data stored on an external site](TODO: ADD LINK TO EXAMPLE DATA).
+
 ### Spectral Rebinning <a id="spectral-rebinning-script"></a> ##
 
 Invoke via `python -m aopp_deconv_tool.spectral_rebin`. 
@@ -346,17 +348,36 @@ The underlying algorithm does the following:
 
 #### Module Arguments ####
 
+* `-o` or `--output_path`
+  - Output fits file path. If not specified, it is same as the path to the input file with "_rebin" appended to the filename.
+
 * `--rebin_operation`
   - `sum` sums the old bins into the new bins, use when you have a measurement like "counts"
-  - `mean` averages the old bins into the new bins, use when you have a measurement like "counts per frequency"
+  - `mean` averages the old bins into the new bins, use when you have a measurement like "counts per frequency" (DEFAULT)
   - `mean_err` averages the square of the old bins into the new bins then square roots, use when you have standard deviations of a measurement like "counts per frequency"
 
-* `--rebin_params`
-  - Takes two floats, `bin_step` and `bin_width`. Defines the new bin sizes, values are in SI units.
 
-* `--rebin_preset`
-  - Is a named preset that defines `bin_step` and `bin_width`. Presets are:
-    + `spex`: `bin_step` = 1E-9, `bin_width` = 2E-9
+* One of the two mutually exclusive options:
+  * `--rebin_params`
+    - Takes two floats, `bin_step` and `bin_width`. Defines the new bin sizes, values are in SI units.
+
+  * `--rebin_preset` (DEFAULT)
+    - Is a named preset that defines `bin_step` and `bin_width`. Presets are:
+      + `spex`: `bin_step` = 1E-9, `bin_width` = 2E-9 (DEFAULT)
+
+#### Examples ####
+
+Using the example data, the `datasets.json` file lists a dataset called "example neptune observation" with a science target observation in the file "MUSE.2019-10-18T00:01:19.521.fits" and a calibration observation in the file "MUSE.2019-10-17T23:46:14.117.fits"
+
+Run the rebinning for each of the files via the command:
+* `python -m aopp_deconv_tool.spectral_rebin ./example_data/ifu_observation_datasets/MUSE.2019-10-17T23\:46\:14.117.fits`
+* `python -m aopp_deconv_tool.spectral_rebin ./example_data/ifu_observation_datasets/MUSE.2019-10-18T00\:01\:19.521.fits`
+
+By default, files are rebinned by averaging old bins into new bins, and using the `spex` preset for bin width and bin step. The equivalent to the above command is `python -m aopp_deconv_tool.spectral_rebin ./example_data/ifu_observation_datasets/MUSE.2019-10-17T23\:46\:14.117.fits --rebin_operation mean --rebin_preset spex --output_path ./example_data/ifu_observation_datasets/MUSE.2019-10-17T23\:46\:14.117_rebin.fits`
+
+After both command are complete there should be two new files that contain their output:
+* `./example_data/ifu_observation_datasets/MUSE.2019-10-17T23\:46\:14.117_rebin.fits`
+* `./example_data/ifu_observation_datasets/MUSE.2019-10-18T00\:01\:19.521_rebin.fits`
 
 
 ### Interpolation <a id="interpolation-script"></a> ##
@@ -366,20 +387,57 @@ Invoke via `python -m aopp_deconv_tool.interpolate`.
 Accepts a FTIS file specifier, will find bad pixels and interpolate over them. The strategies used are
 dependent on the options given to the program.
 
-bad pixel strategies:
-	ssa
-		Uses singular spectrum analysis to determine bad pixels. Useful for situations where artifacts are not
-		seperable from the science data via a simple brightness threshold. Also interpolates over INF and NAN pixels.
-	simple
-		Only interpolates over INF and NAN pixels
+Interpolation is a two-stage process,
+1) Bad pixels must be identified (i.e. which pixels should be interpolated over)
+2) Interpolation over bad pixels must occur.
 
-interpolation strategies:
-	scipy
-		Uses scipy routines to interpolate over the bad pixels. Uses a convolution technique to assist with edge effect problems.
-	ssa
-		[EXPERIMENTAL] Interpolates over SSA components only where extreme values are present. Testing has shown this to give
-		results more similar to the underlying test data than `scipy`, but is substantially slower and requires parameter
-		fiddling to give any substantial improvement.
+For (1), singular spectrum analysis (with a 20x20 window [currently]) is used to find a 'badness' heuteristic. The badness is calculated for each SSA componet (except the first 5 [currently]) by:
+* finding the *median* of the SSA component
+* calculating the number of standard deviations a pixel is away from the *median* of the SSA component, this is the "badness" of a pixel in a single SSA component.
+* summing the SSA component "badness" of each pixel, to give the total "badness"
+
+Pixels are categorised as "bad" if their "badness" exceeds 1 [currently], the mask of bad pixels then has [binary closing](https://en.wikipedia.org/wiki/Closing_(morphology)) applied to it, and all single pixels removed as the purpose of this step is to find extended instrumental artifacts. Hot/cold single pixels should already be identified by the telescope's pipeline.
+
+Finally, the map of bad pixels is combined with the map of NAN and INF pixels which is then interpolated over.
+
+The interpolation process (2) uses a [standard interpolation routine](https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.griddata.html). However, to avoid edge effects the data is:
+
+* embedded in a larger field of zeros
+* convolved with a (3x3) kernel
+* the center region of the convolved data is replaced with the original data
+* the interpolation is performed
+* the center region is extracted as the interpolation of the original data.
+
+This process removes hard edges and reduces edge effects in a similar way to a "reflect" boundary condition (which the routine does not support at the time of writing) but the value tends towards zero and high-frequency variations have little impact.
+
+
+#### Module Arguments ####
+
+
+* `-o` or `--output_path`
+  - Output fits file path. If not specified, it is same as the path to the input file with "_interp" appended to the filename.
+
+* `--bad_pixel_method` : selects how bad pixels are chosen:
+  - `ssa` (DEFAULT)
+    + Uses singular spectrum analysis to determine bad pixels. Useful for situations where artifacts are not easily seperable from the science data via a simple brightness threshold. Also interpolates over INF and NAN pixels.
+  - `simple`
+    + Only interpolates over INF and NAN pixels
+
+* `--interp_method` : selects how interpolation is performed:
+  - `scipy` (DEFAULT)
+    + Uses scipy routines to interpolate over the bad pixels. Uses a convolution technique to assist with edge effect problems.
+  - `ssa`
+    + [EXPERIMENTAL] Interpolates over SSA components only where extreme values are present. Testing has shown this to give results more similar to the underlying test data than `scipy`, but is substantially slower and requires parameter fiddling to give any substantial improvement.
+
+#### Examples ####
+
+Using the results from the rebinning example. Interpolation is perfomed via:
+
+* `python -m aopp_deconv_tool.interpolate './example_data/ifu_observation_datasets/MUSE.2019-10-17T23:46:14.117_rebin.fits(1,2)'`
+* `python -m aopp_deconv_tool.interpolate ./example_data/ifu_observation_datasets/MUSE.2019-10-18T00\:01\:19.521_rebin.fits`
+
+Unfortunately, the file `./example_data/ifu_observation_datasets/MUSE.2019-10-17T23\:46\:14.117_rebin.fits` is not quite standard and lists it's sky axes as 'PIXEL' axes. Therefore we have to provide the sky axes to the interpolate routine (or alter the FITS file). As axes are denoted using round brackets in a FITS Specifier, we have to wrap the string in single quotes and remove the escaping `\`s from the colons to enable the terminal to understand the string does not contain commands.
+
 
 ### PSF Normalisation <a id="psf-normalisation-script"></a> ###
 
@@ -471,6 +529,8 @@ The help message consists of the following sections:
 * A quick description of the script, possibly with an example invocation.
 * Positional and Keyword argument descriptions
 * Any extra information that would be useful to the user.
+
+
 
 #### The Usage Line ####
 

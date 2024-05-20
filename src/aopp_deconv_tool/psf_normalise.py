@@ -187,19 +187,21 @@ def parse_args(argv):
 	import argparse
 	
 	DEFAULT_OUTPUT_TAG = '_normalised'
-	DESIRED_FITS_AXES = 'CELESTIAL'
+	DESIRED_FITS_AXES = ['CELESTIAL']
+	FITS_SPECIFIER_HELP = aopp_deconv_tool.text.wrap(
+		aph.fits.specifier.get_help(DESIRED_FITS_AXES).replace('\t', '    '),
+		os.get_terminal_size().columns - 30
+	)
 	
 	parser = argparse.ArgumentParser(
 		description=__doc__, 
-		formatter_class=argparse.RawTextHelpFormatter
+		formatter_class=argparse.RawTextHelpFormatter,
+		epilog=FITS_SPECIFIER_HELP
 	)
 	
 	parser.add_argument(
 		'fits_spec', 
-		help = aopp_deconv_tool.text.wrap(
-			aph.fits.specifier.get_help([DESIRED_FITS_AXES]).replace('\t', '    '),
-			os.get_terminal_size().columns - 30
-		)
+		help = 'The FITS SPECIFIER to operate upon, see the end of the help message for more information'
 	)
 	parser.add_argument('-o', '--output_path', help=f'Output fits file path. By default is same as fie `fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
 	
@@ -214,14 +216,13 @@ def parse_args(argv):
 	parser.add_argument('--background_noise_model', type=str, default='gennorm', 
 		choices=['norm', 'gennorm', 'none'],
 		help='Model of background noise to use when removing offset. "none" will not mean offset is not calculated or removed'
-	)
-	
+	)	
 	parser.add_argument('--n_sigma', type=float, default=5, help='When finding the outlier mask, the number of standard deviations away from the mean a pixel must be to be considered an outlier`')
 	parser.add_argument('--trim_to_shape', type=int, nargs=2, default=None, help='After centering etc. will trim data to this shape around the center pixel. Used to reduce data volume for faster processing.')
 
 	args = parser.parse_args(argv)
 	
-	args.fits_spec = aph.fits.specifier.parse(args.fits_spec, [DESIRED_FITS_AXES])
+	args.fits_spec = aph.fits.specifier.parse(args.fits_spec, DESIRED_FITS_AXES)
 	
 	if args.output_path is None:
 		args.output_path =  (Path(args.fits_spec.path).parent / (str(Path(args.fits_spec.path).stem)+DEFAULT_OUTPUT_TAG+str(Path(args.fits_spec.path).suffix)))

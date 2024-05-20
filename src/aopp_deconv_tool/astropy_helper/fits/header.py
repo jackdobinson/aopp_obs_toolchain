@@ -11,7 +11,7 @@ from astropy.wcs import WCS
 from aopp_deconv_tool.numpy_helper.axes import AxesOrdering
 
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'INFO')
 
 
 class DictReader:
@@ -149,6 +149,7 @@ def get_spectral_axes(hdr, wcsaxes_label=''):
 	
 	spectral_idxs = []
 	for i in AxesOrdering.range(hdr['NAXIS']):
+		#_lgr.debug(f'{i=} "CTYPE{i.fits}{wcsaxes_label}" {hdr.get(f"CTYPE{i.fits}{wcsaxes_label}","")}')
 		if any(fits_code==hdr.get(f'CTYPE{i.fits}{wcsaxes_label}', '')[:len(fits_code)] for fits_code in fits_spectral_codes):
 			spectral_idxs.append(i.numpy)
 		elif any(iraf_code in hdr.get(f'WAT{i.fits}_{"001" if wcsaxes_label=="" else wcsaxes_label}', '') for iraf_code in iraf_spectral_codes):

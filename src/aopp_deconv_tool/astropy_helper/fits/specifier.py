@@ -176,8 +176,8 @@ def parse(specifier : str, axes_types : list[str]):
 			for k,v in axes.items():
 				if len(v) == 0:
 					raise RuntimeError(f'Could not work out axes "{k}" automatically, please specify axes explicitly')
-		else:
-			raise RuntimeError(f'Could not work out axes automatically, please specify axes explicitly')
+		#else:
+		#	raise RuntimeError(f'Could not work out axes automatically, please specify axes explicitly')
 			
 		
 		# get slice information
@@ -229,5 +229,8 @@ def parse(specifier : str, axes_types : list[str]):
 				for ax_name in axes_types:
 					axes[ax_name] = axes_type_info[ax_name].default_callable(hdr)
 
-
+	for k,v in axes.items():
+		if len(v) == 0:
+			raise RuntimeError(f'Could not work out axes "{k}" automatically, please specify axes explicitly')
+			
 	return FitsSpecifier(path, ext, slices, axes)

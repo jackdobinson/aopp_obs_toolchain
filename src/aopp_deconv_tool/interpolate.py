@@ -199,19 +199,25 @@ def parse_args(argv):
 	import os
 	import aopp_deconv_tool.text
 	import argparse
+	
+	DEFAULT_OUTPUT_TAG = '_interp'
+	DESIRED_FITS_AXES = ['CELESTIAL']
+	FITS_SPECIFIER_HELP = aopp_deconv_tool.text.wrap(
+		aph.fits.specifier.get_help(DESIRED_FITS_AXES).replace('\t', '    '),
+		os.get_terminal_size().columns - 30
+	)
+	
 	parser = argparse.ArgumentParser(
 		description=__doc__, 
-		formatter_class=argparse.RawTextHelpFormatter
+		formatter_class=argparse.RawTextHelpFormatter,
+		epilog=FITS_SPECIFIER_HELP
 	)
 	
 	parser.add_argument(
 		'fits_spec', 
-		help = aopp_deconv_tool.text.wrap(
-			aph.fits.specifier.get_help(['CELESTIAL']).replace('\t', '    '),
-			os.get_terminal_size().columns - 30
-		)
+		help = 'The FITS SPECIFIER to operate upon, see the end of the help message for more information'
 	)
-	parser.add_argument('-o', '--output_path', help='Output fits file path. By default is same as fie `fits_spec` path with "_interp" appended to the filename')
+	parser.add_argument('-o', '--output_path', help=f'Output fits file path. By default is same as fie `fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
 	
 	parser.add_argument('--bad_pixel_method', choices=['ssa', 'simple'], default='ssa', help='Strategy to use when finding bad pixels to interpolate over')
 	#parser.add_argument('--bad_pixel_args', nargs='*', help='Arguments to be passed to `--bad_pixel_method`')
@@ -221,10 +227,10 @@ def parse_args(argv):
 
 	args = parser.parse_args(argv)
 	
-	args.fits_spec = aph.fits.specifier.parse(args.fits_spec, ['CELESTIAL'])
+	args.fits_spec = aph.fits.specifier.parse(args.fits_spec, DESIRED_FITS_AXES)
 	
 	if args.output_path is None:
-		args.output_path =  (Path(args.fits_spec.path).parent / (str(Path(args.fits_spec.path).stem)+'_interp'+str(Path(args.fits_spec.path).suffix)))
+		args.output_path =  (Path(args.fits_spec.path).parent / (str(Path(args.fits_spec.path).stem)+DEFAULT_OUTPUT_TAG+str(Path(args.fits_spec.path).suffix)))
 	
 	return args
 

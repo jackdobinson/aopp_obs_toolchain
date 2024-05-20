@@ -90,8 +90,6 @@ def ssa2d_sum_prob_map(
 		weight_by_evals
 			If True, will weight each SSA component pixel probability by
 			the component's eigenvalue when averaging into a combined score.
-		perform_binary_opening : bool = True
-			If True will perform binary opening on the result to remove single pixels
 	# RETURNS #
 		bp_mask
 			A bad pixel mask. Pixels to reject are coded as True.

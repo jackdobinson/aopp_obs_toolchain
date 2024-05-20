@@ -47,7 +47,7 @@ Example of grid definition:
 import numpy as np
 
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'INFO')
 
 
 def edges_from_midpoints(
