@@ -137,7 +137,8 @@ def run(
 		output_path : str | Path = './deconv.fits',
 		deconv_class : Literal[CleanModified] | Literal[LucyRichardson] = CleanModified,
 		plot : bool = True,
-		deconv_args : list[str,...] = []
+		deconv_args : list[str,...] = [],
+		show_deconv_help = False
 	):
 	"""
 	Given a FitsSpecifier for an observation and a PSF, an output path, and a class that performs deconvolution,
@@ -165,7 +166,7 @@ def run(
 		plot : bool = True
 			If `True` will plot the deconvolution progress
 	"""
-	deconv_params = parse_deconv_args(deconv_class, deconv_args)
+	deconv_params = parse_deconv_args(deconv_class, deconv_args, show_help=show_deconv_help)
 	_lgr.debug(f'{deconv_params=}')
 	deconvolver = deconv_class(**deconv_params)
 
@@ -245,7 +246,7 @@ def run(
 	hdul_output.writeto(output_path, overwrite=True)
 
 
-def parse_deconv_args(deconv_class, argv):
+def parse_deconv_args(deconv_class, argv, show_help=False):
 	import argparse
 	import dataclasses as dc
 	import re
@@ -254,9 +255,13 @@ def parse_deconv_args(deconv_class, argv):
 	# description of the class
 	re_empty_line = re.compile(r'^\s*$\s*', flags=re.MULTILINE)
 	
+	class ArgFormatter (argparse.RawTextHelpFormatter, argparse.ArgumentDefaultsHelpFormatter, argparse.MetavarTypeHelpFormatter):
+		def __init__(self, *args, **kwargs):
+			super().__init__(*args, **kwargs)
+	
 	parser = argparse.ArgumentParser(
 		description=re_empty_line.split(deconv_class.__doc__,2)[1], 
-		formatter_class=argparse.RawTextHelpFormatter,
+		formatter_class=ArgFormatter,
 		add_help=False
 	)
 	def on_parser_error(err_str):
@@ -266,7 +271,7 @@ def parse_deconv_args(deconv_class, argv):
 	
 	parser.error = on_parser_error
 	
-	parser.add_argument('--info', action='store_true', default=False, help='Show this information message')
+	#parser.add_argument('--info', action='store_true', default=False, help='Show this information message')
 	
 	for field in dc.fields(deconv_class):
 		if field.init != True:
@@ -278,17 +283,17 @@ def parse_deconv_args(deconv_class, argv):
 			'--'+field.name, 
 			type=field.type, 
 			default= field_default,
-			help=field.metadata.get('description', 'DESCRIPTION NOT FOUND') + f' (default = {field_default})',
+			help=field.metadata.get('description', 'DESCRIPTION NOT FOUND'),# + f' (default = {field_default})',
 			metavar=str(field.type)[8:-2]
 		)
 	
 	deconv_args = parser.parse_args(argv)
 	
-	if deconv_args.info:
+	if show_help:
 		parser.print_help()
 		sys.exit()
 	
-	delattr(deconv_args, 'info')
+	#delattr(deconv_args, 'info')
 	
 	return vars(deconv_args)
 	
@@ -307,7 +312,7 @@ def parse_args(argv):
 	)
 	
 	
-	class ArgFormatter (argparse.RawTextHelpFormatter, argparse.ArgumentDefaultsHelpFormatter):
+	class ArgFormatter (argparse.RawTextHelpFormatter, argparse.ArgumentDefaultsHelpFormatter, argparse.MetavarTypeHelpFormatter):
 		def __init__(self, *args, **kwargs):
 			super().__init__(*args, **kwargs)
 	
@@ -319,18 +324,20 @@ def parse_args(argv):
 	
 	parser.add_argument(
 		'obs_fits_spec',
-		help = 'The observation\'s (i.e. science target) FITS SPECIFIER, see the end of the help message for more information'
+		help = 'The observation\'s (i.e. science target) FITS SPECIFIER, see the end of the help message for more information',
+		type=str
 	)
 	
 	parser.add_argument(
 		'psf_fits_spec', 
-		help = 'The psf\'s (i.e. calibration target) FITS SPECIFIER, see the end of the help message for more information'
+		help = 'The psf\'s (i.e. calibration target) FITS SPECIFIER, see the end of the help message for more information',
+		type=str
 	)
 	
 	parser.add_argument('-o', '--output_path', type=str, help=f'Output fits file path. By default is same as the `fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
 	parser.add_argument('--plot', action='store_true', default=False, help='If present will show progress plots of the deconvolution')
 	parser.add_argument('--deconv_method', type=str, choices=deconv_methods.keys(), default='clean_modified', help='Which method to use for deconvolution. For more information, pass the deconvolution method and the "--info" argument.') 
-	
+	parser.add_argument('--deconv_method_help', action='store_true', default=False, help='Show help for the selected deconvolution method')
 	
 	args, deconv_args = parser.parse_known_args(argv)
 	
@@ -357,5 +364,6 @@ if __name__ == '__main__':
 		plot = args.plot,
 		deconv_class = deconv_methods[args.deconv_method],
 		deconv_args = deconv_args,
+		show_deconv_help = args.deconv_method_help
 	)
 	

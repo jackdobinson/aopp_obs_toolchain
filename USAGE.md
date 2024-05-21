@@ -450,30 +450,147 @@ Peforms the following operations:
 * Optionally trims the image to a desired shape around the center of mass to reduce data volume and speed up subsequent steps
 * Normalises the image to sum to 1
 
+#### Module Arguments ####
+
+* `-o` or `--output_path`
+  - Output fits file path. If not specified, it is same as the path to the input file with "_normalised" appended to the filename.
+
+* `--threshold` = 1E-2
+  - When finding region of interest, only values larger than this fraction of the maximum value are included.
+
+* `--n_largest_regions` = 1
+  - When finding region of interest, if using a threshold will only the n_largest_regions in the calculation. A region is defined as a contiguous area where value >= `threshold` along `axes`. I.e. in a 3D cube, if we recenter about the Center of mass (COM) on the sky (CELESTIAL) axes the regions will be calculated on the sky, not in the spectral axis (for example)
+
+* `--background_threshold` = 1E-3
+  - Exclude the largest connected region with values larger than this fraction of the maximum value when finding the background
+
+* `--background_noise_model` : model of background noise to use when subtracting a global offset:
+  - `norm`
+    + Assume background noise is a normal distribution
+  - `gennorm`
+    + Assume background noise is a generalised normal distribution
+  - `none` (DEFAULT)
+    + Do not use a background noise model and therefore do not subtract a global offset
+
+* `--n_sigma` = 5
+  - When finding the outlier mask, the number of standard deviations away from the mean a pixel must be to be considered an outlier
+
+* `--trim_to_shape` = None
+  - After centering etc. if not None, will trim data to this shape around the center pixel. Used to reduce data volume for faster processing.
+
+#### Examples ####
+
+Using the results from the interpolation example. Normalisation is perfomed via:
+
+* `python -m aopp_deconv_tool.psf_normalise './example_data/ifu_observation_datasets/MUSE.2019-10-17T23:46:14.117_rebin_interp.fits(1,2)'`
+
 
 ### PSF Model Fitting <a id="psf-model-fitting-script"></a> ###
 
 Invoke via `python -m aopp_deconv_tool.fit_psf_model`.
 
-NOTE: The `--model` option sets the model to fit. To see which parameters a model accepts use the `--model_help` option [NOTE: CHECK THIS WORKS]
+Fits a model, specified by the `--model` option, using a fitting method specified by the `--method` option. Fits each wavelength in turn, records the fitted values in a FITS table extension called "FITTED MODEL PARAMS", and the modelled PSF in the primary extension.
 
-Specifying the `--method` option sets the routine used for fitting. Two are available `scipy.minimize` (default) and `ultranest`.
+Fitting Methods:
 
-scipy.minimize
-	A simple gradient descent solver. Fast and useful when the optimal solution is close to the passed starting parameters.
+* scipy.minimize
+  - A simple gradient descent solver. Fast and useful when the optimal solution is close to the passed starting parameters.
 
-ultranest
-	Nested sampling. Much slower (but can be sped up), but works when the optimal solution has local maxima/minima that
-	would trap `scipy.minimize`. Currently the `muse_ao` model only finds a good solution with this method.
+* ultranest
+  - Nested sampling. Much slower (but can be sped up, by fiddling with its settings), but works when the optimal solution has local maxima/minima that would trap `scipy.minimize`. Currently the `muse_ao` model only finds a good solution with this method. Setting ultranest to use a low number of points can cause a big speedup but causes the behaviour to resemble monte-carlo-markov-chain (MCMC) in that the probability distribution is not well defined due to the low number of sample points.
+
+#### Module Arguments ####
+
+* `-o` or `--output_path`
+  - Output fits file path. If not specified, it is same as the path to the input file with "_modelled" appended to the filename.
+
+* `--fit_result_dir`
+  - Directory to store results of PSF fit in. Will create a sub-directory below the given path. If None, will create a sibling folder to the output file (i.e. output file parent directory is used)
+
+* `--model` : Model to fit to PSF data:
+  - `radial` (DEFAULT)
+    + Models the PSF as a radial histogram with logarithmically spaced bins. Histogram values are found by summing the signal in the relevant PSF annuli.
+  - `gaussian`
+    + Models the PSF as a gaussian + a constant.
+  - `turbulence`
+    + Models the PSF as a simple telescope that looking through an atmosphere that obeys a von-karman turbulence model.
+  - `muse_ao`
+    + Models the PSF using a moffat function as in Fetick(2019).
+
+* `--method` : Method to use when fitting model to PSF data:
+  - `ultranest`
+    + Uses nested sampling to find where the parameters of a model maximise the likelihood.
+  - `scipy.minimize` (DEFAULT)
+    + Uses gradient descent to find the parameters that minimise the negative of the likelihood.
+
+* `--model_help`
+  - Shows help information about the selected model. You can specify starting/constant values, the domain over which a parameter can vary, and if the parameter is varied when fitting or held constant.
+
+* `--<param>`
+  - Sets the constant/starting value of a model parameter, default is model dependent.
+
+* `--<param>_domain`
+  - Sets the domain (min, max) of a model parameter, default is model dependent.
+
+* `--variables`
+  - parameter names provided to this argument are varied by the fitting method within the domain set by `--<param>_domain`, others are held constant at the value set in `--<param>`.
+
+#### Examples ####
+
+Using results from the normalisation example, fitting is performed via:
+
+* `python -m aopp_deconv_tool.psf_normalise './example_data/ifu_observation_datasets/MUSE.2019-10-17T23:46:14.117_rebin_interp_normalised.fits(1,2)'`
 
 ### Deconvolution <a id="deconvolution-script"></a> ###
 
 Invoke via `python -m aopp_deconv_tool.deconvolve`. Use the `-h` option to see the help message.
-NOTE: the `--parameter_help` option will show the help message for the deconvolution parameters [NOTE: CHECK THIS WORKS]
 
 Assumes the observation data has no NAN or INF pixels, assumes the PSF data is centered and sums to 1. Use the `--plot` option
 to see an progress plot that updates every 10 iterations of the MODIFIED_CLEAN algorithm, useful for working out what different
 parameters do.
+
+At each iteration of the MODIFIED_CLEAN algorithm, the following procedure is performed:
+* The clean map is calculated, by convolving the component map (initially empty) with the PSF
+* The residual is calculated by subtracting the clean map from the original data
+* The pixel selection metric is set equal to the absolute value of the residual
+* Pixels in the selection metric above a specified threshold create the selection mask. The threshold can be calculated one of two ways
+  - A static threshold, e.g. a fraction of the brightest pixel in the selection metric (range from 0->1, normally 0.3)
+  - An adaptive threshold, e.g. the maximum fraction difference Otsu threshold calculated from the selection metric
+* The selection mask is applied to the residual, and the selected pixels of the residual are copied into a new array called the current components and multiplied by the loop gain (range from 0->1, normally 0.02)
+* The current components are added to the component map
+* The current components are conolved with the PSF to create the "current convolved map"
+* The current convolved map is subtracted from the residual
+* Various statistics are calculated to determine a stopping point, if any of them fall below a user-set threshold the iteration terminates
+  - The ratio of the brightest pixel in the residual to the brightest pixel in the observation
+  - The ratio of the RMS of the residual to the RMS of the observation
+  - The standard deviation of the above two statistics for the last 10 steps
+
+Upon iteration, the component map **may** be convolved with a gaussian to regularise (smooth) it. This is referred to as the "clean beam". Often, careful choice of the threshold can give a smooth component map that does not require regularising in this way. An adaptive threshold, like the maximum fraction difference Otsu threshold, often performs better than a static threshold
+
+
+#### Module Arguments ####
+
+* `-o` or `--output_path`
+  - Output fits file path. If not specified, it is same as the path to the input file with "_normalised" appended to the filename.
+
+* `--plot`
+  - If present, will show plots of the progress of the deconvolution
+
+* `--deconv_method` : which method to use for deconvoltion:
+  - `clean_modified` (DEFAULT)
+  - `lucy_richardson`
+
+* `--deconv_method_help`
+  - Show help for the selected deconvolution method
+  
+* `--<param>`
+  - Set the value of a parameter of the chosen deconvolution method, use the `--deconv_method_help` option to list all parameters of a method and their defaults.
+
+#### Examples ####
+
+Using results from the previous examples, deconvolution is performed via:
+
+* `python -m aopp_deconv_tool.deconvolve ./example_data/ifu_observation_datasets/MUSE.2019-10-18T00\:01\:19.521_rebin_interp.fits './example_data/ifu_observation_datasets/MUSE.2019-10-17T23:46:14.117_rebin_interp_normalised_modelled.fits(1,2)' --threshold -1`
 
 
 ## Using the Package in Code <a id="using-the-package-in-code"></a> ##

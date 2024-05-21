@@ -325,26 +325,35 @@ def parse_args(argv):
 	
 	DEFAULT_OUTPUT_TAG = '_modelled'
 	DESIRED_FITS_AXES = ['CELESTIAL']
+	FITS_SPECIFIER_HELP = aopp_deconv_tool.text.wrap(
+		aph.fits.specifier.get_help(DESIRED_FITS_AXES).replace('\t', '    '),
+		os.get_terminal_size().columns - 30
+	)
+	
+	class ArgFormatter (argparse.RawTextHelpFormatter, argparse.ArgumentDefaultsHelpFormatter, argparse.MetavarTypeHelpFormatter):
+		def __init__(self, *args, **kwargs):
+			super().__init__(*args, **kwargs)
 	
 	parser = argparse.ArgumentParser(
 		description=__doc__, 
-		formatter_class=argparse.RawTextHelpFormatter
+		formatter_class=ArgFormatter,
+		epilog=FITS_SPECIFIER_HELP
 	)
 	
 	parser.add_argument(
 		'fits_spec', 
-		help = aopp_deconv_tool.text.wrap(
-			aph.fits.specifier.get_help(DESIRED_FITS_AXES).replace('\t', '    '),
-			os.get_terminal_size().columns - 30
-		)
+		help = "FITS Specifier of the data to operate upon (see end of help message).",
+		type = str,
 	)
-	parser.add_argument('-o', '--output_path', help=f'Output fits file path. By default is same as fie `fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
+	parser.add_argument('-o', '--output_path', type=str, help=f'Output fits file path. If None, is same as the `fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
 	
-	parser.add_argument('--fit_result_dir', type=str, default=None, help='Directory to store results of PSF fit in. Will create a sub-directory below the given path. If None (default) will create a sibling folder to the output file (i.e. output file parent directory is used).')
+	parser.add_argument('--fit_result_dir', type=str, default=None, help='Directory to store results of PSF fit in. Will create a sub-directory below the given path. If None, will create a sibling folder to the output file (i.e. output file parent directory is used).')
 
-	parser.add_argument('--model', type=str, default='radial', choices=tuple(psf_models.keys()), help='Model to fit to PSF data. Default="radial"')
+	parser.add_argument('--model', type=str, default='radial', choices=tuple(psf_models.keys()), help='Model to fit to PSF data.')
 
-	parser.add_argument('--method', type=str, default='scipy.minimize', choices=FITTING_METHODS, help='What method should we use to perform the fitting (default="scipy.minimize")')
+	parser.add_argument('--method', type=str, default='scipy.minimize', choices=FITTING_METHODS, help='What method should we use to perform the fitting')
+
+	parser.add_argument('--model_help', action='store_true', default=False, help='Show the help message for the selected model')
 
 	args, psf_model_args = parser.parse_known_args(argv)
 	
@@ -357,19 +366,25 @@ def parse_args(argv):
 	set_psf_model_dependency_injector(args.model, args.fits_spec)
 	
 	di = get_psf_model_dependency_injector()
-	param_names = di._params.all_params
+	params = di._params.all_params
 	
 	di_param_parser = argparse.ArgumentParser(
-		description="psf model parameters are specified here", 
-		formatter_class=argparse.RawTextHelpFormatter
+		prog=f'fit_psf_model.py --model {args.model}',
+		description=get_psf_model_dependency_injector().__doc__, 
+		formatter_class=ArgFormatter,
+		add_help=False,
 	)
 	
-	for item in param_names:
-		di_param_parser.add_argument("--"+item.name, type=float, default=di._params[item.name].const_value, help=f'parameter "{item.name}" for "{args.model}" psf model ')
-		di_param_parser.add_argument("--"+item.name+'_domain', nargs=2, type=float, default=di._params[item.name].domain, help=f'domain parameter "{item.name}" for "{args.model}" psf model "min max"')
+	for item in params:
+		di_param_parser.add_argument("--"+item.name, type=float, default=di._params[item.name].const_value, help=item.description)
+		di_param_parser.add_argument("--"+item.name+'_domain', nargs=2, type=float, default=di._params[item.name].domain, help=f'domain parameter "{item.name}" for "{args.model}" psf model')
 	
-	di_param_parser.add_argument('--variables', nargs='*', default=[x.name for x in di._params.variable_params], choices=param_names, help=f'Which parameters to vary when fitting, others will be held constant. Default = {di._params.variable_params}')
+	default_variable_params = [x.name for x in di._params.variable_params]
+	di_param_parser.add_argument('--variables', nargs='*', type=str, default=default_variable_params, choices=[x.name for x in params], help=f'Which parameters to vary when fitting, others will be held constant.')
 	
+	if args.model_help:
+		di_param_parser.print_help()
+		sys.exit()
 	
 	di_params = vars(di_param_parser.parse_args(psf_model_args))
 	_lgr.debug(f'{di_params["variables"]=}')

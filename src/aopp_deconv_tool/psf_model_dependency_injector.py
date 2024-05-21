@@ -165,19 +165,22 @@ class RadialPSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
 				'x',
 				(0, psf_data.shape[0]),
 				False,
-				psf_data.shape[0]//2
+				psf_data.shape[0]//2,
+				"Center point of radial histogram on x-axis"
 			),
 			PriorParam(
 				'y',
 				(0, psf_data.shape[1]),
 				False,
-				psf_data.shape[1]//2
+				psf_data.shape[1]//2,
+				"Center point of radial histogram on y-axis"
 			),
 			PriorParam(
 				'nbins',
 				(0, np.inf),
 				True,
-				50
+				50,
+				"Number of bins in radial histogram"
 			)
 		)
 		
@@ -218,31 +221,36 @@ class GaussianPSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
 				'x',
 				(0, psf_data.shape[0]),
 				True,
-				psf_data.shape[0]//2
+				psf_data.shape[0]//2,
+				"Position of gaussian mean on x-axis"
 			),
 			PriorParam(
 				'y',
 				(0, psf_data.shape[1]),
 				True,
-				psf_data.shape[1]//2
+				psf_data.shape[1]//2,
+				"Position of gaussian mean on y-axis"
 			),
 			PriorParam(
 				'sigma',
 				(0, np.sum([x**2 for x in psf_data.shape])),
 				False,
-				5
+				5,
+				"Standard deviation of gaussian in x and y axis"
 			),
 			PriorParam(
 				'const',
 				(0, 1),
 				False,
-				0
+				0,
+				"Constant added to gaussian"
 			),
 			PriorParam(
 				'factor',
 				(0, 2),
 				False,
-				1
+				1,
+				"Scaling factor"
 			)
 		)
 		
@@ -275,25 +283,29 @@ class TurbulencePSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
 				'wavelength',
 				(0, np.inf),
 				True,
-				750E-9
+				750E-9,
+				"Wavelength (meters) that properties are calculated at, will be automatically set if spectral information is present in the FITS cube"
 			),
 			PriorParam(
 				'r0',
 				(0, 1),
 				True,
-				0.1
+				0.1,
+				"Fried Parameter"
 			),
 			PriorParam(
 				'turbulence_ndim',
 				(0, 3),
 				False,
-				1.5
+				1.5,
+				"Number of dimensions the turbulence has"
 			),
 			PriorParam(
 				'L0',
 				(0, 50),
 				False,
-				8
+				8,
+				"Von-Karman turbulence parameter"
 			)
 		)
 		
@@ -346,37 +358,48 @@ class MUSEAdaptiveOpticsPSFModelDependencyInjector(ParamsAndPsfModelDependencyIn
 		
 		self._params = params = PriorParamSet(
 			PriorParam(
-				*prior_param_args_from_param_spec('wavelength', True, 750E-9, (0,np.inf), var_params, const_params, initial_values, range_values)
+				*prior_param_args_from_param_spec('wavelength', True, 750E-9, (0,np.inf), var_params, const_params, initial_values, range_values),
+				"Wavelength (meters) that properties are calculated at, will be automatically set if spectral information is present in the FITS cube"
 			),
 			PriorParam(
-				*prior_param_args_from_param_spec('r0', True, 0.15, (0.01,10), var_params, const_params, initial_values, range_values)
+				*prior_param_args_from_param_spec('r0', True, 0.15, (0.01,10), var_params, const_params, initial_values, range_values),
+				"Fried parameter"
 			),
 			PriorParam(
-				*prior_param_args_from_param_spec('turb_ndim', True, 1.3, (1,2), var_params, const_params, initial_values, range_values)
+				*prior_param_args_from_param_spec('turb_ndim', True, 1.3, (1,2), var_params, const_params, initial_values, range_values),
+				"number of dimensions the turbulence has"
 			),
 			PriorParam(
-				*prior_param_args_from_param_spec('L0', True, 1.5, (0,10), var_params, const_params, initial_values, range_values)
+				*prior_param_args_from_param_spec('L0', True, 1.5, (0,10), var_params, const_params, initial_values, range_values),
+				"von-karman turbulence parameter"
 			),
 			PriorParam(
-				*prior_param_args_from_param_spec('alpha', False, 0.4, (0.1,3), var_params, const_params, initial_values, range_values) 
+				*prior_param_args_from_param_spec('alpha', False, 0.4, (0.1,3), var_params, const_params, initial_values, range_values) ,
+				"shape parameter of moffat distribution, equivalent to standard deviation of a gaussian"
 			),
 			PriorParam(
-				*prior_param_args_from_param_spec('beta', True, 1.6, (1.1, 10), var_params, const_params, initial_values, range_values)
+				*prior_param_args_from_param_spec('beta', True, 1.6, (1.1, 10), var_params, const_params, initial_values, range_values),
+				"shape parameter of moffat distribution, controls pointy-vs-spreadiness of the distribution."
 			),
 			PriorParam(
-				*prior_param_args_from_param_spec('ao_correction_frac_offset', False, 0, (-1,1), var_params, const_params, initial_values, range_values)
+				*prior_param_args_from_param_spec('ao_correction_frac_offset', False, 0, (-1,1), var_params, const_params, initial_values, range_values),
+				"how much of an offset the adaptive optics correction has as a fraction of the maximum. I.e. models a discontinuity where the adaptive optics corrections stop and the high-frequency turbulent psf begins"
 			),
 			PriorParam(
-				*prior_param_args_from_param_spec('ao_correction_amplitude', False, 2.2, (0,5), var_params, const_params, initial_values, range_values)
+				*prior_param_args_from_param_spec('ao_correction_amplitude', False, 2.2, (0,5), var_params, const_params, initial_values, range_values),
+				"scaling of the adaptive optics correction. I.e. increases/decreases how large the AO correction bump is w.r.t the halo."
 			),
 			PriorParam(
-				*prior_param_args_from_param_spec('factor', False, 1, (0.7,1.3), var_params, const_params, initial_values, range_values)
+				*prior_param_args_from_param_spec('factor', False, 1, (0.7,1.3), var_params, const_params, initial_values, range_values),
+				"overall scaling factor to account for truncated PSFs which do not sum to 1"
 			),
 			PriorParam(
-				*prior_param_args_from_param_spec('s_factor', True, 0, (0,np.inf), var_params, const_params, initial_values, range_values)
+				*prior_param_args_from_param_spec('s_factor', True, 0, (0,10), var_params, const_params, initial_values, range_values),
+				"'spike factor', how much of a spike (delta-function like part) there should be in the PSF. Not often used, generally constant and set to zero"
 			),
 			PriorParam(
-				*prior_param_args_from_param_spec('f_ao', True, instrument.f_ao, (24.0/(2*instrument.obj_diameter),52.0/(2*instrument.obj_diameter)), var_params, const_params, initial_values, range_values)
+				*prior_param_args_from_param_spec('f_ao', True, instrument.f_ao, (24.0/(2*instrument.obj_diameter),52.0/(2*instrument.obj_diameter)), var_params, const_params, initial_values, range_values),
+				"frequency cutoff between adaptive optics corrections and high-frequency turbulence. Alters the position of the halo-glow effect."
 			)
 		)
 		

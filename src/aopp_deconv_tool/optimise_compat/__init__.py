@@ -44,11 +44,14 @@ class PriorParam:
 		Flag that signals if this parameter is a constant, constant parameters will use `const_value`
 	const_value : float
 		A value to use when const, and for example plots
+	description : str
+		A string that describes what this parameter represents
 	"""
 	name : str
 	domain : tuple[float,float]
 	is_const : bool
 	const_value : float
+	description : str = "No Description Found"
 	
 	def linear_transform_to_domain(self, in_domain=(0,1)):
 		"""
