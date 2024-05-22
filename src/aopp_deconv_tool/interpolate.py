@@ -5,7 +5,7 @@ Quick tool for interpolating data in a FITS file
 
 import sys
 from pathlib import Path
-
+import dataclasses as dc
 from typing import Literal
 
 import numpy as np
@@ -23,6 +23,7 @@ import aopp_deconv_tool.numpy_helper.array.grid
 
 import aopp_deconv_tool.scipy_helper as sph
 import aopp_deconv_tool.scipy_helper.interp
+import aopp_deconv_tool.scipy_helper.label_ops
 
 from aopp_deconv_tool.algorithm.interpolate.ssa_interp import ssa_intepolate_at_mask
 from aopp_deconv_tool.algorithm.bad_pixels.ssa_sum_prob import ssa2d_sum_prob_map
@@ -44,7 +45,8 @@ def get_data_ssa(a, **kwargs):
 		data_ssa = SSA(
 			a, 
 			**{
-				'w_shape':20,
+				#'w_shape':20,
+				'w_shape' : 20, # DEBUGGING
 				#'grouping' : {'mode' : 'similar_eigenvalues', 'tolerance' : 1E-1},
 				**kwargs
 			},
@@ -55,6 +57,8 @@ def set_data_ssa(value):
 	global data_ssa
 	data_ssa = value
 
+
+
 def get_bad_pixel_map(
 		a : np.ndarray, 
 		method : Literal['ssa'] | Literal['simple'], 
@@ -64,15 +68,20 @@ def get_bad_pixel_map(
 	match method:
 		case 'ssa':
 			ssa = get_data_ssa(np.nan_to_num(a))
+			
 			bad_pixel_map = ssa2d_sum_prob_map(
 				ssa, 
-				value=1, 
-				start=5, 
-				stop=None, 
+				value=5, 
+				start=2*ssa.m//8, # DEBUGGING
+				stop=4*ssa.m//8, # DEBUGGING
 				strategy='n_std_dev_from_median',
 				transform_value_as='identity',
-				show_plots=0
+				show_plots=0,
+				#show_plots=2, # DEBUGGING
+				weight_by_evals=False,
 			)
+			
+			
 		case 'simple':
 			bad_pixel_map = nan_inf_mask
 		case _:
@@ -92,14 +101,11 @@ def get_bad_pixel_map(
 				case 'dilation':
 					bad_pixel_map = sp.ndimage.binary_dilation(bad_pixel_map)
 				case 'remove_single_pixels':
+				
+					_lgr.debug(f'REMOVING SINGLE PIXELS')
 					labels, n_labels = sp.ndimage.label(bad_pixel_map)
-					reject_labels = np.zeros_like(bad_pixel_map, dtype=bool)
-					for i in range(n_labels):
-						lbl_mask = labels==i
-						n_pixels = np.count_nonzero(lbl_mask)
-						if n_pixels <= 1:
-							reject_labels[lbl_mask] = True
-					bad_pixel_map[reject_labels] = False
+					labels, n_labels = sph.label_ops.keep_larger_than(labels, n_labels, 1)
+					bad_pixel_map[labels == 0] = False
 					
 				case _:
 					raise RuntimeError(f'Unknown binary operation "{item}"')
@@ -142,7 +148,8 @@ def run(
 		bad_pixel_map = np.zeros_like(data, dtype=bool)
 		interp_data = np.full_like(data, fill_value=np.nan)
 		
-		bad_pixel_map_binary_operations = ['closing', 'remove_single_pixels']
+		#bad_pixel_map_binary_operations = ['closing', 'remove_single_pixels']
+		bad_pixel_map_binary_operations = []
 		
 		# Loop over the index range specified by `obs_fits_spec` and `psf_fits_spec`
 		for i, idx in enumerate(nph.slice.iter_indices(data, fits_spec.slices, fits_spec.axes['CELESTIAL'])):

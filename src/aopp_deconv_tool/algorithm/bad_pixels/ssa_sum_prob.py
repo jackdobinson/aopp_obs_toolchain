@@ -19,6 +19,8 @@ import aopp_deconv_tool.cfg.logs
 _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
+
+
 def ssa2d_sum_prob_map(
 		ssa, 
 		start=5, 
@@ -113,7 +115,13 @@ def ssa2d_sum_prob_map(
 				data_distribution = EmpiricalDistribution(ssa.X_ssa[i+start].ravel())
 				data_probs[i,...] = prob_median_transform_func(data_distribution.cdf(ssa.X_ssa[i+start].ravel()).reshape(ssa.a.shape))
 			case 'n_std_dev_from_median':
-				data_probs[i,...] = (ssa.X_ssa[i+start] - np.nanmean(ssa.X_ssa[i+start]))/np.nanstd(ssa.X_ssa[i+start])
+				#data_probs[i,...] = (ssa.X_ssa[i+start] - np.nanmean(ssa.X_ssa[i+start]))/np.nanstd(ssa.X_ssa[i+start])
+				#data_probs[i,...] = (ssa.X_ssa[i+start] - np.nanmedian(ssa.X_ssa[i+start]))/np.nanstd(ssa.X_ssa[i+start])
+				data_probs[i,...] = np.fabs((ssa.X_ssa[i+start] - np.nanmedian(ssa.X_ssa[i+start]))/np.nanstd(ssa.X_ssa[i+start]))
+			case 'magnitude':
+				data_probs[i,...] = np.fabs(ssa.X_ssa[i+start])
+			case 'identity':
+				data_probs[i,...] = ssa.X_ssa[i+start]
 			case _:
 				raise RuntimeError(f'Unknown `strategy` for getting probability of a pixel {strategy=}')
 
@@ -129,13 +137,16 @@ def ssa2d_sum_prob_map(
 	if weight_by_evals:
 		# try weighted by eigenvalues, generally do not want this one but the option is there
 		data_probs_sum_func = lambda x, _start, _stop: np.fabs(
-			(1/(np.sum((np.diag(ssa.s)**2)[_start:_stop+1]))) * np.sum(((np.diag(ssa.s)**2)[_start:_stop+1])[:,None,None] * x[:_stop-(_start-1)],axis=0)
+			(1/(np.sum((np.diag(ssa.s)**2)[_start:_stop]))) * np.sum(((np.diag(ssa.s)**2)[_start:_stop])[:,None,None] * x[:_stop-(_start-1)],axis=0)
 		)
-
+	
+	
 	if smooth_sigma is not None:
 		old_data_probs_sum_func = data_probs_sum_func
-		data_probs_sum_func = lambda x, _start, _stop: sp.ndimage.gaussian_filter(old_data_probs_sum_func(x, _start, _stop), smooth_sigma, order=1)
-
+		data_probs_sum_func = lambda x, _start, _stop: np.fabs(
+			sp.ndimage.gaussian_filter(old_data_probs_sum_func(x, _start, _stop), smooth_sigma, order=1)
+		)
+	
 
 	# apply the pixel->probability function to 'value' argument if desired
 	if 'median_prob' in transform_value_as:
@@ -158,10 +169,75 @@ def ssa2d_sum_prob_map(
 
 	# plots for debugging and progress
 	if show_plots > 1:
+		f1, a1 = plot_helper.figure_n_subplots(9)
+		f1.suptitle(f'Sum ssa.X_ssa[{start}:{stop}] probability maps')
+		ax_iter=iter(a1.flatten())
+		
+		i = start
+		with Next(ax_iter) as ax:
+			ax.set_title(f'ssa.X_ssa[{i}]\nsum {np.nansum(ssa.X_ssa[i])}')
+			ax.imshow(ssa.X_ssa[i])
+			plot_helper.remove_axes_ticks_and_labels(ax)
+		with Next(ax_iter) as ax:
+			ax.set_title(f'|probabilities of ssa.X_ssa[{i}]|')
+			#ax.imshow(data_probs_sum_func(data_probs, start, i), vmin=0, vmax=1)
+			ax.imshow(data_probs[i-start])
+			plot_helper.remove_axes_ticks_and_labels(ax)
+		with Next(ax_iter) as ax:
+			ax.set_title(f'histogram of ssa.X_ssa[{i}] range [{np.min(ssa.X_ssa[i])}, {np.max(ssa.X_ssa[i])}] sigma {np.std(ssa.X_ssa[i])}')
+			hvals, hbins, hpatches = ax.hist(ssa.X_ssa[i].ravel(), bins=100, density=True)
+			x = np.linspace(np.min(ssa.X_ssa[i]),np.max(ssa.X_ssa[i]), 100)
+			ax.twinx().plot(x, EmpiricalDistribution(ssa.X_ssa[i].ravel()).cdf(x), color='tab:orange', ls='-')
+			ax.set_yscale('log')
+		
+		i = stop -1
+		with Next(ax_iter) as ax:
+			ax.set_title(f'ssa.X_ssa[{i}]\nsum {np.nansum(ssa.X_ssa[i])}')
+			ax.imshow(ssa.X_ssa[i])
+			plot_helper.remove_axes_ticks_and_labels(ax)
+		with Next(ax_iter) as ax:
+			ax.set_title(f'|probabilities of ssa.X_ssa[{i}]|')
+			#ax.imshow(data_probs_sum_func(data_probs, start, i), vmin=0, vmax=1)
+			ax.imshow(data_probs[i-start])
+			plot_helper.remove_axes_ticks_and_labels(ax)
+		with Next(ax_iter) as ax:
+			ax.set_title(f'histogram of ssa.X_ssa[{i}] range [{np.min(ssa.X_ssa[i])}, {np.max(ssa.X_ssa[i])}] sigma {np.std(ssa.X_ssa[i])}')
+			hvals, hbins, hpatches = ax.hist(ssa.X_ssa[i].ravel(), bins=100, density=True)
+			x = np.linspace(np.min(ssa.X_ssa[i]),np.max(ssa.X_ssa[i]), 100)
+			ax.twinx().plot(x, EmpiricalDistribution(ssa.X_ssa[i].ravel()).cdf(x), color='tab:orange', ls='-')
+			ax.set_yscale('log')
+		
+		i = stop
+		with Next(ax_iter) as ax:
+			ax.set_title(f'|sum of probabilities of ssa.X_ssa[{start}:{i}]|')
+			#ax.imshow(data_probs_sum_func(data_probs, start, i), vmin=0, vmax=1)
+			ax.imshow(data_probs_sum_func(data_probs, start, i))
+			plot_helper.remove_axes_ticks_and_labels(ax)
+		with Next(ax_iter) as ax:
+			ax.set_title(f'histogram of sum of probabilities of ssa.X_ssa[{start}:{i}]|')
+			z = data_probs_sum_func(data_probs, start, i)
+			hvals, hbins, hpatches = ax.hist(z.ravel(), bins=100, density=True)
+			x = np.linspace(np.min(z),np.max(z), 100)
+			ax.twinx().plot(x, EmpiricalDistribution(z.ravel()).cdf(x), color='tab:orange', ls='-')
+			ax.set_yscale('log')
+		with Next(ax_iter) as ax:
+			ax.set_title(f'log(|sum of probabilities of ssa.X_ssa[{start}:{i}]|)')
+			#ax.imshow(data_probs_sum_func(data_probs, start, i), vmin=0, vmax=1)
+			ax.imshow(np.log(data_probs_sum_func(data_probs, start, i)))
+			plot_helper.remove_axes_ticks_and_labels(ax)
+			
+		plot_helper.output(
+			True, 
+			None,
+			#f'ssa_{i}_bad_pixel_prob_maps.png',
+		)
+	# plots for debugging and progress
+	if show_plots > 2:
 		nplots = ssa.X_ssa.shape[0]#(stop-start)
 		
 		#for i in range(nplots):
-		for i in range(start, stop):
+		#for i in range(start, stop, (stop-start)//5):
+		for i in [stop-1]:
 			f1, a1 = plot_helper.figure_n_subplots(4)
 			f1.suptitle(f'Sum ssa.X_ssa[{i}/{nplots}] probability maps')
 			ax_iter=iter(a1.flatten())
@@ -268,11 +344,12 @@ def plot_pixel_map_test(img, test, cutoff, mask, interp, plot_kw={}):
 		#ax.imshow(test)
 		ax.imshow(np.log(test))
 		plot_helper.remove_axes_ticks_and_labels(ax)
-		
+	
 	with Next(a2_iter) as ax:
 		ax.set_title(f'histogram of choice function\ncutoff {cutoff:06.4f}')
 		ax.hist(test.ravel(), bins=100)
 		ax.axvline(cutoff, color='red', ls='--')
+		ax.set_yscale('log')
 	
 	with Next(a2_iter) as ax:
 		ax.set_title(f'mask from cut of choice function\nn_masked {np.nansum(mask)} frac_masked {np.nansum(mask)/mask.size:08.2E}')

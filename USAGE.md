@@ -8,33 +8,11 @@ If you download the repository, there is doxygen documentation available. See th
 
 ## TODO <a id="todo"></a>  ##
 
-* Python virtual environment setup guide [DONE]
 
-* Add instructions for non-sudo access installation [DONE]
+* SSA filtering example [Half Done in Interpolation Example]
 
-* Add instrucitons for CONDA install + virtual environment [DONE]
-
-* Add instruction for updating to latest versions [DONE]
-
-* Add how to find package source files [DONE]
-
-* Get some **small** example files and add them to the package to be used with example deconvolution script.
-  - Look up python package index's policy on hosting example data files
-  - Zenodo - Site for uploading and sharing data.
-  - NOTE: Are on shared storage at the moment
-
-* Deconvolution example code + files [DONE]
-
-* PSF fitting example + files [DONE]
-
-* SSA filtering example
-
-* Usage information updates:
-  - Recreate all heading links by hand as PYPI doesn't understand markdown section links, have to use embedded HTML as `<a id="section-link-text"></a>` [DONE]
-  - Add link to github [DONE]
-  - Add information about what python REPL is [DONE]
-  - Add information about python slice syntax where required [DONE]
-
+* Alter interpolation script to be more controllable
+* Possibly seperate interpolation script into SSA filtering script and interpolation script.
 
 ## Python Installation and Virtual Environment Setup <a id="python-installation-and-virtual-environment-setup"></a>  ##
 
@@ -391,12 +369,16 @@ Interpolation is a two-stage process,
 1) Bad pixels must be identified (i.e. which pixels should be interpolated over)
 2) Interpolation over bad pixels must occur.
 
-For (1), singular spectrum analysis (with a 20x20 window [currently]) is used to find a 'badness' heuteristic. The badness is calculated for each SSA componet (except the first 5 [currently]) by:
+For (1), singular spectrum analysis (with a 20x20 window [currently]) is used to find a 'badness' heuteristic. The badness is calculated for a subset of the SSA componets (the 25%->50% subset [currently]) by:
 * finding the *median* of the SSA component
 * calculating the number of standard deviations a pixel is away from the *median* of the SSA component, this is the "badness" of a pixel in a single SSA component.
-* summing the SSA component "badness" of each pixel, to give the total "badness"
+* averaging the SSA component "badness" of each pixel, to give the total "badness"
 
-Pixels are categorised as "bad" if their "badness" exceeds 1 [currently], the mask of bad pixels then has [binary closing](https://en.wikipedia.org/wiki/Closing_(morphology)) applied to it, and all single pixels removed as the purpose of this step is to find extended instrumental artifacts. Hot/cold single pixels should already be identified by the telescope's pipeline.
+Pixels are categorised as "bad" if their "badness" exceeds a set value (5 [currently], i.e. they are 5 or more standard deviations away from the median on average).
+
+To clean up the mask, (optional) operations include:
+* [binary closing](https://en.wikipedia.org/wiki/Closing_(morphology)) to combine nearby bad pixels together.
+* Removing single pixels. As the purpose of this step is to find extended instrumental artifacts, hot/cold single pixels should already be identified by the telescope's pipeline.
 
 Finally, the map of bad pixels is combined with the map of NAN and INF pixels which is then interpolated over.
 
@@ -590,7 +572,7 @@ Upon iteration, the component map **may** be convolved with a gaussian to regula
 
 Using results from the previous examples, deconvolution is performed via:
 
-* `python -m aopp_deconv_tool.deconvolve ./example_data/ifu_observation_datasets/MUSE.2019-10-18T00\:01\:19.521_rebin_interp.fits './example_data/ifu_observation_datasets/MUSE.2019-10-17T23:46:14.117_rebin_interp_normalised_modelled.fits(1,2)' --threshold -1`
+* `python -m aopp_deconv_tool.deconvolve ./example_data/ifu_observation_datasets/MUSE.2019-10-18T00\:01\:19.521_rebin_interp.fits './example_data/ifu_observation_datasets/MUSE.2019-10-17T23:46:14.117_rebin_interp_normalised_modelled_radial.fits(1,2)' --threshold -1`
 
 
 ## Using the Package in Code <a id="using-the-package-in-code"></a> ##
