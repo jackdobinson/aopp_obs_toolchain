@@ -341,10 +341,15 @@ def parse_args(argv):
 	)
 	
 	parser.add_argument(
-		'fits_spec', 
-		help = "FITS Specifier of the data to operate upon (see end of help message).",
-		type = str,
+		'fits_spec',
+		help = '\n'.join((
+			f'FITS Specifier of the data to operate upon . See the end of the help message for more information',
+			f'required axes: {", ".join(DESIRED_FITS_AXES)}',
+		)),
+		type=str,
+		metavar='FITS Specifier',
 	)
+	
 	parser.add_argument('-o', '--output_path', type=str, help=f'Output fits file path. If None, is same as the `fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
 	
 	parser.add_argument('--fit_result_dir', type=str, default=None, help='Directory to store results of PSF fit in. Will create a sub-directory below the given path. If None, will create a sibling folder to the output file (i.e. output file parent directory is used).')

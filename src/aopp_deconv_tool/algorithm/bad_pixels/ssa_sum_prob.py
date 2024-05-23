@@ -116,8 +116,8 @@ def ssa2d_sum_prob_map(
 				data_probs[i,...] = prob_median_transform_func(data_distribution.cdf(ssa.X_ssa[i+start].ravel()).reshape(ssa.a.shape))
 			case 'n_std_dev_from_median':
 				#data_probs[i,...] = (ssa.X_ssa[i+start] - np.nanmean(ssa.X_ssa[i+start]))/np.nanstd(ssa.X_ssa[i+start])
-				#data_probs[i,...] = (ssa.X_ssa[i+start] - np.nanmedian(ssa.X_ssa[i+start]))/np.nanstd(ssa.X_ssa[i+start])
-				data_probs[i,...] = np.fabs((ssa.X_ssa[i+start] - np.nanmedian(ssa.X_ssa[i+start]))/np.nanstd(ssa.X_ssa[i+start]))
+				data_probs[i,...] = (ssa.X_ssa[i+start] - np.nanmedian(ssa.X_ssa[i+start]))/np.nanstd(ssa.X_ssa[i+start])
+				#data_probs[i,...] = np.fabs((ssa.X_ssa[i+start] - np.nanmedian(ssa.X_ssa[i+start]))/np.nanstd(ssa.X_ssa[i+start]))
 			case 'magnitude':
 				data_probs[i,...] = np.fabs(ssa.X_ssa[i+start])
 			case 'identity':

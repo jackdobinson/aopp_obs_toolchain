@@ -16,6 +16,7 @@ _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'INFO')
 
 newline='\n'
 tab='\t'
+space=' '
 
 def indent(x : str, n : int, s : str = tab):
 	"""
@@ -110,22 +111,31 @@ def combine_lines_with_same_indent(x : str, preserve_repeated_empty_lines=False)
 	y = []
 	j=0
 	
-	i_span_current = 0
+	current_block = []
+	i_span_current = -1
 	for i,z in enumerate(x.split(newline)):
 		iw_match = initial_whitespace.match(z)
 		i_span = iw_match.span()[1] - iw_match.span()[0]
 		
+		_lgr.debug(f'{z=}')
+				
+		# If line is empty, start a new block if we preserve empty lines else do not.
 		if z.isspace() or len(z)==0:
 			i_span = -1 if not preserve_repeated_empty_lines else (-1 if i_span_current > 0 else (i_span_current-1))
 		
-		if i_span != i_span_current:
-			j += 1
-			i_span_current = i_span
+		_lgr.debug(f'{i_span=} {i_span_current=}')
 		
-		if j >= len(y):
-			y.append(z)
+		# if we have changed indent span, we move on to the next block
+		if i_span != i_span_current:
+			y.append(space.join(current_block))
+			current_block = []
+			current_block.append(z.rstrip())
+			i_span_current = i_span
 		else:
-			y[j] += z[i_span:]
+			current_block.append(z[i_span:].rstrip())
+		
+		_lgr.debug(f'{i_span=} {i_span_current=}')
+		_lgr.debug(f'{current_block=}')
 			
 	return newline.join(y)
 

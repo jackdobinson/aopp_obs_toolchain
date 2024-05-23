@@ -200,9 +200,15 @@ def parse_args(argv):
 	)
 	
 	parser.add_argument(
-		'fits_spec', 
-		help = 'The FITS SPECIFIER to operate upon, see the end of the help message for more information'
+		'fits_spec',
+		help = '\n'.join((
+			f'FITS Specifier of the data to operate upon . See the end of the help message for more information',
+			f'required axes: {", ".join(DESIRED_FITS_AXES)}',
+		)),
+		type=str,
+		metavar='FITS Specifier',
 	)
+	
 	parser.add_argument('-o', '--output_path', help=f'Output fits file path. By default is same as fie `fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
 	
 	parser.add_argument('--threshold', type=float, default=1E-2, help='When finding region of interest, only values larger than this fraction of the maximum value are included.')

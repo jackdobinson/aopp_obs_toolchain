@@ -5,7 +5,7 @@ Example invocation:
 	`python -m aopp_deconv_tool.deconvolve './example_data/test_rebin.fits{DATA}[10:12]{CELESTIAL:(1,2)}' './example_data/fit_example_psf_000.fits[10:12]{CELESTIAL:(1,2)}'`
 """
 
-import sys
+import sys, os
 from pathlib import Path
 from typing import Literal
 
@@ -134,11 +134,9 @@ def create_plot_set(deconvolver, cadence = 10):
 def run(
 		obs_fits_spec : aph.fits.specifier.FitsSpecifier,
 		psf_fits_spec : aph.fits.specifier.FitsSpecifier,
+		deconvolver : Literal[CleanModified] | Literal[LucyRichardson],
 		output_path : str | Path = './deconv.fits',
-		deconv_class : Literal[CleanModified] | Literal[LucyRichardson] = CleanModified,
 		plot : bool = True,
-		deconv_args : list[str,...] = [],
-		show_deconv_help = False
 	):
 	"""
 	Given a FitsSpecifier for an observation and a PSF, an output path, and a class that performs deconvolution,
@@ -161,14 +159,12 @@ def run(
 			FITS file specifier for PSF data, format is same as above
 		output_path : str = './deconv.fits'
 			Path to output deconvolution to.
-		deconv_class : Type
-			Class to use for deconvolving, defaults to CleanModified
+		deconvolver : ClassInstance
+			Instance of Class to use for deconvolving, defaults to an instance of CleanModified
 		plot : bool = True
 			If `True` will plot the deconvolution progress
 	"""
-	deconv_params = parse_deconv_args(deconv_class, deconv_args, show_help=show_deconv_help)
-	_lgr.debug(f'{deconv_params=}')
-	deconvolver = deconv_class(**deconv_params)
+	
 
 	# Open the fits files
 	with fits.open(Path(obs_fits_spec.path)) as obs_hdul, fits.open(Path(psf_fits_spec.path)) as psf_hdul:
@@ -245,60 +241,6 @@ def run(
 	])
 	hdul_output.writeto(output_path, overwrite=True)
 
-
-def parse_deconv_args(deconv_class, argv, show_help=False):
-	import argparse
-	import dataclasses as dc
-	import re
-	
-	# Use this to grab only the first part of the docstring as that should be a short
-	# description of the class
-	re_empty_line = re.compile(r'^\s*$\s*', flags=re.MULTILINE)
-	
-	class ArgFormatter (argparse.RawTextHelpFormatter, argparse.ArgumentDefaultsHelpFormatter, argparse.MetavarTypeHelpFormatter):
-		def __init__(self, *args, **kwargs):
-			super().__init__(*args, **kwargs)
-	
-	parser = argparse.ArgumentParser(
-		description=re_empty_line.split(deconv_class.__doc__,2)[1], 
-		formatter_class=ArgFormatter,
-		add_help=False
-	)
-	def on_parser_error(err_str):
-		print(err_str)
-		parser.print_help()
-		sys.exit(1)
-	
-	parser.error = on_parser_error
-	
-	#parser.add_argument('--info', action='store_true', default=False, help='Show this information message')
-	
-	for field in dc.fields(deconv_class):
-		if field.init != True:
-			continue
-			
-		field_default = field.default if field.default != dc.MISSING else (field.default_factory() if field.default_factory != dc.MISSING else None)
-		
-		parser.add_argument(
-			'--'+field.name, 
-			type=field.type, 
-			default= field_default,
-			help=field.metadata.get('description', 'DESCRIPTION NOT FOUND'),# + f' (default = {field_default})',
-			metavar=str(field.type)[8:-2]
-		)
-	
-	deconv_args = parser.parse_args(argv)
-	
-	if show_help:
-		parser.print_help()
-		sys.exit()
-	
-	#delattr(deconv_args, 'info')
-	
-	return vars(deconv_args)
-	
-	
-
 def parse_args(argv):
 	import os
 	import aopp_deconv_tool.text
@@ -310,36 +252,69 @@ def parse_args(argv):
 		aph.fits.specifier.get_help(DESIRED_FITS_AXES).replace('\t', '    '),
 		os.get_terminal_size().columns - 30
 	)
-	
+	DECONV_METHOD_DEFAULT='clean_modified'
 	
 	class ArgFormatter (argparse.RawTextHelpFormatter, argparse.ArgumentDefaultsHelpFormatter, argparse.MetavarTypeHelpFormatter):
 		def __init__(self, *args, **kwargs):
 			super().__init__(*args, **kwargs)
 	
+	
+	
+	
+	
 	parser = argparse.ArgumentParser(
 		description=__doc__, 
 		formatter_class=ArgFormatter,
-		epilog=FITS_SPECIFIER_HELP
+		epilog=FITS_SPECIFIER_HELP,
+		exit_on_error=False
 	)
 	
 	parser.add_argument(
 		'obs_fits_spec',
-		help = 'The observation\'s (i.e. science target) FITS SPECIFIER, see the end of the help message for more information',
-		type=str
+		help = '\n'.join((
+			f'The observation\'s (i.e. science target) FITS Specifier. See the end of the help message for more information',
+			f'required axes: {", ".join(DESIRED_FITS_AXES)}',
+		)),
+		type=str,
+		metavar='FITS Specifier',
 	)
 	
 	parser.add_argument(
-		'psf_fits_spec', 
-		help = 'The psf\'s (i.e. calibration target) FITS SPECIFIER, see the end of the help message for more information',
-		type=str
+		'psf_fits_spec',
+		help = '\n'.join((
+			f'The psf\'s (i.e. calibration target) FITS Specifier. See the end of the help message for more information',
+			f'required axes: {", ".join(DESIRED_FITS_AXES)}',
+		)),
+		type=str,
+		metavar='FITS Specifier',
 	)
 	
 	parser.add_argument('-o', '--output_path', type=str, help=f'Output fits file path. By default is same as the `fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
 	parser.add_argument('--plot', action='store_true', default=False, help='If present will show progress plots of the deconvolution')
-	parser.add_argument('--deconv_method', type=str, choices=deconv_methods.keys(), default='clean_modified', help='Which method to use for deconvolution. For more information, pass the deconvolution method and the "--info" argument.') 
+	parser.add_argument('--deconv_method', type=str, choices=deconv_methods.keys(), default=DECONV_METHOD_DEFAULT, help='Which method to use for deconvolution. For more information, pass the deconvolution method and the "--info" argument.') 
 	parser.add_argument('--deconv_method_help', action='store_true', default=False, help='Show help for the selected deconvolution method')
 	
+	parser.successful = True
+	parser.error_message = None
+	
+	def on_error(err_str):
+		parser.successful = False
+		parser.error_message = err_str
+		
+	parser.error = on_error
+	
 	args, deconv_args = parser.parse_known_args(argv)
+	
+	if not parser.successful:
+		print(vars(args))
+		if args.deconv_method_help:
+			return args, deconv_args
+		else:
+			parser.print_usage()
+			print(parser_error_message)
+			sys.exit()
+			
+	
 	
 	args.obs_fits_spec = aph.fits.specifier.parse(args.obs_fits_spec, DESIRED_FITS_AXES)
 	args.psf_fits_spec = aph.fits.specifier.parse(args.psf_fits_spec, DESIRED_FITS_AXES)
@@ -352,18 +327,31 @@ def parse_args(argv):
 
 
 if __name__ == '__main__':
+	import aopp_deconv_tool.arguments as arguments
+
+	argv = sys.argv[1:]
 
 	args, deconv_args = parse_args(sys.argv[1:])
+		
+	deconv_class = deconv_methods[args.deconv_method]
+	deconv_params = arguments.parse_args_of_dataclass(
+		deconv_class, 
+		deconv_args, 
+		prog=f'deconvolve.py --deconv_method {args.deconv_method}',
+		show_help=args.deconv_method_help
+	)
 	
-
+	
+	
+	
+	_lgr.debug(f'{deconv_params=}')
+	deconvolver = deconv_class(**deconv_params)
 	
 	run(
 		args.obs_fits_spec, 
 		args.psf_fits_spec, 
+		deconvolver = deconvolver,
 		output_path = args.output_path, 
 		plot = args.plot,
-		deconv_class = deconv_methods[args.deconv_method],
-		deconv_args = deconv_args,
-		show_deconv_help = args.deconv_method_help
 	)
 	

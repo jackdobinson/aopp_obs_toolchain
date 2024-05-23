@@ -62,12 +62,12 @@ help_fmt = """\
 		Accepted axes_type:
 			{axes_types}
 			
-		NOTE: As the format for a FITS specifier uses characters that a terminal application may interpret as special characters,
-			e.g. square/curly/round brackets, and colons. It can be better to wrap specifiers in quotes or single quotes. When
-			doing this, it is important to un-escape any previously escaped characters.
-			For example, specifies with timestamps in them would normally have the colons escaped, but when wrapped in quotes
-			this is not required. E.g. the specifier ./example_data/MUSE.2019-10-17T23\:46\:14.117_normalised.fits(1,2) will not
-			play nice with the bash shell due to the brackets. However, wrapping it in single quotes and removing the escaping
+		NOTE: As the format for a FITS specifier uses characters that a terminal application may interpret as special characters, 
+			e.g. square/curly/round brackets, and colons. It can be better to wrap specifiers in quotes or single quotes. When 
+			doing this, it is important to un-escape any previously escaped characters. 
+			For example, specifies with timestamps in them would normally have the colons escaped, but when wrapped in quotes 
+			this is not required. E.g. the specifier ./example_data/MUSE.2019-10-17T23\\:46\\:14.117_normalised.fits(1,2) will not 
+			play nice with the bash shell due to the brackets. However, wrapping it in single quotes and removing the escaping 
 			slashes from the colons means it will work. E.g. './example_data/MUSE.2019-10-17T23:46:14.117_normalised.fits(1,2)'
 		
 		Examples:
@@ -89,7 +89,7 @@ def get_help(axes_types : list[str]):
 		if x not in axes_type_info:
 			raise RuntimeError(f"axes_type '{x}' is not one of the known axes_types {list(axes_type_info.keys())}")
 	
-	return help_fmt.format(axes_types='\n\t\t'.join([k+'\n\t\t\t'+axes_type_info[k].description for k in axes_types]))
+	return help_fmt.format(axes_types='\n\t\t\t'.join([k+'\n\t\t\t\t'+axes_type_info[k].description for k in axes_types]))
 
 
 

@@ -64,17 +64,50 @@ class CleanModified(Base):
 		```
 		See `aopp_deconv_tool.deconvolve` for a full example.
 	"""
-	n_iter 				: int 	= dc.field(default=1000, 	metadata={'description':'Number of iterations'})
-	loop_gain 			: float = dc.field(default=0.02, 	metadata={'description':'Fraction of emission that could be accounted for by a PSF added to components each iteration. Higher values are faster, but unstable.'})
-	threshold 			: float = dc.field(default=0.3, 	metadata={'description':'Fraction of maximum brightness of residual above which pixels will be included in CLEAN step, if negative will use the maximum fractional difference otsu threshold. 0.3 is a  good default value, if stippling becomes an issue, reduce or set to a negative value. Lower positive numbers will require more iterations, but give a more "accurate" result.'})
-	n_positive_iter 	: int 	= dc.field(default=0, 		metadata={'description':'Number of iterations to do that only "adds" emission, before switching to "adding and subtracting" emission'})
-	noise_std 			: float = dc.field(default=1E-1, 	metadata={'description':'Estimate of the deviation of the noise present in the observation'})
-	rms_frac_threshold 	: float = dc.field(default=1E-2, 	metadata={'description':'Fraction of original RMS of residual at which iteration is stopped, lower values continue iteration for longer.'})
-	fabs_frac_threshold : float = dc.field(default=1E-2, 	metadata={'description':'Fraction of original Absolute Brightest Pixel of residual at which iteration is stopped, lower values continue iteration for longer.'})
-	max_stat_increase	: float = dc.field(default=np.inf, 	metadata={'description':'Maximum fractional increase of a statistic before terminating'})
-	min_frac_stat_delta	: float = dc.field(default=1E-3, 	metadata={'description':'Minimum fractional standard deviation of statistics before assuming no progress is being made and terminating iteration'})
-	give_best_result	: bool  = dc.field(default=True, 	metadata={'description':'If True, will return the best (measured by statistics) result instead of final result.'})
-	clean_beam_sigma	: float = dc.field(default=0, 		metadata={'description':'If not zero, will convolve the components with a gaussian with this sigma, useful for regularising the result'})
+	n_iter 				: int 	= dc.field(default=1000, 	metadata={
+		'description':'Number of iterations', 
+		'domain':(0,np.inf),
+	})
+	loop_gain 			: float = dc.field(default=0.02, 	metadata={
+		'description':'Fraction of emission that could be accounted for by a PSF added to components each iteration. Higher values are faster, but unstable.',
+		'domain' : (0,1),
+	})
+	threshold 			: float = dc.field(default=0.3, 	metadata={
+		'description':'Fraction of maximum brightness of residual above which pixels will be included in CLEAN step, if negative will use the maximum fractional difference otsu threshold. 0.3 is a  good default value, if stippling becomes an issue, reduce or set to a negative value. Lower positive numbers will require more iterations, but give a more "accurate" result.',
+		'domain' : (0,1),
+	})
+	n_positive_iter 	: int 	= dc.field(default=0, 		metadata={
+		'description':'Number of iterations to do that only "adds" emission, before switching to "adding and subtracting" emission',
+		'domain' : (0,np.inf),
+	})
+	noise_std 			: float = dc.field(default=1E-1, 	metadata={
+		'description':'Estimate of the deviation of the noise present in the observation, at the moment only used for calculating generalised least squares statistic',
+		'domain' : (0, np.inf),
+	})
+	rms_frac_threshold 	: float = dc.field(default=1E-2, 	metadata={
+		'description':'Fraction of original RMS of residual at which iteration is stopped, lower values continue iteration for longer.',
+		'domain' : (0,1),
+	})
+	fabs_frac_threshold : float = dc.field(default=1E-2, 	metadata={
+		'description':'Fraction of original Absolute Brightest Pixel of residual at which iteration is stopped, lower values continue iteration for longer.',
+		'domain' : (0,1),
+	})
+	max_stat_increase	: float = dc.field(default=np.inf, 	metadata={
+		'description':'Maximum fractional increase of a statistic before terminating',
+		'domain' : (0, np.inf),
+	})
+	min_frac_stat_delta	: float = dc.field(default=1E-3, 	metadata={
+		'description':'Minimum fractional standard deviation of statistics before assuming no progress is being made and terminating iteration',
+		'domain' : (0,1),
+	})
+	give_best_result	: bool  = dc.field(default=True, 	metadata={
+		'description':'If True, will return the best (measured by statistics) result instead of final result.',
+		'domain' : {False, True},
+	})
+	clean_beam_sigma	: float = dc.field(default=0, 		metadata={
+		'description':'If not zero, will convolve the components with a gaussian with this sigma, useful for regularising the result',
+		'domain' : (0, np.inf),
+	})
 	
 	# private attributes
 	_obs                         : np.ndarray     = dc.field(init=False, repr=False, hash=False, compare=False)
