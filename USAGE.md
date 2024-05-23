@@ -29,10 +29,11 @@ path_to_fits_file{DATA}[:,10:20,30:50]{CELESTIAL:(1,2),SPECTRAL:(0)}
 * Explain axis ordering difference between FITS, python, (C and Fortran) [DONE]
 
 * Test if routines work on "single wavelength" FITS files (i.e. only CELESTIAL axes)
+ - interpolate.py [WORKS]
 
-* Write a converter from TIFF to FITS format.
+* Write a converter from TIFF to FITS format. [DONE]
 
-* Add information on what axes type a script requires.
+* Add information on what axes type a script requires. [DONE]
 
 * Alter interpolation script to be more controllable
 * Add seperate SSA script

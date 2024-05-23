@@ -12,7 +12,7 @@ import aopp_deconv_tool.numpy_helper.array.pad
 import aopp_deconv_tool.numpy_helper.slice
 import aopp_deconv_tool.cfg.logs
 _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
-
+	
 @dc.dataclass(slots=True, repr=False, eq=False,)
 class LucyRichardson(Base):
 	"""
