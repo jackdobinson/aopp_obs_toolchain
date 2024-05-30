@@ -29,17 +29,6 @@ _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 DataBundle = namedtuple('DataBundle', ('data', 'header'))
 
-"""
-loat = dc.field(default=1E-2, 	metadata={
-		'description':'Fraction of maximum brightness to add to numerator and denominator to try and avoid numerical instability. This value should be in the range [0,1), and will usually be small. Larger values require more steps to give a solution, but suffer less numerical instability.',
-		'domain' : (0,1),
-	})
-	dc.field(init=False, repr=False, hash=False, compare=False)
-@dc.dataclass(slots=True, repr=False, eq=False,)
-class ImageToFitsConverter:
-	imag
-"""
-
 re_dashed_line = re.compile(r'\n-+\n') # lines just consisting of "-" characters
 re_comma_space = re.compile(r',\s') # lines just consisting of "-" characters
 
@@ -76,8 +65,7 @@ def read_exif(image, header={}, exif_tag_reader=lambda k, v: (str(k), v)):
 	_lgr.debug(f'DONE')
 	return header
 
-def read_image_into_numpy_array(fpath : str | Path) -> DataBundle:
-	fpath = Path(fpath)
+def read_image_into_numpy_array(fpath : Path) -> DataBundle:
 	match fpath.suffix:
 		case '.tif' | '.tiff':
 			exif_tag_reader = lambda k, v: (PIL.TiffTags.lookup(k).name, v)

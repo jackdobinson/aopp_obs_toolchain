@@ -11,7 +11,7 @@ from astropy.wcs import WCS
 from aopp_deconv_tool.numpy_helper.axes import AxesOrdering
 
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'INFO')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
 class DictReader:
@@ -168,21 +168,37 @@ def get_time_axes(hdr, wcsaxes_label=''):
 	raise NotImplementedError
 
 
-def get_world_coords_of_axis(hdr, ax_idx, wcsaxes_label='', squeeze=True):
+def get_world_coords_of_axis(hdr, ax_idx, wcsaxes_label='', squeeze=True, wcs_unit_to_return_value_conversion_factor=1):
 	"""
 	Gets the world coordiates of an axis
 	"""
 	ax_idxs = tuple((x if type(x)==AxesOrdering else AxesOrdering(x, hdr['NAXIS'], 'numpy')) for x in (ax_idx if (type(ax_idx) in (list,tuple)) else (ax_idx,)))
 
+	if type(wcs_unit_to_return_value_conversion_factor) in (float, int):
+		wcs_unit_to_return_value_conversion_factor = np.array(tuple(wcs_unit_to_return_value_conversion_factor for x in ax_idxs))
+	else:
+		if len(wcs_unit_to_return_value_conversion_factor) != len(ax_idxs):
+			raise RuntimeError(f'variable "wcs_unit_to_return_value_conversion_factor" must have same length number of axes specified. {len(ax_idxs)} in this case.')
+
 	_lgr.debug(f'{ax_idxs=}')
 
+	
+
 	wcs = WCS(hdr, key=' ' if wcsaxes_label=='' else wcsaxes_label.upper(), naxis=tuple(x.fits for x in ax_idxs))
+	_lgr.debug(f'{wcs.world_axis_units=}')
+	_lgr.debug(f'{wcs.world_axis_physical_types=}')
 	
 	ss = tuple(slice(0,int(hdr[f'NAXIS{x.fits}'])) for x in ax_idxs)
 	
 	coord_array = np.mgrid[ss].reshape(len(ax_idxs),-1).T
 	
-	return(np.squeeze(wcs.all_pix2world(coord_array, 0)))
+	world_axis_array = wcs.all_pix2world(coord_array, 0)
+	_lgr.debug(f'{world_axis_array.shape=}')
+	_lgr.debug(f'{world_axis_array[::100]=}')
+	world_axis_array *= wcs_unit_to_return_value_conversion_factor
+	_lgr.debug(f'{world_axis_array[::100]=}')
+	
+	return(np.squeeze(world_axis_array))
 
 def is_CDi_j_present(header, wcsaxes_label=''):
 	# matches "CDi_ja" where i,j are digits of indeterminate length, and a is an optional uppercase letter in wcsaxes_label
