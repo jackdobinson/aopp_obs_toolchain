@@ -51,6 +51,11 @@ class DictReader:
 		self.mode = mode
 		self._key_count_start = pkey_count_start
 		
+		_lgr.debug(f'{self.prefix=}')
+		_lgr.debug(f'{self.adict=}')
+		_lgr.debug(f'{self.mode=}')
+		_lgr.debug(f'{self._key_count_start=}')
+		
 
 	def __iter__(self):
 		self.fits_dict = {}
