@@ -35,6 +35,10 @@ path_to_fits_file{DATA}[:,10:20,30:50]{CELESTIAL:(1,2),SPECTRAL:(0)}
 
 * Add information on what axes type a script requires. [DONE]
 
+* Alter spectral rebinning to use triangular response function [DONE]
+
+* Alter documentation in this file for spectral rebinning to reflect new algorithm
+
 * Alter interpolation script to be more controllable
 * Add seperate SSA script
 * Split interpolation script into:
