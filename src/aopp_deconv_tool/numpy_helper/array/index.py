@@ -7,7 +7,7 @@ import numpy as np
 
 
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARNING')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
 from aopp_deconv_tool.typedef import NumVar, ShapeVar
@@ -33,7 +33,7 @@ def periodic(a : np.ndarray[S[N],T], indices : np.ndarray[[N,M],int]) -> np.ndar
 	"""
 	Get values of array `a` at `indices`, out of bounds indices are wrapped periodically
 	"""
-	return pacman(indices, a)
+	return pacman(a, indices)
 
 def const(a : np.ndarray[S[N],T], indices : np.ndarray[[N,M],int], const : T = 0) -> np.ndarray[[N,M],T]:
 	"""
@@ -48,6 +48,22 @@ def const(a : np.ndarray[S[N],T], indices : np.ndarray[[N,M],int], const : T = 0
 	v = a[(*indices,)]
 	v[oob_mask] = const
 	return v
+
+def const_boundary(a : np.ndarray[S[N],T], indices : np.ndarray[[N,M],int]) -> np.ndarray[[N,M],T]:
+	"""
+	Get values of array `a` at `indices`, out of bounds indices return a constant
+	"""
+	# get a mask that has the out of bounds elements, set them to a in-bound
+	# index to get the values, then set the values from the out of bounds
+	# indices to a constant.
+	return a[tuple(0 if i<0 else (s-1 if i>s else i) for i,s in zip(indices, a.shape))]
+	_lgr.debug(f'{indices=}')
+	lt_mask = indices < 0
+	gt_mask = np.array([(i >= s) for i,s in zip(indices, a.shape)],bool)
+	_lgr.debug(f'{lt_mask.shape=}')
+	indices[lt_mask] = 0
+	indices[gt_mask] = np.array(tuple(np.ones_like(gt_mask[j])*(s-1) for j, s in enumerate(a.shape)), dtype=int)
+	return a[indices]
 
 def reflect(a : np.ndarray[S[N],T], indices : np.ndarray[[N,M],int]) -> np.ndarray[[N,M],T]:
 	"""

@@ -13,7 +13,7 @@ Look at the matplotlib plots to see the problem
 import sys
 from pathlib import Path
 import dataclasses as dc
-from typing import Literal, Callable
+from typing import Literal, Callable, Sequence
 
 
 
@@ -29,6 +29,7 @@ import aopp_deconv_tool.astropy_helper.fits.header
 import aopp_deconv_tool.numpy_helper as nph
 import aopp_deconv_tool.numpy_helper.axes
 import aopp_deconv_tool.numpy_helper.slice
+import aopp_deconv_tool.numpy_helper.array.index
 
 import aopp_deconv_tool.numpy_helper.array.grid
 
@@ -39,6 +40,7 @@ _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
 
+DEBUG_PIXEL = (161,168)
 
 named_spectral_binning_parameters = dict(
 	spex = dict(
@@ -67,7 +69,11 @@ class SquareResponseFunction (ResponseFunction):
 		response_array = np.interp(pos_array, (0,self.full_width_half_maximum), (1,1), left=0, right=0)
 		if self.total_sum is not None:
 			response_array *= self.total_sum/np.sum(response_array)
-		return response_array[(pos_array >= 0) & (pos_array <= self.full_width_half_maximum)] if trim else response_array
+		if trim:
+			min_idx = np.max(np.argwhere(pos_array<=0))
+			max_idx = np.min(np.argwhere(pos_array>=self.full_width_half_maximum))+1
+			response_array = response_array[min_idx:max_idx]
+		return response_array
 	
 	def get_pos_array(self, step : float) -> np.ndarray:
 		return np.linspace(0, self.full_width_half_maximum, int(np.ceil(self.full_width_half_maximum/step)))
@@ -85,99 +91,198 @@ class TriangularResponseFunction (ResponseFunction):
 		if self.total_sum is not None:
 			response_array *= self.total_sum/np.sum(response_array)
 		
-		return response_array[(pos_array >= 0) & (pos_array <= 2*self.full_width_half_maximum)] if trim else response_array
+		if trim:
+			min_idx = np.max(np.argwhere(pos_array<=0))
+			max_idx = np.min(np.argwhere(pos_array>=2*self.full_width_half_maximum))+1
+			response_array = response_array[min_idx:max_idx]
+		
+		return response_array
 	
 	def get_pos_array(self, step : float) -> np.ndarray:
 		return np.linspace(0, 2*self.full_width_half_maximum, int(np.ceil(2*self.full_width_half_maximum/step)))
 	
 
-def plot_rebin(old_bins, old_data, new_bins, new_data, title=None):
-	plt.title(title)
-	plt.plot(np.sum(old_bins, axis=0)/2, old_data, label='old_data')
-	plt.plot(np.sum(new_bins, axis=0)/2, new_data, label='new_data')
-	plt.legend()
-	plt.show()
+
+
+def indices_const_boundary(indices : tuple[Sequence[int]], shape : tuple[int]) -> tuple[int]:
+	out_indices = []
+	for j, (idxs, s) in enumerate(zip(indices, shape)):
+		jdx = []
+		for i in idxs:
+			if i <0:
+				jdx.append(0)
+			elif i >= s:
+				jdx.append(s-1)
+			else:
+				jdx.append(i)
+		
+		out_indices.append(tuple(jdx))
+	return tuple(out_indices)
+
+def array_const_boundary(a : np.ndarray, indices: tuple[Sequence[int]]) -> np.ndarray:
+	return a[indices_const_boundary(indices, a.shape)]
 
 
 def overlap_add_convolve(data, response_1d, axis, mode='same') -> np.ndarray:
-	n = response_1d.shape[0]
-	full = np.zeros(tuple(s if i!= axis else s+2*n for i, s in enumerate(data.shape)))
-	
-	np.moveaxis(data, axis, 0)
-	np.moveaxis(full, axis, 0)
-	
-	
-	full[n:-n] = data
-	np.moveaxis(data, 0, axis)
+	data = np.moveaxis(data, 0, axis)
 	
 	n = response_1d.shape[0]
-	for i in range(0, full.shape[0]):
-		_lgr.info(f'rebinning {i}:{i+n} where total length is {full.shape[0]}')
-		subset_of_data = full[i:i+n]
-		full[i] = np.sum((subset_of_data.T * response_1d[:subset_of_data.shape[0]]).T, axis=0)
+	full = np.zeros((data.shape[0]+2*n, *data.shape[1:]))
 	
-	dn = 0
+	
+	
+	for i in range(-n, data.shape[0]+n):
+		subset_of_data = array_const_boundary(data, (np.arange(i,i+n,dtype=int),))
+		full[i+n] = np.sum((subset_of_data.T * response_1d[:subset_of_data.shape[0]]).T, axis=0)
+	
+	
+	dn = 1
+	
+	"""
+	# DEBUGGING
+	# Plot data and convolved data on the same axis to work out offset needed
+	full_embed_data = np.zeros_like(full)
+	full_embed_data[n//2+dn:-2*n+n//2+dn] = data
+	plt.figure()
+	plt.plot(full_embed_data[:,*DEBUG_PIXEL])
+	plt.plot(full[:,*DEBUG_PIXEL])
+	plt.show()
+	"""
+	
 	match mode:
 		case 'same':
-			return np.moveaxis(full[n//2+dn:-2*n+n//2+dn+1], 0, axis)
+			return np.moveaxis(full[n//2+dn:-2*n+n//2+dn], 0, axis)
 		case 'full':
 			return np.moveaxis(full, 0, axis)
 		case 'valid':
-			return np.moveaxis(full[n+dn:-2*n+dn+1], 0, axis)
+			return np.moveaxis(full[n+dn:-2*n+dn], 0, axis)
 		case _:
 			raise RuntimeError(f'Unknown mode "{mode}"')
 
 def lin_interp(
 		new_points : np.ndarray[['N']], 
-		old_points : np.ndarray[['M']], 
+		old_points : np.ndarray[['M']], # assume this is sorted in ascending order
 		data : np.ndarray[[...,'M',...]], 
 		axis : int, # should be axis of "M" in `data`,
-		left : None | float = None,
-		right : None | float = None,
+		boundary_conditions : Literal['constant'] | Literal['reflect'] | Literal['periodic'] | Literal['extrapolate'] = 'constant'
 	) -> np.ndarray:
 	
-	# find out which index new_points belong to
-	idxs = np.arange(0,old_points.shape[0])
-	_lgr.debug(f'{idxs=}')
-	new_idx_pos = np.interp(new_points, old_points, idxs, left=-2, right=-1)
-	_lgr.debug(f'{new_idx_pos=}')
-	new_idxs = np.ceil(new_idx_pos-1).astype(int)
-	_lgr.debug(f'{new_idxs=}')
-	within_range_mask = new_idxs >= 0
 	
-	frac_to_next_idx = np.full_like(new_idxs, fill_value=np.nan)
-	frac_to_next_idx[within_range_mask] = (new_points[within_range_mask] - old_points[new_idxs[within_range_mask]])/(old_points[new_idxs[within_range_mask]+1] - old_points[new_idxs[within_range_mask]])
-	_lgr.debug(f'{frac_to_next_idx=}')
+	data = np.moveaxis(data, axis, -1)
+	_lgr.debug(f'Moved data axis')
+	
+	new_points = np.array(new_points) # copy array
+	match boundary_conditions:
+		case 'constant':
+			gt = new_points >= old_points[-1]
+			lt = new_points < old_points[0]
+			new_points[gt] = old_points[-1]
+			new_points[lt] = old_points[0]
+		case 'reflect':
+			gt = new_points >= old_points[-1]
+			lt = new_points < old_points[0]
+			while gt.size!=0 or lt.size !=0:
+				new_points[lt] = 2*old_points[0] - new_points[lt]
+				new_points[gt] = 2*old_points[1] - new_points[gt]
+				gt = new_points >= old_points[-1]
+				lt = new_points < old_points[0]
+		case 'periodic':
+			gt = new_points >= old_points[-1]
+			lt = new_points < old_points[0]
+			while gt.size!=0 or lt.size !=0:
+				new_points[lt] = old_points[0] - new_points[lt] + old_points[1]
+				new_points[gt] -=  old_points[-1] - old_points[0]
+				gt = new_points >= old_points[-1]
+				lt = new_points < old_points[0]
+		case 'extrapolate':
+			pass
+		case _:
+			raise RuntimeError(f'Unknown boundary conditions "{boundary_conditions}"')
+	_lgr.debug(f'Calculated boundary conditions')
 	
 	
-	np.moveaxis(data, axis, 0)
-	
-	interp_data = np.full((new_points.shape[0], *data.shape[1:]), fill_value=np.nan)
+	_lgr.debug(f'{data.shape=} {old_points.shape=}')
 	
 	
-	for i, j in enumerate(new_idxs):
-		_lgr.debug(f'{i=} {j=} n={new_idxs.shape[0]} {within_range_mask[i]=}')
-		if within_range_mask[i]:
-			interp_data[i] = data[j]*(1-frac_to_next_idx[i]) + frac_to_next_idx[i]*data[j+1]
-		else:
-			if new_idxs[i] == -2:
-				interp_data[j] = data[0] if left is None else np.full(interp_data.shape[1:], fill_value=left)
-			elif new_idxs[i] == -1:
-				interp_data[j] = data[-1] if right is None else np.full(interp_data.shape[1:], fill_value=right)
-			else:
-				raise RuntimeError(f'Unknown index {new_idx_pos[i]} for {i}^th point in linear interpolation')
+	new_idxs = np.zeros_like(new_points, dtype=int)	
+	for i in range(1, old_points.size-1):
+		new_idxs += (old_points[i] <= new_points).astype(int)
 		
-	"""
-	interp_data[within_range_mask] = data[..., new_idxs[within_range_mask]]*(1-frac_to_next_idx) + frac_to_next_idx*data[..., new_idxs[within_range_mask]+1]
-	interp_data[new_idxs == -2] = data[0] if left is None else left
-	interp_data[new_idxs == -1] = data[-1] if right is None else right
-	"""
-	np.moveaxis(data, 0, axis)
-	np.moveaxis(interp_data, 0, axis)
+	_lgr.debug(f'Calculated indices of new points')
 	
-	return interp_data
+	if (data.size < 1E6):
+		# Do things the fast way if we can
+		A = np.full((*data.shape[:-1], old_points.size-1, 2), fill_value=np.nan, dtype=float)
+		
+		A[...,:,0] = (data[...,1:] - data[...,:-1])/(old_points[1:] - old_points[:-1]) # gradient
+		A[...,:,1] = data[...,:-1] - A[...,0]*old_points[:-1] # constant
+		
+		y = np.sum(A[...,new_idxs,:]*np.stack((new_points, np.ones_like(new_points)), axis=-1), axis=-1)
+		
+		"""
+		# DEBUGGING
+		plt.figure()
+		plt.title('linear interpolation parameters')
+		ax = plt.gca()
+		ax.plot(A[*DEBUG_PIXEL,:,0], color='tab:blue', alpha=0.5, label='gradient')
+		ax.set_ylabel('gradient')
+		ax2 = ax.twinx()
+		ax2.plot(A[*DEBUG_PIXEL,:,1], color='tab:orange', alpha=0.5, label='constant')
+		ax2.set_ylabel('constant')
+		ax_h = ax.get_legend_handles_labels()
+		ax2_h = ax2.get_legend_handles_labels()
+		plt.legend(ax_h[0]+ax2_h[0], ax_h[1]+ax2_h[1])
+		plt.show()
+		plt.close('all')
+		"""
+		return np.moveaxis(y, -1, axis)
 	
+	# Otherwise, do things piecewise so we don't run out of memory
+	y = np.full((*data.shape[:-1], new_idxs.size), fill_value=np.nan)
+	for i, j in enumerate(new_idxs):
+		if 1 <= j < old_points.size:
+			gradient = (data[...,j] - data[...,j-1])/(old_points[j] - old_points[j-1])
+		else:
+			gradient = np.zeros(data.shape[:-1])
+
+		if 0 <= j <= old_points.size:
+			constant = data[...,j] - gradient*old_points[j]
+		else:
+			constant = 0
+			
+		y[...,i] = gradient*new_points[i] + constant
+		
+	return np.moveaxis(y,-1,axis)
 	
+
+def plot_rebin_response_function(data_hdu, axis, spectral_unit_in_meters, new_spec_ax, new_data):
+	_lgr.debug(f'{new_spec_ax.shape=} {new_data[:,*DEBUG_PIXEL].shape=}')
+	input_axis = aph.fits.header.get_world_coords_of_axis(
+		data_hdu.header, 
+		axis, 
+		wcs_unit_to_return_value_conversion_factor=spectral_unit_in_meters
+	)
+	plt.plot(
+		input_axis, 
+		data_hdu.data[:,*DEBUG_PIXEL],
+		color='tab:blue',
+		label='original'
+	)
+	plt.plot(
+		new_spec_ax, 
+		new_data[:,*DEBUG_PIXEL],
+		color='tab:orange',
+		label='rebinned'
+	)
+	plt.plot(
+		input_axis, 
+		data_hdu.data[:,*DEBUG_PIXEL] - np.interp(input_axis, new_spec_ax, new_data[:,*DEBUG_PIXEL]),
+		color='tab:green',
+		label='original - rebinned'
+	)
+	plt.legend()
+	plt.show()
+
 
 def rebin_hdu_over_axis_with_response_function(
 		data_hdu,
@@ -185,11 +290,12 @@ def rebin_hdu_over_axis_with_response_function(
 		response_function : ResponseFunction,
 		bin_start : float | None = None,
 		bin_step : float = 1E-9,
-		axis_unit_conversion_factors : float = 1
+		axis_unit_conversion_factors : float = 1,
+		plot : bool = True
 	) -> tuple[np.ndarray, np.ndarray]:
 	
 	ax_values = aph.fits.header.get_world_coords_of_axis(data_hdu.header, axis, wcs_unit_to_return_value_conversion_factor=axis_unit_conversion_factors)
-	_lgr.debug(f'{ax_values=}')
+	_lgr.debug(f'{data_hdu.data.shape=} {ax_values.shape=}')
 	
 	bin_start = ax_values[0] if bin_start is None else bin_start
 	
@@ -208,12 +314,22 @@ def rebin_hdu_over_axis_with_response_function(
 	n_new_points = (ax_values[-1]-bin_start)/bin_step + 1
 	_lgr.debug(f'{n_new_points=}')
 	new_points = np.linspace(bin_start, ax_values[-1], int(np.floor(n_new_points)))
+	smoothed = lin_interp(new_points, ax_values, smoothed, axis=axis, boundary_conditions='constant')
 	
-	#return None, smoothed # DEBUGGING
-	return new_points, lin_interp(new_points, ax_values, smoothed, axis=axis, left=np.nan, right=np.nan)
+	if plot:
+		plot_rebin_response_function(data_hdu, axis, axis_unit_conversion_factors, new_points, smoothed)
 	
 	
+	return new_points, smoothed
 	
+	
+def plot_rebin(old_bins, old_data, new_bins, new_data, title=None):
+	plt.title(title)
+	plt.plot(np.sum(old_bins, axis=0)/2, old_data, label='old_data')
+	plt.plot(np.sum(new_bins, axis=0)/2, new_data, label='new_data')
+	plt.legend()
+	plt.show()
+
 
 def rebin_hdu_over_axis(
 		data_hdu, 
@@ -257,6 +373,9 @@ def rebin_hdu_over_axis(
 	return new_bins, new_data
 
 
+
+
+
 def run(
 		fits_spec : aph.fits.specifier.FitsSpecifier, 
 		output_path : Path | str, 
@@ -278,20 +397,34 @@ def run(
 		axis = axes_ordering[0].numpy
 	
 		#new_spec_bins, new_data = rebin_hdu_over_axis(data_hdu, axis, bin_step, bin_width, operation, plot=False)
+		
+		postprocess_data_mutator = lambda x: x
+		
+		response_function_sum = None
+		match operation:
+			case 'sum':
+				pass # no need to alter anything
+			case 'mean':
+				response_function_sum = 1
+			case 'mean_err':
+				data_hdu.data = data_hdu.data**2 # square the data
+				response_function_sum = 1
+				postprocess_data_mutator = lambda x: np.sqrt(x) # square-root it after rebinning
+			case _:
+				raise RuntimeError(f'Unknown binning operation "{operation}"')
+		
 		new_spec_ax, new_data = rebin_hdu_over_axis_with_response_function(
 			data_hdu, 
 			axis, 
-			TriangularResponseFunction(1, bin_width), 
+			TriangularResponseFunction(response_function_sum, bin_width), 
 			bin_start=None, 
 			bin_step=bin_step, 
 			axis_unit_conversion_factors=spectral_unit_in_meters
 		)
-
-		plt.plot(aph.fits.header.get_world_coords_of_axis(data_hdu.header, axis, wcs_unit_to_return_value_conversion_factor=spectral_unit_in_meters), data_hdu.data[:,161,168])
-		plt.plot(new_spec_ax, new_data[:,161,168])
-		#plt.plot(data_hdu.data[:,161,168]-new_data[:,161,168])
-		plt.show()
-	
+		
+		new_data = postprocess_data_mutator(new_data)
+		
+		
 		hdr = data_hdu.header
 		axis_fits = axes_ordering[0].fits
 		param_dict = {
