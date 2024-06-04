@@ -148,24 +148,9 @@ def ssa2d_sum_prob_map(
 		)
 	
 
-	# apply the pixel->probability function to 'value' argument if desired
-	if 'median_prob' in transform_value_as:
-		value = prob_median_transform_func(value)
-	if 'ppf' in transform_value_as:
-		cutoff_func = lambda _test, _value: EmpiricalDistribution(_test.ravel()).ppf(_value)
-	else:
-		cutoff_func = lambda _test, _value: _value
-		
-	bp_mask = pixel_map(
-		ssa.a, 
-		data_probs_sum_func(data_probs,start,stop), 
-		value, 
-		show_plots=show_plots, 
-		cutoff_func=cutoff_func, 
-		plot_kw = {
-				'suptitle':f'Sum ssa2d probability maps\n{value=}'
-			}
-		)
+	
+	data_probs_sum = data_probs_sum_func(data_probs,start,stop)
+	
 
 	# plots for debugging and progress
 	if show_plots > 1:
@@ -268,18 +253,50 @@ def ssa2d_sum_prob_map(
 				None,
 				#f'ssa_{i}_bad_pixel_prob_maps.png',
 			)
-			
 	
+	return data_probs_sum
+	
+def get_bp_mask_from_badness_map(badness_map, value, value_transform = 'identity'):
+	# apply the pixel->probability function to 'value' argument if desired
+	"""
+	if 'median_prob' in transform_value_as:
+		value = prob_median_transform_func(value)
+	if 'ppf' in transform_value_as:
+		cutoff_func = lambda _test, _value: EmpiricalDistribution(_test.ravel()).ppf(_value)
+	else:
+		cutoff_func = lambda _test, _value: _value
+	"""
+	
+	match value_transform:
+		case 'ppf':
+			cutoff_func = lambda _test, _value: EmpiricalDistribution(_test.ravel()).ppf(_value)
+		case 'identity':
+			cutoff_func = lambda _test, _value: _value
+		case _:
+			raise RuntimeError(f'Unknown value transform "{value_transform}"')
+	
+	
+	
+	bp_mask = pixel_map(
+		badness_map, 
+		value, 
+		show_plots=False,
+		img=None,
+		cutoff_func=cutoff_func, 
+		plot_kw = {
+			'suptitle':f'Sum ssa2d probability maps\n{value=}'
+		}
+	)
 		
 	return(bp_mask)
 
 
 
 def pixel_map(
-		img, 
 		test, 
 		value, 
 		show_plots=0, 
+		img = None,
 		plot_kw={}, 
 		cutoff_func = lambda _test, _value: EmpiricalDistribution(_test.ravel()).ppf(_value), 
 		bp_mask_func = lambda _test, _cutoff: _test > _cutoff
@@ -318,7 +335,7 @@ def pixel_map(
 	bp_mask = bp_mask_func(test, cutoff)
 
 	#breakpoint() # DEBUGGING
-	if show_plots > 0:
+	if show_plots > 0 and img is not None:
 		interpolated = interpolate_at_mask(img, bp_mask, edges='convolution', method='cubic')
 		plot_pixel_map_test(img, test, cutoff, bp_mask, interpolated, plot_kw=plot_kw)
 		plot_helper.output(
