@@ -37,7 +37,7 @@ path_to_fits_file{DATA}[:,10:20,30:50]{CELESTIAL:(1,2),SPECTRAL:(0)}
 
 * Alter spectral rebinning to use triangular response function [DONE]
 
-* Alter documentation in this file for spectral rebinning to reflect new algorithm
+* Alter documentation in this file for spectral rebinning to reflect new algorithm [DONE]
 
 * Alter interpolation script to be more controllable
 * Add seperate SSA script
@@ -316,18 +316,11 @@ This routine accepts a FITS file specifier, it will spectrally rebin the fits ex
 
 The underlying algorithm does the following:
 
-* We have a 3d dataset. In the FITS file we get points that correspond to each pixel center, not a bin or region (so really we have point-cloud data, but hey). Model each pixel as a flat-topped box where the box varies with height depending on the pixel value. The edge of a pixel is defined as half-way to the next pixel, or the same distance again past the center if we are looking at an edge pixel. In other words, we have a histogram.
-```
-  Value
-    ^
-    |    _ _
-    |  _| | |
-    |_|     |_
-    |         |_
-    ----------------> Pixel Center
-```
+* We have a 3d dataset. In the FITS file we get points that correspond to each pixel center, not a bin or region. We assume that the value "belongs" to the center point of the pixel and is not defined elsewhere. I.e. treat the data like point-cloud data. 
 
-* We want to rebin to a different spectral resolution, mostly to reduce the data volume and let everything run in a decent timescale. Therefore, we define three things, and `offset`, a `bin_width`, and a `bin_step`. `offset` is the difference between the starting point of the new bins, `bin_width` is the width of the new bins, `bin_step` is the distance between the start of one bin and the beginning of the next. NOTE: most of the time `bin_width` = `bin_step`, but sometimes they do not. A picture of a general example is below
+* The data is convolved with a response function (usually triangular for the spectral axis) of some characteristic with `bin_width`, and then sampled every `bin_step` from the start of the axis.
+
+* NOTE: We define three things, and `offset`, a `bin_width`, and a `bin_step`. `offset` is the difference between the starting point of the new bins, `bin_width` is the "width" of the response function (for a histrogram the response function would be a square), `bin_step` is the distance between the start of one bin and the beginning of the next. Most of the time `bin_width` = `bin_step`, but sometimes they do not. A picture of a general example is below
 
 ```
 	#############################################################
@@ -367,9 +360,15 @@ The underlying algorithm does the following:
 		The distance between the start/end of the new grid and the start/end of the old grid
 ```
 
-* All we have to do is work out which old bins are wholly included in the new bins, and which old bins are fractionally included in the new bins. Once we have that information, we assume that that as the bins are flat-topped fractional bins send a fraction of their value to each new bin covering them. This isn't quite right if we have overlapping bins on the input side. However, we never have that information for a FITS file so we always assume the bins are non-overlapping.
+* We assume the `offset` is the same for the old and new binning.
 
-* The summing of old bins into new bins is fine if you are working with e.g. raw counts. But if the data is in e.g. counts per frequency, you then need to then divide by the number of bins you just added together (which is not necessarily an integer, or larger than one) as e.g. the total number of counts you have has gone up, but so has the number of frequencies they are spread over.
+* When sampling at `bin_step`, we linearly interpolate between the results of the convolution.
+
+* The integral of the response function makes a big difference to the output. If there response function integrates to 1, we have the effect of averaging over the response function. This is appropriate when we are dealing with units that divide out the effect of the physical pixel size e.g. counts/wavelength. However, if we are dealing with raw counts, the response function should not integrate to 1 it's value should relate to the size of the response function relative to the size of the physical pixels.
+
+* `bin_width` is defined differently for different response functions:
+  - Triangular response function : `bin_width` is the full width at half maximum (FWHM),
+  - Rectangular response function : `bin_width` is still the FWHM, but as it has straight sides this is the same as the full width.
 
 #### Module Arguments ####
 

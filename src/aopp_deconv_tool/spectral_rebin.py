@@ -1,13 +1,11 @@
 """
-Quick tool for spectrally rebinning a FITS file
+Quick tool for spectrally rebinning a FITS file, convolves a triangular 
+function of `bin_width` with the input data and samples it every `bin_step`.
 
-TODO:
-Currently have what looks like an off-by one error between
-python -m aopp_deconv_tool.spectral_rebin './example_data/ifu_observation_datasets/MUSE.2019-10-18T00:01:19.521.fits' -o ./test_pat_error_rebin.fits
-and
-python -m aopp_deconv_tool.spectral_rebin './example_data/ifu_observation_datasets/MUSE.2019-10-17T23:46:14.117.fits' -o ./test_pat_error_rebin.fits
-
-Look at the matplotlib plots to see the problem
+NOTE: Supersampling is not done in any special way, so if that is desired, 
+set `bin_width` to the distance between two datapoints and `bin_step` to the 
+supersampling length. This will not preserve the sum, but it should work when
+interpolation is required.
 """
 
 import sys
@@ -41,13 +39,6 @@ _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
 DEBUG_PIXEL = (161,168)
-
-named_spectral_binning_parameters = dict(
-	spex = dict(
-		bin_step = 1E-9,
-		bin_width = 2E-9
-	)
-)
 
 
 @dc.dataclass
@@ -102,9 +93,25 @@ class TriangularResponseFunction (ResponseFunction):
 		return np.linspace(0, 2*self.full_width_half_maximum, int(np.ceil(2*self.full_width_half_maximum/step)))
 	
 
+named_spectral_binning_parameters = dict(
+	spex = dict(
+		bin_step = 1E-9,
+		bin_width = 2E-9,
+		response_function_class = TriangularResponseFunction
+	)
+)
 
-
-def indices_const_boundary(indices : tuple[Sequence[int]], shape : tuple[int]) -> tuple[int]:
+def indices_const_boundary(
+		indices : tuple[Sequence[int]], 
+		shape : tuple[int]
+	) -> tuple[int]:
+	"""
+	Give a tuple with N entries `indices` like ((i_00,i_01,i_02,...,i_0M_0),(i_10,i_11,...,i_1M_1),...,(...,i_NM_N)), where N is the number of entries in `shape`
+	which is like (s_0, s_1, ..., s_N), and M_0, M_1, ..., M_N are the number of indices present for each axis.
+	
+	Alter the indices so if i_nm < 0, i_nm=0. And if i_nm >= s_n, i_nm=s_n-1. I.e. indices "to the left" are set to the first entry in the axis, and
+	indices "to the right" are set to the last entry in the axis.
+	"""
 	out_indices = []
 	for j, (idxs, s) in enumerate(zip(indices, shape)):
 		jdx = []
@@ -120,10 +127,29 @@ def indices_const_boundary(indices : tuple[Sequence[int]], shape : tuple[int]) -
 	return tuple(out_indices)
 
 def array_const_boundary(a : np.ndarray, indices: tuple[Sequence[int]]) -> np.ndarray:
+	"""
+	Return the values on an arry such that any indices that are "to the left" return the first entry in the axis, and any that are "to the right" return
+	the last entry in the axis.
+	"""
 	return a[indices_const_boundary(indices, a.shape)]
 
 
-def overlap_add_convolve(data, response_1d, axis, mode='same') -> np.ndarray:
+def overlap_add_convolve(
+		data : np.ndarray[[...,'M',...]], 
+		response_1d : np.ndarray[['N']], 
+		axis : int, 
+		mode : Literal['same'] | Literal['full'] | Literal['valid'] = 'same'
+	) -> np.ndarray[[...,'L',...]]:
+	"""
+	Performs convolution over `axis` of `data` by the overlap-and-add method with `response_1d`. Is generally faster for large `data` and small `response_1d`.
+	The shape of the output array depends on the `mode`:
+	
+	mode    | output shape
+	--------|-----------------
+	'same'  | [...,'M',...]
+	'full'  | [...,'M+2N',...]
+	'valid' | [...,'M-2N',...]
+	"""
 	data = np.moveaxis(data, 0, axis)
 	
 	n = response_1d.shape[0]
@@ -166,12 +192,18 @@ def lin_interp(
 		axis : int, # should be axis of "M" in `data`,
 		boundary_conditions : Literal['constant'] | Literal['reflect'] | Literal['periodic'] | Literal['extrapolate'] = 'constant'
 	) -> np.ndarray:
-	
+	"""
+	Given `data` defined at `old_points` along `axis`, linearly interpolate at `new_points` subject to `boundary_conditions`.
+	Works on N-dimensional arrays, but only over one axis at a time.
+	"""
 	
 	data = np.moveaxis(data, axis, -1)
 	_lgr.debug(f'Moved data axis')
 	
-	new_points = np.array(new_points) # copy array
+	y = np.full((*data.shape[:-1], new_points.size), fill_value=np.nan)
+	_lgr.debug(f'Output array allocated')
+	
+	new_points = np.array(new_points) # copy array soe we can process the points
 	match boundary_conditions:
 		case 'constant':
 			gt = new_points >= old_points[-1]
@@ -217,7 +249,7 @@ def lin_interp(
 		A[...,:,0] = (data[...,1:] - data[...,:-1])/(old_points[1:] - old_points[:-1]) # gradient
 		A[...,:,1] = data[...,:-1] - A[...,0]*old_points[:-1] # constant
 		
-		y = np.sum(A[...,new_idxs,:]*np.stack((new_points, np.ones_like(new_points)), axis=-1), axis=-1)
+		y[...] = np.sum(A[...,new_idxs,:]*np.stack((new_points, np.ones_like(new_points)), axis=-1), axis=-1)
 		
 		"""
 		# DEBUGGING
@@ -238,7 +270,7 @@ def lin_interp(
 		return np.moveaxis(y, -1, axis)
 	
 	# Otherwise, do things piecewise so we don't run out of memory
-	y = np.full((*data.shape[:-1], new_idxs.size), fill_value=np.nan)
+	
 	for i, j in enumerate(new_idxs):
 		if 1 <= j < old_points.size:
 			gradient = (data[...,j] - data[...,j-1])/(old_points[j] - old_points[j-1])
@@ -321,59 +353,6 @@ def rebin_hdu_over_axis_with_response_function(
 	
 	
 	return new_points, smoothed
-	
-	
-def plot_rebin(old_bins, old_data, new_bins, new_data, title=None):
-	plt.title(title)
-	plt.plot(np.sum(old_bins, axis=0)/2, old_data, label='old_data')
-	plt.plot(np.sum(new_bins, axis=0)/2, new_data, label='new_data')
-	plt.legend()
-	plt.show()
-
-
-def rebin_hdu_over_axis(
-		data_hdu, 
-		axis, 
-		bin_step : float = 1E-9, 
-		bin_width : float = 2E-9,
-		operation : Literal['sum'] | Literal['mean'] | Literal['mean_err'] = 'mean',
-		plot : bool = False,
-		axis_unit_conversion_factors : float = 1
-	) -> tuple[np.ndarray, np.ndarray]:
-	ax_values = aph.fits.header.get_world_coords_of_axis(data_hdu.header, axis, wcs_unit_to_return_value_conversion_factor=axis_unit_conversion_factors)
-	_lgr.debug(f'{ax_values=}')
-	
-	old_bins = nph.array.grid.edges_from_midpoints(ax_values)
-	_lgr.debug(f'{old_bins=}')
-	
-	new_bins = nph.array.grid.edges_from_bounds(old_bins[0,0], old_bins[-1,-1], bin_step, bin_width)
-	_lgr.debug(f'{new_bins=}')
-
-	match operation:
-		case 'sum':
-			regrid_data, regrid_bin_weights = nph.array.grid.regrid(data_hdu.data, old_bins, new_bins, axis)
-			new_data = regrid_data
-		case 'mean':
-			regrid_data, regrid_bin_weights = nph.array.grid.regrid(data_hdu.data, old_bins, new_bins, axis)
-			new_data = (regrid_data.T/regrid_bin_weights).T
-		case 'mean_err':
-			regrid_data, regrid_bin_weights = nph.array.grid.regrid(data_hdu.data**2, old_bins, new_bins, axis)
-			new_data = np.sqrt((regrid_data.T/(regrid_bin_weights)).T)
-		case _:
-			raise RuntimeError(f'Unknown binning operation "{operation}"')
-	
-	if plot:
-		plot_rebin(
-			old_bins, 
-			data_hdu.data[:, data_hdu.data.shape[1]//2, data_hdu.data.shape[2]//2], 
-			new_bins, 
-			new_data[:, new_data.shape[1]//2, new_data.shape[2]//2]
-		)
-	
-	return new_bins, new_data
-
-
-
 
 
 def run(
@@ -382,7 +361,8 @@ def run(
 		bin_step : float = 1E-9, 
 		bin_width : float = 2E-9,
 		operation : Literal['sum'] | Literal['mean'] | Literal['mean_err'] = 'mean',
-		spectral_unit_in_meters : float = 1
+		spectral_unit_in_meters : float = 1,
+		response_function_class : Literal[SquareResponseFunction] | Literal[TriangularResponseFunction] = TriangularResponseFunction
 	) -> tuple[np.ndarray, np.ndarray]:
 
 	new_data = None
@@ -416,7 +396,7 @@ def run(
 		new_spec_ax, new_data = rebin_hdu_over_axis_with_response_function(
 			data_hdu, 
 			axis, 
-			TriangularResponseFunction(response_function_sum, bin_width), 
+			response_function_class(response_function_sum, bin_width),
 			bin_start=None, 
 			bin_step=bin_step, 
 			axis_unit_conversion_factors=spectral_unit_in_meters
@@ -513,6 +493,7 @@ def parse_args(argv):
 	if args.rebin_params is not None:
 		setattr(args, 'bin_step', args.rebin_params[0])
 		setattr(args, 'bin_width', args.rebin_params[1])
+		setattr(args, 'response_function_class', TriangularResponseFunction)
 	
 	if args.output_path is None:
 		args.output_path =  (Path(args.fits_spec.path).parent / (str(Path(args.fits_spec.path).stem)+DEFAULT_OUTPUT_TAG+str(Path(args.fits_spec.path).suffix)))
@@ -534,6 +515,7 @@ if __name__ == '__main__':
 		bin_width=args.bin_width, 
 		operation=args.rebin_operation, 
 		output_path=args.output_path, 
-		spectral_unit_in_meters= 1 if args.spectral_unit_in_meters is None else args.spectral_unit_in_meters
+		spectral_unit_in_meters= 1 if args.spectral_unit_in_meters is None else args.spectral_unit_in_meters,
+		response_function_class = args.response_function_class
 	)
 	
