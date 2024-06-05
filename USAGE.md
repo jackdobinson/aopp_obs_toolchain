@@ -423,6 +423,13 @@ The badness map is calculated as follows for each 2D image in the FITS data:
 * `--strategy`
   - `ssa` (DEFAULT)
     + Uses singular spectrum analysis (SSA) to determine how likely a pixel is to belong to an artifact
+* `--ssa.w_shape`
+  - Shape of the window used for the `ssa` strategy (default : 10)
+* `--ssa.start`
+  - First SSA component to be included in artifact detection calc. Negative numbers are fractions of range
+* `--ssa.stop`
+  - Last SSA component to be included in artifact detection calc. Negative numbers are fractions of range
+
 
 #### Examples ####
 
@@ -467,8 +474,7 @@ Using the results from the rebinning example:
 
 Invoke via `python -m aopp_deconv_tool.interpolate`.
 
-Accepts a FTIS file specifier for data to be interpolated and a FITS file specifier for a `bad_pixel_mask` that specifies which pixels to interpolate at. The strategy used is
-dependent on the options given to the program.
+Accepts a FTIS file specifier for data to be interpolated and a FITS file specifier for a `bad_pixel_mask` that specifies which pixels to interpolate. At any NAN and INF values are also interpolated over if these are not included in the `bad_pixel_mask`.
 
 The interpolation process uses a [standard interpolation routine](https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.griddata.html). However, to avoid edge effects the data is:
 
@@ -823,6 +829,8 @@ N - f_i = p_i
 
 where N is the number of dimensions, f_i is the FITS/FOTRAN axis number, p_i is the Python/C axis number.
 
+The upshot is that even though both FITS and Python label the axes of an array from left-to-right, (the "leftmost" axis being 0 for python, 1 for FITS), the ordering of the data in memory means that when reading a FITS array in Python, the axes are reversed.
+
 Example:
 ```
 
@@ -956,9 +964,7 @@ NOTE: axis numbers are always from the left hand side.
 ```
 
 
-This means that even though both FITS and Python label the axes of an array from left-to-right, the ordering of 
 
-* Python arrays 
 
 #### Fits File Schematic <a id="fits-file-schematic"></a> ####
 ```
