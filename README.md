@@ -333,9 +333,33 @@ From the `<REPO_DIR>` directory, run **ONE** of the following commands:
 
 Use `__token__` for `<USERNAME>`, and an API Token value for `<PASSWORD>` (including the `pypi-` prefix). See 
 [this guide for uploading to the package index](https://packaging.python.org/en/latest/tutorials/packaging-projects/#uploading-the-distribution-archives) 
-for more information.
+for more information. 
+
+If [storing the token in a file](#storing-the-pypi-token), use `python3 -m twine upload -u __token__ -p $(cat ~/.secrets/pypi_token) dist/*`.
 
 Verify the package uploaded correctly by going to `https://test.pypi.org/project/aopp-deconv-tool/`.
+
+### Storing The PyPi Token ###
+
+You could try remembering the PyPi token (well done if you can), however that's not often possible. You don't want to hard-code the token or check it into git as other people will have different ones and then the token would be visible to anyone with access to the repository (which can be public). There are a few different ways to solve the problem, I'll go through some of them
+
+Option 1: Use a password manager of some sort. This isn't too bad, you put all API tokens in a password manager program and just need to remember the master password. You can get versons that sync across devices. The annoying thing is that you often have to go in and decrypt and copy the token manually as you really don't want to let the master password be stored somewhere.
+
+Option 2: Set an environment variable. This can work quite well, you set an environment variable (in your `~/.basrhc` file for example, not somewhere that is checked into git), then use that environment variable wherever you need it. It's nice and convenient, but you do have the token sitting in plain text somewhere and always loaded up in memory so if you ever need to send your environment variables to IT for debugging, your token gets sent as well unless you remember to remove it. Also a child process inherits it's parents environment variables, so you technically have to be sure that nothing else is sending environment variables to random places. However, it's easy to use as you just need to add `${PYPI_TOKEN}` in place of the token whenever you need to use it.
+
+Option 3: Store in a (preferably encrypted) file, not in the repository. This is sort-of half-way between (1) and (2). You store the password in a file (e.g. `~/.secrets/pypi_token`) and make sure that it is:
+
+* Only readable/writable by the user (e.g. `chmod u=rwx,g=,o= ~/.secrets` when making the directory and `chmod u=rw,g=o= ~/.secrets/pypi_token` when making the file, you can even fiddle around with [access control lists](https://www.redhat.com/sysadmin/linux-access-control-lists) if you want to). 
+* Not somewhere that is checked into git (yes I said that earlier, yes it needs repeating)
+* Encrypted if possible. There are various ways to do this, unfortunately you can't just encrypt with some key and decrypt it when you need it, as this now means you have the exact same problem with the new key. The best options I have found are:
+  - [Encrypt the whole disk](https://wiki.archlinux.org/title/Data-at-rest_encryption)
+  - Encrypt just the $HOME directory, often this is an option when installing linux or another operating system.
+  - Encrypt a single folder. For example, [ecryptfs](https://wiki.archlinux.org/title/ECryptfs) can encrypt a single folder, then decrypt and mount it upon login.
+  
+Then use `$(cat ~/.secrets/pypi_token)` inpace of the token whenever you need to use it.
+
+Personally, I find option 3 to be the best. Even without encryption, someone would either need root access or physical access to the drive to get the token if the directory and file permissions are set up correctly.
+
 
 ## Test the package uploaded correctly ##
 
