@@ -1,12 +1,12 @@
 """
 Contains routines that are mostly wrappers around scipy interpolation functions
 """
-
+from typing import Literal, Any
 import numpy as np
 import scipy as sp
 import scipy.interpolate
 
-def interpolate_at_mask(data, mask, edges=None, **kwargs):
+def interpolate_at_mask(data : np.ndarray[[...], Any], mask : np.ndarray[[...],bool], edges : None | Literal['convolution'] = None, **kwargs) -> np.ndarray[[...],Any]:
 	"""
 	Interpolates an array 'data' at the True points given in 'mask'
 	**kwargs is passed through to "sp.interpolate.griddata()"

@@ -50,7 +50,6 @@ def run(
 		data = data_hdu.data
 		
 		bad_pixel_mask = np.zeros_like(data, dtype=bool)
-
 		
 		cv_pos = 0
 		next_cv_pos = 1
@@ -91,7 +90,7 @@ def run(
 		hdr = data_hdu.header
 		param_dict = {
 			'original_file' : Path(fits_spec.path).name, # record the file we used
-			**dict((f'cut_value_of_index_{k}', v) for k,v in index_cut_values)
+			#**dict((f'cut_value_of_index_{k}', v) for k,v in index_cut_values)
 		}
 		#for i, x in enumerate(bad_pixel_map_binary_operations):
 		#	param_dict[f'bad_pixel_map_binary_operations_{i}'] = x
@@ -104,13 +103,24 @@ def run(
 				
 
 	
+	
 	# Save the products to a FITS file
 	hdu_bad_pixel_mask = fits.PrimaryHDU(
 		header = hdr,
 		data = bad_pixel_mask.astype(int)
 	)
+	hdu_cut_value_table = fits.BinTableHDU.from_columns(
+		columns = [
+			fits.Column(name='cut_index', format='I', array=[x[0] for x in index_cut_values]), 
+			fits.Column(name=f'cut_value', format='D', array=[x[1] for x in index_cut_values])
+		],
+		name = 'CUT_VALUE_BY_INDEX',
+		header = None,
+	)
+	
 	hdul_output = fits.HDUList([
 		hdu_bad_pixel_mask,
+		hdu_cut_value_table
 	])
 	hdul_output.writeto(output_path, overwrite=True)
 	
@@ -148,7 +158,6 @@ def parse_args(argv):
 	cut_group = parser.add_mutually_exclusive_group(required=True)
 	cut_group.add_argument('-c', '--value_cut', type=float, default=None, help='Value to cut the supplied badness map at')
 	cut_group.add_argument('-x', '--value_cut_at_index', type=float, nargs=2, action='append', help='[index, value] pair, for a 3D badness map `index` will be cut at `value`. Specify multiple times for multiple indices. The `value` for non-specified indices is interpolated with "extend" boundary conditions.')
-	
 	
 	args = parser.parse_args(argv)
 	

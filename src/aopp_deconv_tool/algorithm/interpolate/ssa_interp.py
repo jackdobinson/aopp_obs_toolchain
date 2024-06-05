@@ -14,20 +14,22 @@ from aopp_deconv_tool.context.next import Next
 from aopp_deconv_tool.stats.empirical import EmpiricalDistribution
 from aopp_deconv_tool.scipy_helper.interp import interpolate_at_mask
 import aopp_deconv_tool.plot_helper as plot_helper
-
+from aopp_deconv_tool.py_ssa import SSA
 
 
 import aopp_deconv_tool.cfg.logs
 _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
+
+
 def ssa_intepolate_at_mask(
-		ssa,
-		mask,
-		start=0, 
-		stop=None, 
-		value=0.5, # 0.5 seems to be the best value
-		show_plots=0,
+		ssa : SSA,
+		mask : np.ndarray[['NM'],bool],
+		start : int | None = 0, 
+		stop : int | None  = None, 
+		value : float = 0.5, # 0.5 seems to be the best value
+		show_plots : bool | int = 0,
 	):
 	"""
 	Using SSA for interpolation. E.g. 

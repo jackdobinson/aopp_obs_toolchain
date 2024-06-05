@@ -6,14 +6,18 @@ Quick tool for interpolating data in a FITS file
 import sys
 from pathlib import Path
 import dataclasses as dc
-from typing import Literal
+from typing import Literal, Callable
+import functools
 
 import numpy as np
 import scipy as sp
 from astropy.io import fits
 
+from aopp_deconv_tool.task_strat import TaskStratInfo, TaskStratSet
+
 import aopp_deconv_tool.astropy_helper as aph
 import aopp_deconv_tool.astropy_helper.fits.specifier
+from aopp_deconv_tool.astropy_helper.fits.specifier import FitsSpecifier
 import aopp_deconv_tool.astropy_helper.fits.header
 import aopp_deconv_tool.numpy_helper as nph
 import aopp_deconv_tool.numpy_helper.axes
@@ -36,147 +40,93 @@ import aopp_deconv_tool.cfg.logs
 _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
-
-data_ssa = None
-
-def get_data_ssa(a, **kwargs):
-	global data_ssa
-	if data_ssa is None:
-		data_ssa = SSA(
-			a, 
-			**{
-				#'w_shape':20,
-				'w_shape' : 20, # DEBUGGING
-				#'grouping' : {'mode' : 'similar_eigenvalues', 'tolerance' : 1E-1},
-				**kwargs
-			},
-		)
-	return data_ssa
-
-def set_data_ssa(value):
-	global data_ssa
-	data_ssa = value
+def array_ssa_interpolate_at_mask(a : np.ndarray, mask : np.ndarray, **kwargs):
+	return ssa_interpolate_at_mask(SSA(a, **kwargs), mask)
 
 
 
-def get_bad_pixel_map(
-		a : np.ndarray, 
-		method : Literal['ssa'] | Literal['simple'], 
-		perform_binary_operation : None | list[Literal['opening'] | Literal['closing'] | Literal['dilation'] | Literal['erosion']] = None,
-	) -> np.ndarray:
-	nan_inf_mask = np.isinf(a) | np.isnan(a)
-	match method:
-		case 'ssa':
-			ssa = get_data_ssa(np.nan_to_num(a))
-			
-			bad_pixel_map = ssa2d_sum_prob_map(
-				ssa, 
-				value=5, 
-				start=2*ssa.m//8, # DEBUGGING
-				stop=4*ssa.m//8, # DEBUGGING
-				strategy='n_std_dev_from_median',
-				transform_value_as='identity',
-				show_plots=0,
-				#show_plots=2, # DEBUGGING
-				weight_by_evals=False,
-			)
-			
-			
-		case 'simple':
-			bad_pixel_map = nan_inf_mask
-		case _:
-			raise RuntimeError(f'Unknown value of {method=}')
+
+@dc.dataclass
+class InterpolationStratInfo (TaskStratInfo):
+	callable : Callable[[np.ndarray['NM',float], np.ndarray['NM',bool]], np.ndarray['NM',float]]
+
+interpolation_strategies = TaskStratSet('Performs interpolation upon an array at positions provided by a mask').add(
+	InterpolationStratInfo(
+		'scipy',
+		'Uses scipy routies to interpolate over the masked regions, edge effects are minimised by convolving with a 3x3 square before interpolation',
+		functools.partial(sph.interp.interpolate_at_mask, edges='convolution')
+	),
+	InterpolationStratInfo(
+		'ssa',
+		'[EXPERIMENTAL] Uses interpolates over singular spectrum analysis (SSA) components, and uses them to fill in masked regions.',
+		functools.partial(array_ssa_interpolate_at_mask, w_shape=10, grouping = {'mode':'elementary'}),
+	)
+)
+
+
+
+
 	
-	
-	if perform_binary_operation is not None:
-		orig_bp_map = np.array(bad_pixel_map, dtype=bad_pixel_map.dtype)
-		for item in perform_binary_operation:
-			match item:
-				case 'closing':
-					bad_pixel_map = sp.ndimage.binary_closing(bad_pixel_map)
-				case 'opening':
-					bad_pixel_map = sp.ndimage.binary_opening(bad_pixel_map)
-				case 'erosion':
-					bad_pixel_map = sp.ndimage.binary_erosion(bad_pixel_map)
-				case 'dilation':
-					bad_pixel_map = sp.ndimage.binary_dilation(bad_pixel_map)
-				case 'remove_single_pixels':
-				
-					_lgr.debug(f'REMOVING SINGLE PIXELS')
-					labels, n_labels = sp.ndimage.label(bad_pixel_map)
-					labels, n_labels = sph.label_ops.keep_larger_than(labels, n_labels, 1)
-					bad_pixel_map[labels == 0] = False
-					
-				case _:
-					raise RuntimeError(f'Unknown binary operation "{item}"')
-	
-	
-	return bad_pixel_map | nan_inf_mask
 
-def get_interp_at_mask(a, mask, method):
-	match method:
-		case 'ssa':
-			interp = ssa_intepolate_at_mask(get_data_ssa(a), mask)
-		case 'scipy':
-			interp = sph.interp.interpolate_at_mask(a, mask, edges='convolution')
-		case _:
-			raise RuntimeError(f'Unknown value of {method=}')
-	
-	return interp
-	
+
 
 
 def run(
-		fits_spec,
-		output_path,
-		bad_pixel_method = 'ssa',
-		interp_method = 'ssa',
+		data_fits_spec : FitsSpecifier,
+		bpmask_fits_spec : FitsSpecifier,
+		output_path : Path,
+		interp_method : str = 'scipy',
 	):
 	
 	
 	
 	
-	with fits.open(Path(fits_spec.path)) as data_hdul:
+	with fits.open(Path(data_fits_spec.path)) as data_hdul, fits.open(Path(bpmask_fits_spec.path)) as bpmask_hdul:
 		
 		
-		_lgr.debug(f'{fits_spec.path=} {fits_spec.ext=} {fits_spec.slices=} {fits_spec.axes=}')
+		_lgr.debug(f'{data_fits_spec}')
+		_lgr.debug(f'{bpmask_fits_spec}')
+		
+		
+		
 		#raise RuntimeError(f'DEBUGGING')
 	
-		data_hdu = data_hdul[fits_spec.ext]
+		data_hdu = data_hdul[data_fits_spec.ext]
 		data = data_hdu.data
 		
-		bad_pixel_map = np.zeros_like(data, dtype=bool)
-		interp_data = np.full_like(data, fill_value=np.nan)
+		bpmask_hdu = bpmask_hdul[bpmask_fits_spec.ext]
+		if issubclass(bpmask_hdu.data.dtype.type, np.integer):
+			bpmask = bpmask_hdu.data.astype(bool)
+		elif issubclass(bpmask_hdu.data.dtype.type, np.bool_):
+			bpmask = bpmask_hdu.data
+		else:
+			raise RuntimeError(f'Bad Pixel Mask "{bpmask_fits_spec.path}" is not a boolean mask. It is of type "{bpmask_hdu.data.dtype}", only integer types can be converted to a boolean mask.')
 		
-		#bad_pixel_map_binary_operations = ['closing', 'remove_single_pixels']
-		bad_pixel_map_binary_operations = []
+		# Ensure that the data and mask are compatible shapes
+		data_shape = data[data_fits_spec.slices].shape
+		bpmask_shape = bpmask[bpmask_fits_spec.slices].shape
+		if (len(data_shape) != len(bpmask_shape)) or any(s1!=s2 for s1,s2 in zip(data_shape, bpmask_shape)):
+			raise RuntimeError(f'data and bad pixel mask are of incompatible shape {data_shape} vs {bpmask_shape} with {data_fits_spec=} {bpmask_fits_spec=}')
+			
+		# Allocate array to hold interpolated data
+		interp_data = np.full_like(data, fill_value=np.nan)
+		residual = np.full_like(data, fill_value=np.nan)
 		
 		# Loop over the index range specified by `obs_fits_spec` and `psf_fits_spec`
-		for i, idx in enumerate(nph.slice.iter_indices(data, fits_spec.slices, fits_spec.axes['CELESTIAL'])):
-			_lgr.debug(f'{i=}')
-			set_data_ssa(None)
+		for i, idx in enumerate(nph.slice.iter_indices(data, data_fits_spec.slices, data_fits_spec.axes['CELESTIAL'])):
+			_lgr.debug(f'{i=} current_idx={idx[0][tuple(0 for i in data_fits_spec.axes["CELESTIAL"])]}')
 			
-			#plt.imshow(data[idx])
-			#plt.show()
-			
-			bad_pixel_map[idx] = get_bad_pixel_map(data[idx], bad_pixel_method, bad_pixel_map_binary_operations)
-			#plt.imshow(bad_pixel_map[idx])
-			#plt.show()
-			
-			interp_data[idx] = get_interp_at_mask(data[idx], bad_pixel_map[idx], interp_method)
-			#plt.imshow(interp_data[idx])
-			#plt.show()
+			interp_data[idx] = interpolation_strategies(interp_method, data[idx], bpmask[idx] | np.isnan(data[idx]) | np.isinf(data[idx]))
+			residual[idx] = data[idx] - interp_data[idx]
 	
 	
 		hdr = data_hdu.header
 		param_dict = {
-			'original_file' : Path(fits_spec.path).name, # record the file we used
-			'bad_pixel_method' : bad_pixel_method,
+			'original_file' : Path(data_fits_spec.path).name, # record the file we used
+			'bpmask_file' : Path(bpmask_fits_spec.path).name, 
 			'interp_method' : interp_method,
 		}
-		for i, x in enumerate(bad_pixel_map_binary_operations):
-			param_dict[f'bad_pixel_map_binary_operations_{i}'] = x
-		
+
 		hdr.update(aph.fits.header.DictReader(
 			param_dict,
 			prefix='interpolate',
@@ -190,14 +140,14 @@ def run(
 		header = hdr,
 		data = interp_data
 	)
-	hdu_bad_pixels = fits.ImageHDU(
-		data = bad_pixel_map.astype(int),
+	hdu_residual = fits.ImageHDU(
 		header = hdr,
-		name='BAD_PIXELS'
+		data = residual,
+		name='RESIDUAL'
 	)
 	hdul_output = fits.HDUList([
 		hdu_interp,
-		hdu_bad_pixels,
+		hdu_residual
 	])
 	hdul_output.writeto(output_path, overwrite=True)
 	
@@ -221,7 +171,7 @@ def parse_args(argv):
 	)
 	
 	parser.add_argument(
-		'fits_spec',
+		'data_fits_spec',
 		help = '\n'.join((
 			f'FITS Specifier of the data to operate upon . See the end of the help message for more information',
 			f'required axes: {", ".join(DESIRED_FITS_AXES)}',
@@ -229,20 +179,28 @@ def parse_args(argv):
 		type=str,
 		metavar='FITS Specifier',
 	)
-	parser.add_argument('-o', '--output_path', help=f'Output fits file path. By default is same as fie `fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
+	parser.add_argument(
+		'bpmask_fits_spec',
+		help = '\n'.join((
+			f'FITS Specifier of the data to operate upon . See the end of the help message for more information',
+			f'required axes: {", ".join(DESIRED_FITS_AXES)}',
+		)),
+		type=str,
+		metavar='FITS Specifier',
+	)
 	
-	parser.add_argument('--bad_pixel_method', choices=['ssa', 'simple'], default='ssa', help='Strategy to use when finding bad pixels to interpolate over')
-	#parser.add_argument('--bad_pixel_args', nargs='*', help='Arguments to be passed to `--bad_pixel_method`')
-
-	parser.add_argument('--interp_method', choices=['ssa', 'scipy'], default='scipy', help='Strategy to use when interpolating')
+	parser.add_argument('-o', '--output_path', help=f'Output fits file path. By default is same as the `data_fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
+	parser.add_argument('--interp_method', choices=interpolation_strategies.names, default=interpolation_strategies.names[0], help=interpolation_strategies.format_description())
 
 
 	args = parser.parse_args(argv)
 	
-	args.fits_spec = aph.fits.specifier.parse(args.fits_spec, DESIRED_FITS_AXES)
+	args.data_fits_spec = aph.fits.specifier.parse(args.data_fits_spec, DESIRED_FITS_AXES)
+	args.bpmask_fits_spec = aph.fits.specifier.parse(args.bpmask_fits_spec, DESIRED_FITS_AXES)
 	
 	if args.output_path is None:
-		args.output_path =  (Path(args.fits_spec.path).parent / (str(Path(args.fits_spec.path).stem)+DEFAULT_OUTPUT_TAG+str(Path(args.fits_spec.path).suffix)))
+		fpath = Path(args.data_fits_spec.path)
+		args.output_path =  (fpath.parent / (str(fpath.stem)+DEFAULT_OUTPUT_TAG+str(fpath.suffix)))
 	
 	return args
 
@@ -250,5 +208,10 @@ def parse_args(argv):
 if __name__ == '__main__':
 	args = parse_args(sys.argv[1:])
 	
-	run(args.fits_spec, bad_pixel_method=args.bad_pixel_method, interp_method=args.interp_method, output_path=args.output_path)
+	run(
+		args.data_fits_spec, 
+		args.bpmask_fits_spec,
+		output_path=args.output_path,
+		interp_method=args.interp_method, 
+	)
 	

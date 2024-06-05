@@ -3,8 +3,9 @@ Routine for parsing a string containing the path, extension, slices, and axes
 of a FITS file that we want to operate on.
 """
 import os
+from pathlib import Path
 from collections import namedtuple 
-
+import dataclasses as dc
 from astropy.io import fits
 
 
@@ -20,6 +21,37 @@ import aopp_deconv_tool.astropy_helper.fits.header
 import aopp_deconv_tool.cfg.logs
 _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
+HDUIdentifier = namedtuple('HDUIdentifier', ('index', 'name', 'version'))
+
+
+def HDUIdentifiers_from(hdul : fits.HDUList) -> tuple[HDUIdentifier]:
+	return tuple(HDUIdentifier(i, hdu.name, hdu.ver) for i, hdu in enumerate(hdul))
+	
+
+
+@dc.dataclass(init=True, repr=True, order=False, eq=False, slots=True)
+class FitsInfo:
+	path : Path = dc.field(init=True, repr=True, hash=False, compare=False)
+	_n_hdus : int = dc.field(default=None, init=False, repr=True, hash=False, compare=False)
+	_hdu_identifiers : tuple[HDUIdentifier] = dc.field(default=None, init=False, repr=True, hash=False, compare=False)
+
+	def refresh(self):
+		with fits.open(self.path) as hdul:
+			self._hdu_identifiers = HDUIdentifiers_from(hdul)
+			self._n_hdus = len(self._hdu_identifiers)
+	
+	@property
+	def n_hdus(self):
+		if self._n_hdus is None:
+			self.refresh()
+		return self._n_hdus
+		
+	@property
+	def hdu_identifiers(self):
+		if self._hdu_identifiers is None:
+			self.refresh()
+		return self._hdu_identifiers
+		
 
 FitsSpecifier = namedtuple('FitsSpecifier', ('path', 'ext', 'slices', 'axes'))
 
@@ -125,7 +157,10 @@ def parse_axes_type_list(axes_type_list : str, axes_types: list[str] | tuple[str
 		axes[axtype] = axtuple
 	
 	return(axes)
-		
+
+
+
+
 	
 
 def parse(specifier : str, axes_types : list[str]):
@@ -204,7 +239,7 @@ def parse(specifier : str, axes_types : list[str]):
 			specifier = specifier[:i]
 			j = i-1
 		else:
-			ext = "DATA"
+			ext = None # extension was not specified, determine from file later
 		
 	except Exception as e:
 		e.add_note(help_string)
@@ -215,6 +250,19 @@ def parse(specifier : str, axes_types : list[str]):
 	
 	if not os.path.isfile(path):
 		raise FileNotFoundError(f'file "{path}" not found')
+	
+	fits_info = FitsInfo(path)
+	
+	# Set default extension if one was not specified
+	if ext is None:
+		hdu_names = tuple(x.name for x in fits_info.hdu_identifiers)
+		if 'DATA' in hdu_names:
+			ext = 'DATA'
+		elif 'PRIMARY' in hdu_names:
+			ext = 'PRIMARY'
+		else:
+			ext = 0
+	
 
 	if slices is None or axes is None:
 		try:
