@@ -717,8 +717,6 @@ The help message consists of the following sections:
 * Positional and Keyword argument descriptions
 * Any extra information that would be useful to the user.
 
-
-
 #### The Usage Line ####
 
 Contains a short description of the invocation syntax. 
