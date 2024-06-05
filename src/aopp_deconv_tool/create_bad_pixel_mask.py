@@ -32,12 +32,11 @@ _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 def run(
 		fits_spec,
 		output_path,
-		global_cut_value : float | None = None,
 		index_cut_values : list[list[float,float],...] | None = None,
 	):
 	
-	if global_cut_value is not None:
-		index_cut_values = [[0,global_cut_value]]
+	if index_cut_values is None:
+		index_cut_values = [[0,4.5]]
 	
 	
 	with fits.open(Path(fits_spec.path)) as data_hdul:
@@ -155,9 +154,7 @@ def parse_args(argv):
 	)
 	parser.add_argument('-o', '--output_path', help=f'Output fits file path. By default is same as the `fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
 	
-	cut_group = parser.add_mutually_exclusive_group(required=True)
-	cut_group.add_argument('-c', '--value_cut', type=float, default=None, help='Value to cut the supplied badness map at')
-	cut_group.add_argument('-x', '--value_cut_at_index', type=float, nargs=2, action='append', help='[index, value] pair, for a 3D badness map `index` will be cut at `value`. Specify multiple times for multiple indices. The `value` for non-specified indices is interpolated with "extend" boundary conditions.')
+	parser.add_argument('-x', '--value_cut_at_index', metavar='int float', type=float, nargs=2, action='append', default=[], help='[index, value] pair, for a 3D badness map `index` will be cut at `value`. Specify multiple times for multiple indices. The `value` for non-specified indices is interpolated with "extend" boundary conditions.')
 	
 	args = parser.parse_args(argv)
 	
@@ -165,6 +162,11 @@ def parse_args(argv):
 	
 	if args.output_path is None:
 		args.output_path =  (Path(args.fits_spec.path).parent / (str(Path(args.fits_spec.path).stem)+DEFAULT_OUTPUT_TAG+str(Path(args.fits_spec.path).suffix)))
+	
+	if len(args.value_cut_at_index) == 0:
+		args.value_cut_at_index = [[0,4.5]]
+	for i in range(len(args.value_cut_at_index)):
+		args.value_cut_at_index[i][0] = int(args.value_cut_at_index[i][0])
 	
 	return args
 
@@ -177,7 +179,6 @@ if __name__ == '__main__':
 	run(
 		args.fits_spec, 
 		output_path=args.output_path, 
-		global_cut_value = args.value_cut,
 		index_cut_values = args.value_cut_at_index
 	)
 	
