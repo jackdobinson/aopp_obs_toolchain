@@ -4,6 +4,7 @@ from typing import Literal
 import numpy as np
 import scipy as sp
 import scipy.stats
+import scipy.ndimage
 import matplotlib.pyplot as plt
 
 import aopp_deconv_tool.context as context
@@ -19,6 +20,36 @@ import aopp_deconv_tool.cfg.logs
 _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
+def ssa2d_deviations(
+		ssa,
+		start = None,
+		stop = None,
+		size = None,
+		mask = None,
+	) -> np.ndarray:
+	"""
+	Average standard deviation of a pixel from a region `size` around it.
+	Same as `ssa2d_sum_prob_map` but a bit more efficient (less customisable).
+	"""
+	
+	size = max(ssa.a.shape)//4 if size is None else size
+	mask = np.ones(ssa.a.shape, dtype=bool) if mask is None else mask
+	
+	deviation_sum = np.zeros(ssa.a.shape, dtype=float)
+	ssa_means = np.zeros(ssa.a.shape, dtype=float)
+	ssa_std = np.zeros(ssa.a.shape, dtype=float)
+	for i in range(stop-start):
+		#_lgr.debug(f'{i=}')
+		#deviation_sum += sp.ndimage.generic_filter(ssa.X_ssa[start+i]-ssa_means[i], kernel, size=10)
+		x = ssa.X_ssa[start+i]
+
+		ssa_means = sp.ndimage.uniform_filter(x, size=size)
+		#_lgr.debug(f'{ssa_means.shape=}')
+		ssa_std = np.sqrt(sp.ndimage.uniform_filter((x - ssa_means)**2, size=size))
+		#_lgr.debug(f'{ssa_std.shape=}')
+		deviation_sum[mask] += ((x - ssa_means)/(ssa_std + 1E-2*np.nanmean(ssa_std)))[mask] # number of standard deviations away from mean
+		
+	return np.fabs(deviation_sum)/(stop-start)
 
 
 def ssa2d_sum_prob_map(

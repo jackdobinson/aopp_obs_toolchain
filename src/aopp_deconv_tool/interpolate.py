@@ -118,6 +118,7 @@ def run(
 			
 			interp_data[idx] = interpolation_strategies(interp_method, data[idx], bpmask[idx] | np.isnan(data[idx]) | np.isinf(data[idx]))
 			residual[idx] = data[idx] - interp_data[idx]
+			
 	
 	
 		hdr = data_hdu.header

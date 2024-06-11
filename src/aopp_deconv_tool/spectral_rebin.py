@@ -362,7 +362,8 @@ def run(
 		bin_width : float = 2E-9,
 		operation : Literal['sum'] | Literal['mean'] | Literal['mean_err'] = 'mean',
 		spectral_unit_in_meters : float = 1,
-		response_function_class : Literal[SquareResponseFunction] | Literal[TriangularResponseFunction] = TriangularResponseFunction
+		response_function_class : Literal[SquareResponseFunction] | Literal[TriangularResponseFunction] = TriangularResponseFunction,
+		plot : bool = False,
 	) -> tuple[np.ndarray, np.ndarray]:
 
 	new_data = None
@@ -399,7 +400,8 @@ def run(
 			response_function_class(response_function_sum, bin_width),
 			bin_start=None, 
 			bin_step=bin_step, 
-			axis_unit_conversion_factors=spectral_unit_in_meters
+			axis_unit_conversion_factors=spectral_unit_in_meters,
+			plot=plot
 		)
 		
 		new_data = postprocess_data_mutator(new_data)

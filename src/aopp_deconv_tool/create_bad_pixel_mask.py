@@ -10,7 +10,10 @@ from collections import namedtuple
 
 import numpy as np
 import scipy as sp
+import scipy.ndimage
 from astropy.io import fits
+
+import matplotlib.pyplot as plt
 
 import aopp_deconv_tool.astropy_helper as aph
 import aopp_deconv_tool.astropy_helper.fits.specifier
@@ -82,7 +85,56 @@ def run(
 			_lgr.debug(f'{cv_value=}')
 			
 			
-			bad_pixel_mask[idx] = get_bp_mask_from_badness_map(data[idx], cv_value)
+			
+			# Large "badness values" should have a larger AOE than smaller "badness values"
+			# Therefore, dilate according to pixel value, for every 1 larger than the
+			# cut value, dilate the pixel once more.
+			
+			#bp_mask = np.zeros(data[idx].shape, dtype=bool)
+			_lgr.debug(f'{(int(np.floor(np.nanmax(data[idx]))), int(np.ceil(cv_value+1)))=}')
+			for t in range(int(np.floor(np.nanmax(data[idx]))), int(np.ceil(cv_value)), -1):
+				_lgr.debug(f'{t=}')
+				diff = t - np.ceil(cv_value)
+				_lgr.debug(f'{diff=}')
+				#plt.imshow(data[idx] >= t)
+				#plt.show()
+				bad_pixel_mask[idx] |= sp.ndimage.binary_dilation(data[idx] >= t, iterations = int(diff))
+			
+			bad_pixel_mask[idx] |= data[idx] >= cv_value
+			#bp_mask = data[idx] >= cv_value
+			
+			plt.imshow(bad_pixel_mask[idx])
+			plt.show()
+			
+			
+			# Try doing some binary morphology operations
+			#bad_pixel_mask[idx] = sp.ndimage.binary_dilation(sp.ndimage.binary_erosion(bp_mask),iterations=2) | bp_mask
+			
+			"""
+			#QUESTION: Is there a way to use multiple wavelenghts to identify artifacts?
+			# INVESTIGATION: Look for transforms that may be useful
+			center = [s/2 for s in data[idx].shape]
+			center = [177,234]
+			d_from_center = (np.indices(data[idx].shape).T- np.array(center[::-1])).T
+			r_from_center = np.sqrt(np.sum(d_from_center**2, axis=0))
+			theta_from_center = np.arctan2(d_from_center[0],d_from_center[1])
+			bp_pos = np.array([r_from_center[bad_pixel_mask[idx]], theta_from_center[bad_pixel_mask[idx]]]).T
+			#bp_pos = (indices[bad_pixel_mask[idx]] - np.array(center))
+			_lgr.debug(f'{bp_pos.shape=}')
+			#_lgr.debug(f'{np.sqrt(np.sum(bp_pos**2,1)).shape=}')
+			#bp_pos = np.array([np.sqrt(np.sum(bp_pos**2,1)), np.arctan(bp_pos[:,0]/bp_pos[:,1])]).T
+			plt.figure()
+			plt.imshow(r_from_center)
+			plt.figure()
+			plt.imshow(theta_from_center)
+			plt.figure()
+			plt.imshow(bad_pixel_mask[idx])
+			plt.scatter(*center)
+			plt.figure()
+			plt.scatter(bp_pos[:,0], bp_pos[:,1], marker='.')
+			plt.show()
+			"""
+			
 			
 	
 	
@@ -164,7 +216,7 @@ def parse_args(argv):
 		args.output_path =  (Path(args.fits_spec.path).parent / (str(Path(args.fits_spec.path).stem)+DEFAULT_OUTPUT_TAG+str(Path(args.fits_spec.path).suffix)))
 	
 	if len(args.value_cut_at_index) == 0:
-		args.value_cut_at_index = [[0,4.5]]
+		args.value_cut_at_index = [[0,3]]
 	for i in range(len(args.value_cut_at_index)):
 		args.value_cut_at_index[i][0] = int(args.value_cut_at_index[i][0])
 	

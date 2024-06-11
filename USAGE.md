@@ -305,6 +305,8 @@ When running commandline scripts, use the `-h` option to see the help message. T
 
 The examples in this section use [example data stored on an external site](TODO: ADD LINK TO EXAMPLE DATA).
 
+See the appendix for a [bash script that performs all steps on a given dataset](#whole-process-bash-script)
+
 ### Spectral Rebinning <a id="spectral-rebinning-script"></a> ##
 
 Invoke via `python -m aopp_deconv_tool.spectral_rebin`. 
@@ -412,7 +414,8 @@ The badness map is calculated as follows for each 2D image in the FITS data:
 * A subset of the components, assuming components are ordered by decending magnitude of eigenvalue, is chosen via:
   - Starting with 25% of the way through the components, as the components with the largest eigenvalues are likely to be made up of the main signal
   - Ending with 75% of the way through the components, as the components with the smallest eigenvalues are likely to be made up of noise.
-* For each component in the chosen subset, the number of standard deviations a pixel is away from the median is calculated (called the `component_badness_map`)
+* For each component in the chosen SSA subset, the number of standard deviations a pixel is away from the mean of it's region is calculated (called the `component_badness_map`)
+  -  The "region" of a pixel is defined in the following way. A pixel's region is it's brightness class (a pixel is a member of one of three brightness thresholds (background, midground, foreground)), and all pixels of it's brightness class within N/8 from the pixel, where N is the largest x or y dimension of the image.
 * The `component_badness_map`s for the chosen subset are averaged together to create the `badness_map` heuteristic.
 
 #### Module Arguments ####
@@ -435,8 +438,8 @@ The badness map is calculated as follows for each 2D image in the FITS data:
 
 Using the results from the rebinning example:
 
-* `python -m aopp_deconv_tool.artifact-detection './example_data/ifu_observation_datasets/MUSE.2019-10-17T23:46:14.117_rebin.fits(1,2)'`
-* `python -m aopp_deconv_tool.artifact-detection ./example_data/ifu_observation_datasets/MUSE.2019-10-18T00\:01\:19.521_rebin.fits`
+* `python -m aopp_deconv_tool.artifact_detection './example_data/ifu_observation_datasets/MUSE.2019-10-17T23:46:14.117_rebin.fits(1,2)'`
+* `python -m aopp_deconv_tool.artifact_detection ./example_data/ifu_observation_datasets/MUSE.2019-10-18T00\:01\:19.521_rebin.fits`
 
 ### Bad Pixel Mask <a id="bad-pixel-mask-script"></a> ###
 
@@ -444,7 +447,7 @@ Invoke via `python -m aopp_deconv_tool.create_bad_pixel_mask`.
 
 Accepts a `badness_map` heuteristic, uses a set of value cuts to produce a boolean mask (the `bad_pixel_mask`) that describes which pixels are considered "bad" and should be interpolated over using a different script.
 
-The `badness_map` is assumed to be a 3D cube, therefore the `bad_pixel_mask` is calculated from a set of (`index`,`value`) pairs. Where `index` is an index into the `badness_map`, and `value` is the value above which a pixel in the `badness_map` is considered "bad". Not all indices have to be specified, and values for unspecified indices will be interpolated (with the values clamped at the LHS and RHS). If no pairs are provided, a value of 4.5 is assumed for all indices.
+The `badness_map` is assumed to be a 3D cube, therefore the `bad_pixel_mask` is calculated from a set of (`index`,`value`) pairs. Where `index` is an index into the `badness_map`, and `value` is the value above which a pixel in the `badness_map` is considered "bad". Not all indices have to be specified, and values for unspecified indices will be interpolated (with the values clamped at the LHS and RHS). If no pairs are provided, a value of 3 is assumed for all indices. For each 1 above the cutoff value, a bad pixel is binary dilated. This way "very bad" pixels spread their "badness" to neighbouring pixels.
 
 To get a set of (`index`, `value`) pairs, the following workflow is suggested:
 
@@ -460,14 +463,14 @@ To get a set of (`index`, `value`) pairs, the following workflow is suggested:
   - Output fits file path. If not specified, it is same as the path to the input file with "_bpmask" appended to the filename.
 
 * `-x` or `--value_cut_at_index`
-  - A single pair of `index` `value` numbers. Can be specified multiple times so the value cut can vary with index. Unspecified indices will be interpolated from the given (`index`,`value`) pairs, and `value` is clamped at the lowest and highest `index`. If not present, 4.5 is assumed for all indices.
+  - A single pair of `index` `value` numbers. Can be specified multiple times so the value cut can vary with index. Unspecified indices will be interpolated from the given (`index`,`value`) pairs, and `value` is clamped at the lowest and highest `index`. If not present, 3 is assumed for all indices.
 
 #### Examples ####
 
 Using the results from the rebinning example:
 
-* `python -m aopp_deconv_tool.artifact-detection './example_data/ifu_observation_datasets/MUSE.2019-10-17T23:46:14.117_rebin_artifactmap.fits(1,2)'`
-* `python -m aopp_deconv_tool.artifact-detection ./example_data/ifu_observation_datasets/MUSE.2019-10-18T00\:01\:19.521_rebin_artifactmap.fits`
+* `python -m aopp_deconv_tool.create_bad_pixel_mask './example_data/ifu_observation_datasets/MUSE.2019-10-17T23:46:14.117_rebin_artifactmap.fits(1,2)'`
+* `python -m aopp_deconv_tool.create_bad_pixel_mask ./example_data/ifu_observation_datasets/MUSE.2019-10-18T00\:01\:19.521_rebin_artifactmap.fits`
 
 
 ### Interpolation <a id="interpolation-script"></a> ###
@@ -609,7 +612,7 @@ Fitting Methods:
 
 Using results from the normalisation example, fitting is performed via:
 
-* `python -m aopp_deconv_tool.psf_normalise './example_data/ifu_observation_datasets/MUSE.2019-10-17T23:46:14.117_rebin_interp_normalised.fits(1,2)'`
+* `python -m aopp_deconv_tool.fit_psf_model './example_data/ifu_observation_datasets/MUSE.2019-10-17T23:46:14.117_rebin_interp_normalised.fits(1,2)'`
 
 ### Deconvolution <a id="deconvolution-script"></a> ###
 
@@ -641,7 +644,7 @@ Upon iteration, the component map **may** be convolved with a gaussian to regula
 #### Module Arguments ####
 
 * `-o` or `--output_path`
-  - Output fits file path. If not specified, it is same as the path to the input file with "_normalised" appended to the filename.
+  - Output fits file path. If not specified, it is same as the path to the input file with "_deconv" appended to the filename.
 
 * `--plot`
   - If present, will show plots of the progress of the deconvolution
@@ -1130,6 +1133,74 @@ array([10, 16])
 
 ## APPENDIX: Scripts <a id="appendix:-scripts"></a> ##
 
+### Whole Process Bash Script <a id="whole-process-bash-script"></a>  ###
+
+Below is an example *bash* script for performing every step of the deconvolution process on an observation and standard star file
+
+```
+#!/usr/bin/env bash
+
+# Turn on "strict" mode
+set -o errexit -o nounset -o pipefail
+
+# NOTE: We just send the filenames, we rely on the defaults of the FITS Specifiers to handle extension and slice information for us
+
+# Get observation and standard star as 1st and 2nd argument to this script
+FITS_OBS=$1
+FITS_STD=$2
+
+
+# Create output filenames for each step of the process
+
+FITS_OBS_REBIN="${FITS_OBS%.fits}_rebin.fits"
+FITS_STD_REBIN="${FITS_STD%.fits}_rebin.fits"
+
+FITS_OBS_REBIN_ARTIFACT="${FITS_OBS%.fits}_rebin_artifactmap.fits"
+FITS_STD_REBIN_ARTIFACT="${FITS_STD%.fits}_rebin_artifactmap.fits"
+
+FITS_OBS_REBIN_ARTIFACT_BPMASK="${FITS_OBS%.fits}_rebin_artifactmap_bpmask.fits"
+FITS_STD_REBIN_ARTIFACT_BPMASK="${FITS_STD%.fits}_rebin_artifactmap_bpmask.fits"
+
+FITS_OBS_REBIN_INTERP="${FITS_OBS%.fits}_rebin_interp.fits"
+FITS_STD_REBIN_INTERP="${FITS_STD%.fits}_rebin_interp.fits"
+
+FITS_STD_REBIN_INTERP_NORM="${FITS_STD%.fits}_rebin_interp_normalised.fits"
+
+FITS_STD_REBIN_INTERP_NORM_MODEL="${FITS_STD%.fits}_rebin_interp_normalised_modelled.fits"
+
+FITS_OBS_REBIN_INTERP_DECONV="${FITS_OBS%.fits}_rebin_interp_deconv.fits"
+
+
+# Perform each stage in turn
+
+echo "Performin spectral rebinning"
+python -m aopp_deconv_tool.spectral_rebin ${FITS_OBS}
+python -m aopp_deconv_tool.spectral_rebin ${FITS_STD}
+
+echo "Performing artifact detection"
+python -m aopp_deconv_tool.artifact_detection "${FITS_OBS_REBIN}(1,2)"
+python -m aopp_deconv_tool.artifact_detection "${FITS_STD_REBIN}(1,2)"
+
+echo "Creating bad pixel mask"
+python -m aopp_deconv_tool.create_bad_pixel_mask "${FITS_OBS_REBIN_ARTIFACT}(1,2)"
+python -m aopp_deconv_tool.create_bad_pixel_mask "${FITS_STD_REBIN_ARTIFACT}(1,2)"
+
+echo "Interpolating at bad pixel mask"
+python -m aopp_deconv_tool.interpolate "${FITS_OBS_REBIN}(1,2)" "${FITS_OBS_REBIN_ARTIFACT_BPMASK}(1,2)"
+python -m aopp_deconv_tool.interpolate "${FITS_STD_REBIN}(1,2)" "${FITS_STD_REBIN_ARTIFACT_BPMASK}(1,2)"
+
+echo "Normalising PSF"
+python -m aopp_deconv_tool.psf_normalise "${FITS_STD_REBIN_INTERP}(1,2)"
+
+echo "Modelling PSF"
+python -m aopp_deconv_tool.fit_psf_model "${FITS_STD_REBIN_INTERP_NORM}(1,2)"
+
+echo "Performing deconvolution"
+python -m aopp_deconv_tool.deconvolve "${FITS_OBS_REBIN_INTERP}(1,2)" "${FITS_STD_REBIN_INTERP_NORM_MODEL}(1,2)"
+
+echo "Deconvolved file is ${FITS_OBS_REBIN_INTERP_DECONV}"
+
+```
 
 ### Linux Installation Bash Script <a id="linux-installation-bash-script"></a>  ###
 

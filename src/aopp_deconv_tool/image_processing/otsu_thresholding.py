@@ -33,6 +33,92 @@ def threshold(bin_edges, icv):
 	"""
 	return(bin_edges[np.nanargmax(icv)] if np.any(~np.isnan(icv)) else np.nan)
 
+def exact(data, max_elements=None) -> float:
+	"""
+	Returns a threshold that should be used as <= threshold
+	"""
+	#_lgr.debug(f'{data.size=} {data=}')
+	if max_elements is not None or max_elements >= data.size:
+		data = np.random.choice(data.flatten(), size=(max_elements,))
+	sorted_data = np.sort(data[~np.isnan(data)]).flatten() # [1,2,3,4,7,8,9]
+	#_lgr.debug(f'{sorted_data.size=} {sorted_data=}')
+	
+	count = np.cumsum(np.ones_like(sorted_data, dtype=int)) # [1,2,3,4,5,6,7]
+	#_lgr.debug(f'{count.size=} {count=}')
+	frac = count/count.size # [1/7,2/7,3/7,4/7,5/7,6/8,7/7]
+	
+	cum_sum = np.nancumsum(sorted_data) # [1,3,6,10,17,25,34]
+	
+	
+	
+	cum_mean = cum_sum/count # [1, 1.5, 2, 2+2/8, 3+2/5, 4+1/6, 4+6/7] 
+	rev_cum_sum = np.nancumsum(sorted_data[::-1])[::-1]
+	rev_cum_mean =  rev_cum_sum/count[::-1]
+	
+	#_lgr.debug(f'{cum_sum=}')
+	#_lgr.debug(f'{cum_mean=}')
+	#_lgr.debug(f'{rev_cum_sum=}')
+	#_lgr.debug(f'{rev_cum_mean=}')
+	
+	
+	cum_var = np.full_like(sorted_data, fill_value=np.nan, dtype=float)
+	rev_cum_var = np.full_like(sorted_data, fill_value=np.nan, dtype=float)
+	#_lgr.debug(f'{cum_var=}')
+	#_lgr.debug(f'{rev_cum_var=}')
+	
+	for i in range(1,sorted_data.size-1):
+		#_lgr.debug(f'{i=}')
+		#_lgr.debug(f'{(sorted_data[:i+1] - cum_mean[i+1])**2=}')
+		#_lgr.debug(f'{np.sum((sorted_data[:i+1] - cum_mean[i+1])**2)=}')
+		#_lgr.debug(f'{np.sum((sorted_data[:i+1] - cum_mean[i+1])**2)/count[i]=}')
+		cum_var[i] = np.sum((sorted_data[:i+1] - cum_mean[i+1])**2)/count[i]
+		
+		#_lgr.debug(f'{(sorted_data[i+1:] - rev_cum_mean[i+1])**2=}')
+		#_lgr.debug(f'{np.sum((sorted_data[i+1:] - rev_cum_mean[i+1])**2)=}')
+		#_lgr.debug(f'{np.sum((sorted_data[i+1:] - rev_cum_mean[i+1])**2)/(count.size-count[i])=}')
+		rev_cum_var[i] = np.sum((sorted_data[i+1:] - rev_cum_mean[i+1])**2)/(count.size-count[i])
+	
+	#_lgr.debug(f'{cum_var=}')
+	#_lgr.debug(f'{rev_cum_var=}')
+	
+	#plt.plot(cum_var)
+	#plt.plot(rev_cum_var)
+	#plt.show()
+	
+	
+	icv = frac*cum_var + frac[::-1]*rev_cum_var
+	
+	#plt.plot(icv)
+	#plt.show()
+	
+	min_icv_idx = np.nanargmin(icv)
+	#_lgr.debug(f'{min_icv_idx=}')
+	return sorted_data[min_icv_idx]
+
+
+def masks_from_thresholds(data, thresholds):
+	thresholds = np.sort(thresholds)
+	for i in range(0,len(thresholds)+1):
+		if i==0:
+			mask = data <= thresholds[i]
+		elif i == len(thresholds):
+			mask = data > thresholds[i-1]
+		else:
+			mask = (thresholds[i-1] < data) & (data <= thresholds[i])
+		yield mask
+
+def n_exact(data, n=1, max_elements=None):
+	"""
+	n is the number of thresholds we want to get out, to get n+1 thresholds, we must first get n thresholds, then
+	find thresholds for each n+1 classes
+	"""
+	dataset = (data,)
+	for i in range(n):
+		thresholds = tuple(exact(d, max_elements) for d in dataset)
+		dataset = (data[mask] for mask in masks_from_thresholds(data, thresholds))
+	return thresholds
+	
+
 
 def n_thresholds(data, n):
 	"""
