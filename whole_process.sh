@@ -6,12 +6,19 @@ set -o errexit -o nounset -o pipefail
 # NOTE: We just send the filenames, we rely on the defaults of the FITS Specifiers to handle extension and slice information for us
 
 # Get observation and standard star as 1st and 2nd argument to this script
-FITS_OBS=$1
-FITS_STD=$2
+FITS_OBS=${1}
+FITS_STD=${2}
 # Get slices, spectral axes, celestial axes as arguments 3,4,5
-SLICE=${3:+}
-SPECTRAL_AXES=${4:+(0)}
-CELESTIAL_AXES=${5:+(1,2)}
+SLICE=${3:-'[:]'}
+SPECTRAL_AXES=${4:-'(0)'}
+CELESTIAL_AXES=${5:-'(1,2)'}
+
+echo "FITS_OBS=${FITS_OBS}"
+echo "FITS_STD=${FITS_STD}"
+echo "SLICE=${SLICE}"
+echo "SPECTRAL_AXES=${SPECTRAL_AXES}"
+echo "CELESTIAL_AXES=${CELESTIAL_AXES}"
+
 
 # Create output filenames for each step of the process that mirror the default output filenames
 

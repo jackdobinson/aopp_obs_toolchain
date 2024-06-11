@@ -85,11 +85,19 @@ def run(
 		data_hdu = data_hdul[fits_spec.ext]
 		data = data_hdu.data
 		
+		# Allocate and set to all zeros
 		badness_map = np.zeros_like(data, dtype=float)
 
 		# Loop over the index range specified by `obs_fits_spec` and `psf_fits_spec`
 		for i, idx in enumerate(nph.slice.iter_indices(data, fits_spec.slices, fits_spec.axes['CELESTIAL'])):
 			_lgr.debug(f'{i=}')
+			
+			# Ignore data that is 99% or more NAN values
+			data_nan_frac = np.count_nonzero(np.isnan(data[idx]))/data[idx].size
+			_lgr.debug(f'{data_nan_frac=}')
+			if data_nan_frac > 0.99:
+				continue 
+			
 			data[idx] = algorithm.interpolate.quick_remove_nan_and_inf(data[idx])
 			#plt.imshow(data[idx])
 			#plt.show()
@@ -99,19 +107,7 @@ def run(
 				w_shape = kwargs['w_shape'],
 				grouping = {'mode':'elementary'}
 			)
-			
-			#counts, bin_edges = np.histogram(data[idx], bins=200, range=(np.nanmin(data[idx]), np.nanmax(data[idx])))
-			#icv = otsu_thresholding.calc(counts, bin_edges)
-			#z = otsu_thresholding.exact(np.array([1,2,3,4,7,8,9]))
-			#_lgr.debug(f'{z=}')
-			#sys.exit() # DEBUGGING
-			
-			# Ignore data that is 99% or more NAN values
-			if np.count_nonzero(np.isnan(data[idx]))/data[idx].size > 0.99:
-				continue 
-			
-			badness_map[idx] = np.zeros_like(data[idx])
-			
+						
 			# Perform artifact detection on "background", "midground" and "foreground" separately
 			thresholds = otsu_thresholding.n_exact(data[idx], 2, max_elements=10000)
 			

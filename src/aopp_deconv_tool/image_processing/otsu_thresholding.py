@@ -38,8 +38,11 @@ def exact(data, max_elements=None) -> float:
 	Returns a threshold that should be used as <= threshold
 	"""
 	#_lgr.debug(f'{data.size=} {data=}')
-	if max_elements is not None or max_elements >= data.size:
+	if max_elements is None or max_elements >= data.size:
+		pass
+	else:
 		data = np.random.choice(data.flatten(), size=(max_elements,))
+		
 	sorted_data = np.sort(data[~np.isnan(data)]).flatten() # [1,2,3,4,7,8,9]
 	#_lgr.debug(f'{sorted_data.size=} {sorted_data=}')
 	
