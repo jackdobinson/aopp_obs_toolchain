@@ -20,10 +20,24 @@ from aopp_deconv_tool.py_ssa import SSA
 import aopp_deconv_tool.cfg.logs
 _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
+def ssa_interpolate_at_mask(
+		data : np.ndarray[['NM'],float],
+		ssa : SSA,
+		mask : np.ndarray[['NM'], bool],
+		start : int = 0,
+		stop : int | None = None,
+	) -> np.ndarray[['NM'],float]:
+	
+	stop = ssa.X_ssa.shape[0]//4 if stop is None else stop
+	# Sum up ssa[start:stop], use it in place of masked region
+	
+	data[mask] = np.sum(ssa.X_ssa[start:stop])[mask]
+	return data
+	
+	
 
 
-
-def ssa_intepolate_at_mask(
+def ssa_deviation_intepolate_at_mask(
 		ssa : SSA,
 		mask : np.ndarray[['NM'],bool],
 		start : int | None = 0, 

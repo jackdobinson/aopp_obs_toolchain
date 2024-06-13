@@ -103,39 +103,6 @@ def run(
 			bad_pixel_mask[idx] |= data[idx] >= cv_value
 			#bp_mask = data[idx] >= cv_value
 			
-			plt.imshow(bad_pixel_mask[idx])
-			plt.show()
-			
-			
-			# Try doing some binary morphology operations
-			#bad_pixel_mask[idx] = sp.ndimage.binary_dilation(sp.ndimage.binary_erosion(bp_mask),iterations=2) | bp_mask
-			
-			"""
-			#QUESTION: Is there a way to use multiple wavelenghts to identify artifacts?
-			# INVESTIGATION: Look for transforms that may be useful
-			center = [s/2 for s in data[idx].shape]
-			center = [177,234]
-			d_from_center = (np.indices(data[idx].shape).T- np.array(center[::-1])).T
-			r_from_center = np.sqrt(np.sum(d_from_center**2, axis=0))
-			theta_from_center = np.arctan2(d_from_center[0],d_from_center[1])
-			bp_pos = np.array([r_from_center[bad_pixel_mask[idx]], theta_from_center[bad_pixel_mask[idx]]]).T
-			#bp_pos = (indices[bad_pixel_mask[idx]] - np.array(center))
-			_lgr.debug(f'{bp_pos.shape=}')
-			#_lgr.debug(f'{np.sqrt(np.sum(bp_pos**2,1)).shape=}')
-			#bp_pos = np.array([np.sqrt(np.sum(bp_pos**2,1)), np.arctan(bp_pos[:,0]/bp_pos[:,1])]).T
-			plt.figure()
-			plt.imshow(r_from_center)
-			plt.figure()
-			plt.imshow(theta_from_center)
-			plt.figure()
-			plt.imshow(bad_pixel_mask[idx])
-			plt.scatter(*center)
-			plt.figure()
-			plt.scatter(bp_pos[:,0], bp_pos[:,1], marker='.')
-			plt.show()
-			"""
-			
-			
 	
 	
 		hdr = data_hdu.header

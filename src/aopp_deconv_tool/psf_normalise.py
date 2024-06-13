@@ -52,6 +52,8 @@ def run(
 		data = data_hdu.data[fits_spec.slices]
 		hdr = data_hdu.header
 		
+		_lgr.info('Remove NANs and INFs')
+		data[np.isnan(data) | np.isinf(data)] = 0
 		
 		_lgr.info('Ensure data is of odd shape')
 		data = nph.array.ensure_odd_shape(data, axes)

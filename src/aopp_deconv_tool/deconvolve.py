@@ -178,11 +178,11 @@ def run(
 		deconv_residual = np.full_like(obs_data, np.nan)
 		
 		# Loop over the index range specified by `obs_fits_spec` and `psf_fits_spec`
-		for obs_idx, psf_idx in zip(
-			nph.slice.iter_indices(obs_data, obs_fits_spec.slices, obs_fits_spec.axes['CELESTIAL']),
-			nph.slice.iter_indices(psf_data, psf_fits_spec.slices, psf_fits_spec.axes['CELESTIAL'])
-		):
-		
+		for i, (obs_idx, psf_idx) in enumerate(zip(
+				nph.slice.iter_indices(obs_data, obs_fits_spec.slices, obs_fits_spec.axes['CELESTIAL']),
+				nph.slice.iter_indices(psf_data, psf_fits_spec.slices, psf_fits_spec.axes['CELESTIAL'])
+			)):
+			_lgr.debug(f'Operating on slice {i}')
 		
 			# Set up plotting if we want it
 			if plot:

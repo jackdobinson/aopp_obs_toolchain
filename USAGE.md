@@ -406,6 +406,8 @@ After both command are complete there should be two new files that contain their
 
 Invoke via `python -m aopp_deconv_tool.artifact_detection`.
 
+NOTE: The current implementataion of artifact detection is tuned for observations of objects of a significant fraction of the field size. Therefore it will not give good results for standard star observations.
+
 Accepts a FITS specifier, uses a singular spectrum analysis (SSA) based algorithm to produce a heuteristic `badness_map` that reflects how likely a pixel is to be part of an artifact.
 
 The badness map is calculated as follows for each 2D image in the FITS data:
@@ -500,6 +502,8 @@ This process removes hard edges and reduces edge effects in a similar way to a "
   - `scipy` (DEFAULT)
     + Uses scipy routines to interpolate over the bad pixels. Uses a convolution technique to assist with edge effect problems.
   - `ssa`
+    + [EXPERIMENTAL] Calculates singular spectrum analysis (SSA) components, and uses the first 25% of them to fill in masked regions.
+  - `ssa_deviation`
     + [EXPERIMENTAL] Interpolates over SSA components only where extreme values are present. Testing has shown this to give results more similar to the underlying test data than `scipy`, but is substantially slower and requires parameter fiddling to give any substantial improvement.
 
 #### Examples ####

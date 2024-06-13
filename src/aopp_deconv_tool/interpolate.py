@@ -29,7 +29,7 @@ import aopp_deconv_tool.scipy_helper as sph
 import aopp_deconv_tool.scipy_helper.interp
 import aopp_deconv_tool.scipy_helper.label_ops
 
-from aopp_deconv_tool.algorithm.interpolate.ssa_interp import ssa_intepolate_at_mask
+from aopp_deconv_tool.algorithm.interpolate.ssa_interp import ssa_intepolate_at_mask, ssa_deviations_interpolate_at_mask
 from aopp_deconv_tool.algorithm.bad_pixels.ssa_sum_prob import ssa2d_sum_prob_map
 
 from aopp_deconv_tool.py_ssa import SSA
@@ -40,10 +40,11 @@ import aopp_deconv_tool.cfg.logs
 _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
+def array_ssa_deviations_interpolate_at_mask(a : np.ndarray, mask : np.ndarray, **kwargs):
+	return ssa_deviations_interpolate_at_mask(SSA(a, **kwargs), mask)
+
 def array_ssa_interpolate_at_mask(a : np.ndarray, mask : np.ndarray, **kwargs):
-	return ssa_interpolate_at_mask(SSA(a, **kwargs), mask)
-
-
+	return ssa_interpolate_at_mask(a, SSA(a, **kwargs), mask)
 
 
 @dc.dataclass
@@ -58,8 +59,13 @@ interpolation_strategies = TaskStratSet('Performs interpolation upon an array at
 	),
 	InterpolationStratInfo(
 		'ssa',
-		'[EXPERIMENTAL] Uses interpolates over singular spectrum analysis (SSA) components, and uses them to fill in masked regions.',
+		'[EXPERIMENTAL] Calculates singular spectrum analysis (SSA) components, and uses the first 25% of them to fill in masked regions.',
 		functools.partial(array_ssa_interpolate_at_mask, w_shape=10, grouping = {'mode':'elementary'}),
+	),
+	InterpolationStratInfo(
+		'ssa_deviation',
+		'[EXPERIMENTAL] Within a masked region, replaces pixels of singular spectrum analysis (SSA) components with high deviations with median values, which are summed and replaced into the masked region on the original image.',
+		functools.partial(array_ssa_deviations_interpolate_at_mask, w_shape=10, grouping = {'mode':'elementary'}),
 	)
 )
 
@@ -77,7 +83,6 @@ def run(
 		output_path : Path,
 		interp_method : str = 'scipy',
 	):
-	
 	
 	
 	
@@ -183,7 +188,7 @@ def parse_args(argv):
 	parser.add_argument(
 		'bpmask_fits_spec',
 		help = '\n'.join((
-			f'FITS Specifier of the data to operate upon . See the end of the help message for more information',
+			f'FITS Specifier of the data to operate upon. See the end of the help message for more information',
 			f'required axes: {", ".join(DESIRED_FITS_AXES)}',
 		)),
 		type=str,
