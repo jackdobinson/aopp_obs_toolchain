@@ -37,7 +37,7 @@ def ssa_interpolate_at_mask(
 	
 
 
-def ssa_deviation_intepolate_at_mask(
+def ssa_deviations_interpolate_at_mask(
 		ssa : SSA,
 		mask : np.ndarray[['NM'],bool],
 		start : int | None = 0, 

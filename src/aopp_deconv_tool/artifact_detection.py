@@ -11,7 +11,12 @@ import numpy as np
 import scipy as sp
 from astropy.io import fits
 
+# TESTING
+import skimage as ski
+
 import matplotlib.pyplot as plt
+
+from aopp_deconv_tool.algorithm.artifact_detection import difference_of_scale_filters
 
 import aopp_deconv_tool.astropy_helper as aph
 import aopp_deconv_tool.astropy_helper.fits.specifier
@@ -62,6 +67,40 @@ def generate_masks_from_thresholds(data, thresholds):
 			mask = (thresholds[i-1] < data) & (data <= thresholds[i])
 		yield mask
 
+def to_unit_range(data):
+	offset = np.min(data)
+	range = np.max(data) - offset
+	return (data-offset)/range, offset, range
+
+def undo_unit_range(data, offset, range):
+	return (data * range) + offset
+
+def to_dtype_range(data, dtype=np.uint16):
+	final_range = np.iinfo(dtype).max
+	offset = np.min(data)
+	range = np.max(data) - offset
+	return ((data-offset)*(final_range/range)).astype(np.uint16), offset, range, final_range
+
+def undo_range(data, offset, range, final_range):
+	return (data.astype(float)/final_range)*range + offset
+
+def get_ski_filter(ski_filter, undo_scaling=True, dtype=np.uint16):
+	def new_filter(data, scale, *args, **kwargs):
+		if scale == 0:
+			return data
+		d, o, r, rr = to_dtype_range(data, dtype)
+		#plt.title('d')
+		#plt.imshow(d)
+		#plt.show()
+		z = ski_filter(d, np.ones((scale,scale)), *args, **kwargs)
+		#plt.title('z')
+		#plt.imshow(z)
+		#plt.show()
+		if undo_scaling:
+			z = undo_range(z, o, r, rr)
+		return z.astype(data.dtype)
+	return new_filter
+
 def run(
 		fits_spec,
 		output_path,
@@ -107,6 +146,48 @@ def run(
 				w_shape = kwargs['w_shape'],
 				grouping = {'mode':'elementary'}
 			)
+			
+			"""
+			j_count = 0
+			s1,s2 = (5,75)
+			plt.figure()
+			plt.imshow(np.sum(ssa.X_ssa[s1:s2],axis=0))
+			plt.figure()
+			plt.imshow(data[idx] - np.sum(ssa.X_ssa[s1:s2],axis=0))
+			plt.show()
+			for j in range(s1,s2):
+				_lgr.debug(f'{j=}')
+				j_count += 1
+				#badness_map[idx] += ssa.X_ssa[j]
+				#temp = data[idx]
+				temp = ssa.X_ssa[j]
+				#temp, toff, tr= to_unit_range(ssa.X_ssa[j])
+				
+				s = 2000
+				scale = 1
+				ski_filter = get_ski_filter(ski.filters.rank.median, undo_scaling=True, dtype=np.uint8)
+				#ski_filter = get_ski_filter(ski.filters.rank.entropy, undo_scaling=False, dtype=np.uint8)
+				#r = temp
+				#r = ski.filters.difference_of_gaussians(temp, 0, (scale+1)**2)
+				#r = temp - sp.ndimage.uniform_filter(temp, size=scale)
+				r = difference_of_scale_filters(temp, 0, scale, sp.ndimage.gaussian_filter)
+				#r = difference_of_scale_filters(temp, 0, scale, ski_filter)
+				#r = ski_filter(temp, scale)
+				r_mean = sp.ndimage.uniform_filter(r, size=s)
+				r_std = np.sqrt(sp.ndimage.uniform_filter((r - r_mean)**2, size=s))
+				z = (r-r_mean)/r_std
+				badness_map[idx] += z
+				
+				#plt.imshow(r)
+				#plt.show()
+				#break
+			#badness_map[idx] = np.fabs(badness_map[idx]/50)
+			badness_map[idx] = np.fabs(badness_map[idx]/j_count)
+			continue # TESTING
+			"""
+			
+			
+			
 						
 			# Perform artifact detection on "background", "midground" and "foreground" separately
 			thresholds = otsu_thresholding.n_exact(data[idx], 2, max_elements=10000)

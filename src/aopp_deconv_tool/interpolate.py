@@ -29,7 +29,7 @@ import aopp_deconv_tool.scipy_helper as sph
 import aopp_deconv_tool.scipy_helper.interp
 import aopp_deconv_tool.scipy_helper.label_ops
 
-from aopp_deconv_tool.algorithm.interpolate.ssa_interp import ssa_intepolate_at_mask, ssa_deviations_interpolate_at_mask
+from aopp_deconv_tool.algorithm.interpolate.ssa_interp import ssa_interpolate_at_mask, ssa_deviations_interpolate_at_mask
 from aopp_deconv_tool.algorithm.bad_pixels.ssa_sum_prob import ssa2d_sum_prob_map
 
 from aopp_deconv_tool.py_ssa import SSA
