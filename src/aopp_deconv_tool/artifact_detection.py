@@ -16,7 +16,7 @@ import skimage as ski
 
 import matplotlib.pyplot as plt
 
-from aopp_deconv_tool.algorithm.artifact_detection import difference_of_scale_filters
+from aopp_deconv_tool.algorithm.artifact_detection import difference_of_scale_filters, wavelet_decomposition
 
 import aopp_deconv_tool.astropy_helper as aph
 import aopp_deconv_tool.astropy_helper.fits.specifier
@@ -138,8 +138,50 @@ def run(
 				continue 
 			
 			data[idx] = algorithm.interpolate.quick_remove_nan_and_inf(data[idx])
-			#plt.imshow(data[idx])
-			#plt.show()
+			
+			"""
+			# Playing around with wavelet decomposition
+			#wavelet_planes = wavelet_decomposition(data[idx], 1, 7, lambda x,s: sp.ndimage.rank_filter(x,s//2,s), 1, True)
+			#wavelet_planes = wavelet_decomposition(data[idx], 1, None, sp.ndimage.maximum_filter, 1, True)
+			#wavelet_planes = wavelet_decomposition(data[idx], 1, None, sp.ndimage.minimum_filter, 1, True)
+			#wavelet_planes = wavelet_decomposition(data[idx], 1, 7, sp.ndimage.median_filter, 1, True)
+			#wavelet_planes = wavelet_decomposition(data[idx], 1, None, sp.ndimage.uniform_filter, 1, True)
+			wavelet_planes = wavelet_decomposition(data[idx], 0, None, sp.ndimage.gaussian_filter, 0, False)
+			
+			plt.clf()
+			f = plt.gcf()
+			f.suptitle('wavelets components')
+			n_wavelet_plots = wavelet_planes.shape[0]
+			n_plots = n_wavelet_plots + 2
+			nr = int(np.floor(np.sqrt(n_plots)))
+			nc = int(np.ceil(n_plots / nr))
+			ax = f.subplots(nr, nc).flatten()
+			for i in range(n_plots):
+				if i < n_wavelet_plots:
+					wp = wavelet_planes[i]
+					ax[i].set_title(f'wavelet component {i}\n[{np.nanmin(wp):06.2E}, {np.nanmax(wp):06.2E}]')
+					ax[i].imshow(wp)
+					ax[i].set_axis_off()
+				elif i == n_wavelet_plots + 0:
+					wp = np.sum(wavelet_planes, axis=0)
+					ax[i].set_title(f'sum\n[{np.nanmin(wp):06.2E}, {np.nanmax(wp):06.2E}]')
+					ax[i].imshow(wp)
+					ax[i].set_axis_off()
+				elif i == n_wavelet_plots + 1:
+					wp = data[idx] - np.sum(wavelet_planes, axis=0)
+					ax[i].set_title(f'data - sum\n[{np.nanmin(wp):06.2E}, {np.nanmax(wp):06.2E}]')
+					ax[i].imshow(wp)
+					ax[i].set_axis_off()
+				# elif i == n_wavelet_plots + 2:
+				# 	wp = np.std(wavelet_planes, axis=(1,2))
+				# 	ax[i].set_title(f'sum over wavelet components')
+				# 	ax[i].plot(wp)
+				# 	ax[i].set_xlabel('wavelet component')
+				# 	ax[i].set_yscale('log')
+				else:
+					raise RuntimeError('This should never happen')
+			plt.show()
+			"""
 			
 			ssa = SSA(
 				data[idx],
