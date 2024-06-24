@@ -139,14 +139,32 @@ def run(
 			
 			data[idx] = algorithm.interpolate.quick_remove_nan_and_inf(data[idx])
 			
+			
+			ssa = SSA(
+				data[idx],
+				w_shape = kwargs['w_shape'],
+				grouping = {'mode':'elementary'}
+				#grouping = {'mode':'similar_eigenvalues', 'tolerance' : 2E-1}
+			)
+			
+			# TESTING
+			#ssa.plot_ssa([0,1,2,3])
+			#ssa.plot_component_slices([(0,5),(5,10),(10,20),(20,25),(25,45),(45,65),(65,75),(75,80),(80,85),(85,90),(90,95),(95,None)])
+			#plt.savefig('uranus_ssa_test.png')
+			#plt.show()
+			#sys.exit()
+			
+			
 			"""
 			# Playing around with wavelet decomposition
-			#wavelet_planes = wavelet_decomposition(data[idx], 1, 7, lambda x,s: sp.ndimage.rank_filter(x,s//2,s), 1, True)
-			#wavelet_planes = wavelet_decomposition(data[idx], 1, None, sp.ndimage.maximum_filter, 1, True)
-			#wavelet_planes = wavelet_decomposition(data[idx], 1, None, sp.ndimage.minimum_filter, 1, True)
-			#wavelet_planes = wavelet_decomposition(data[idx], 1, 7, sp.ndimage.median_filter, 1, True)
-			#wavelet_planes = wavelet_decomposition(data[idx], 1, None, sp.ndimage.uniform_filter, 1, True)
-			wavelet_planes = wavelet_decomposition(data[idx], 0, None, sp.ndimage.gaussian_filter, 0, False)
+			#w_data = data[idx]
+			w_data = ssa2d_deviations(ssa, 25,100)
+			wavelet_planes = wavelet_decomposition(w_data, 0, None, sp.ndimage.gaussian_filter, 0, False)
+			#wavelet_planes = wavelet_decomposition(w_data, 1, 7, lambda x,s: sp.ndimage.rank_filter(x,s//2,s), 1, True)
+			#wavelet_planes = wavelet_decomposition(w_data, 1, None, sp.ndimage.maximum_filter, 1, True)
+			#wavelet_planes = wavelet_decomposition(w_data, 1, None, sp.ndimage.minimum_filter, 1, True)
+			#wavelet_planes = wavelet_decomposition(w_data, 1, 4, sp.ndimage.median_filter, 1, True)
+			#wavelet_planes = wavelet_decomposition(w_data, 1, None, sp.ndimage.uniform_filter, 1, True)
 			
 			plt.clf()
 			f = plt.gcf()
@@ -168,7 +186,7 @@ def run(
 					ax[i].imshow(wp)
 					ax[i].set_axis_off()
 				elif i == n_wavelet_plots + 1:
-					wp = data[idx] - np.sum(wavelet_planes, axis=0)
+					wp = w_data - np.sum(wavelet_planes, axis=0)
 					ax[i].set_title(f'data - sum\n[{np.nanmin(wp):06.2E}, {np.nanmax(wp):06.2E}]')
 					ax[i].imshow(wp)
 					ax[i].set_axis_off()
@@ -183,11 +201,8 @@ def run(
 			plt.show()
 			"""
 			
-			ssa = SSA(
-				data[idx],
-				w_shape = kwargs['w_shape'],
-				grouping = {'mode':'elementary'}
-			)
+			
+			
 			
 			"""
 			j_count = 0

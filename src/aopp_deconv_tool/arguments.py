@@ -2,6 +2,7 @@
 import sys, os
 import dataclasses as dc
 import re
+import typing
 from typing import Any, Type
 import argparse
 
@@ -13,6 +14,19 @@ class DataclassArgFormatter (argparse.RawTextHelpFormatter):#, argparse.MetavarT
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
+class TypeConverterFactory:
+	def __init__(self, type : Type):
+		self.type = type
+		self.meta_type = typing.get_origin(type)
+		self.types = typing.get_args(type)
+	
+	def __call__(self, astring : str):
+		if self.meta_type is None:
+			return self.type(astring)
+		else:
+			for atype in self.types:
+				return atype(astring)
+		raise RuntimeError(f"Cannot convert '{astring}' to any of the supported types for {self.type}")
 
 def parse_args_of_dataclass(
 		dataclass     : Type, 
@@ -56,7 +70,7 @@ def parse_args_of_dataclass(
 	# Get correct format string so colons line up when metadata is printed
 	metadata_fmt = '{:<'+str(max_metadata_key_size)+'} : {}'
 	
-	
+	negative_bool_flag_args = []
 	for field in dc.fields(dataclass):
 		if field.init != True: # only include parameters that are passed to init
 			continue
@@ -74,19 +88,48 @@ def parse_args_of_dataclass(
 			combine_strings_of_same_indent_level = False
 		)
 		
-		parser.add_argument(
-			'--'+field.name, 
-			type=field.type, 
-			default= field_default,
-			help= field_help_string,
-			metavar=str(field.type)[8:-2]
-		)
+		field_type_string = str(field.type)
+		if field_type_string.startswith("<class '") and field_type_string.endswith("'>"):
+			field_type_string = field_type_string[8:-2]
+		elif field_type_string.startswith("typing.Optional[") and field_type_string.endswith(']'):
+			field_type_string = 'None | ' + field_type_string[16:-1]
+		else:
+			field_type_string = 'UNKNOWN TYPE'
+		
+		
+		if field.type is bool:
+			arg_string = field.name
+			if field_default is True:
+				arg_string = 'no_'+field.name
+				negative_bool_flag_args.append(arg_string)
+				
+			parser.add_argument(
+				'--'+arg_string,
+				#type=field.type, 
+				action = 'store_true' if field_default is False else 'store_false',
+				help= field_help_string,
+				#metavar=str(field.type)[8:-2]
+			)
+		else:
+			print(f'{field.name=} {field.type=}')
+			parser.add_argument(
+				'--'+field.name, 
+				type=TypeConverterFactory(field.type), 
+				default= field_default,
+				help= field_help_string,
+				metavar=field_type_string
+			)
 	
 	
-	args = parser.parse_args(argv)
+	args = vars(parser.parse_args(argv))
 	
 	if show_help:
 		parser.print_help()
 		sys.exit()
 	
-	return vars(args)
+	# Remove the "no_" prefix from negative boolean flags
+	for k in negative_bool_flag_args:
+		args[k[3:]] = args[k]
+		del args[k]
+	
+	return args

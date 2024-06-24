@@ -142,20 +142,22 @@ class LucyRichardson(Base):
 			self._cf[self._residual < threshold_value] = 1
 
 		# once these get large the result becomes unstable, clip the upper bound if desired
-		if (self.cf_uclip != np.inf) and np.any(self._cf > self.cf_uclip): 
+		if (self.cf_uclip != np.inf):
 			self._cf[self._cf>self.cf_uclip] = self.cf_uclip
 		
 		# anything close to zero can just be zero, clip the lower bound if desired
-		if (self.cf_lclip != -np.inf) and np.any(self._cf < self.cf_lclip):
+		if (self.cf_lclip != -np.inf):
 			self._cf[self.cf<self.cf_lclip] = 0
 			
 		# we probably shouldn't even have -ve correction factors, turn them into a close-to-zero factor instead
-		if (self.cf_negative_fix and np.any(self._cf < 0)):
+		
+		if self.cf_negative_fix:
 			cf_negative = self._cf < 0
-			cf_positive = self._cf > 0
-			if not np.any(cf_positive):
-				raise ValueError('All correction factors in Lucy-Richardson deconvolution have become negative, exiting...')
-			self._cf[cf_negative] = np.min(self._cf[cf_positive])*np.exp(self._cf[cf_negative])
+			if np.any(cf_negative):
+				cf_positive = self._cf > 0
+				if not np.any(cf_positive):
+					raise ValueError('All correction factors in Lucy-Richardson deconvolution have become negative, exiting...')
+				self._cf[cf_negative] = np.min(self._cf[cf_positive])*np.exp(self._cf[cf_negative])
 		
 		self._components *= self._cf
 		self._components[self._out_of_bounds_mask] = self._offset

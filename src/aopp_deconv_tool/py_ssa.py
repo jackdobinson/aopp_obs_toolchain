@@ -479,7 +479,7 @@ class SSA:
 			ax=next(ax_iter)
 			ax.set_title(f'i = {i} eigenval = {self.s[i,i]:07.2E}')
 			plot_helper.remove_axes_ticks_and_labels(ax)
-			ax.imshow(np.reshape(self.u[i,:],(self.lx,self.ly)).T)
+			ax.imshow(np.reshape(self.u[i,:],self.l).T)
 		return
 	
 	def plot_factorvectors(self, n_max=None):
@@ -496,7 +496,7 @@ class SSA:
 			ax=next(ax_iter)
 			ax.set_title(f'j = {j}')
 			plot_helper.remove_axes_ticks_and_labels(ax)
-			ax.imshow(flip_ravel(np.reshape(self.v_star[j,:],(self.kx,self.ky)).T))
+			ax.imshow(flip_ravel(np.reshape(self.v_star[j,:],self.k).T))
 			
 	def plot_trajectory_decomp(self, n_max=None):
 		"""
@@ -531,7 +531,49 @@ class SSA:
 			plot_helper.remove_axes_ticks_and_labels(ax)
 			ax.imshow(self.X_g[i], origin='lower', aspect='auto')
 		return
+	
+	def plot_components(self, n_max=None):
+		"""
+		Plots grouped decomposed trajectory matrix of SSA
+		"""
+		# plot elements of X_ssa
+		n_set = list(range(n)) if type(n_max) is int else n_max
+		n_set = list(range(self.X_ssa.shape[0])) if n_max is None else n_max
+		n_set = [x if x < self.X_ssa.shape[0] else self.X_ssa.shape[0]-1 for x in n_set]
 		
+		n_max = len(n_max) if type(n_max) is not int else n_max
+		
+		n = min(self.X_ssa.shape[0], n_max if n_max is not None else self.X_ssa.shape[0])
+		f1, a1 = plot_helper.figure_n_subplots(n)
+		a1 = a1.ravel()
+		f1.suptitle(f'Components X_ssa: {n} of {self.X_ssa.shape[0]}')
+		ax_iter=iter(a1)
+		for i in n_set:
+			ax = next(ax_iter)
+			plot_helper.remove_axes_ticks_and_labels(ax)
+			ax.imshow(np.fabs(self.X_ssa[i]), origin='lower', aspect='equal')
+			ax.set_title(f'i = {i}', y=1.0)
+		return
+	
+	def plot_component_slices(self, slice_tuples : list[tuple[int,int]]):
+		"""
+		Plots grouped decomposed trajectory matrix of SSA
+		"""
+		# plot elements of X_ssa
+		n_max = len(slice_tuples)
+		
+		n = min(self.X_ssa.shape[0], n_max if n_max is not None else self.X_ssa.shape[0])
+		f1, a1 = plot_helper.figure_n_subplots(n)
+		a1 = a1.ravel()
+		f1.suptitle(f'Components X_ssa: {n} of {self.X_ssa.shape[0]}')
+		ax_iter=iter(a1)
+		for i, (x,y) in enumerate(slice_tuples):
+			ax = next(ax_iter)
+			plot_helper.remove_axes_ticks_and_labels(ax)
+			ax.imshow(np.sum(self.X_ssa[x:y],axis=0), origin='lower', aspect='equal')
+			ax.set_title(f'i = {i} [{x}:{y}]', y=1.0)
+		return
+	
 	def plot_ssa(self, n=4, noise_estimate=None):
 		"""
 		Plots an overview of the SSA results
@@ -573,7 +615,7 @@ class SSA:
 		mpl.rcParams['lines.markersize'] = 2
 		
 		gridspec = mpl.gridspec.GridSpec(4,1)
-		fig = plt.gcf()
+		fig = plt.figure()
 		fig.set(figwidth=12, figheight=8)
 		
 		

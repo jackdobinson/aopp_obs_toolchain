@@ -199,6 +199,8 @@ def max_frac_diff_threshold(data, n_max=10):
 			data, 
 			bins=np.linspace(np.nanmin(data), np.nanmax(data), int(np.sqrt(n_valid_px)))
 		)
+		if bin_edges.size==0:
+			break
 		icv = calc(counts, bin_edges)
 		ots[i] = threshold(bin_edges, icv) if icv.size>2 else np.nan
 		data[data<ots[i]] = np.nan

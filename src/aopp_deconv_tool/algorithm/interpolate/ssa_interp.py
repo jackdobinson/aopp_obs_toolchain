@@ -29,9 +29,10 @@ def ssa_interpolate_at_mask(
 	) -> np.ndarray[['NM'],float]:
 	
 	stop = ssa.X_ssa.shape[0]//4 if stop is None else stop
+	#stop = 1
 	# Sum up ssa[start:stop], use it in place of masked region
 	
-	data[mask] = np.sum(ssa.X_ssa[start:stop])[mask]
+	data[mask] = np.sum(ssa.X_ssa[start:stop], axis=0)[mask]
 	return data
 	
 	

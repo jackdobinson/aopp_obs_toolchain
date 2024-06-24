@@ -39,7 +39,7 @@ deconv_methods = {
 	'lucy_richardson' : LucyRichardson
 }
 
-def create_plot_set(deconvolver, cadence = 10):
+def create_plot_set(deconvolver, cadence = 1):
 	fig, axes = plot_helper.figure_n_subplots(8)
 	axes_iter = iter(axes)
 	a7_2 = axes[7].twinx()
@@ -183,6 +183,28 @@ def run(
 				nph.slice.iter_indices(psf_data, psf_fits_spec.slices, psf_fits_spec.axes['CELESTIAL'])
 			)):
 			_lgr.debug(f'Operating on slice {i}')
+			
+			"""
+			# Playing with wiener filter deconvolution
+			import scipy as sp
+			from skimage import restoration
+			import scipy.signal
+			mask = np.zeros_like(psf_data[psf_idx], dtype=bool)
+			mask[tuple(slice(s//4,3*s//4) for s in mask.shape)] = 1
+			noise_var = 1E6
+			_lgr.debug(f'{noise_var=}')
+			wiener_filtered_data = restoration.wiener(obs_data[obs_idx], psf_data[psf_idx], 1E-2, clip=False)
+			reconvolve =  sp.signal.fftconvolve(wiener_filtered_data, psf_data[psf_idx], mode='same')
+			plt.clf()
+			f = plt.gcf()
+			ax = f.subplots(2,2).flatten()
+			ax[0].imshow(obs_data[obs_idx])
+			ax[1].imshow(wiener_filtered_data)
+			ax[2].imshow(reconvolve)
+			ax[3].imshow(obs_data[obs_idx] -reconvolve)
+			plt.show()
+			sys.exit()
+			"""
 		
 			# Set up plotting if we want it
 			if plot:
