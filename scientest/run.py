@@ -273,6 +273,9 @@ def main(
 	for full_module_name, test_data in test_discovery_data.items():
 		print(f'    module "{full_module_name}" contains tests:')
 		for tid, td in test_data.items():
+			if tid=='error':
+				print(f'        {td}')
+				continue
 			print(f'        {td["name"]}')
 	
 	

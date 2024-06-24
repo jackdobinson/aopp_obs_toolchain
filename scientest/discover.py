@@ -114,12 +114,14 @@ def discover_tests(
 					
 					test_discovery_data[module_locator.full_name][tid] = {'callable':test_member_callable,'name':test_name}
 			except ModuleNotFoundError as e:
-				_lgr.error(f'Could not load module "{module_locator.full_name}", skipping all tests in this module')
+				test_discovery_data[module_locator.full_name]['error'] = f'ERROR: Could not load module "{module_locator.full_name}", skipping all tests in this module'
 
 
 	# process scientest_attributes on tests
 	for module_name, module_tests in test_discovery_data.items():
 		for test_id, test in module_tests.items():
+			if test_id == 'error':
+				continue
 			for key, value in getattr(test['callable'], 'scientest_attributes', {}).items():
 				match key:
 					case 'debug':
