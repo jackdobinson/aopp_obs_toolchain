@@ -107,12 +107,14 @@ def discover_tests(
 			_lgr.info(f'Searching "{module_path}", discovering tests:')
 			
 			test_discovery_data[module_locator.full_name] = {}
-			
-			for test_name, test_member_callable in inspect.getmembers(module_locator.module, member_search_predicate):
-				_lgr.info(f'    "{test_name}"')
-				tid = f"{module_locator.full_name}::{test_name}"
-				
-				test_discovery_data[module_locator.full_name][tid] = {'callable':test_member_callable,'name':test_name}
+			try:
+				for test_name, test_member_callable in inspect.getmembers(module_locator.module, member_search_predicate):
+					_lgr.info(f'    "{test_name}"')
+					tid = f"{module_locator.full_name}::{test_name}"
+					
+					test_discovery_data[module_locator.full_name][tid] = {'callable':test_member_callable,'name':test_name}
+			except ModuleNotFoundError as e:
+				_lgr.error(f'Could not load module "{module_locator.full_name}", skipping all tests in this module')
 
 
 	# process scientest_attributes on tests

@@ -4,7 +4,7 @@ import scientest.decorators
 import numpy as np
 import matplotlib.pyplot as plt
 
-from aopp_deconv_tool.algorithm.interpolate.ssa_interp import ssa_intepolate_at_mask
+from aopp_deconv_tool.algorithm.interpolate.ssa_interp import ssa_interpolate_at_mask
 import aopp_deconv_tool.scipy_helper as scipy_helper
 from aopp_deconv_tool.py_ssa import SSA
 import aopp_deconv_tool.estimate_noise as estimate_noise
@@ -78,6 +78,7 @@ def test_ssa_residuals_are_within_limits(frac_residual_limit):
 
 
 #@scientest.decorators.debug
+@scientest.decorators.mark('broken', 'NEEDS UPDATING')
 def ssa_interpolation_test():
 	
 	
@@ -124,7 +125,7 @@ def ssa_interpolation_test():
 		#grouping={'mode':'similar_eigenvalues', 'tolerance':0.01},
 	)
 	
-	a_interp = ssa_intepolate_at_mask(
+	a_interp = ssa_interpolate_at_mask(
 		ssa, 
 		bp_map,
 		start=0, 

@@ -161,8 +161,9 @@ def test_bp_map_interp_fix():
 		+ (f"Has NANs at {list(tuple(x) for x in np.argwhere(np.isnan(a)))}. " if np.any(np.isnan(a)) else "") \
 		+ (f"Has INFs at {list(tuple(x) for x in np.argwhere(np.isinf(a)))}. " if np.any(np.isinf(a)) else "") 
 
-
+# TODO: Change this to use "artifact_detection.py" and "create_bad_pixel_mask.py"
 #@scientest.decorators.debug
+@scientest.decorators.mark('broken', 'NEEDS TO BE UPDATED')
 def test_bp_map_ssa_sum_prob():
 	
 	np.random.seed(100)

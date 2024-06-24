@@ -1,4 +1,5 @@
 
+# TODO: Alter this to work with "fits_psf_model.py::run()"
 
 
 
@@ -14,7 +15,6 @@ import aopp_deconv_tool.psf_model as psf_model
 
 import aopp_deconv_tool.cfg.logs
 _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
-
 
 
 def test_psf_model_produces_plots():
