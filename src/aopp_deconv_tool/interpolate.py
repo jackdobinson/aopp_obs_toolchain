@@ -22,7 +22,7 @@ import aopp_deconv_tool.astropy_helper.fits.header
 import aopp_deconv_tool.numpy_helper as nph
 import aopp_deconv_tool.numpy_helper.axes
 import aopp_deconv_tool.numpy_helper.slice
-
+from aopp_deconv_tool.fpath import FPath
 import aopp_deconv_tool.numpy_helper.array.grid
 
 import aopp_deconv_tool.scipy_helper as sph
@@ -195,7 +195,23 @@ def parse_args(argv):
 		metavar='FITS Specifier',
 	)
 	
-	parser.add_argument('-o', '--output_path', help=f'Output fits file path. By default is same as the `data_fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
+	#parser.add_argument('-o', '--output_path', help=f'Output fits file path. By default is same as the `data_fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
+	parser.add_argument(
+		'-o', 
+		'--output_path', 
+		type=FPath,
+		metavar='str',
+		default='{parent}/{stem}{tag}{suffix}',
+		help = '\n    '.join((
+			f'Output fits file path, supports keyword substitution using parts of `data_fits_spec` path where:',
+			'{parent}: containing folder',
+			'{stem}  : filename (not including final extension)',
+			f'{{tag}}   : script specific tag, "{DEFAULT_OUTPUT_TAG}" in this case',
+			'{suffix}: final extension (everything after the last ".")',
+			'\b'
+		))
+	)
+	
 	parser.add_argument('--interp_method', choices=interpolation_strategies.names, default=interpolation_strategies.names[0], help=interpolation_strategies.format_description())
 
 
@@ -204,9 +220,16 @@ def parse_args(argv):
 	args.data_fits_spec = aph.fits.specifier.parse(args.data_fits_spec, DESIRED_FITS_AXES)
 	args.bpmask_fits_spec = aph.fits.specifier.parse(args.bpmask_fits_spec, DESIRED_FITS_AXES)
 	
-	if args.output_path is None:
-		fpath = Path(args.data_fits_spec.path)
-		args.output_path =  (fpath.parent / (str(fpath.stem)+DEFAULT_OUTPUT_TAG+str(fpath.suffix)))
+	#if args.output_path is None:
+	#	fpath = Path(args.data_fits_spec.path)
+	#	args.output_path =  (fpath.parent / (str(fpath.stem)+DEFAULT_OUTPUT_TAG+str(fpath.suffix)))
+	other_file_path = Path(args.data_fits_spec.path)
+	args.output_path = args.output_path.with_fields(
+		tag=DEFAULT_OUTPUT_TAG, 
+		parent=other_file_path.parent, 
+		stem=other_file_path.stem, 
+		suffix=other_file_path.suffix
+	)
 	
 	return args
 

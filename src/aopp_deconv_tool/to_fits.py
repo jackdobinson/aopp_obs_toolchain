@@ -22,6 +22,7 @@ import numpy as np
 
 import aopp_deconv_tool.astropy_helper as aph
 import aopp_deconv_tool.astropy_helper.fits.header
+from aopp_deconv_tool.fpath import FPath
 
 import aopp_deconv_tool.cfg.logs
 _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
@@ -30,7 +31,7 @@ _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 DataBundle = namedtuple('DataBundle', ('data', 'header'))
 
 re_dashed_line = re.compile(r'\n-+\n') # lines just consisting of "-" characters
-re_comma_space = re.compile(r',\s') # lines just consisting of "-" characters
+re_comma_space = re.compile(r',\s') # comma then a space
 
 def get_supported_formats():
 	ss = io.StringIO()
