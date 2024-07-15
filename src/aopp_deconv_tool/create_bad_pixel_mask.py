@@ -171,7 +171,22 @@ def parse_args(argv):
 		type=str,
 		metavar='FITS Specifier',
 	)
-	parser.add_argument('-o', '--output_path', help=f'Output fits file path. By default is same as the `fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
+	#parser.add_argument('-o', '--output_path', help=f'Output fits file path. By default is same as the `fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
+	parser.add_argument(
+		'-o', 
+		'--output_path', 
+		type=FPath,
+		metavar='str',
+		default='{parent}/{stem}{tag}{suffix}',
+		help = '\n    '.join((
+			f'Output fits file path, supports keyword substitution using parts of `fits_spec` path where:',
+			'{parent}: containing folder',
+			'{stem}  : filename (not including final extension)',
+			f'{{tag}}   : script specific tag, "{DEFAULT_OUTPUT_TAG}" in this case',
+			'{suffix}: final extension (everything after the last ".")',
+			'\b'
+		))
+	)
 	
 	parser.add_argument('-x', '--value_cut_at_index', metavar='int float', type=float, nargs=2, action='append', default=[], help='[index, value] pair, for a 3D badness map `index` will be cut at `value`. Specify multiple times for multiple indices. The `value` for non-specified indices is interpolated with "extend" boundary conditions.')
 	
@@ -179,8 +194,15 @@ def parse_args(argv):
 	
 	args.fits_spec = aph.fits.specifier.parse(args.fits_spec, DESIRED_FITS_AXES)
 	
-	if args.output_path is None:
-		args.output_path =  (Path(args.fits_spec.path).parent / (str(Path(args.fits_spec.path).stem)+DEFAULT_OUTPUT_TAG+str(Path(args.fits_spec.path).suffix)))
+	#if args.output_path is None:
+	#	args.output_path =  (Path(args.fits_spec.path).parent / (str(Path(args.fits_spec.path).stem)+DEFAULT_OUTPUT_TAG+str(Path(args.fits_spec.path).suffix)))
+	other_file_path = Path(args.fits_spec.path)
+	args.output_path = args.output_path.with_fields(
+		tag=DEFAULT_OUTPUT_TAG, 
+		parent=other_file_path.parent, 
+		stem=other_file_path.stem, 
+		suffix=other_file_path.suffix
+	)
 	
 	if len(args.value_cut_at_index) == 0:
 		args.value_cut_at_index = [[0,3]]

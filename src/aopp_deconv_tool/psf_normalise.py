@@ -211,7 +211,22 @@ def parse_args(argv):
 		metavar='FITS Specifier',
 	)
 	
-	parser.add_argument('-o', '--output_path', help=f'Output fits file path. By default is same as fie `fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
+	#parser.add_argument('-o', '--output_path', help=f'Output fits file path. By default is same as fie `fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
+	parser.add_argument(
+		'-o', 
+		'--output_path', 
+		type=FPath,
+		metavar='str',
+		default='{parent}/{stem}{tag}{suffix}',
+		help = '\n    '.join((
+			f'Output fits file path, supports keyword substitution using parts of `fits_spec` path where:',
+			'{parent}: containing folder',
+			'{stem}  : filename (not including final extension)',
+			f'{{tag}}   : script specific tag, "{DEFAULT_OUTPUT_TAG}" in this case',
+			'{suffix}: final extension (everything after the last ".")',
+			'\b'
+		))
+	)
 	
 	parser.add_argument('--threshold', type=float, default=1E-2, help='When finding region of interest, only values larger than this fraction of the maximum value are included.')
 	parser.add_argument('--n_largest_regions', type=int, default=1, help="""
@@ -232,8 +247,15 @@ def parse_args(argv):
 	
 	args.fits_spec = aph.fits.specifier.parse(args.fits_spec, DESIRED_FITS_AXES)
 	
-	if args.output_path is None:
-		args.output_path =  (Path(args.fits_spec.path).parent / (str(Path(args.fits_spec.path).stem)+DEFAULT_OUTPUT_TAG+str(Path(args.fits_spec.path).suffix)))
+	#if args.output_path is None:
+	#	args.output_path =  (Path(args.fits_spec.path).parent / (str(Path(args.fits_spec.path).stem)+DEFAULT_OUTPUT_TAG+str(Path(args.fits_spec.path).suffix)))
+	other_file_path = Path(args.fits_spec.path)
+	args.output_path = args.output_path.with_fields(
+		tag=DEFAULT_OUTPUT_TAG, 
+		parent=other_file_path.parent, 
+		stem=other_file_path.stem, 
+		suffix=other_file_path.suffix
+	)
 	
 	if args.background_noise_model == 'none':
 		args.background_noise_model = None

@@ -350,7 +350,22 @@ def parse_args(argv):
 		metavar='FITS Specifier',
 	)
 	
-	parser.add_argument('-o', '--output_path', type=str, help=f'Output fits file path. If None, is same as the `fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
+	#parser.add_argument('-o', '--output_path', type=str, help=f'Output fits file path. If None, is same as the `fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
+	parser.add_argument(
+		'-o', 
+		'--output_path', 
+		type=FPath,
+		metavar='str',
+		default='{parent}/{stem}{tag}{suffix}',
+		help = '\n    '.join((
+			f'Output fits file path, supports keyword substitution using parts of `fits_spec` path where:',
+			'{parent}: containing folder',
+			'{stem}  : filename (not including final extension)',
+			f'{{tag}}   : script specific tag, "{DEFAULT_OUTPUT_TAG}" in this case',
+			'{suffix}: final extension (everything after the last ".")',
+			'\b'
+		))
+	)
 	
 	parser.add_argument('--fit_result_dir', type=str, default=None, help='Directory to store results of PSF fit in. Will create a sub-directory below the given path. If None, will create a sibling folder to the output file (i.e. output file parent directory is used).')
 
@@ -364,9 +379,15 @@ def parse_args(argv):
 	
 	args.fits_spec = aph.fits.specifier.parse(args.fits_spec, DESIRED_FITS_AXES)
 	
-	if args.output_path is None:
-		args.output_path =  (Path(args.fits_spec.path).parent / (str(Path(args.fits_spec.path).stem)+DEFAULT_OUTPUT_TAG+f'_{args.model}'+str(Path(args.fits_spec.path).suffix)))
-	
+	#if args.output_path is None:
+	#	args.output_path =  (Path(args.fits_spec.path).parent / (str(Path(args.fits_spec.path).stem)+DEFAULT_OUTPUT_TAG+f'_{args.model}'+str(Path(args.fits_spec.path).suffix)))
+	other_file_path = Path(args.fits_spec.path)
+	args.output_path = args.output_path.with_fields(
+		tag=DEFAULT_OUTPUT_TAG, 
+		parent=other_file_path.parent, 
+		stem=other_file_path.stem, 
+		suffix=other_file_path.suffix
+	)
 	
 	set_psf_model_dependency_injector(args.model, args.fits_spec)
 	

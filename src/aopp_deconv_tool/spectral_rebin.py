@@ -476,7 +476,22 @@ def parse_args(argv):
 		type=str,
 		metavar='FITS Specifier',
 	)
-	parser.add_argument('-o', '--output_path', help=f'Output fits file path. By default is same as the `fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
+	#parser.add_argument('-o', '--output_path', help=f'Output fits file path. By default is same as the `fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
+	parser.add_argument(
+		'-o', 
+		'--output_path', 
+		type=FPath,
+		metavar='str',
+		default='{parent}/{stem}{tag}{suffix}',
+		help = '\n    '.join((
+			f'Output fits file path, supports keyword substitution using parts of `fits_spec` path where:',
+			'{parent}: containing folder',
+			'{stem}  : filename (not including final extension)',
+			f'{{tag}}   : script specific tag, "{DEFAULT_OUTPUT_TAG}" in this case',
+			'{suffix}: final extension (everything after the last ".")',
+			'\b'
+		))
+	)
 	
 	parser.add_argument('--spectral_unit_in_meters', type=float, default=None, help='The conversion factor between the spectral unit and meters. Only required when the unit cannot be automatically determined, or there is a mismatch between unit and data. Any automatically found unit information will be overwritten.')
 	parser.add_argument('--rebin_operation', choices=['sum', 'mean', 'mean_err'], default='mean', help='Operation to perform when binning.')
@@ -497,8 +512,16 @@ def parse_args(argv):
 		setattr(args, 'bin_width', args.rebin_params[1])
 		setattr(args, 'response_function_class', TriangularResponseFunction)
 	
-	if args.output_path is None:
-		args.output_path =  (Path(args.fits_spec.path).parent / (str(Path(args.fits_spec.path).stem)+DEFAULT_OUTPUT_TAG+str(Path(args.fits_spec.path).suffix)))
+	#if args.output_path is None:
+	#	args.output_path =  (Path(args.fits_spec.path).parent / (str(Path(args.fits_spec.path).stem)+DEFAULT_OUTPUT_TAG+str(Path(args.fits_spec.path).suffix)))
+	other_file_path = Path(args.fits_spec.path)
+	args.output_path = args.output_path.with_fields(
+		tag=DEFAULT_OUTPUT_TAG, 
+		parent=other_file_path.parent, 
+		stem=other_file_path.stem, 
+		suffix=other_file_path.suffix
+	)
+	
 	
 	print('INPUT PARAMETERS')
 	for k,v in vars(args).items():

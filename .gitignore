@@ -11,3 +11,4 @@ plots/
 **/*egg-info/
 dist/
 *.fits
+zz_run_output/

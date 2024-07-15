@@ -115,7 +115,21 @@ def parse_args(argv):
 	_lgr.debug(f'{SUPPORTED_FORMATS=}')
 	
 	parser.add_argument('image_path', type=Path, help=f'Path to the image to convert, can be one of {" ".join(SUPPORTED_FORMATS)}')
-	parser.add_argument('-o', '--output_path', type=Path, default=None, help='Path to save fits conversion to, if not supplied will replace original file extension with ".fits"')
+	#parser.add_argument('-o', '--output_path', type=Path, default=None, help='Path to save fits conversion to, if not supplied will replace original file extension with ".fits"')
+	parser.add_argument(
+		'-o', 
+		'--output_path', 
+		type=FPath,
+		metavar='str',
+		default='{parent}/{stem}.fits',
+		help = '\n    '.join((
+			f'Output fits file path, supports keyword substitution using parts of `image_path` path where:',
+			'{parent}: containing folder',
+			'{stem}  : filename (not including final extension)',
+			'{suffix}: final extension (everything after the last ".")',
+			'\b'
+		))
+	)
 	
 	args = parser.parse_args(argv)
 	
@@ -124,8 +138,15 @@ def parse_args(argv):
 		_lgr.error(f'Unsupported image format {args.image_path.suffix}')
 		sys.exit()
 	
-	if args.output_path is None:
-		args.output_path = Path(str(args.image_path.stem) + '.fits')
+	#if args.output_path is None:
+	#	args.output_path = Path(str(args.image_path.stem) + '.fits')
+	other_file_path = Path(args.fits_spec.path)
+	args.output_path = args.output_path.with_fields(
+		tag=DEFAULT_OUTPUT_TAG, 
+		parent=other_file_path.parent, 
+		stem=other_file_path.stem, 
+		suffix=other_file_path.suffix
+	)
 	
 	for k,v in vars(args).items():
 		_lgr.debug(f'{k} = {v}')

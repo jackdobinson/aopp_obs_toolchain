@@ -19,6 +19,8 @@ import aopp_deconv_tool.numpy_helper as nph
 import aopp_deconv_tool.numpy_helper.axes
 import aopp_deconv_tool.numpy_helper.slice
 import aopp_deconv_tool.psf_data_ops as psf_data_ops
+from aopp_deconv_tool.fpath import FPath
+
 
 from aopp_deconv_tool.algorithm.deconv.clean_modified import CleanModified
 from aopp_deconv_tool.algorithm.deconv.lucy_richardson import LucyRichardson
@@ -311,10 +313,40 @@ def parse_args(argv):
 		metavar='FITS Specifier',
 	)
 	
-	parser.add_argument('-o', '--output_path', type=str, help=f'Output fits file path. By default is same as the `fits_spec` path with "{DEFAULT_OUTPUT_TAG}" appended to the filename')
-	parser.add_argument('--plot', action='store_true', default=False, help='If present will show progress plots of the deconvolution')
-	parser.add_argument('--deconv_method', type=str, choices=deconv_methods.keys(), default=DECONV_METHOD_DEFAULT, help='Which method to use for deconvolution. For more information, pass the deconvolution method and the "--info" argument.') 
-	parser.add_argument('--deconv_method_help', action='store_true', default=False, help='Show help for the selected deconvolution method')
+	parser.add_argument(
+		'-o', 
+		'--output_path', 
+		type=FPath,
+		metavar='str',
+		default='{parent}/{stem}{tag}{suffix}',
+		help = '\n    '.join((
+			f'Output fits file path, supports keyword substitution using parts of `obs_fits_spec` path where:',
+			'{parent}: containing folder',
+			'{stem}  : filename (not including final extension)',
+			f'{{tag}}   : script specific tag, "{DEFAULT_OUTPUT_TAG}" in this case',
+			'{suffix}: final extension (everything after the last ".")',
+			'\b'
+		))
+	)
+	parser.add_argument(
+		'--plot', 
+		action='store_true', 
+		default=False, 
+		help='If present will show progress plots of the deconvolution'
+	)
+	parser.add_argument(
+		'--deconv_method', 
+		type=str, 
+		choices=deconv_methods.keys(), 
+		default=DECONV_METHOD_DEFAULT, 
+		help='Which method to use for deconvolution. For more information, pass the deconvolution method and the "--info" argument.'
+	) 
+	parser.add_argument(
+		'--deconv_method_help', 
+		action='store_true', 
+		default=False, 
+		help='Show help for the selected deconvolution method'
+	)
 	
 	parser.successful = True
 	parser.error_message = None
@@ -341,9 +373,13 @@ def parse_args(argv):
 	args.obs_fits_spec = aph.fits.specifier.parse(args.obs_fits_spec, DESIRED_FITS_AXES)
 	args.psf_fits_spec = aph.fits.specifier.parse(args.psf_fits_spec, DESIRED_FITS_AXES)
 	
-	if args.output_path is None:
-		args.output_path =  (Path(args.obs_fits_spec.path).parent / (str(Path(args.obs_fits_spec.path).stem)+DEFAULT_OUTPUT_TAG+str(Path(args.obs_fits_spec.path).suffix)))
-	
+	other_file_path = Path(args.obs_fits_spec.path)
+	args.output_path = args.output_path.with_fields(
+		tag=DEFAULT_OUTPUT_TAG, 
+		parent=other_file_path.parent, 
+		stem=other_file_path.stem, 
+		suffix=other_file_path.suffix
+	)
 	
 	return args, deconv_args
 
@@ -354,6 +390,11 @@ if __name__ == '__main__':
 	argv = sys.argv[1:]
 
 	args, deconv_args = parse_args(sys.argv[1:])
+	_lgr.info('#### ARGUMENTS ####')
+	for k,v in vars(args).items():
+		_lgr.info(f'\t{k} : {v}')
+	_lgr.info('#### END ARGUMENTS ####')
+	
 		
 	deconv_class = deconv_methods[args.deconv_method]
 	deconv_params = arguments.parse_args_of_dataclass(
