@@ -62,6 +62,9 @@ def run(
 			_lgr.debug(f'{i=}')
 			current_data_idx = idx[0][tuple(0 for i in fits_spec.axes['CELESTIAL'])]
 			
+			# Don't bother working on all NAN slices
+			if np.all(np.isnan(data[idx])):
+				continue
 			
 			_lgr.debug(f'{current_data_idx=}')
 			

@@ -356,13 +356,14 @@ def parse_args(argv):
 		'--output_path', 
 		type=FPath,
 		metavar='str',
-		default='{parent}/{stem}{tag}{suffix}',
+		default='{parent}/{stem}{tag}_{model}{suffix}',
 		help = '\n    '.join((
 			f'Output fits file path, supports keyword substitution using parts of `fits_spec` path where:',
 			'{parent}: containing folder',
 			'{stem}  : filename (not including final extension)',
 			f'{{tag}}   : script specific tag, "{DEFAULT_OUTPUT_TAG}" in this case',
-			'{suffix}: final extension (everything after the last ".")',
+			'{model} : model fitted to psf',
+			'{suffix}: final extension (everything after the last ".", including the ".")',
 			'\b'
 		))
 	)
@@ -386,7 +387,8 @@ def parse_args(argv):
 		tag=DEFAULT_OUTPUT_TAG, 
 		parent=other_file_path.parent, 
 		stem=other_file_path.stem, 
-		suffix=other_file_path.suffix
+		suffix=other_file_path.suffix,
+		model=args.model,
 	)
 	
 	set_psf_model_dependency_injector(args.model, args.fits_spec)

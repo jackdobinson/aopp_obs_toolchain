@@ -108,4 +108,41 @@ def iter_indices(
 		
 	_lgr.debug(f'AFTER {sliced_idxs.shape=}')
 	return (tuple(x) for x in sliced_idxs)
+
+def iter_indices_with_slices(
+		a : np.ndarray, 
+		slice_tuple : tuple[slice|int,...] | np.ndarray[int] | None = None,
+		group : tuple[int,...] = tuple(),
+		squeeze=True
+	) -> Iterator[tuple[np.ndarray]]:
+	"""
+	Iterator that returns the sliced indices of a sliced array, and slices that select only grouped axes
+	
+	a
+		The array to get the indicies of a slice of
+	slice_tuple
+		A tuple of length `a.ndim` that specifies the slices
+	group
+		Axes that are not iterated over (i.e. they are grouped together). E.g.
+		if a.shape=(3,5,7,9) and group=(1,3), then on iteration the indices
+		`idx` select a slice from `a` such that a[idx].shape=(5,9).
+	squeeze
+		Should non-grouped axes be merged (need one for loop for all of them),
+		or should they remain separate (need a.ndim - len(group) loops).
+	"""
+	
+	group = tuple(group)
+	_lgr.debug(f'{a.shape=} {slice_tuple=} {group=} {squeeze=}')
+	sliced_idxs = get_indices(a, slice_tuple, as_tuple=False)
+	
+	_lgr.debug(f'BEFORE {sliced_idxs.shape=}')
+	if squeeze:
+		sliced_idxs = nph.axes.merge(sliced_idxs, tuple(1+x for x in nph.axes.not_in(a,group)), 0)
+	else:
+		sliced_idxs = np.moveaxis(sliced_idxs, (1+x for x in group), (x for x in range(len(group),sliced_idxs.ndim)))
+		sliced_idxs = np.moveaxis(sliced_idxs, 0, -(len(group)+1))
+		
+	_lgr.debug(f'AFTER {sliced_idxs.shape=}')
+	return ((tuple(x), tuple(x[i].item(0) if i not in group else slice(None) for i in range(a.ndim))) for x in sliced_idxs)
+
 	

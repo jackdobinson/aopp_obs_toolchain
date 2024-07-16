@@ -252,14 +252,15 @@ def get_iwc_matrix(hdr, wcsaxes_label=''):
 
 def set_iwc_matrix(hdr, iwc_matrix, wcsaxes_label='', CD_format=None):
 	# for now assume that iwc_matrix is all we are getting, set CDELTi to 1
-	wcsaxes = hdr_get_wcsaxes(hdr, wcsaxes_label)
+	naxis = hdr['NAXIS']
+	wcsaxes = hdr.get(f'WCSAXES{wcsaxes_label}',naxis)
 	CD_format = is_CDi_j_present(hdr, wcsaxes_label) if CD_format is None else CD_format
 	hdr_mat_str_fmt = ('CD' if CD_format else 'PC')+'{i}_{j}{wcsaxes_label}'
 	hdr_CDELTi_fmt = 'CDELT{i}{wcsaxes_label}'
 	for i in (AxesOrdering(_x,wcsaxes,'numpy') for _x in range(0,wcsaxes)):
-		hdr[hdr_CDELTi_fmt.format(i=i, wcsaxes_label=wcsaxes_label)] = 1.0
+		hdr[hdr_CDELTi_fmt.format(i=i.fits, wcsaxes_label=wcsaxes_label)] = 1.0
 		for j in (AxesOrdering(_x,wcsaxes,'numpy') for _x in range(0,wcsaxes)):
-			hdr[hdr_mat_str_fmt.format(i=i, j=j, wcsaxes_label=wcsaxes_label)] = iwc_matrix[i,j]
+			hdr[hdr_mat_str_fmt.format(i=i.fits, j=j.fits, wcsaxes_label=wcsaxes_label)] = iwc_matrix[i.numpy,j.numpy]
 	return
 
 

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aopp_deconv_tool"
-version = "0.1.21" # Increment this whenever we upload a new version to Pypi (or the test pypi).
+version = "0.1.22" # Increment this whenever we upload a new version to Pypi (or the test pypi).
 dependencies = [
 	"numpy",
 	"astropy",

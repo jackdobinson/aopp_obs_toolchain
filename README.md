@@ -337,7 +337,7 @@ for more information.
 
 If [storing the token in a file](#storing-the-pypi-token), use `python3 -m twine upload -u __token__ -p $(cat ~/.secrets/pypi_token) dist/*`.
 
-Verify the package uploaded correctly by going to `https://test.pypi.org/project/aopp-deconv-tool/`.
+Verify the package uploaded correctly by going to `https://test.pypi.org/project/aopp-deconv-tool/` or `https://pypi.org/project/aopp-deconv-tool/`.
 
 ### Storing The PyPi Token ###
 

@@ -1149,7 +1149,39 @@ set -o errexit -o nounset -o pipefail
 
 # Constants
 THIS_SCRIPT=$0
-USAGE="USAGE: whole_process.sh [-hr] <obs_fits:path> <std_fits:path> [slice:str] [spectral_axes:str] [celestial_axes:str]"
+USAGE="USAGE: whole_process.sh [-hr] <obs_fits:path> <std_fits:path> [slice:str] [spectral_axes:str] [celestial_axes:str]
+
+Performs the entire deconvolution process from start to finish. Acts as a 
+test-bed, an example bash script, and a way to use the tool without 
+babysitting it.
+
+
+# ARGUMENTS #
+
+  obs_fits : path
+    Path to the FITS file of the science observation to use, it will be 
+    deconvolved at the end of this process.
+  std_fits : path
+    Path to the FITS file of the standard star observation to use, \`obs_fits\`
+    will be deconvolved using (a model of) this as the PSF.
+
+
+# OPTIONS #
+
+  -h
+    Display this help message
+  -r
+    Recalculate all products
+  slice : str
+    Python-style slice notation that will be applied to obs_fits and std_fits 
+    data, often used to focus on specific spectral slice of data
+  spectral_axes : str
+    Axis number of spectral axis, enclosed in brackets e.g. '(0)'. Will be 
+    automatically calculated if not present.
+  celestial_axes : str
+    Axis numbers of celestial axes, enclosed in brakcets e.g. '(1,2)'. Will be
+    automatically calculated if not present.
+"
 
 # Functions
 exit_with_msg() { echo "${@:2}"; exit $1; }
@@ -1178,7 +1210,7 @@ for ARG_IDX in ${!ARGS[@]}; do
 	#echo "#POS_ARGS[@]=${#POS_ARGS[@]}"
 	case $ARG in
 		-h)
-			exit_with_msg 0 ${USAGE}
+			exit_with_msg 0 "${USAGE}"
 			;;
 		-r)
 			RECALC=1
