@@ -1,51 +1,57 @@
+
+# Contents <a id="contents"></a> #
+
+1. [aopp_obs_toolchain](#aopp_obs_toolchain)
+	1. [TODO](#todo)
+	1. [Python Installation and Virtual Environment Setup](#python-installation-and-virtual-environment-setup)
+		1. [Installing Python](#installing-python)
+		1. [Creating and Activating a Virtual Environment](creating-and-activating-a-virtual-environment)
+	1. [Installing the Package via Pip](#installing-the-package-via-pip)
+
+1. [aopp_deconv_tool](#aopp_deconv_tool)
+	1. [Examples](#examples)
+	1. [FITS Specifier](#fits-specifier)
+	1. [Commandline Scripts](#commandline-scripts)
+		1. [Spectral Rebinning](#spectral-rebinning-script)
+		1. [Artifact Detection](#artifact-detection-script)
+		1. [Bad Pixel Mask](#bad-pixel-mask-script)
+		1. [Interpolation](#interpolation-script)
+		1. [PSF Normalisation](#psf-normalisation-script)
+		1. [PSF Model Fitting](#psf-model-fitting-script)
+		1. [Deconvolution](#deconvolution-script)
+	1. [Using the Package in Code](#using-the-package-in-code)
+		1. [Deconvolution](#deconvolution-code)
+		1. [PSF Fitting](#psf-fitting-code)
+		1. [SSA Filtering](#ssa-filtering-code)
+
+1. [APPENDICES](#appendices)
+	1. [APPENDIX: Supplimentary Information](#appendix:-supplimentary-information)
+		1. [Overview of Help Message Syntax](#overview-of-help-message-syntax)
+		1. [FITS File Format Information](#fits-file-format-information)
+	1. [APPENDIX: Snippets](#appendix:-snippets)
+		1. [Sudo Access Test](#sudo-access-test)
+		1. [Location of package source files](#location-of-package-source-files)
+		1. [Getting documentation from within python](#getting-documentation-from-within-python)
+		1. [Python tuple syntax](#python-tuple-syntax)
+		1. [Python slice syntax](#python-slice-syntax)
+	1. [APPENDIX: Scripts](#appendix:-scripts)
+		1. [Whole Process Bash Script](#whole-process-bash-script)
+		1. [Python Installation on Linux Bash Script](#python-installation-on-linux-bash-script)
+
 # aopp_obs_toolchain <a id="aopp_obs_toolchain"></a> #
 
 Eventually this will consist of multiple packages, for now it just consists of aopp_deconv_tool.
 
-See the [github](https://github.com/jackdobinson/aopp_obs_toolchain) for more details about the internal workings.
+See the [github](https://github.com/jackdobinson/aopp_obs_toolchain)(NOTE: Currently private, so you need to be logged in to github, eventually the repo will be public) for more details about the internal workings.
 
 If you download the repository, there is doxygen documentation available. See the `README.md` file for more information on how it is generated and how to view it.
 
+
+  
+  
+
 ## TODO <a id="todo"></a>  ##
 
-
-path_to_fits_file
-path_to_fits_file{DATA}[:,10:20,30:50]{CELESTIAL:(1,2),SPECTRAL:(0)}
-
-* Explain format of `python -m <module> ...`. I.e. which command line arguments go to what place.
-
-* SSA filtering example [Half Done in Interpolation Example]
-
-* Add domain to all numerical arguments.
-  - deconvolve.py [DONE]
-
-* Update usage line of deconvolve to show whole command when specifying algorithm parameters. [DONE]
-
-* Change sub-command help argument to not require positional arguments to be specified.
-  - deconvolve.py [DONE]
-
-* Add which axis a script requires in the help message for the FITS Specifiers of the script. [DONE]
-
-* Explain axis ordering difference between FITS, python, (C and Fortran) [DONE]
-
-* Test if routines work on "single wavelength" FITS files (i.e. only CELESTIAL axes)
- - interpolate.py [WORKS]
-
-* Write a converter from TIFF to FITS format. [DONE]
-
-* Add information on what axes type a script requires. [DONE]
-
-* Alter spectral rebinning to use triangular response function [DONE]
-
-* Alter documentation in this file for spectral rebinning to reflect new algorithm [DONE]
-
-* Split interpolation script into:
-  - SSA Filtering/Artifact detection [DONE]
-    + Take object FITS file, create heuteristic map
-  - Create bad pixel map [DONE]
-    + Use heuteristic map + arguments that specify how to classify a heuteristic map as 'bad' or 'good'
-	+ returns boolean map of 'bad' pixels
-  - Interpolate over a supplied mask [DONE]
 
 ## Python Installation and Virtual Environment Setup <a id="python-installation-and-virtual-environment-setup"></a>  ##
 
@@ -1026,7 +1032,7 @@ $ python
 ... # prints out the docstring of the 'os' module
 ```
 
-### Pyhton tuple syntax <a id="python-tuple-syntax"></a> ###
+### Python tuple syntax <a id="python-tuple-syntax"></a> ###
 
 Tuples are ordered collections of hetrogenuous items. They are denoted by separating each element with a comma and enclosing the whole thing in round brackets. Tuples can be nested.
 
@@ -1329,7 +1335,7 @@ for FITS_VIEWER in ${FITS_VIEWERS[@]}; do
 done
 ```
 
-### Linux Installation Bash Script <a id="linux-installation-bash-script"></a>  ###
+### Python Installation on Linux Bash Script <a id="python-installation-on-linux-bash-script"></a>  ###
 
 Below is an example *bash* script for building python from source and configuring a virtual environment.
 Use it via copying the code into a file (recommended name `install_python.sh`). If Python's dependencies
