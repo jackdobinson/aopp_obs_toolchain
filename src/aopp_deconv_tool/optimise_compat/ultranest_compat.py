@@ -292,9 +292,9 @@ class UltranestResultSet:
 		# ARGUMENTS #
 			result_providers : list[Callable[tuple[float,...], np.ndarray]]
 				A list of callables that accept an ordered tuple of results, much like objective functions for the scipy library.
-				Should be ordered corresponding to the index of a run (i.e. 0th entry gives results for lowest run number)
+				Should be ordered corresponding to the index of a run (i.e., 0th entry gives results for lowest run number)
 			ref_data : np.ndarray
-				An array of data, it should have an entry for each run index (i.e. for run folder "run_128", we use ref_data[128])
+				An array of data, it should have an entry for each run index (i.e., for run folder "run_128", we use ref_data[128])
 			show : bool = False
 				If `True` will show the plots as they are made
 			save : bool = True

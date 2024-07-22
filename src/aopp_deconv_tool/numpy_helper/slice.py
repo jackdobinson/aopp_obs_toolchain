@@ -13,9 +13,9 @@ import aopp_deconv_tool.cfg.logs
 _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'INFO')
 
 
-def around_center(big_shape : tuple[int,...], small_shape : tuple[int,...]) -> tuple[slice,...]:
+def around_centre(big_shape : tuple[int,...], small_shape : tuple[int,...]) -> tuple[slice,...]:
 	"""
-	returns a slice of a in the shape of b about the center of a
+	returns a slice of a in the shape of b about the centre of a
 	Accepts np.ndarray or tuple for each argument
 	"""
 	s_diff = tuple(s1-s2 for s1,s2 in zip(big_shape, small_shape))
@@ -34,14 +34,14 @@ def from_string(slice_tuple_str : str) -> tuple[slice,...]:
 def squeeze(slice_tuple: tuple[slice | int,...]) -> tuple[slice | int]:
 	"""
 	Given a tuple of slices (`slice_tuple`), if a slice only selects a single index, replace it with an index instead.
-	e.g. [10:100, 13:14, 50:60] -> [10:100, 13, 50:60]
+	e.g., [10:100, 13:14, 50:60] -> [10:100, 13, 50:60]
 	"""
 	return tuple(s.start if type(s) is slice and ((s.stop - s.start) == (1 if s.step is None else s.step)) else s for s in slice_tuple )
 
 def unsqueeze(slice_tuple: tuple[slice | int,...]) -> tuple[slice]:
 	"""
 	Given a tuple of slices and indices (`slice_tuple`), replace all indices with a slice from i->i+1
-	e.g. [10:100, 13, 50:60] -> [10:100, 13:14, 50:60]
+	e.g., [10:100, 13, 50:60] -> [10:100, 13:14, 50:60]
 	"""
 	return tuple(slice(s,s+1) if type(s) is int else s for s in slice_tuple)
 
@@ -87,7 +87,7 @@ def iter_indices(
 	slice_tuple
 		A tuple of length `a.ndim` that specifies the slices
 	group
-		Axes that are not iterated over (i.e. they are grouped together). E.g.
+		Axes that are not iterated over (i.e., they are grouped together). E.g.
 		if a.shape=(3,5,7,9) and group=(1,3), then on iteration the indices
 		`idx` select a slice from `a` such that a[idx].shape=(5,9).
 	squeeze
@@ -123,7 +123,7 @@ def iter_indices_with_slices(
 	slice_tuple
 		A tuple of length `a.ndim` that specifies the slices
 	group
-		Axes that are not iterated over (i.e. they are grouped together). E.g.
+		Axes that are not iterated over (i.e., they are grouped together). E.g.
 		if a.shape=(3,5,7,9) and group=(1,3), then on iteration the indices
 		`idx` select a slice from `a` such that a[idx].shape=(5,9).
 	squeeze

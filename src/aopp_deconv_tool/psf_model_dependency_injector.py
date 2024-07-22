@@ -166,14 +166,14 @@ class RadialPSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
 				(0, psf_data.shape[0]),
 				False,
 				psf_data.shape[0]//2,
-				"Center point of radial histogram on x-axis"
+				"centre point of radial histogram on x-axis"
 			),
 			PriorParam(
 				'y',
 				(0, psf_data.shape[1]),
 				False,
 				psf_data.shape[1]//2,
-				"Center point of radial histogram on y-axis"
+				"centre point of radial histogram on y-axis"
 			),
 			PriorParam(
 				'nbins',
@@ -202,7 +202,7 @@ class RadialPSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
 				fitted_vars,
 				consts
 			)
-			return psf_model_flattened_callable.centered_result
+			return psf_model_flattened_callable.centreed_result
 			
 		return psf_result_postprocessor
 
@@ -272,7 +272,7 @@ class GaussianPSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
 
 class TurbulencePSFModelDependencyInjector(ParamsAndPsfModelDependencyInjector):
 	"""
-	Models the PSF as the result of von-karman turbulence. Assumes the PSF is at the center of the model.
+	Models the PSF as the result of von-karman turbulence. Assumes the PSF is at the centre of the model.
 	"""
 	
 	def __init__(self, psf_data):
@@ -383,11 +383,11 @@ class MUSEAdaptiveOpticsPSFModelDependencyInjector(ParamsAndPsfModelDependencyIn
 			),
 			PriorParam(
 				*prior_param_args_from_param_spec('ao_correction_frac_offset', False, 0, (-1,1), var_params, const_params, initial_values, range_values),
-				"how much of an offset the adaptive optics correction has as a fraction of the maximum. I.e. models a discontinuity where the adaptive optics corrections stop and the high-frequency turbulent psf begins"
+				"how much of an offset the adaptive optics correction has as a fraction of the maximum. I.e., models a discontinuity where the adaptive optics corrections stop and the high-frequency turbulent psf begins"
 			),
 			PriorParam(
 				*prior_param_args_from_param_spec('ao_correction_amplitude', False, 2.2, (0,5), var_params, const_params, initial_values, range_values),
-				"scaling of the adaptive optics correction. I.e. increases/decreases how large the AO correction bump is w.r.t the halo."
+				"scaling of the adaptive optics correction. I.e., increases/decreases how large the AO correction bump is w.r.t the halo."
 			),
 			PriorParam(
 				*prior_param_args_from_param_spec('factor', False, 1, (0.7,1.3), var_params, const_params, initial_values, range_values),

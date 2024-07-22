@@ -19,13 +19,13 @@ np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_a296
 \item 
 tuple\mbox{[}np.\+ndarray\mbox{[}S\mbox{[}N\mbox{]}, T\mbox{]}, dict\mbox{[}str, Any\mbox{]}, dict\mbox{[}str, Any\mbox{]}\mbox{]} \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_a1748b457fcbf82cab1d62a64a5a10c77}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+fit\+\_\+to\+\_\+data}} (Prior\+Param\+Set params, Callable\mbox{[}P, np.\+ndarray\mbox{[}S\mbox{[}N\mbox{]}, T\mbox{]}\mbox{]} flattened\+\_\+psf\+\_\+model\+\_\+callable, np.\+ndarray\mbox{[}S\mbox{[}N\mbox{]}, T\mbox{]} psf\+\_\+data, np.\+ndarray\mbox{[}S\mbox{[}N\mbox{]}, T\mbox{]} psf\+\_\+err, Callable\mbox{[}\mbox{[}Prior\+Param\+Set, Callable\mbox{[}Q, float\mbox{]}\mbox{]}, Q\mbox{]} fitting\+\_\+function, Callable\mbox{[}\mbox{[}Callable\mbox{[}P, np.\+ndarray\mbox{[}S\mbox{[}N\mbox{]}, T\mbox{]}\mbox{]}, np.\+ndarray\mbox{[}S\mbox{[}N\mbox{]}, T\mbox{]}, np.\+ndarray\mbox{[}S\mbox{[}N\mbox{]}, T\mbox{]}\mbox{]}, Callable\mbox{[}Q, float\mbox{]}\mbox{]} objective\+\_\+function\+\_\+factory=functools.\+partial(objective\+\_\+function\+\_\+factory, mode=\textquotesingle{}minimise\textquotesingle{}), str$\vert$bool$\vert$None plot\+\_\+mode=None)
 \item 
-np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_a9119c91cdd8de15604d05bf8944cd8ba}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+get\+\_\+center\+\_\+of\+\_\+mass\+\_\+offsets}} (np.\+ndarray data, tuple\mbox{[}int,...\mbox{]} axes, np.\+ndarray$\vert$None roi\+\_\+mask=None)
+np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_a9119c91cdd8de15604d05bf8944cd8ba}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+get\+\_\+centre\+\_\+of\+\_\+mass\+\_\+offsets}} (np.\+ndarray data, tuple\mbox{[}int,...\mbox{]} axes, np.\+ndarray$\vert$None roi\+\_\+mask=None)
 \item 
 np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_ad87a713d2e959d66d3d4ba4ccf24b360}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+get\+\_\+outlier\+\_\+mask}} (np.\+ndarray data, tuple\mbox{[}int,...\mbox{]} axes, float n\+\_\+sigma=5)
 \item 
 np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_af048123fcb4f52be1a5e745f6722107e}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+get\+\_\+roi\+\_\+mask}} (np.\+ndarray data, tuple\mbox{[}int,...\mbox{]} axes, float threshold=1E-\/2, None$\vert$int n\+\_\+largest\+\_\+regions=1)
 \item 
-np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_a77e0b620abe6cdf4232184c7b8552bec}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+normalise}} (np.\+ndarray data, tuple\mbox{[}int,...\mbox{]}$\vert$None axes=None, tuple\mbox{[}int,...\mbox{]}$\vert$None cutout\+\_\+shape=None, recenter\+\_\+around\+\_\+center\+\_\+of\+\_\+mass=False, remove\+\_\+background=True)
+np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_a77e0b620abe6cdf4232184c7b8552bec}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+normalise}} (np.\+ndarray data, tuple\mbox{[}int,...\mbox{]}$\vert$None axes=None, tuple\mbox{[}int,...\mbox{]}$\vert$None cutout\+\_\+shape=None, recentre\+\_\+around\+\_\+centre\+\_\+of\+\_\+mass=False, remove\+\_\+background=True)
 \item 
 def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_aeeb273f603fa12765786ad7bdb87ee72}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+objective\+\_\+function\+\_\+factory}} (model\+\_\+flattened\+\_\+callable, data, err, mode=\textquotesingle{}minimise\textquotesingle{})
 \item 
@@ -33,7 +33,7 @@ def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_aacf559b49b36
 \item 
 def \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_a4b3d99f76e3faae7a4a9bdfdcda51df8}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+scipy\+\_\+fitting\+\_\+function\+\_\+factory}} (scipy\+\_\+func)
 \item 
-np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_a1341f48440c941ca947dfc28a66dece2}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+trim\+\_\+around\+\_\+center}} (np.\+ndarray data, tuple\mbox{[}int,...\mbox{]} axes, tuple\mbox{[}int,...\mbox{]} output\+\_\+shape)
+np.\+ndarray \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1psf__data__ops_a1341f48440c941ca947dfc28a66dece2}{aopp\+\_\+deconv\+\_\+tool.\+psf\+\_\+data\+\_\+ops.\+trim\+\_\+around\+\_\+centre}} (np.\+ndarray data, tuple\mbox{[}int,...\mbox{]} axes, tuple\mbox{[}int,...\mbox{]} output\+\_\+shape)
 \end{DoxyCompactItemize}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}

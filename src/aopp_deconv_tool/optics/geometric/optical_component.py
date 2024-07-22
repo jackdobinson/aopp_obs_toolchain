@@ -133,7 +133,7 @@ class Aperture(OpticalComponent):
 @dc.dataclass(slots=True)
 class Obstruction(OpticalComponent):
 	"""
-	Opaque material surrounded by transparent material. Used to model e.g. the back of secondary mirrors.
+	Opaque material surrounded by transparent material. Used to model e.g., the back of secondary mirrors.
 	"""
 	shape : GeoShape = dc.field(default_factory=lambda: Circle.of_radius(2.52/18)) # NOTE: This number is in fraction of pupil exit diameter.
 	
@@ -257,13 +257,13 @@ class OpticalComponentSet:
 		print(f'{scale=}')
 		
 		# assume cylindrically symmetric
-		center_offsets = nph.array.offsets_from_point(
+		centre_offsets = nph.array.offsets_from_point(
 			tuple(int(s*expansion_factor*supersample_factor) for s in shape),
 			None, 
 			np.array(scale,dtype=float)
 		)
-		print(f'{center_offsets}')
-		pf_rad = np.sqrt(np.sum(center_offsets**2, axis=0))
+		print(f'{centre_offsets}')
+		pf_rad = np.sqrt(np.sum(centre_offsets**2, axis=0))
 		
 		
 		lb = self._lbs.get_light_beam_at_position(pf_pos)	

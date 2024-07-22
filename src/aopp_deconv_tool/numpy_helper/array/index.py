@@ -25,7 +25,7 @@ type R[X] = NewType('ShapeR', ShapeVar[X])
 def pacman(a : np.ndarray[S[N],T], indices : np.ndarray[[N,M],int]) -> np.ndarray[[N,M],T]:
 	"""
 	Get values of array `a` at `indices`, out of bounds indices obey pacman physics,
-	i.e. topology of a torus. Same as periodic boundaries
+	i.e., topology of a torus. Same as periodic boundaries
 	"""
 	return a[tuple(i % s for i,s in zip(indices, a.shape))]
 

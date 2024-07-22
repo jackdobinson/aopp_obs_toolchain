@@ -14,7 +14,7 @@ import scientest.cfg.settings
 
 _lgr = scientest.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
-from scientest.term_output import terminal_right, terminal_left, terminal_center #,terminal_fill, terminal_wrap
+from scientest.term_output import terminal_right, terminal_left, terminal_centre #,terminal_fill, terminal_wrap
 
 
 class ModuleLocator:
@@ -90,7 +90,7 @@ def discover_tests(
 	test_discovery_data = {}
 
 	# Perform test discovery
-	print(terminal_center(f' Starting test discovery from folder "{test_dir}" ', '='))
+	print(terminal_centre(f' Starting test discovery from folder "{test_dir}" ', '='))
 	
 	for prefix, dirs, files in os.walk(test_dir, topdown=True, onerror=None, followlinks=False):
 		_lgr.info(f'{prefix=}')

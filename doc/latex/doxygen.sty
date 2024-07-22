@@ -95,7 +95,7 @@
   \end{alltt}%
   \normalsize%
 }
-% Necessary for redefining not defined characters, i.e. "Replacement Character" in tex output.
+% Necessary for redefining not defined characters, i.e., "Replacement Character" in tex output.
 \newlength{\CodeWidthChar}
 \newlength{\CodeHeightChar}
 \settowidth{\CodeWidthChar}{?}
@@ -134,7 +134,7 @@
   \settoheight{\CodeHeightChar}{?}%
 }
 
-% Redefining not defined characters, i.e. "Replacement Character" in tex output.
+% Redefining not defined characters, i.e., "Replacement Character" in tex output.
 \def\ucr{\adjustbox{width=\CodeWidthChar,height=\CodeHeightChar}{\stackinset{c}{}{c}{-.2pt}{%
    \textcolor{white}{\sffamily\bfseries\small ?}}{%
    \rotatebox{45}{$\blacksquare$}}}}
@@ -187,7 +187,7 @@
 % (only if caption is specified)
 \newenvironment{DoxyImage}{%
   \begin{figure}[H]%
-    \centering%
+    \centreing%
 }{%
   \end{figure}%
 }
@@ -195,9 +195,9 @@
 % Used by @image, @dotfile, @dot ... @enddot, and @msc ... @endmsc
 % (only if no caption is specified)
 \newenvironment{DoxyImageNoCaption}{%
-  \begin{center}%
+  \begin{centre}%
 }{%
-  \end{center}%
+  \end{centre}%
 }
 
 % Used by @image

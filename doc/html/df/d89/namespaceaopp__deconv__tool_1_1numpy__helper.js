@@ -3,7 +3,7 @@ var namespaceaopp__deconv__tool_1_1numpy__helper =
     [ "array", "d2/d57/namespaceaopp__deconv__tool_1_1numpy__helper_1_1array.html", "d2/d57/namespaceaopp__deconv__tool_1_1numpy__helper_1_1array" ],
     [ "axes", "d8/df1/namespaceaopp__deconv__tool_1_1numpy__helper_1_1axes.html", "d8/df1/namespaceaopp__deconv__tool_1_1numpy__helper_1_1axes" ],
     [ "slice", "d5/d85/namespaceaopp__deconv__tool_1_1numpy__helper_1_1slice.html", [
-      [ "around_center", "d5/d85/namespaceaopp__deconv__tool_1_1numpy__helper_1_1slice.html#a90f91c7168799147978c08f3b987ed5b", null ],
+      [ "around_centre", "d5/d85/namespaceaopp__deconv__tool_1_1numpy__helper_1_1slice.html#a90f91c7168799147978c08f3b987ed5b", null ],
       [ "from_string", "d5/d85/namespaceaopp__deconv__tool_1_1numpy__helper_1_1slice.html#a812bd38e04fc11e3a899c35bd87ae421", null ],
       [ "get_indices", "d5/d85/namespaceaopp__deconv__tool_1_1numpy__helper_1_1slice.html#a31664111efe15833f2c03b326136d4c0", null ],
       [ "iter_indices", "d5/d85/namespaceaopp__deconv__tool_1_1numpy__helper_1_1slice.html#a4d7e39fb71fc5850a311f2a6959b1a25", null ],

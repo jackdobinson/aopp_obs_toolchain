@@ -201,7 +201,7 @@ class PriorParamSet:
 		):
 		"""
 		Given some callable `acallable`, that accepts `arg_names`. Call it with the values for those arguments provided in `variable_param_values`,
-		`const_param_values`, `defaults`, `not_found_value`. Where that list is in order of preference (e.g. an argument in both `const_param_values` and `defaults`
+		`const_param_values`, `defaults`, `not_found_value`. Where that list is in order of preference (e.g., an argument in both `const_param_values` and `defaults`
 		will have the value specified in `const_param_values`.
 		
 		If `arg_names` is None, will try and infer the argument names of `acallable` via `self.get_arg_names_of_callable()`.
@@ -228,7 +228,7 @@ class PriorParamSet:
 		Put in a callable with some arguments `callable(arg1, arg2, arg3,...)`, returns a callable 
 		that packs all variable params as the first argument, and all const params as the other arguments.
 		
-		i.e. 
+		i.e., 
 		accepts callable: 
 			`callable(arg1, arg2, arg3, arg4, ...)`
 		returns callable: 
@@ -325,7 +325,7 @@ class PriorParamSet:
 		Put in a callable with some arguments `callable(arg1, arg2, arg3,...)`, returns a callable 
 		that packs all params as the first argument.
 		
-		i.e. 
+		i.e., 
 		accepts callable: 
 			`callable(arg1, arg2, arg3, arg4, ...)`
 		

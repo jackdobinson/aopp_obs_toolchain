@@ -45,7 +45,7 @@ def terminal_fill(text, d=0):
 	r = c % len(text)
 	return(text*n + text[:r])
 
-def terminal_center(text, fill, d=0):
+def terminal_centre(text, fill, d=0):
 	assert len(text) > 0
 	assert len(fill) > 0
 	c = shutil.get_terminal_size().columns + d

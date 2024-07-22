@@ -19,9 +19,9 @@ type R[X] = NewType('ShapeR', ShapeVar[X])
 
 
 
-def get_center_offset_brightest_pixel(a : np.ndarray[S[N],T]) -> np.ndarray[[N],T]:
+def get_centre_offset_brightest_pixel(a : np.ndarray[S[N],T]) -> np.ndarray[[N],T]:
 	"""
-	Get the offset from the center of array `a` of the brightest element of `a`
+	Get the offset from the centre of array `a` of the brightest element of `a`
 	"""
 	if np.all(np.isnan(a)):
 		return(np.zeros(a.ndim))
@@ -52,7 +52,7 @@ def offsets_from_point(shape : S[N], point : np.ndarray[[N],T] = None, scale : S
 	For an array of shape `shape` get the offsets from a specific point in array coordinates.
 	"""
 	if point is None:
-		point = np.array([s//2 for s in shape]) # center
+		point = np.array([s//2 for s in shape]) # centre
 	if scale is None:
 		scale = np.ones_like(point, dtype=float)
 	else:
@@ -96,7 +96,7 @@ def offsets_manhattan_distance(dist : int | tuple[int,...] = 1, ndim : Literal[N
 	elif len(dist) < ndim:
 		dist = (*dist,*([0]*(ndim-len(dist))))
 	shape = tuple(2*d + 1 for d in dist)
-	return offsets_from_center_of_mask(manhattan_distance_mask(offsets_from_point(shape), dist))
+	return offsets_from_centre_of_mask(manhattan_distance_mask(offsets_from_point(shape), dist))
 
 def manhattan_distance(shape : S[N], point : np.ndarray[[N],T] = None) -> np.ndarray[S[N],T]:
 	"""
@@ -106,11 +106,11 @@ def manhattan_distance(shape : S[N], point : np.ndarray[[N],T] = None) -> np.nda
 		point = tuple(s//2 for s in shape)
 	return np.abs(np.moveaxis(np.indices(shape),0,-1) - np.array(point)).sum(axis=-1)
 
-def offsets_from_center_of_mask(mask : np.ndarray[S[N],bool]) -> np.ndarray[[N,*S[N]],int]:
+def offsets_from_centre_of_mask(mask : np.ndarray[S[N],bool]) -> np.ndarray[[N,*S[N]],int]:
 	"""
-	Get the offsets to all masked elements of `mask` from the center of `mask`.
+	Get the offsets to all masked elements of `mask` from the centre of `mask`.
 	"""
-	assert all([s%2 == 1 for s in mask.shape]), "mask must have an odd shape to have a unique center"
+	assert all([s%2 == 1 for s in mask.shape]), "mask must have an odd shape to have a unique centre"
 	return np.argwhere(mask) - np.array([s//2 for s in mask.shape])
 
 

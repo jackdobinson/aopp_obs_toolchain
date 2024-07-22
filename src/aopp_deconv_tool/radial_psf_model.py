@@ -5,7 +5,7 @@ import numpy as np
 
 class RadialPSFModel:
 	"""
-	PSF model that is a radially averaged PSF (i.e. a histogram of radial bins).
+	PSF model that is a radially averaged PSF (i.e., a histogram of radial bins).
 	"""
 	def __init__(self, data):
 		self.data = data
@@ -33,7 +33,7 @@ class RadialPSFModel:
 	
 	
 	@property
-	def centered_result(self):
+	def centreed_result(self):
 		r = np.sqrt(np.sum((np.indices(self.data.shape).T - np.array([self.data.shape[0]//2, self.data.shape[1]//2]))**2, axis=-1)).T
 		
 		self._result *= 0

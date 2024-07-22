@@ -12,7 +12,7 @@ _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 def corners_standard_deviation(a : np.ndarray, corner_frac : float = 1/10) -> float:
 	"""
-	Uses the "corners" (i.e. extremes in all directions) of array `a` to estimate the noise. This 
+	Uses the "corners" (i.e., extremes in all directions) of array `a` to estimate the noise. This 
 	assumes our signal does not extend all the way to the edges. 
 	
 	# ARGUMENTS #

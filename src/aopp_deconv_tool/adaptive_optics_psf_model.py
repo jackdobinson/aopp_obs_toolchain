@@ -132,13 +132,13 @@ class PSFModel:
 		
 		match mode:
 			case "classic":
-				center_point = tuple(_s//2 for _s in phase_autocorr.data.shape)
-				otf_data = np.exp(phase_autocorr.data - phase_autocorr.data[center_point])
+				centre_point = tuple(_s//2 for _s in phase_autocorr.data.shape)
+				otf_data = np.exp(phase_autocorr.data - phase_autocorr.data[centre_point])
 				
 				# Work out the offset from zero of the OTF
-				center_idx_offsets = nph.array.offsets_from_point(otf_data.shape)
-				center_idx_dist = np.sqrt(np.sum(center_idx_offsets**2, axis=0))
-				outer_region_mask = center_idx_dist > (center_idx_dist.shape[0]//2)*0.9
+				centre_idx_offsets = nph.array.offsets_from_point(otf_data.shape)
+				centre_idx_dist = np.sqrt(np.sum(centre_idx_offsets**2, axis=0))
+				outer_region_mask = centre_idx_dist > (centre_idx_dist.shape[0]//2)*0.9
 				otf_data_offset_from_zero = np.sum(otf_data[outer_region_mask])/np.count_nonzero(outer_region_mask)
 				
 				_lgr.debug(f'{otf_data_offset_from_zero=}')
@@ -200,7 +200,7 @@ class PSFModel:
 	
 	def at(self, wavelength, plots=True):
 		"""
-		Calculate psf for a given angular scale and wavelength, i.e. convert
+		Calculate psf for a given angular scale and wavelength, i.e., convert
 		from rho/wavelength units to rho units.
 		"""
 		if not self.specific_model_ready:

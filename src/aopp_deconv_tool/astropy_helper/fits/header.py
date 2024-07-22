@@ -33,7 +33,7 @@ class DictReader:
 		HIERARCH SOME KEY CHILD_KEY_2 = "X2"
 
 	If we need to we can split header entries into a "name" and "value" format,
-	e.g. the above example would become:
+	e.g., the above example would become:
 		PKEY1   = some.key.child_key_1
 		PVAL1   = "X1"
 		PKEY2   = some.key.child_key_2
@@ -77,7 +77,7 @@ class DictReader:
 		pkey_fmt_iter = ((i,) for i in range(n_max))
 		pkey_max = get_key_fmt_max(hdr, pkey_fmt, pkey_fmt_iter)
 		
-		return int(pkey_max[4:]) if pkey_max is not None else 0
+		return int(pkey_max[4:])+1 if pkey_max is not None else 0
 	
 	@staticmethod
 	def remove_pkeys(hdr, n_max=1000):
@@ -216,8 +216,9 @@ def get_axes_ordering(hdr, axes, ordering='numpy', wcsaxes_label=''):
 def set_axes_transform(hdr, axis=None, unit=None, reference_value=None, delta_value=None, n_values=None, reference_pixel=None):
 	new_hdr_keys= {
 		f'CD{axis}_{axis}' : delta_value,	# Turn meters into Angstrom
+		f'CDELT{axis}' : delta_value,		# Turn meters into Angstrom
 		f'CUNIT{axis}' : unit,				# Tell FITS the units
-		f'CRVAL{axis}' : reference_value,	# Set the value of the reference pixel in the spectral direction in the FITS file (center of first bin)
+		f'CRVAL{axis}' : reference_value,	# Set the value of the reference pixel in the spectral direction in the FITS file (centre of first bin)
 		f'CRPIX{axis}' : reference_pixel,	# Tell FITS the index of the reference pixel in the spectral direction (first pixel, FITS is 1-index based)
 		f'NAXIS{axis}' : n_values,			# Tell FITS the number of spectral planes
 	}
@@ -258,7 +259,7 @@ def set_iwc_matrix(hdr, iwc_matrix, wcsaxes_label='', CD_format=None):
 	hdr_mat_str_fmt = ('CD' if CD_format else 'PC')+'{i}_{j}{wcsaxes_label}'
 	hdr_CDELTi_fmt = 'CDELT{i}{wcsaxes_label}'
 	for i in (AxesOrdering(_x,wcsaxes,'numpy') for _x in range(0,wcsaxes)):
-		hdr[hdr_CDELTi_fmt.format(i=i.fits, wcsaxes_label=wcsaxes_label)] = 1.0
+		hdr[hdr_CDELTi_fmt.format(i=i.fits, wcsaxes_label=wcsaxes_label)] = iwc_matrix[i.numpy,i.numpy]
 		for j in (AxesOrdering(_x,wcsaxes,'numpy') for _x in range(0,wcsaxes)):
 			hdr[hdr_mat_str_fmt.format(i=i.fits, j=j.fits, wcsaxes_label=wcsaxes_label)] = iwc_matrix[i.numpy,j.numpy]
 	return

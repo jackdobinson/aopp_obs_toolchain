@@ -20,17 +20,17 @@ class Pointer:
 		self.ref = [val]
 	@property
 	def ref(self):
-		""" Get the "reference" object, i.e. the internal list"""
+		""" Get the "reference" object, i.e., the internal list"""
 		return(self.__ref)
 	@ref.setter
 	def ref(self, ref_list):
-		""" Set the reference object, i.e. change the internal list"""
+		""" Set the reference object, i.e., change the internal list"""
 		self.__ref = ref_list
 	@property
 	def val(self):
-		""" get the value stored in the reference, i.e. the single list element"""
+		""" get the value stored in the reference, i.e., the single list element"""
 		return(self.__ref[0])
 	@val.setter
 	def val(self, val):
-		""" set the value stored in the referece, i.e. the single list element"""
+		""" set the value stored in the referece, i.e., the single list element"""
 		self.__ref[0] = val

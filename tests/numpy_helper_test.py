@@ -63,7 +63,7 @@ def test_array_offsets():
 	a[5,5] = 1
 	expected_result[3,3] = 1
 
-	o = nph.array.get_center_offset_brightest_pixel(a)
+	o = nph.array.get_centre_offset_brightest_pixel(a)
 	assert np.all(o == np.array([-2,-2])), f"Should have an offset of [-2,-2], have {o}"
 
 	b = nph.array.apply_offset(a, o)

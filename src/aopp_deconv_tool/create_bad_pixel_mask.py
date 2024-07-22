@@ -118,7 +118,7 @@ def run(
 		
 		hdr.update(aph.fits.header.DictReader(
 			param_dict,
-			prefix='artifact_detection',
+			prefix='artefact_detection',
 			pkey_count_start=aph.fits.header.DictReader.find_max_pkey_n(hdr)
 		))
 				

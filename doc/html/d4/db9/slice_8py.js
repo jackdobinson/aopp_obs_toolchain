@@ -1,6 +1,6 @@
 var slice_8py =
 [
-    [ "around_center", "d4/db9/slice_8py.html#a90f91c7168799147978c08f3b987ed5b", null ],
+    [ "around_centre", "d4/db9/slice_8py.html#a90f91c7168799147978c08f3b987ed5b", null ],
     [ "from_string", "d4/db9/slice_8py.html#a812bd38e04fc11e3a899c35bd87ae421", null ],
     [ "get_indices", "d4/db9/slice_8py.html#a31664111efe15833f2c03b326136d4c0", null ],
     [ "iter_indices", "d4/db9/slice_8py.html#a4d7e39fb71fc5850a311f2a6959b1a25", null ],

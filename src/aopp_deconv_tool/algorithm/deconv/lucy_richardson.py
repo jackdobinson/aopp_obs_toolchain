@@ -98,20 +98,20 @@ class LucyRichardson(Base):
 		self._out_of_bounds_mask = np.ones_like(self._components, dtype=bool)
 	
 		# set array values that can't be done during initalisation	
-		self._out_of_bounds_mask[nph.slice.around_center(self._out_of_bounds_mask.shape, obs.shape)] = 0
+		self._out_of_bounds_mask[nph.slice.around_centre(self._out_of_bounds_mask.shape, obs.shape)] = 0
 
 	
 		return
 
 	def get_components(self):
 		if self.pad_observation:
-			return(self._components[nph.slice.around_center(self._dirty_img.shape, self._obs_shape)] - self._offset)
+			return(self._components[nph.slice.around_centre(self._dirty_img.shape, self._obs_shape)] - self._offset)
 		else:
 			return(self._components - self._offset) 
 	
 	def get_residual(self):
 		if self.pad_observation:
-			return(self._residual[nph.slice.around_center(self._dirty_img.shape, self._obs_shape)])
+			return(self._residual[nph.slice.around_centre(self._dirty_img.shape, self._obs_shape)])
 		else:
 			return(self._residual) 
 	
@@ -129,7 +129,7 @@ class LucyRichardson(Base):
 		self._obs_per_est[...] = (self._dirty_img + self._nudge)/(self._blurred_est + self._nudge)
 
 		self._cf[...] = sp.signal.fftconvolve(self._obs_per_est, self._psf_reversed, mode='same')
-		self._cf[...] = self.strength*(self._cf - 1) + 1 # correction factors should always be centered around one
+		self._cf[...] = self.strength*(self._cf - 1) + 1 # correction factors should always be centreed around one
 
 		# if we have a threshold, apply it
 		if self.threshold is not None:

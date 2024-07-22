@@ -117,15 +117,15 @@ def plot_result(result, psf_data, suptitle=None, show=True):
 	a[5].plot(np.log(result[:,result.shape[1]//2]).flatten())
 	a[5].axvline(result.shape[1]//2, color='red', ls='--')
 	
-	offsets_from_center = nph.array.offsets_from_point(psf_data.shape)
-	offsets_from_center = (offsets_from_center.T - np.array([0.0,0.5])).T
-	r_idx1 = np.sqrt(np.sum(offsets_from_center**2, axis=0))
+	offsets_from_centre = nph.array.offsets_from_point(psf_data.shape)
+	offsets_from_centre = (offsets_from_centre.T - np.array([0.0,0.5])).T
+	r_idx1 = np.sqrt(np.sum(offsets_from_centre**2, axis=0))
 	r = np.linspace(0,np.max(r_idx1),30)
 	psf_radial_data = np.array([np.nansum(psf_data[(r_min <= r_idx1) & (r_idx1 < r_max) ]) for r_min, r_max in zip(r[:-1], r[1:])])
 	
-	offsets_from_center = nph.array.offsets_from_point(psf_data.shape)
-	offsets_from_center = (offsets_from_center.T - np.array([0.5,0.5])).T
-	r_idx2 = np.sqrt(np.sum(offsets_from_center**2, axis=0))
+	offsets_from_centre = nph.array.offsets_from_point(psf_data.shape)
+	offsets_from_centre = (offsets_from_centre.T - np.array([0.5,0.5])).T
+	r_idx2 = np.sqrt(np.sum(offsets_from_centre**2, axis=0))
 	r = np.linspace(0,np.max(r_idx2),30)
 	result_radial_data = np.array([np.nansum(result[(r_min <= r_idx2) & (r_idx2 < r_max) ]) for r_min, r_max in zip(r[:-1], r[1:])])
 	
@@ -145,6 +145,8 @@ def run(
 		method : str = 'ultranest',
 	):
 	
+	original_data_type=None
+	
 	if fit_result_dir is None:
 		fit_result_dir = Path(output_path).parent
 	
@@ -159,6 +161,7 @@ def run(
 		data_hdu = data_hdul[fits_spec.ext]
 		data = data_hdu.data
 		hdr = data_hdu.header
+		original_data_type = data_hdu.data.dtype
 		axes = fits_spec.axes['CELESTIAL']
 		spectral_axes = aph.fits.header.get_spectral_axes(hdr)
 		if len(spectral_axes) != 1:
@@ -301,7 +304,7 @@ def run(
 
 	hdus.append(fits.PrimaryHDU(
 		header = hdr,
-		data = result_data
+		data = result_data.astype(original_data_type)
 	))
 	
 	
@@ -368,7 +371,7 @@ def parse_args(argv):
 		))
 	)
 	
-	parser.add_argument('--fit_result_dir', type=str, default=None, help='Directory to store results of PSF fit in. Will create a sub-directory below the given path. If None, will create a sibling folder to the output file (i.e. output file parent directory is used).')
+	parser.add_argument('--fit_result_dir', type=str, default=None, help='Directory to store results of PSF fit in. Will create a sub-directory below the given path. If None, will create a sibling folder to the output file (i.e., output file parent directory is used).')
 
 	parser.add_argument('--model', type=str, default='radial', choices=tuple(psf_models.keys()), help='Model to fit to PSF data.')
 

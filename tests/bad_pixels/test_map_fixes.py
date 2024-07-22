@@ -17,7 +17,7 @@ import scientest.decorators
 random.seed(0) # ensure repeatable values
 
 # NOTE: Better way to test these functions would be to generate an array of a
-#		known function, e.g. (r-r_0)**2, mask out some points with NANs and 
+#		known function, e.g., (r-r_0)**2, mask out some points with NANs and 
 #		INFs, then use the "bp.fix()" function. Compare the result with the
 #		input array
 
@@ -161,7 +161,7 @@ def test_bp_map_interp_fix():
 		+ (f"Has NANs at {list(tuple(x) for x in np.argwhere(np.isnan(a)))}. " if np.any(np.isnan(a)) else "") \
 		+ (f"Has INFs at {list(tuple(x) for x in np.argwhere(np.isinf(a)))}. " if np.any(np.isinf(a)) else "") 
 
-# TODO: Change this to use "artifact_detection.py" and "create_bad_pixel_mask.py"
+# TODO: Change this to use "artefact_detection.py" and "create_bad_pixel_mask.py"
 #@scientest.decorators.debug
 @scientest.decorators.mark('broken', 'NEEDS TO BE UPDATED')
 def test_bp_map_ssa_sum_prob():

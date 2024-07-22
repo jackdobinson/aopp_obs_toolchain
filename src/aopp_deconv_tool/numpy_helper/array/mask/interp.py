@@ -79,7 +79,7 @@ def mean(
 		while window.ndim < a.ndim:
 			window = window[None,...]
 		_lgr.debug(f'{window=}')
-		deltas = nph.array.offsets_from_center_of_mask(np.array(window, bool))
+		deltas = nph.array.offsets_from_centre_of_mask(np.array(window, bool))
 	else:
 		deltas = nph.array.offsets_manhattan_distance(window, a.ndim)
 	_lgr.debug(f'{deltas=}')

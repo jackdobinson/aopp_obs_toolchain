@@ -105,7 +105,7 @@ def ssa2d_sum_prob_map(
 			List of literal strings that tells us how to tranform the "value"
 			argument after which it is used as the cutoff for a bad pixel.
 			If no options are given, "value" is used as the cutoff directly,
-			i.e. if "value" is 0.99, then only pixels which have a median
+			i.e., if "value" is 0.99, then only pixels which have a median
 			probability > 0.99 are classified as "bad pixels".
 
 			Options are:

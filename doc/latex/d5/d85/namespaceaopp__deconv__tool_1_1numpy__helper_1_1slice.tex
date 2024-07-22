@@ -3,7 +3,7 @@
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-tuple\mbox{[}slice,...\mbox{]} \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1numpy__helper_1_1slice_a90f91c7168799147978c08f3b987ed5b}{around\+\_\+center}} (tuple\mbox{[}int,...\mbox{]} big\+\_\+shape, tuple\mbox{[}int,...\mbox{]} small\+\_\+shape)
+tuple\mbox{[}slice,...\mbox{]} \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1numpy__helper_1_1slice_a90f91c7168799147978c08f3b987ed5b}{around\+\_\+centre}} (tuple\mbox{[}int,...\mbox{]} big\+\_\+shape, tuple\mbox{[}int,...\mbox{]} small\+\_\+shape)
 \item 
 tuple\mbox{[}slice,...\mbox{]} \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1numpy__helper_1_1slice_a812bd38e04fc11e3a899c35bd87ae421}{from\+\_\+string}} (str slice\+\_\+tuple\+\_\+str)
 \item 
@@ -29,12 +29,12 @@ tuple\mbox{[}slice\mbox{]} \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1numpy
 
 \doxysubsection{Function Documentation}
 \mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1numpy__helper_1_1slice_a90f91c7168799147978c08f3b987ed5b}\label{namespaceaopp__deconv__tool_1_1numpy__helper_1_1slice_a90f91c7168799147978c08f3b987ed5b}} 
-\index{aopp\_deconv\_tool.numpy\_helper.slice@{aopp\_deconv\_tool.numpy\_helper.slice}!around\_center@{around\_center}}
-\index{around\_center@{around\_center}!aopp\_deconv\_tool.numpy\_helper.slice@{aopp\_deconv\_tool.numpy\_helper.slice}}
-\doxysubsubsection{\texorpdfstring{around\_center()}{around\_center()}}
-{\footnotesize\ttfamily  tuple\mbox{[}slice,...\mbox{]} aopp\+\_\+deconv\+\_\+tool.\+numpy\+\_\+helper.\+slice.\+around\+\_\+center (\begin{DoxyParamCaption}\item[{tuple\mbox{[}int,...\mbox{]}}]{big\+\_\+shape,  }\item[{tuple\mbox{[}int,...\mbox{]}}]{small\+\_\+shape }\end{DoxyParamCaption})}
+\index{aopp\_deconv\_tool.numpy\_helper.slice@{aopp\_deconv\_tool.numpy\_helper.slice}!around\_centre@{around\_centre}}
+\index{around\_centre@{around\_centre}!aopp\_deconv\_tool.numpy\_helper.slice@{aopp\_deconv\_tool.numpy\_helper.slice}}
+\doxysubsubsection{\texorpdfstring{around\_centre()}{around\_centre()}}
+{\footnotesize\ttfamily  tuple\mbox{[}slice,...\mbox{]} aopp\+\_\+deconv\+\_\+tool.\+numpy\+\_\+helper.\+slice.\+around\+\_\+centre (\begin{DoxyParamCaption}\item[{tuple\mbox{[}int,...\mbox{]}}]{big\+\_\+shape,  }\item[{tuple\mbox{[}int,...\mbox{]}}]{small\+\_\+shape }\end{DoxyParamCaption})}
 
-\begin{DoxyVerb}    returns a slice of a in the shape of b about the center of a
+\begin{DoxyVerb}    returns a slice of a in the shape of b about the centre of a
     Accepts np.ndarray or tuple for each argument\end{DoxyVerb}
  \mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1numpy__helper_1_1slice_a812bd38e04fc11e3a899c35bd87ae421}\label{namespaceaopp__deconv__tool_1_1numpy__helper_1_1slice_a812bd38e04fc11e3a899c35bd87ae421}} 
 \index{aopp\_deconv\_tool.numpy\_helper.slice@{aopp\_deconv\_tool.numpy\_helper.slice}!from\_string@{from\_string}}
@@ -59,17 +59,17 @@ tuple\mbox{[}slice\mbox{]} \mbox{\hyperlink{namespaceaopp__deconv__tool_1_1numpy
         If True will return an `a.ndim` length tuple, otherwise will return a numpy array.\end{DoxyVerb}
  Here is the call graph for this function\+:\nopagebreak
 \begin{figure}[H]
-\begin{center}
+\begin{centre}
 \leavevmode
 \includegraphics[width=350pt]{d5/d85/namespaceaopp__deconv__tool_1_1numpy__helper_1_1slice_a31664111efe15833f2c03b326136d4c0_cgraph}
-\end{center}
+\end{centre}
 \end{figure}
 Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
-\begin{center}
+\begin{centre}
 \leavevmode
 \includegraphics[width=350pt]{d5/d85/namespaceaopp__deconv__tool_1_1numpy__helper_1_1slice_a31664111efe15833f2c03b326136d4c0_icgraph}
-\end{center}
+\end{centre}
 \end{figure}
 \mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1numpy__helper_1_1slice_a4d7e39fb71fc5850a311f2a6959b1a25}\label{namespaceaopp__deconv__tool_1_1numpy__helper_1_1slice_a4d7e39fb71fc5850a311f2a6959b1a25}} 
 \index{aopp\_deconv\_tool.numpy\_helper.slice@{aopp\_deconv\_tool.numpy\_helper.slice}!iter\_indices@{iter\_indices}}
@@ -84,7 +84,7 @@ Here is the caller graph for this function\+:\nopagebreak
     slice_tuple
         A tuple of length `a.ndim` that specifies the slices
     group
-        Axes that are not iterated over (i.e. they are grouped together). E.g.
+        Axes that are not iterated over (i.e., they are grouped together). E.g.
         if a.shape=(3,5,7,9) and group=(1,3), then on iteration the indices
         `idx` select a slice from `a` such that a[idx].shape=(5,9).
     squeeze
@@ -92,10 +92,10 @@ Here is the caller graph for this function\+:\nopagebreak
         or should they remain separate (need a.ndim - len(group) loops).\end{DoxyVerb}
  Here is the call graph for this function\+:\nopagebreak
 \begin{figure}[H]
-\begin{center}
+\begin{centre}
 \leavevmode
 \includegraphics[width=350pt]{d5/d85/namespaceaopp__deconv__tool_1_1numpy__helper_1_1slice_a4d7e39fb71fc5850a311f2a6959b1a25_cgraph}
-\end{center}
+\end{centre}
 \end{figure}
 \mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1numpy__helper_1_1slice_afe7bece88a3a45a4bac9dedbc28c08a6}\label{namespaceaopp__deconv__tool_1_1numpy__helper_1_1slice_afe7bece88a3a45a4bac9dedbc28c08a6}} 
 \index{aopp\_deconv\_tool.numpy\_helper.slice@{aopp\_deconv\_tool.numpy\_helper.slice}!squeeze@{squeeze}}
@@ -104,7 +104,7 @@ Here is the caller graph for this function\+:\nopagebreak
 {\footnotesize\ttfamily  tuple\mbox{[}slice $\vert$ int\mbox{]} aopp\+\_\+deconv\+\_\+tool.\+numpy\+\_\+helper.\+slice.\+squeeze (\begin{DoxyParamCaption}\item[{tuple\mbox{[}slice $\vert$ int,...\mbox{]}}]{slice\+\_\+tuple }\end{DoxyParamCaption})}
 
 \begin{DoxyVerb}    Given a tuple of slices (`slice_tuple`), if a slice only selects a single index, replace it with an index instead.
-    e.g. [10:100, 13:14, 50:60] -> [10:100, 13, 50:60]\end{DoxyVerb}
+    e.g., [10:100, 13:14, 50:60] -> [10:100, 13, 50:60]\end{DoxyVerb}
  \mbox{\Hypertarget{namespaceaopp__deconv__tool_1_1numpy__helper_1_1slice_a0fed71080749b83c2f20d225928d5821}\label{namespaceaopp__deconv__tool_1_1numpy__helper_1_1slice_a0fed71080749b83c2f20d225928d5821}} 
 \index{aopp\_deconv\_tool.numpy\_helper.slice@{aopp\_deconv\_tool.numpy\_helper.slice}!unsqueeze@{unsqueeze}}
 \index{unsqueeze@{unsqueeze}!aopp\_deconv\_tool.numpy\_helper.slice@{aopp\_deconv\_tool.numpy\_helper.slice}}
@@ -112,13 +112,13 @@ Here is the caller graph for this function\+:\nopagebreak
 {\footnotesize\ttfamily  tuple\mbox{[}slice\mbox{]} aopp\+\_\+deconv\+\_\+tool.\+numpy\+\_\+helper.\+slice.\+unsqueeze (\begin{DoxyParamCaption}\item[{tuple\mbox{[}slice $\vert$ int,...\mbox{]}}]{slice\+\_\+tuple }\end{DoxyParamCaption})}
 
 \begin{DoxyVerb}    Given a tuple of slices and indices (`slice_tuple`), replace all indices with a slice from i->i+1
-    e.g. [10:100, 13, 50:60] -> [10:100, 13:14, 50:60]\end{DoxyVerb}
+    e.g., [10:100, 13, 50:60] -> [10:100, 13:14, 50:60]\end{DoxyVerb}
  Here is the caller graph for this function\+:\nopagebreak
 \begin{figure}[H]
-\begin{center}
+\begin{centre}
 \leavevmode
 \includegraphics[width=350pt]{d5/d85/namespaceaopp__deconv__tool_1_1numpy__helper_1_1slice_a0fed71080749b83c2f20d225928d5821_icgraph}
-\end{center}
+\end{centre}
 \end{figure}
 
 

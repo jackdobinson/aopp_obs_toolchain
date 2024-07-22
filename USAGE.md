@@ -13,7 +13,7 @@
 	1. [FITS Specifier](#fits-specifier)
 	1. [Commandline Scripts](#commandline-scripts)
 		1. [Spectral Rebinning](#spectral-rebinning-script)
-		1. [Artifact Detection](#artifact-detection-script)
+		1. [Artefact Detection](#artefact-detection-script)
 		1. [Bad Pixel Mask](#bad-pixel-mask-script)
 		1. [Interpolation](#interpolation-script)
 		1. [PSF Normalisation](#psf-normalisation-script)
@@ -145,14 +145,14 @@ a string like `conda X.Y.Z`, where X,Y,Z are the version number of anaconda.
 #### Creating a Python Virtual Environment <a id="creating-a-python-virtual-environment"></a> ####
 
 To create a virtual environment use the command `${HOME}/python/python3.12/bin/python3 -m venv <VENV_DIR>`, where `<VENV_DIR>` is the directory
-you want the virtual environment to be in. E.g. `${HOME}/python/python3.12/bin/python3 -m venv .venv_3.12.2` will create the virtual
+you want the virtual environment to be in. E.g., `${HOME}/python/python3.12/bin/python3 -m venv .venv_3.12.2` will create the virtual
 environment in the directory `.venv_3.12.2` in the current folder (NOTE: the `.` infront of the directory
 name will make it hidden by default).
 
 #### Creating an Anaconda Python Virtual Environment <a id="creating-an-anaconca-python-virtual-environment"></a> ####
 
 *Anaconda Python* manages many of the background details for you. Use the command `conda create -n <VENV_NAME> python=3.12.2`, where
-`<VENV_NAME>` is the name of the virtual environment to create. E.g. `conda create -n venv_3.12.2 python=3.12.2`
+`<VENV_NAME>` is the name of the virtual environment to create. E.g., `conda create -n venv_3.12.2 python=3.12.2`
 
 
 #### Activating and Deactivating a Python Virtual Environment <a id="activating-and-deactivating-a-python-virtual-environment"></a> ####
@@ -175,7 +175,7 @@ Once activated, your command line prompt should change to have something like `(
 To check everything is working, enter the following commands (NOTE: the full path is not required as we are now using the virtual environment):
 
 * `python --version`
-  - Should output the version you expect, e.g. `Python 3.12.2`
+  - Should output the version you expect, e.g., `Python 3.12.2`
 
 * `python -c 'import sys; print(sys.prefix != sys.base_prefix)'`
   - Should output `True` if you are in a virtual environment or `False` if you are not.
@@ -229,7 +229,7 @@ See the `examples` folder of the github.
 
 When operating on a FITS file there are often multiple extensions, the axes ordering is unknown, and you may only need a subset of the data. Therefore, where possible scripts accept a *fits specifier* instead of a path. The format is a follows:
 
-A string that describes which FITS file to load, the extension (i.e backplane) name or number to use enclosed in curly brackets, the slices (i.e. sub-regions) that should be operated upon in [python slice syntax](#python-slice-syntax), and the data axes to operate on as a [tuple](#python-tuple-syntax) or as a [python dictionary](https://docs.python.org/3/tutorial/datastructures.html#dictionaries) with strings as keys and [tuples](#python-tuple-syntax) as values.
+A string that describes which FITS file to load, the extension (i.e backplane) name or number to use enclosed in curly brackets, the slices (i.e., sub-regions) that should be operated upon in [python slice syntax](#python-slice-syntax), and the data axes to operate on as a [tuple](#python-tuple-syntax) or as a [python dictionary](https://docs.python.org/3/tutorial/datastructures.html#dictionaries) with strings as keys and [tuples](#python-tuple-syntax) as values.
 
 See the appendix for a [quick introduction to the FITS format](#fits-file-format-information) for a description of why this information is needed, and why [axis numbers are different between FITS and Python](#fits-data-order).
 
@@ -248,7 +248,7 @@ Format:
 
 	NOTE: FITS uses Column-major storage and 1-indexing (like Fortran). However, Python
 		uses Row-major storage and 0-indexing (like C).	This has the effect of reversing
-		the python numbering and adding one everywhere. I.e. In Python, the axes named 
+		the python numbering and adding one everywhere. I.e., In Python, the axes named 
 		(0, 1, 2), as we have done above, a FITS file calls (3, 2, 1). Therefore, in the 
 		above format, "slice0" operates on axis M+1 in FITS numbering, and "sliceM" 
 		operates on axis 1 in FITS numbering. These specifiers use the PYTHON convention,
@@ -287,12 +287,12 @@ Format:
 		it needs specified.
 		
 	NOTE: As the format for a FITS specifier uses characters that a terminal application may interpret as special characters,
-		e.g. square/curly/round brackets, and colons. It can be better to wrap specifiers in quotes or single quotes. When
+		e.g., square/curly/round brackets, and colons. It can be better to wrap specifiers in quotes or single quotes. When
 		doing this, it is important to un-escape any previously escaped characters.
 		For example, specifies with timestamps in them would normally have the colons escaped, but when wrapped in quotes
-		this is not required. E.g. the specifier ./example_data/MUSE.2019-10-17T23\:46\:14.117_normalised.fits(1,2) will not
+		this is not required. E.g., the specifier ./example_data/MUSE.2019-10-17T23\:46\:14.117_normalised.fits(1,2) will not
 		play nice with the bash shell due to the brackets. However, wrapping it in single quotes and removing the escaping
-		slashes from the colons means it will work. E.g. './example_data/MUSE.2019-10-17T23:46:14.117_normalised.fits(1,2)'
+		slashes from the colons means it will work. E.g., './example_data/MUSE.2019-10-17T23:46:14.117_normalised.fits(1,2)'
 
 	Examples:
 		~/home/datasets/MUSE/neptune_obs_1.fits{DATA}[100:200,:,:](1,2)
@@ -321,7 +321,7 @@ This routine accepts a FITS file specifier, it will spectrally rebin the fits ex
 
 The underlying algorithm does the following:
 
-* We have a 3d dataset. In the FITS file we get points that correspond to each pixel center, not a bin or region. We assume that the value "belongs" to the center point of the pixel and is not defined elsewhere. I.e. treat the data like point-cloud data. 
+* We have a 3d dataset. In the FITS file we get points that correspond to each pixel centre, not a bin or region. We assume that the value "belongs" to the centre point of the pixel and is not defined elsewhere. I.e., treat the data like point-cloud data. 
 
 * The data is convolved with a response function (usually triangular for the spectral axis) of some characteristic with `bin_width`, and then sampled every `bin_step` from the start of the axis.
 
@@ -329,7 +329,7 @@ The underlying algorithm does the following:
 
 ```
 	#############################################################
-	NOTE: This is a general case and not accurate for a FITS file as we don't have bin-edges, just the centers. Therefore we assume bin_width=bin_step.
+	NOTE: This is a general case and not accurate for a FITS file as we don't have bin-edges, just the centres. Therefore we assume bin_width=bin_step.
 	input_grid    : |---^---|   |---^---|   |---^---|   |---^---|
 	              :       |---^---|   |---^---|   |---^---|   	
 	
@@ -353,7 +353,7 @@ The underlying algorithm does the following:
 
 	"|" = bin edge
 
-	"^" = bin center
+	"^" = bin centre
 
 	width
 		The distance between the start and end of a bin
@@ -369,7 +369,7 @@ The underlying algorithm does the following:
 
 * When sampling at `bin_step`, we linearly interpolate between the results of the convolution.
 
-* The integral of the response function makes a big difference to the output. If there response function integrates to 1, we have the effect of averaging over the response function. This is appropriate when we are dealing with units that divide out the effect of the physical pixel size e.g. counts/wavelength. However, if we are dealing with raw counts, the response function should not integrate to 1 it's value should relate to the size of the response function relative to the size of the physical pixels.
+* The integral of the response function makes a big difference to the output. If there response function integrates to 1, we have the effect of averaging over the response function. This is appropriate when we are dealing with units that divide out the effect of the physical pixel size e.g., counts/wavelength. However, if we are dealing with raw counts, the response function should not integrate to 1 it's value should relate to the size of the response function relative to the size of the physical pixels.
 
 * `bin_width` is defined differently for different response functions:
   - Triangular response function : `bin_width` is the full width at half maximum (FWHM),
@@ -408,13 +408,13 @@ After both command are complete there should be two new files that contain their
 * `./example_data/ifu_observation_datasets/MUSE.2019-10-17T23\:46\:14.117_rebin.fits`
 * `./example_data/ifu_observation_datasets/MUSE.2019-10-18T00\:01\:19.521_rebin.fits`
 
-### Artifact Detection <a id="artifact-detection-script"></a> ###
+### Artefact Detection <a id="artefact-detection-script"></a> ###
 
-Invoke via `python -m aopp_deconv_tool.artifact_detection`.
+Invoke via `python -m aopp_deconv_tool.artefact_detection`.
 
-NOTE: The current implementataion of artifact detection is tuned for observations of objects of a significant fraction of the field size. Therefore it will not give good results for standard star observations.
+NOTE: The current implementataion of artefact detection is tuned for observations of objects of a significant fraction of the field size. Therefore it will not give good results for standard star observations.
 
-Accepts a FITS specifier, uses a singular spectrum analysis (SSA) based algorithm to produce a heuteristic `badness_map` that reflects how likely a pixel is to be part of an artifact.
+Accepts a FITS specifier, uses a singular spectrum analysis (SSA) based algorithm to produce a heuristic `badness_map` that reflects how likely a pixel is to be part of an artefact.
 
 The badness map is calculated as follows for each 2D image in the FITS data:
 
@@ -424,45 +424,44 @@ The badness map is calculated as follows for each 2D image in the FITS data:
   - Ending with 75% of the way through the components, as the components with the smallest eigenvalues are likely to be made up of noise.
 * For each component in the chosen SSA subset, the number of standard deviations a pixel is away from the mean of it's region is calculated (called the `component_badness_map`)
   -  The "region" of a pixel is defined in the following way. A pixel's region is it's brightness class (a pixel is a member of one of three brightness thresholds (background, midground, foreground)), and all pixels of it's brightness class within N/8 from the pixel, where N is the largest x or y dimension of the image.
-* The `component_badness_map`s for the chosen subset are averaged together to create the `badness_map` heuteristic.
+* The `component_badness_map`s for the chosen subset are averaged together to create the `badness_map` heuristic.
 
 #### Module Arguments ####
 
 * `-o` or `--output_path`
-  - Output fits file path. If not specified, it is same as the path to the input file with "_artifactmap" appended to the filename.
+  - Output fits file path. If not specified, it is same as the path to the input file with "_artefactmap" appended to the filename.
 
 * `--strategy`
   - `ssa` (DEFAULT)
-    + Uses singular spectrum analysis (SSA) to determine how likely a pixel is to belong to an artifact
+    + Uses singular spectrum analysis (SSA) to determine how likely a pixel is to belong to an artefact
 * `--ssa.w_shape`
   - Shape of the window used for the `ssa` strategy (default : 10)
 * `--ssa.start`
-  - First SSA component to be included in artifact detection calc. Negative numbers are fractions of range
+  - First SSA component to be included in artefact detection calc. Negative numbers are fractions of range
 * `--ssa.stop`
-  - Last SSA component to be included in artifact detection calc. Negative numbers are fractions of range
+  - Last SSA component to be included in artefact detection calc. Negative numbers are fractions of range
 
 
 #### Examples ####
 
 Using the results from the rebinning example:
 
-* `python -m aopp_deconv_tool.artifact_detection './example_data/ifu_observation_datasets/MUSE.2019-10-17T23:46:14.117_rebin.fits(1,2)'`
-* `python -m aopp_deconv_tool.artifact_detection ./example_data/ifu_observation_datasets/MUSE.2019-10-18T00\:01\:19.521_rebin.fits`
+* `python -m aopp_deconv_tool.artefact_detection ./example_data/ifu_observation_datasets/MUSE.2019-10-18T00\:01\:19.521_rebin.fits`
 
 ### Bad Pixel Mask <a id="bad-pixel-mask-script"></a> ###
 
 Invoke via `python -m aopp_deconv_tool.create_bad_pixel_mask`.
 
-Accepts a `badness_map` heuteristic, uses a set of value cuts to produce a boolean mask (the `bad_pixel_mask`) that describes which pixels are considered "bad" and should be interpolated over using a different script.
+Accepts a `badness_map` heuristic, uses a set of value cuts to produce a boolean mask (the `bad_pixel_mask`) that describes which pixels are considered "bad" and should be interpolated over using a different script.
 
 The `badness_map` is assumed to be a 3D cube, therefore the `bad_pixel_mask` is calculated from a set of (`index`,`value`) pairs. Where `index` is an index into the `badness_map`, and `value` is the value above which a pixel in the `badness_map` is considered "bad". Not all indices have to be specified, and values for unspecified indices will be interpolated (with the values clamped at the LHS and RHS). If no pairs are provided, a value of 3 is assumed for all indices. For each 1 above the cutoff value, a bad pixel is binary dilated. This way "very bad" pixels spread their "badness" to neighbouring pixels.
 
 To get a set of (`index`, `value`) pairs, the following workflow is suggested:
 
-1. Open the `badness_map` FTIS file in a FITS viewer of some sort (e.g. [DS9](https://sites.google.com/cfa.harvard.edu/saoimageds9) or [QFitsView](https://sites.google.com/cfa.harvard.edu/saoimageds9)), you may need to use a logarithmic scale.
+1. Open the `badness_map` FTIS file in a FITS viewer of some sort (e.g., [DS9](https://sites.google.com/cfa.harvard.edu/saoimageds9) or [QFitsView](https://sites.google.com/cfa.harvard.edu/saoimageds9)), you may need to use a logarithmic scale.
 2. Open the data the `badness_map` was created from as well so you can compare them.
-3. Choose some representative indices (i.e. wavelengths) to work on. For illustrative purposes we will assume indices, (10, 99, 135).
-4. In the `badness_map` viewer, alter the minimum value of the data display range (somewhere around 4 or 5 is a good starting point) until the visible pixels select artifacts reliably, but do not select real image features (e.g. the edge of the planetary disk). Once found, record the (`index`,`value`) pair.
+3. Choose some representative indices (i.e., wavelengths) to work on. For illustrative purposes we will assume indices, (10, 99, 135).
+4. In the `badness_map` viewer, alter the minimum value of the data display range (somewhere around 4 or 5 is a good starting point) until the visible pixels select artefacts reliably, but do not select real image features (e.g., the edge of the planetary disk). Once found, record the (`index`,`value`) pair.
 5. Repeat (4) for each index you chose in step (3).
 
 #### Module Arguments ####
@@ -477,8 +476,7 @@ To get a set of (`index`, `value`) pairs, the following workflow is suggested:
 
 Using the results from the rebinning example:
 
-* `python -m aopp_deconv_tool.create_bad_pixel_mask './example_data/ifu_observation_datasets/MUSE.2019-10-17T23:46:14.117_rebin_artifactmap.fits(1,2)'`
-* `python -m aopp_deconv_tool.create_bad_pixel_mask ./example_data/ifu_observation_datasets/MUSE.2019-10-18T00\:01\:19.521_rebin_artifactmap.fits`
+* `python -m aopp_deconv_tool.create_bad_pixel_mask ./example_data/ifu_observation_datasets/MUSE.2019-10-18T00\:01\:19.521_rebin_artefactmap.fits`
 
 
 ### Interpolation <a id="interpolation-script"></a> ###
@@ -491,9 +489,9 @@ The interpolation process uses a [standard interpolation routine](https://docs.s
 
 * embedded in a larger field of zeros
 * convolved with a (3x3) kernel
-* the center region of the convolved data is replaced with the original data
+* the centre region of the convolved data is replaced with the original data
 * the interpolation is performed
-* the center region is extracted as the interpolation of the original data.
+* the centre region is extracted as the interpolation of the original data.
 
 This process removes hard edges and reduces edge effects in a similar way to a "reflect" boundary condition (which the routine does not support at the time of writing) but the value tends towards zero and high-frequency variations have little impact.
 
@@ -516,8 +514,7 @@ This process removes hard edges and reduces edge effects in a similar way to a "
 
 Using the results from the rebinning example. Interpolation is perfomed via:
 
-* `python -m aopp_deconv_tool.interpolate './example_data/ifu_observation_datasets/MUSE.2019-10-17T23:46:14.117_rebin.fits(1,2)' './example_data/ifu_observation_datasets/MUSE.2019-10-17T23:46:14.117_rebin_artifactmap_bpmask.fits(1,2)'`
-* `python -m aopp_deconv_tool.interpolate ./example_data/ifu_observation_datasets/MUSE.2019-10-18T00\:01\:19.521_rebin.fits ./example_data/ifu_observation_datasets/MUSE.2019-10-18T00\:01\:19.521_rebin_artifactmap_bpmask.fits`
+* `python -m aopp_deconv_tool.interpolate ./example_data/ifu_observation_datasets/MUSE.2019-10-18T00\:01\:19.521_rebin.fits ./example_data/ifu_observation_datasets/MUSE.2019-10-18T00\:01\:19.521_rebin_artefactmap_bpmask.fits`
 
 Unfortunately, the file `./example_data/ifu_observation_datasets/MUSE.2019-10-17T23\:46\:14.117_rebin.fits` is not quite standard and lists it's sky axes as 'PIXEL' axes. Therefore we have to provide the sky axes to the interpolate routine (or alter the FITS file). As axes are denoted using round brackets in a FITS Specifier, we have to wrap the string in single quotes and remove the escaping `\`s from the colons to enable the terminal to understand the string does not contain commands.
 
@@ -529,8 +526,8 @@ Invoke via `python -m aopp_deconv_tool.psf_normalise`.
 Peforms the following operations:
 * Ensures image shape is odd, so there is a definite central pixel
 * Removes any outliers (based on the `sigma` option)
-* Recenters the image around the center of mass (uses the `threshold` and `n_largest_regions` options)
-* Optionally trims the image to a desired shape around the center of mass to reduce data volume and speed up subsequent steps
+* Recentres the image around the centre of mass (uses the `threshold` and `n_largest_regions` options)
+* Optionally trims the image to a desired shape around the centre of mass to reduce data volume and speed up subsequent steps
 * Normalises the image to sum to 1
 
 #### Module Arguments ####
@@ -542,7 +539,7 @@ Peforms the following operations:
   - When finding region of interest, only values larger than this fraction of the maximum value are included.
 
 * `--n_largest_regions` = 1
-  - When finding region of interest, if using a threshold will only the n_largest_regions in the calculation. A region is defined as a contiguous area where value >= `threshold` along `axes`. I.e. in a 3D cube, if we recenter about the Center of mass (COM) on the sky (CELESTIAL) axes the regions will be calculated on the sky, not in the spectral axis (for example)
+  - When finding region of interest, if using a threshold will only the n_largest_regions in the calculation. A region is defined as a contiguous area where value >= `threshold` along `axes`. I.e., in a 3D cube, if we recentre about the centre of mass (COM) on the sky (CELESTIAL) axes the regions will be calculated on the sky, not in the spectral axis (for example)
 
 * `--background_threshold` = 1E-3
   - Exclude the largest connected region with values larger than this fraction of the maximum value when finding the background
@@ -559,13 +556,13 @@ Peforms the following operations:
   - When finding the outlier mask, the number of standard deviations away from the mean a pixel must be to be considered an outlier
 
 * `--trim_to_shape` = None
-  - After centering etc. if not None, will trim data to this shape around the center pixel. Used to reduce data volume for faster processing.
+  - After centreing etc. if not None, will trim data to this shape around the centre pixel. Used to reduce data volume for faster processing.
 
 #### Examples ####
 
 Using the results from the interpolation example. Normalisation is perfomed via:
 
-* `python -m aopp_deconv_tool.psf_normalise './example_data/ifu_observation_datasets/MUSE.2019-10-17T23:46:14.117_rebin_interp.fits(1,2)'`
+* `python -m aopp_deconv_tool.psf_normalise './example_data/ifu_observation_datasets/MUSE.2019-10-17T23:46:14.117_rebin.fits(1,2)'`
 
 
 ### PSF Model Fitting <a id="psf-model-fitting-script"></a> ###
@@ -588,7 +585,7 @@ Fitting Methods:
   - Output fits file path. If not specified, it is same as the path to the input file with "_modelled" appended to the filename.
 
 * `--fit_result_dir`
-  - Directory to store results of PSF fit in. Will create a sub-directory below the given path. If None, will create a sibling folder to the output file (i.e. output file parent directory is used)
+  - Directory to store results of PSF fit in. Will create a sub-directory below the given path. If None, will create a sibling folder to the output file (i.e., output file parent directory is used)
 
 * `--model` : Model to fit to PSF data:
   - `radial` (DEFAULT)
@@ -622,13 +619,13 @@ Fitting Methods:
 
 Using results from the normalisation example, fitting is performed via:
 
-* `python -m aopp_deconv_tool.fit_psf_model './example_data/ifu_observation_datasets/MUSE.2019-10-17T23:46:14.117_rebin_interp_normalised.fits(1,2)'`
+* `python -m aopp_deconv_tool.fit_psf_model './example_data/ifu_observation_datasets/MUSE.2019-10-17T23:46:14.117_rebin_normalised.fits(1,2)'`
 
 ### Deconvolution <a id="deconvolution-script"></a> ###
 
 Invoke via `python -m aopp_deconv_tool.deconvolve`. Use the `-h` option to see the help message.
 
-Assumes the observation data has no NAN or INF pixels, assumes the PSF data is centered and sums to 1. Use the `--plot` option
+Assumes the observation data has no NAN or INF pixels, assumes the PSF data is centreed and sums to 1. Use the `--plot` option
 to see an progress plot that updates every 10 iterations of the MODIFIED_CLEAN algorithm, useful for working out what different
 parameters do.
 
@@ -637,8 +634,8 @@ At each iteration of the MODIFIED_CLEAN algorithm, the following procedure is pe
 * The residual is calculated by subtracting the clean map from the original data
 * The pixel selection metric is set equal to the absolute value of the residual
 * Pixels in the selection metric above a specified threshold create the selection mask. The threshold can be calculated one of two ways
-  - A static threshold, e.g. a fraction of the brightest pixel in the selection metric (range from 0->1, normally 0.3)
-  - An adaptive threshold, e.g. the maximum fraction difference Otsu threshold calculated from the selection metric
+  - A static threshold, e.g., a fraction of the brightest pixel in the selection metric (range from 0->1, normally 0.3)
+  - An adaptive threshold, e.g., the maximum fraction difference Otsu threshold calculated from the selection metric
 * The selection mask is applied to the residual, and the selected pixels of the residual are copied into a new array called the current components and multiplied by the loop gain (range from 0->1, normally 0.02)
 * The current components are added to the component map
 * The current components are conolved with the PSF to create the "current convolved map"
@@ -673,7 +670,7 @@ Upon iteration, the component map **may** be convolved with a gaussian to regula
 
 Using results from the previous examples, deconvolution is performed via:
 
-* `python -m aopp_deconv_tool.deconvolve ./example_data/ifu_observation_datasets/MUSE.2019-10-18T00\:01\:19.521_rebin_interp.fits './example_data/ifu_observation_datasets/MUSE.2019-10-17T23:46:14.117_rebin_interp_normalised_modelled_radial.fits(1,2)' --threshold -1`
+* `python -m aopp_deconv_tool.deconvolve ./example_data/ifu_observation_datasets/MUSE.2019-10-18T00\:01\:19.521_rebin_interp.fits './example_data/ifu_observation_datasets/MUSE.2019-10-17T23:46:14.117_rebin_normalised_modelled_radial.fits(1,2)' --threshold -1`
 
 
 ## Using the Package in Code <a id="using-the-package-in-code"></a> ##
@@ -705,7 +702,7 @@ instrument fitting.
 
 Singular Spectrum Analysis is performed by the `SSA` class in the `aopp_deconv_tools.py_ssa` module. An interactive 
 viewer that can show SSA components can be run via `python -m aopp_deconv_tool.graphical_frontends.ssa_filtering`.
-By default it will show some test data, if you pass an **image** file (i.e. not a FITS file, but a `.jpg` etc.) it
+By default it will show some test data, if you pass an **image** file (i.e., not a FITS file, but a `.jpg` etc.) it
 will use that image instead of the default one.
 
 The `ssa2d_sub_prob_map` function in the `aopp_deconv_tool.algorithm.bad_pixels.ssa_sub_prob` module attempts to 
@@ -737,15 +734,15 @@ Contains a short description of the invocation syntax.
 * Starts with `usage: <script_name>` where `<script_name>` is the name of the script being invoked. 
 * Then keyword arguments are listed, followed by positional arguments (sometimes these are reversed). 
   - There are two types of keyword arguments, *short* and *long*, usually to save space only the *short* name is in the usage line.
-    + *short* denoted by a single dash followed by a single letter, e.g. `-h`.
-    + *long* denoted by two dashes followed by a string, e.g. `--help`.
+    + *short* denoted by a single dash followed by a single letter, e.g., `-h`.
+    + *long* denoted by two dashes followed by a string, e.g., `--help`.
 * Optional arguments are denoted by square brackets `[]`.
 * A set of choices of arguments that are mutually exclusive are separated by a pipe `|`
-* A grouping of arguments (e.g. for required arguments that are mutually exclusive) is done with round brackets `()`
+* A grouping of arguments (e.g., for required arguments that are mutually exclusive) is done with round brackets `()`
 * A keyword argument that requires a value will have one of the following after it:
-  - An uppercase name that denotes the kind of value e.g. `NAME` 
-  - A data type that denotes the value e.g. `float` or `int` or `string`
-  - A set of choices of literal values (one of which must be chosen) is denoted by curly brackets `{}`, e.g. `{1,2,3}` or `{choice1,choice2}`.
+  - An uppercase name that denotes the kind of value e.g., `NAME` 
+  - A data type that denotes the value e.g., `float` or `int` or `string`
+  - A set of choices of literal values (one of which must be chosen) is denoted by curly brackets `{}`, e.g., `{1,2,3}` or `{choice1,choice2}`.
 
 Example: `usage: deconvolve.py [-h] [-o OUTPUT_PATH] [--plot] [--deconv_method {clean_modified,lucy_richardson}] obs_fits_spec psf_fits_spec`
 
@@ -791,8 +788,8 @@ Example:
 A full argument description looks like this:
 ```
 positional arguments:
-  obs_fits_spec         The observation's (i.e. science target) FITS SPECIFIER, see the end of the help message for more information
-  psf_fits_spec         The psf's (i.e. calibration target) FITS SPECIFIER, see the end of the help message for more information
+  obs_fits_spec         The observation's (i.e., science target) FITS SPECIFIER, see the end of the help message for more information
+  psf_fits_spec         The psf's (i.e., calibration target) FITS SPECIFIER, see the end of the help message for more information
 
 options:
   -h, --help            show this help message and exit
@@ -811,11 +808,11 @@ Information listed at the end is usually clarification about the formatting of s
 
 ### FITS File Format Information <a id="fits-file-format-information"></a> ###
 
-Documentation for the Flexible Image Transport System (FITS) file format is hosted at [NASA's Goddard Space Flight Center](https://fits.gsfc.nasa.gov/fits_standard.html), please refer to that as the authoratative source of information. What follows is a brief description of the format to aid understanding, see below for a [schematic of a fits file](#fits-file-schematic).
+Documentation for the Flexible Image Transport System (FITS) file format is hosted at [NASA's Goddard Space Flight centre](https://fits.gsfc.nasa.gov/fits_standard.html), please refer to that as the authoratative source of information. What follows is a brief description of the format to aid understanding, see below for a [schematic of a fits file](#fits-file-schematic).
 
 A FITS file consists of one or more *header data units" (HDUs). An HDU contains header and (optionally) data information. The first HDU in a file is the "primary" HDU, and others are "extension" HDUs. The primary HDU always holds image data, extension HDUs can hold other types of data (not just images, but tables and anything else specified by the standard). An HDU always has a number which describes it's order in the FITS file, and can optionally have a name. Naming an HDU is always a good idea as it helps users navigate the file. NOTE: The terms "extension", "HDU", and "backplane" are used fairly interchangably to mean HDU
 
-Within each HDU there is header-data and (optionally) binary-data. The header-data consists of keys and values stored as restricted [ASCII](https://en.wikipedia.org/wiki/ASCII) strings of 80 characters in total. I.e. the whole key+value string must be 80 characters, they can be padded with spaces on the right. Practically, you can have as many header key-value entries as you have memory for. There are some reserved keys that define how the binary data of the HDU is to be interpreted. NOTE: Keys can only consist of uppercase latin letters, underscores, dashes, and numerals. The binary-data of an HDU is stored bin-endian, and intended to be read as a byte stream. The header-data descibes how to read the binary-data, the most common data is image data and tabular data.
+Within each HDU there is header-data and (optionally) binary-data. The header-data consists of keys and values stored as restricted [ASCII](https://en.wikipedia.org/wiki/ASCII) strings of 80 characters in total. I.e., the whole key+value string must be 80 characters, they can be padded with spaces on the right. Practically, you can have as many header key-value entries as you have memory for. There are some reserved keys that define how the binary data of the HDU is to be interpreted. NOTE: Keys can only consist of uppercase latin letters, underscores, dashes, and numerals. The binary-data of an HDU is stored bin-endian, and intended to be read as a byte stream. The header-data descibes how to read the binary-data, the most common data is image data and tabular data.
 
 Fits image HDUs (and the primary HDU) define the image data via the following header keywords.
 
@@ -828,13 +825,13 @@ NAXIS
 NAXISn
 : The number of elements along axis "n" of the image.
 
-Relating an axis to a coordinate system is done via more keywords that define a world coordinate system (WCS), that maps integer pixel indices to floating-point coordinates in, for example, time, sky position, spectral frequency, etc. The specifications for this are suggestions rather than rules, and non-conforming FITS files are not too hard to find. As details are what the spec is for, here is a high-level overview. Pixel indices are linearly transformed into "intermediate pixel coordinates", which are rescaled to physical units as "intermediate world coordinates", which are then projected/offset/have some (possibly non-linear) function applied to get them to "world coordinates". The CTYPE keyword for an axis describes what kind of axis it is, i.e. sky-position, spectral frequency, time, etc.
+Relating an axis to a coordinate system is done via more keywords that define a world coordinate system (WCS), that maps integer pixel indices to floating-point coordinates in, for example, time, sky position, spectral frequency, etc. The specifications for this are suggestions rather than rules, and non-conforming FITS files are not too hard to find. As details are what the spec is for, here is a high-level overview. Pixel indices are linearly transformed into "intermediate pixel coordinates", which are rescaled to physical units as "intermediate world coordinates", which are then projected/offset/have some (possibly non-linear) function applied to get them to "world coordinates". The CTYPE keyword for an axis describes what kind of axis it is, i.e., sky-position, spectral frequency, time, etc.
 
 Therefore, when using a FITS file it is important to specify which HDU (extension) to use, which axes of an image correspond to what physical coordinates, and sometimes what subset of the binary-data we want to operate upon.
 
 #### FITS Data Order <a id="fits-data-order"></a> ####
 
-FITS files use the FORTRAN convention of **column-major ordering**, whereas Python uses **row-major ordering** (sometimes called "C" ordering). For example, if we have an N-dimensional matrix, then we can specify a number in that matrix by it's indices (e_1, e_2, e_3, ..., e_N). FITS files store data so that the **left** most index changes the fastest, i.e. in memory the data is stored {a_11, a_21, a_31, ..., a_M1, a_M2, ..., a_ML}. However, Python stores it's data where the **right** most index changes the fastest, i.e. data is stored in memory as {a_11, a_12, a_13, ..., a_1L, a_2L, a_3L, ..., a_NL}. Also, just to make things more difficult FITS (and Fortran) start indices at 1 whereas Python (and C) start indices at 0. The upshot of all of this is that if you have data in a FITS file, the axis numbers are related via the equation 
+FITS files use the FORTRAN convention of **column-major ordering**, whereas Python uses **row-major ordering** (sometimes called "C" ordering). For example, if we have an N-dimensional matrix, then we can specify a number in that matrix by it's indices (e_1, e_2, e_3, ..., e_N). FITS files store data so that the **left** most index changes the fastest, i.e., in memory the data is stored {a_11, a_21, a_31, ..., a_M1, a_M2, ..., a_ML}. However, Python stores it's data where the **right** most index changes the fastest, i.e., data is stored in memory as {a_11, a_12, a_13, ..., a_1L, a_2L, a_3L, ..., a_NL}. Also, just to make things more difficult FITS (and Fortran) start indices at 1 whereas Python (and C) start indices at 0. The upshot of all of this is that if you have data in a FITS file, the axis numbers are related via the equation 
 
 N - f_i = p_i
 
@@ -859,7 +856,7 @@ x = | e f g h |
 Assume `x` is stored as a 2 dimensional array.
 
 In the FORTRAN convention, the matrix is stored in memory as
-{a e i b f j c g k d h l}, i.e. the COLUMNS vary the fastest
+{a e i b f j c g k d h l}, i.e., the COLUMNS vary the fastest
 
 |offset from start | 0| 1| 2| 3| 4| 5| 6| 7| 8| 9|10|11|
 |------------------|--|--|--|--|--|--|--|--|--|--|--|--|
@@ -872,10 +869,10 @@ m_i = (row-1) + number_of_rows * (column-1)
 In FOTRAN, the left most index varies the fastest, and indices
 start from 1 so to extract a single number from x we index it via
 x[row, column]
-e.g. x[2,3] is an offset of (2-1)+3*(3-1) = 7, which selects 'g'.
+e.g., x[2,3] is an offset of (2-1)+3*(3-1) = 7, which selects 'g'.
 
 In the C convention, the matrix is stored in memory as
-{a b c d e f g h i j k l}, i.e. the ROWS vary the fastest
+{a b c d e f g h i j k l}, i.e., the ROWS vary the fastest
 
 |offset from start | 0| 1| 2| 3| 4| 5| 6| 7| 8| 9|10|11|
 |------------------|--|--|--|--|--|--|--|--|--|--|--|--|
@@ -888,10 +885,10 @@ m_i = number_of_columns * (row) + column
 In C, the right most index varies the fastest, and indices
 start at 0 so to extract a single number from x we index it via
 x[row, column]
-E.g. x[1,2] is an offset of 4*1+2 = 6, which selects 'g' also.
+E.g., x[1,2] is an offset of 4*1+2 = 6, which selects 'g' also.
 
 Wait, these are the same (except the offset of 1)?! That is because
-we just looked at NATIVE data ordering. I.e. when FOTRAN and C have
+we just looked at NATIVE data ordering. I.e., when FOTRAN and C have
 data they have written themselves.
 
 What if we get C to read a FORTRAN written array?
@@ -901,13 +898,13 @@ The data in memory is stored as
 
 If we index this the same way we did before, using x[row, columm]
 we will have a problem.
-E.g. x[1,2] is an offset of 4*1+2 = 6, which selects 'c', not 'g'!
+E.g., x[1,2] is an offset of 4*1+2 = 6, which selects 'c', not 'g'!
 
 This is happening because C assumes the axis that varies the fastest
 is the RIGHT-MOST axis. But this data is written so the fastest
 varing axis is the LEFT-MOST axis. So we should swap them around
 and use x[column, row].
-E.g. 
+E.g., 
 For C; m_i = number_of_columns * (row) + column. Therefore,
 x[2,1] is an offset of 4*2+1 = 9, but that selects 'd', not 'g'!?
 
@@ -921,7 +918,7 @@ m_i = number_of_entries_in_fastest_varying_axis * (slowest_varying_axis_index)
 And we know that for the data being written this way, the fastest
 varying axis has 3 entries not 4.
 
-E.g. x[2,1] is an offset of 3*2+1 = 7, which that selects 'g', success!
+E.g., x[2,1] is an offset of 3*2+1 = 7, which that selects 'g', success!
 
 What we have actually done is just make sure that we read the data
 the way it was written, in C the fastest varying axis is the RIGHT-MOST
@@ -930,7 +927,7 @@ of the axes. Therefore, data written in FORTRAN with axes (f1, f2, ... fN) and
 axis lengths (K, L, ..., M), should be read in C with axes ordered as
 (c0 = fN, c1 = fN-1, ..., cN-2 = f2, cN-1 = f1) and lengths (M, ..., L, K).
 
-I.e. The fastest varying axis should always go at the correct position
+I.e., The fastest varying axis should always go at the correct position
 LEFT in FORTRAN and RIGHT in C.
 
 Confusion happens because:
@@ -944,7 +941,7 @@ Confusion happens because:
   - C writes data by varying the right-most axis the fastest
   
 * FORTRAN and C index an N-dimensional **native data order** array the
-  same way e.g. x[row, column]
+  same way e.g., x[row, column]
   - Axes numbers are based on the **order in the written expression**
   - FORTRAN numbers these axes as row=1, column=2
   - C numbers these axes as row=0, column=1
@@ -1019,7 +1016,7 @@ files will be in the `aopp_deconv_tool` subdirectory.
 Python's command line, often called the "Read-Evaluate-Print-Loop (REPL)", has a built-in help system. 
 
 To get the help information for a class, function, or object use the following code. Note, `>>>` denotes the
-python REPL (i.e. the command line you get when you type the `python` command), and `$` denotes the shell 
+python REPL (i.e., the command line you get when you type the `python` command), and `$` denotes the shell 
 commandline. 
 
 This example is for the built-in `os` module, but should work with any python object.
@@ -1054,28 +1051,28 @@ is a nice way to represent these operations. A quick explanation of the synatx f
 * Negative indices count backwards from the end of the array. If you have `N` entries in an array, `-1` becomes `N-1`, so the slice 
   `0:-1` selects the whole array except the last element.
 
-* Python slices have the format `start:stop:step` when they are used to index arrays via square brackets, e.g. `a[5:25:2]`
+* Python slices have the format `start:stop:step` when they are used to index arrays via square brackets, e.g., `a[5:25:2]`
   returns a slice of the object `a`. Slices can also be defined by the `slice` object via `slice(start,stop,step)`, e.g.
   `a[slice(5,25,2)]` returns the same slice of object `a` as the last example.
 
 * The `start`, `stop`, and `step` parameters generate indices of an array by iteratively adding `step` to `start` until the
-  value is equal to or greater than `stop`. I.e. `selected_indices = start + step * i` where `i = {0, 1, ..., N-1}`, 
+  value is equal to or greater than `stop`. I.e., `selected_indices = start + step * i` where `i = {0, 1, ..., N-1}`, 
   `N = CEILING[(stop - start) / step]`.
   
 * Mathematically, a slice specifies a [half-open interval](https://en.wikipedia.org/wiki/Interval_(mathematics)),
-  the `step` of a slice selects every `step` entry of that interval. I.e. they include their start point but not their end point, 
-  and only select every `step` elements of the interval. E.g. `5:25:2` selects the elements at the indices {5,7,9,11,13,15,17,19,21,23}
+  the `step` of a slice selects every `step` entry of that interval. I.e., they include their start point but not their end point, 
+  and only select every `step` elements of the interval. E.g., `5:25:2` selects the elements at the indices {5,7,9,11,13,15,17,19,21,23}
 
 * By default `start` is zero, `stop` is the number of elements in the array, and `step` is one.
 
 * Only the first colon in a slice is required to define it. The slice `:` is equivalent to the slice `0:N:1`, where `N` is the number
-  of elements in the object being sliced. E.g. `a[:]` selects all the elements of `a`.
+  of elements in the object being sliced. E.g., `a[:]` selects all the elements of `a`.
 
 * Negative parameters to `start` and `stop` work the same way as negative indices. Negative values to `step` reverse the default values
   of `start` and `stop`, but otherwise work in the same way as positive values.
   
-* A slice never extends beyond the beginning or end of an array. I.e. even though negative numbers are valid parameters, a slice that
-  would result in an index *before* it's `start` will be empty (i.e. select no elements of the array). E.g. If we have an array with 5
+* A slice never extends beyond the beginning or end of an array. I.e., even though negative numbers are valid parameters, a slice that
+  would result in an index *before* it's `start` will be empty (i.e., select no elements of the array). E.g., If we have an array with 5
   entries, the slice `1:3:-1` **does not** select {1, 0, 4}, it is empty.
 
 #### Details ####
@@ -1088,7 +1085,7 @@ defined via the format `<start>:<stop>:<step>`. Where `<start>` is the first ind
 first index to **not** include in the slice, and `<step>` is what to add to the previously included index to get the next
 included index.
 
-E.g. 
+E.g., 
 * `2:5:1` includes the indices 2,3,4 in the slice. So `a[2:5:1]` would select 15,16,19.
 * `0:4:2` includes the indices 0,2 in the slice. So `a[0:4:2]` would select 10,15.
 
@@ -1101,7 +1098,7 @@ Eveything in a slice is optional exept the first colon. The defaults of everythi
 Therefore, the slice `:` selects all of the array, and the slice `::-1` selects all of the array, but reverses the ordering.
 
 When dealing with N-dimensional arrays, indexing accepts a tuple. 
-E.g. for a 2-dimensional array `b=np.array([[10,11,15],[16,19,20],[33,35,36]])`, 
+E.g., for a 2-dimensional array `b=np.array([[10,11,15],[16,19,20],[33,35,36]])`, 
 * `b[1,2]` is equal to 20
 * `b[2,1]` is equal to 35
 
@@ -1182,10 +1179,10 @@ babysitting it.
     Python-style slice notation that will be applied to obs_fits and std_fits 
     data, often used to focus on specific spectral slice of data
   spectral_axes : str
-    Axis number of spectral axis, enclosed in brackets e.g. '(0)'. Will be 
+    Axis number of spectral axis, enclosed in brackets e.g., '(0)'. Will be 
     automatically calculated if not present.
   celestial_axes : str
-    Axis numbers of celestial axes, enclosed in brakcets e.g. '(1,2)'. Will be
+    Axis numbers of celestial axes, enclosed in brakcets e.g., '(1,2)'. Will be
     automatically calculated if not present.
 "
 
@@ -1263,8 +1260,8 @@ FITS_VIEWERS=("QFitsView" "ds9")
 # Create output filenames for each step of the process that mirror the default output filenames
 
 FITS_OBS_REBIN="${FITS_OBS%.fits}_rebin.fits"
-FITS_OBS_REBIN_ARTIFACT="${FITS_OBS%.fits}_rebin_artifactmap.fits"
-FITS_OBS_REBIN_ARTIFACT_BPMASK="${FITS_OBS%.fits}_rebin_artifactmap_bpmask.fits"
+FITS_OBS_REBIN_artefact="${FITS_OBS%.fits}_rebin_artefactmap.fits"
+FITS_OBS_REBIN_artefact_BPMASK="${FITS_OBS%.fits}_rebin_artefactmap_bpmask.fits"
 FITS_OBS_REBIN_INTERP="${FITS_OBS%.fits}_rebin_interp.fits"
 FITS_OBS_REBIN_INTERP_DECONV="${FITS_OBS%.fits}_rebin_interp_deconv.fits"
 
@@ -1276,8 +1273,8 @@ FITS_STD_REBIN_NORM_MODEL="${FITS_STD%.fits}_rebin_normalised_modelled_${PSF_MOD
 ALL_FITS_FILES=(
 	${FITS_OBS_REBIN} 
 	${FITS_STD_REBIN}
-	${FITS_OBS_REBIN_ARTIFACT}
-	${FITS_OBS_REBIN_ARTIFACT_BPMASK}
+	${FITS_OBS_REBIN_artefact}
+	${FITS_OBS_REBIN_artefact_BPMASK}
 	${FITS_OBS_REBIN_INTERP}
 	${FITS_STD_REBIN_NORM}
 	${FITS_STD_REBIN_NORM_MODEL}
@@ -1294,19 +1291,19 @@ if [[ ${RECALC} == 1 || ! -f ${FITS_STD_REBIN} ]]; then
 	python -m aopp_deconv_tool.spectral_rebin "${FITS_STD}${SLICE}${SPECTRAL_AXES}"
 fi
 
-echo "Performing artifact detection"
-if [[ ${RECALC} == 1 || ! -f ${FITS_OBS_REBIN_ARTIFACT} ]]; then
-	python -m aopp_deconv_tool.artifact_detection "${FITS_OBS_REBIN}${SLICE}${CELESTIAL_AXES}"
+echo "Performing artefact detection"
+if [[ ${RECALC} == 1 || ! -f ${FITS_OBS_REBIN_artefact} ]]; then
+	python -m aopp_deconv_tool.artefact_detection "${FITS_OBS_REBIN}${SLICE}${CELESTIAL_AXES}"
 fi
 
 echo "Creating bad pixel mask"
-if [[ ${RECALC} == 1 || ! -f ${FITS_OBS_REBIN_ARTIFACT_BPMASK} ]]; then
-	python -m aopp_deconv_tool.create_bad_pixel_mask "${FITS_OBS_REBIN_ARTIFACT}${SLICE}${CELESTIAL_AXES}"
+if [[ ${RECALC} == 1 || ! -f ${FITS_OBS_REBIN_artefact_BPMASK} ]]; then
+	python -m aopp_deconv_tool.create_bad_pixel_mask "${FITS_OBS_REBIN_artefact}${SLICE}${CELESTIAL_AXES}"
 fi
 
 echo "Interpolating at bad pixel mask"
 if [[ ${RECALC} == 1 || ! -f ${FITS_OBS_REBIN_INTERP} ]]; then
-	python -m aopp_deconv_tool.interpolate "${FITS_OBS_REBIN}${SLICE}${CELESTIAL_AXES}" "${FITS_OBS_REBIN_ARTIFACT_BPMASK}${SLICE}${CELESTIAL_AXES}"
+	python -m aopp_deconv_tool.interpolate "${FITS_OBS_REBIN}${SLICE}${CELESTIAL_AXES}" "${FITS_OBS_REBIN_artefact_BPMASK}${SLICE}${CELESTIAL_AXES}"
 fi
 
 echo "Normalising PSF"

@@ -1,5 +1,5 @@
 """
-Classes for dealing with a beam of light. I.e. a bundle of rays enveloped by 2
+Classes for dealing with a beam of light. I.e., a bundle of rays enveloped by 2
 straight lines
 """
 
@@ -70,7 +70,7 @@ class LightBeam:
 	
 	def is_null(self) -> bool:
 		"""
-		Returns TRUE if the beam is null. I.e. represents no light in a region.
+		Returns TRUE if the beam is null. I.e., represents no light in a region.
 		"""
 		return any(np.isnan(x) for x in (self.c_a, self.m_a, self.c_b, self.c_b, self.o))
 	

@@ -24,7 +24,7 @@ def from_shape(shape : S[N], geo_shape : GeoShape, extent : np.ndarray[[N,2],flo
 	Gets a mask of `shape` and start-end coords `extent` that are inside `poly_shape`
 	"""
 	if extent is None:
-		# Assume we want to center the geo_shape in the region
+		# Assume we want to centre the geo_shape in the region
 		extent = np.array(tuple((-(s-1)/2, (s-1)/2) for s in shape))
 	print(f'{extent=}')
 	print(f'{extent[:,1]=}')

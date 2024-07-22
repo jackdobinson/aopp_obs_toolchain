@@ -24,21 +24,21 @@ type R[X] = NewType('ShapeR', ShapeVar[X])
 def pacman(a : np.ndarray[S[N],T], delta : np.ndarray[[N],int]) -> np.ndarray[S[N],T]:
 	"""
 	Shift an array by some delta using pacman (periodic) boundary conditions.
-	E.g. tiles of the same array exist to either side.
+	E.g., tiles of the same array exist to either side.
 	"""
 	return np.roll(a, delta, tuple(i for i in range(a.ndim)))
 
 def periodic(a : np.ndarray[S[N],T], delta : np.ndarray[[N],int]) -> np.ndarray[S[N],T]:
 	"""
 	Shift an array by some delta using periodic (pacman) boundary conditions
-	E.g. tiles of the same array exist to either side.
+	E.g., tiles of the same array exist to either side.
 	"""
 	return pacman(a,delta)
 
 def const(a : np.ndarray[S[N],T], delta : np.ndarray[[N],int], const : T = 0) -> np.ndarray[S[N],T]:
 	"""
 	Shift and array by some delta using constant boundary conditions
-	E.g. the array is surrounded by a constant value
+	E.g., the array is surrounded by a constant value
 	"""
 	# Shift as in periodic boundary conditions, then fill the "empty" region
 	# with a constant value
@@ -51,7 +51,7 @@ def const(a : np.ndarray[S[N],T], delta : np.ndarray[[N],int], const : T = 0) ->
 def reflect(a : np.ndarray[S[N],T], delta : np.ndarray[[N],int]) -> np.ndarray[S[N],T]:
 	"""
 	Shift an array by some delta using reflecting boundary conditions.
-	E.g. the array is surrounded by reflected versions of itself.
+	E.g., the array is surrounded by reflected versions of itself.
 	"""
 	# Shift using pacman as normal, then set the 'wrapped' region to the data 
 	# for reflected boundary conditions

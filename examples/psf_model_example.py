@@ -49,13 +49,13 @@ def get_error(data, frac, low_limit, hi_limit, sigma):
 	v = np.abs(data)*frac
 	vmin, vmax = np.nanmin(v), np.nanmax(v)
 	vrange = vmax - vmin
-	vrange_center = 0.5*(vmax+vmin)
+	vrange_centre = 0.5*(vmax+vmin)
 	err = mfunc.logistic_function(
 		v,
 		low_limit if low_limit > 0 else (-low_limit)*vmin,
 		hi_limit if hi_limit > 0 else (-hi_limit)*vmax,
 		sigma if sigma > 0 else vrange/(-sigma),
-		vrange_center
+		vrange_centre
 	)
 	return err
 
@@ -100,15 +100,15 @@ if __name__=='__main__':
 		a[5].plot(np.log(result[:,result.shape[1]//2]).flatten())
 		a[5].axvline(result.shape[1]//2, color='red', ls='--')
 		
-		offsets_from_center = nph.array.offsets_from_point(psf_data.shape)
-		offsets_from_center = (offsets_from_center.T - np.array([0.0,0.5])).T
-		r_idx1 = np.sqrt(np.sum(offsets_from_center**2, axis=0))
+		offsets_from_centre = nph.array.offsets_from_point(psf_data.shape)
+		offsets_from_centre = (offsets_from_centre.T - np.array([0.0,0.5])).T
+		r_idx1 = np.sqrt(np.sum(offsets_from_centre**2, axis=0))
 		r = np.linspace(0,np.max(r_idx1),30)
 		psf_radial_data = np.array([np.nansum(psf_data[(r_min <= r_idx1) & (r_idx1 < r_max) ]) for r_min, r_max in zip(r[:-1], r[1:])])
 		
-		offsets_from_center = nph.array.offsets_from_point(psf_data.shape)
-		offsets_from_center = (offsets_from_center.T - np.array([0.5,0.5])).T
-		r_idx2 = np.sqrt(np.sum(offsets_from_center**2, axis=0))
+		offsets_from_centre = nph.array.offsets_from_point(psf_data.shape)
+		offsets_from_centre = (offsets_from_centre.T - np.array([0.5,0.5])).T
+		r_idx2 = np.sqrt(np.sum(offsets_from_centre**2, axis=0))
 		r = np.linspace(0,np.max(r_idx2),30)
 		result_radial_data = np.array([np.nansum(result[(r_min <= r_idx2) & (r_idx2 < r_max) ]) for r_min, r_max in zip(r[:-1], r[1:])])
 		

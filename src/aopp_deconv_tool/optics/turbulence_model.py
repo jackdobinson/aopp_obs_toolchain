@@ -51,7 +51,7 @@ def phase_psd_von_karman_turbulence(
 	r0_wavelength_corrected = r0*wav_factor**(-1/r0_pow)
 	
 	psd = factor*(r0_wavelength_corrected)**(r0_pow)*(1/L0**2 + f_sq)**(f_pow)
-	#center_idx = tuple(s//2 for s in psd.shape)
-	#psd[center_idx] = 0 # stop infinity at f==0
+	#centre_idx = tuple(s//2 for s in psd.shape)
+	#psd[centre_idx] = 0 # stop infinity at f==0
 	return PhasePowerSpectralDensity(psd, f_axes)
 

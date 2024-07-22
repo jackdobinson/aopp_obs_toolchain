@@ -11,5 +11,5 @@ var searchData=
   ['to_5fstart_1394',['to_start',['../d8/df1/namespaceaopp__deconv__tool_1_1numpy__helper_1_1axes.html#aa06ece43cf39d54e7ec59580c090d655',1,'aopp_deconv_tool::numpy_helper::axes']]],
   ['to_5ftuple_1395',['to_tuple',['../d8/d5b/namespaceaopp__deconv__tool_1_1text.html#afa3ce4dceb5cfae001a9bfdcc1396f79',1,'aopp_deconv_tool::text']]],
   ['total_1396',['total',['../d7/d2c/classaopp__deconv__tool_1_1text_1_1BracketState.html#a137d2b2a3e5312f66975fc64bae1e507',1,'aopp_deconv_tool::text::BracketState']]],
-  ['trim_5faround_5fcenter_1397',['trim_around_center',['../de/daa/namespaceaopp__deconv__tool_1_1psf__data__ops.html#a1341f48440c941ca947dfc28a66dece2',1,'aopp_deconv_tool::psf_data_ops']]]
+  ['trim_5faround_5fcentre_1397',['trim_around_centre',['../de/daa/namespaceaopp__deconv__tool_1_1psf__data__ops.html#a1341f48440c941ca947dfc28a66dece2',1,'aopp_deconv_tool::psf_data_ops']]]
 ];

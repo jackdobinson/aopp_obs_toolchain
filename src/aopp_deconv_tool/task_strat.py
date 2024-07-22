@@ -1,5 +1,5 @@
 """
-Contains support routines for holding data about "strategies" (i.e. different ways of doing things) that perform "tasks" (e.g. functions, operations, methods).
+Contains support routines for holding data about "strategies" (i.e., different ways of doing things) that perform "tasks" (e.g., functions, operations, methods).
 """
 
 from typing import Callable, Any, Self

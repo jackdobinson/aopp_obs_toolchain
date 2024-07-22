@@ -1,5 +1,5 @@
 """
-Detects artifacts, returns a "badness map" that represents how much the algorithm thinks a particular pixel is an artifact.
+Detects artefacts, returns a "badness map" that represents how much the algorithm thinks a particular pixel is an artefact.
 """
 import sys, os
 from pathlib import Path
@@ -16,7 +16,7 @@ import skimage as ski
 
 import matplotlib.pyplot as plt
 
-from aopp_deconv_tool.algorithm.artifact_detection import difference_of_scale_filters, wavelet_decomposition
+from aopp_deconv_tool.algorithm.artefact_detection import difference_of_scale_filters, wavelet_decomposition
 
 import aopp_deconv_tool.astropy_helper as aph
 import aopp_deconv_tool.astropy_helper.fits.specifier
@@ -39,9 +39,9 @@ _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
 # First one of these is the default
-artifact_detection_strategies= dict(
+artefact_detection_strategies= dict(
 	ssa = {
-		'description' : 'Uses singular spectrum analysis (SSA) to deterimine how likely a pixel is to belong to an artifact.',
+		'description' : 'Uses singular spectrum analysis (SSA) to deterimine how likely a pixel is to belong to an artefact.',
 		#'target' : ssa2d_sum_prob_map,
 		'target' : ssa2d_deviations,
 	},
@@ -51,8 +51,8 @@ artifact_detection_strategies= dict(
 	}
 )
 
-artifact_detection_strategy_choices = [x for x in artifact_detection_strategies]
-artifact_detection_strategy_choices_help_str = '\n\t'+'\n\t'.join(f'{k}\n\t\t{v["description"]}' for k,v in artifact_detection_strategies.items())
+artefact_detection_strategy_choices = [x for x in artefact_detection_strategies]
+artefact_detection_strategy_choices_help_str = '\n\t'+'\n\t'.join(f'{k}\n\t\t{v["description"]}' for k,v in artefact_detection_strategies.items())
 
 
 def generate_masks_from_thresholds(data, thresholds):
@@ -110,7 +110,7 @@ def run(
 	
 	_lgr.debug(f'{kwargs=}')
 	
-	strategy_callable = artifact_detection_strategies[strategy]['target']
+	strategy_callable = artefact_detection_strategies[strategy]['target']
 	
 	kwargs['start'] = int(kwargs['start']) if kwargs['start'] >= 0 else int(-1*kwargs['start']*kwargs['w_shape']**2)
 	kwargs['stop'] = int(kwargs['stop']) if kwargs['stop'] >= 0 else int(-1*kwargs['stop']*kwargs['w_shape']**2)
@@ -246,7 +246,7 @@ def run(
 			
 			
 						
-			# Perform artifact detection on "background", "midground" and "foreground" separately
+			# Perform artefact detection on "background", "midground" and "foreground" separately
 			thresholds = otsu_thresholding.n_exact(data[idx], 2, max_elements=10000)
 			
 			#for mask in generate_masks_from_thresholds(data[idx], ots):
@@ -280,7 +280,7 @@ def run(
 		
 		hdr.update(aph.fits.header.DictReader(
 			param_dict,
-			prefix='artifact_detection',
+			prefix='artefact_detection',
 			pkey_count_start=aph.fits.header.DictReader.find_max_pkey_n(hdr)
 		))
 				
@@ -302,7 +302,7 @@ def parse_args(argv):
 	import aopp_deconv_tool.text
 	import argparse
 	
-	DEFAULT_OUTPUT_TAG = '_artifactmap'
+	DEFAULT_OUTPUT_TAG = '_artefactmap'
 	DESIRED_FITS_AXES = ['CELESTIAL']
 	FITS_SPECIFIER_HELP = aopp_deconv_tool.text.wrap(
 		aph.fits.specifier.get_help(DESIRED_FITS_AXES).replace('\t', '    '),
@@ -343,12 +343,12 @@ def parse_args(argv):
 	
 	
 	
-	parser.add_argument('--strategy', choices=artifact_detection_strategy_choices, default=artifact_detection_strategy_choices[0], help=f'Strategy to use when detecting artifacts {artifact_detection_strategy_choices_help_str}')
+	parser.add_argument('--strategy', choices=artefact_detection_strategy_choices, default=artefact_detection_strategy_choices[0], help=f'Strategy to use when detecting artefacts {artefact_detection_strategy_choices_help_str}')
 
-	ssa_group = parser.add_argument_group('ssa artifact detection', 'options for singular spectrum analysis (SSA) argument detection strategy')
+	ssa_group = parser.add_argument_group('ssa artefact detection', 'options for singular spectrum analysis (SSA) argument detection strategy')
 	ssa_group.add_argument('--ssa.w_shape', type=int, default=10, help='Window size to calculate SSA for. Will generate `w_shape`^2 SSA components')
-	ssa_group.add_argument('--ssa.start', type=float, default=-0.25, help='First SSA component to be included in artifact detection calc. Negative numbers are fractions of range')
-	ssa_group.add_argument('--ssa.stop',  type=float, default=-0.75, help='Last SSA component to be included in artifact detection calc. Negative numbers are fractions of range')
+	ssa_group.add_argument('--ssa.start', type=float, default=-0.25, help='First SSA component to be included in artefact detection calc. Negative numbers are fractions of range')
+	ssa_group.add_argument('--ssa.stop',  type=float, default=-0.75, help='Last SSA component to be included in artefact detection calc. Negative numbers are fractions of range')
 
 	args = parser.parse_args(argv)
 	

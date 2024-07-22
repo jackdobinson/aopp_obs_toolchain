@@ -32,10 +32,10 @@ babysitting it.
     Python-style slice notation that will be applied to obs_fits and std_fits 
     data, often used to focus on specific spectral slice of data.
   spectral_axes : str
-    Axis number of spectral axis, enclosed in brackets e.g. '(0)'. Will be 
+    Axis number of spectral axis, enclosed in brackets e.g., '(0)'. Will be 
     automatically calculated if not present.
   celestial_axes : str
-    Axis numbers of celestial axes, enclosed in brakcets e.g. '(1,2)'. Will be
+    Axis numbers of celestial axes, enclosed in brakcets e.g., '(1,2)'. Will be
     automatically calculated if not present.
 "
 
@@ -113,8 +113,8 @@ FITS_VIEWERS=("QFitsView" "ds9")
 # Create output filenames for each step of the process that mirror the default output filenames
 
 FITS_OBS_REBIN="${FITS_OBS%.fits}_rebin.fits"
-FITS_OBS_REBIN_ARTIFACT="${FITS_OBS%.fits}_rebin_artifactmap.fits"
-FITS_OBS_REBIN_ARTIFACT_BPMASK="${FITS_OBS%.fits}_rebin_artifactmap_bpmask.fits"
+FITS_OBS_REBIN_artefact="${FITS_OBS%.fits}_rebin_artefactmap.fits"
+FITS_OBS_REBIN_artefact_BPMASK="${FITS_OBS%.fits}_rebin_artefactmap_bpmask.fits"
 FITS_OBS_REBIN_INTERP="${FITS_OBS%.fits}_rebin_interp.fits"
 FITS_OBS_REBIN_INTERP_DECONV="${FITS_OBS%.fits}_rebin_interp_deconv.fits"
 
@@ -126,8 +126,8 @@ FITS_STD_REBIN_NORM_MODEL="${FITS_STD%.fits}_rebin_normalised_modelled_${PSF_MOD
 ALL_FITS_FILES=(
 	${FITS_OBS_REBIN} 
 	${FITS_STD_REBIN}
-	${FITS_OBS_REBIN_ARTIFACT}
-	${FITS_OBS_REBIN_ARTIFACT_BPMASK}
+	${FITS_OBS_REBIN_artefact}
+	${FITS_OBS_REBIN_artefact_BPMASK}
 	${FITS_OBS_REBIN_INTERP}
 	${FITS_STD_REBIN_NORM}
 	${FITS_STD_REBIN_NORM_MODEL}
@@ -144,19 +144,19 @@ if [[ ${RECALC} == 1 || ! -f ${FITS_STD_REBIN} ]]; then
 	python -m aopp_deconv_tool.spectral_rebin "${FITS_STD}${SLICE}${SPECTRAL_AXES}"
 fi
 
-echo "Performing artifact detection"
-if [[ ${RECALC} == 1 || ! -f ${FITS_OBS_REBIN_ARTIFACT} ]]; then
-	python -m aopp_deconv_tool.artifact_detection "${FITS_OBS_REBIN}${SLICE}${CELESTIAL_AXES}"
+echo "Performing artefact detection"
+if [[ ${RECALC} == 1 || ! -f ${FITS_OBS_REBIN_artefact} ]]; then
+	python -m aopp_deconv_tool.artefact_detection "${FITS_OBS_REBIN}${SLICE}${CELESTIAL_AXES}"
 fi
 
 echo "Creating bad pixel mask"
-if [[ ${RECALC} == 1 || ! -f ${FITS_OBS_REBIN_ARTIFACT_BPMASK} ]]; then
-	python -m aopp_deconv_tool.create_bad_pixel_mask "${FITS_OBS_REBIN_ARTIFACT}${SLICE}${CELESTIAL_AXES}"
+if [[ ${RECALC} == 1 || ! -f ${FITS_OBS_REBIN_artefact_BPMASK} ]]; then
+	python -m aopp_deconv_tool.create_bad_pixel_mask "${FITS_OBS_REBIN_artefact}${SLICE}${CELESTIAL_AXES}"
 fi
 
 echo "Interpolating at bad pixel mask"
 if [[ ${RECALC} == 1 || ! -f ${FITS_OBS_REBIN_INTERP} ]]; then
-	python -m aopp_deconv_tool.interpolate "${FITS_OBS_REBIN}${SLICE}${CELESTIAL_AXES}" "${FITS_OBS_REBIN_ARTIFACT_BPMASK}${SLICE}${CELESTIAL_AXES}"
+	python -m aopp_deconv_tool.interpolate "${FITS_OBS_REBIN}${SLICE}${CELESTIAL_AXES}" "${FITS_OBS_REBIN_artefact_BPMASK}${SLICE}${CELESTIAL_AXES}"
 fi
 
 echo "Normalising PSF"

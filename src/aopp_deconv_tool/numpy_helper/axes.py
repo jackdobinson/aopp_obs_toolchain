@@ -1,7 +1,7 @@
 """
 Helper functions for axes operations on numpy arrays.
 
-Axes referrs to the indexed dimensions of a numpy array. I.e. `a.ndim` is the number
+Axes referrs to the indexed dimensions of a numpy array. I.e., `a.ndim` is the number
 of dimensions in a, and also the number of axes. `a.shape` is the length of each
 axis.
 """

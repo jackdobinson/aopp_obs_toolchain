@@ -57,9 +57,9 @@ class BoundingBox(Generic[N,T]):
 		return tuple(slice(*x) for x in self.coords.T)
 	
 	def inflate(self, factor, n) -> BoundingBox:
-		center = (self.coords[1] + self.coords[0])/2
+		centre = (self.coords[1] + self.coords[0])/2
 		half_extent = self.extent/2
-		self.coords = np.array(((center - (factor*half_extent+n)),(center + (factor*half_extent+n))), dtype=self.coords.dtype)
+		self.coords = np.array(((centre - (factor*half_extent+n)),(centre + (factor*half_extent+n))), dtype=self.coords.dtype)
 		return self
 
 	def __repr__(self) -> str:

@@ -84,7 +84,7 @@ def run(
 		interp_method : str = 'scipy',
 	):
 	
-	
+	original_data_type=None
 	
 	with fits.open(Path(data_fits_spec.path)) as data_hdul, fits.open(Path(bpmask_fits_spec.path)) as bpmask_hdul:
 		
@@ -98,6 +98,7 @@ def run(
 	
 		data_hdu = data_hdul[data_fits_spec.ext]
 		data = data_hdu.data
+		original_data_type=data_hdu.data.dtype
 		
 		bpmask_hdu = bpmask_hdul[bpmask_fits_spec.ext]
 		if issubclass(bpmask_hdu.data.dtype.type, np.integer):
@@ -144,11 +145,11 @@ def run(
 	# Save the products to a FITS file
 	hdu_interp = fits.PrimaryHDU(
 		header = hdr,
-		data = interp_data
+		data = interp_data.astype(original_data_type)
 	)
 	hdu_residual = fits.ImageHDU(
 		header = hdr,
-		data = residual,
+		data = residual.astype(original_data_type),
 		name='RESIDUAL'
 	)
 	hdul_output = fits.HDUList([

@@ -110,7 +110,7 @@ def indices_const_boundary(
 	Give a tuple with N entries `indices` like ((i_00,i_01,i_02,...,i_0M_0),(i_10,i_11,...,i_1M_1),...,(...,i_NM_N)), where N is the number of entries in `shape`
 	which is like (s_0, s_1, ..., s_N), and M_0, M_1, ..., M_N are the number of indices present for each axis.
 	
-	Alter the indices so if i_nm < 0, i_nm=0. And if i_nm >= s_n, i_nm=s_n-1. I.e. indices "to the left" are set to the first entry in the axis, and
+	Alter the indices so if i_nm < 0, i_nm=0. And if i_nm >= s_n, i_nm=s_n-1. I.e., indices "to the left" are set to the first entry in the axis, and
 	indices "to the right" are set to the last entry in the axis.
 	"""
 	out_indices = []
@@ -332,6 +332,11 @@ def rebin_hdu_over_axis_with_response_function(
 	
 	bin_start = ax_values[0] if bin_start is None else bin_start
 	
+	current_step = ax_values[1]-ax_values[0]
+	if current_step > bin_step:
+		_lgr.warning(f'Current rebinning does not work well for reducing step size, {current_step=} {bin_step=}. Using current data instead')
+		return ax_values, data_hdu.data
+	
 	response_array = response_function.as_array(ax_values-ax_values[0], trim=True)
 	_lgr.debug(f'{response_array=}')
 	
@@ -367,6 +372,8 @@ def run(
 		plot : bool = False,
 	) -> tuple[np.ndarray, np.ndarray]:
 
+	original_data_type=None
+
 	new_data = None
 	with fits.open(Path(fits_spec.path)) as data_hdul:
 	
@@ -377,6 +384,7 @@ def run(
 	
 		axes_ordering =  aph.fits.header.get_axes_ordering(data_hdu.header, fits_spec.axes['SPECTRAL'])
 		axis = axes_ordering[0].numpy
+		original_data_type = data_hdu.data.dtype
 	
 		#new_spec_bins, new_data = rebin_hdu_over_axis(data_hdu, axis, bin_step, bin_width, operation, plot=False)
 		
@@ -439,7 +447,7 @@ def run(
 	# Save the products to a FITS file
 	hdu_rebinned = fits.PrimaryHDU(
 		header = hdr,
-		data = new_data
+		data = new_data.astype(original_data_type)
 	)
 	hdul_output = fits.HDUList([
 		hdu_rebinned,

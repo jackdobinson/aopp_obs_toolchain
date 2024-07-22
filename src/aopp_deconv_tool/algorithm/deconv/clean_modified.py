@@ -203,11 +203,11 @@ class CleanModified(Base):
 		#self._fabs_min_delta = fabs*self.fabs_min_delta
 		#self._rms_min_delta = rms*self.rms_min_delta
 
-		# ensure that PSF is centered and an odd number in shape
+		# ensure that PSF is centreed and an odd number in shape
 		#slices = tuple(slice(s-s%2) for s in psf.shape)
 		#psf = psf[slices]
 		#bp = np.unravel_index(np.nanargmax(psf), psf.shape)
-		#ut.np.center_on(psf, np.array(bp))
+		#ut.np.centre_on(psf, np.array(bp))
 		self._pixel_threshold = 0
 
 

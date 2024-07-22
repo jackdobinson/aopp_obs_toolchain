@@ -24,7 +24,7 @@ class EmpiricalDistribution:
 	
 	def cdf(self, value : Number | np.ndarray) -> Number | np.ndarray:
 		"""
-		Returns the cumulative density of `value` (i.e. fraction of datapoints less than `value`), can be passed an array.
+		Returns the cumulative density of `value` (i.e., fraction of datapoints less than `value`), can be passed an array.
 		"""
 		return np.interp(
 			value,
@@ -36,7 +36,7 @@ class EmpiricalDistribution:
 	
 	def ppf(self, prob : Number | np.ndarray) -> Number | np.ndarray:
 		"""
-		Returns the value of the distribution at cumulative probability `prob`. I.e. `ppf(0.5)` is the median, can be passed an array
+		Returns the value of the distribution at cumulative probability `prob`. I.e., `ppf(0.5)` is the median, can be passed an array
 		"""
 		return np.interp(
 			prob,
@@ -50,15 +50,15 @@ class EmpiricalDistribution:
 		"""
 		Returns the probability density function of the distribution
 		"""
-		n_bin_centers = nbins - 1
-		x = np.linspace(np.min(self._data), np.max(self._data), n_bin_centers)
+		n_bin_centres = nbins - 1
+		x = np.linspace(np.min(self._data), np.max(self._data), n_bin_centres)
 		dx = np.diff(x)
 		bins = np.zeros((x.shape[0]+1,*x.shape[1:]))
 		bins[0] = x[0] - dx[0]/2
 		bins[1:-1] = x[:-1] + dx/2
 		bins[-1] = x[-1] + dx[-1]/2
 				
-		counts = np.zeros((n_bin_centers,), dtype=float)
+		counts = np.zeros((n_bin_centres,), dtype=float)
 		for idx in range(0, bins.shape[0]-1):
 			counts[idx] = np.count_nonzero((bins[idx] < self._data) & (self._data <= bins[idx+1]))
 		

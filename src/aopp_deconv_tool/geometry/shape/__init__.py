@@ -24,7 +24,7 @@ class PolyShape(GeoShape):
 	"""
 	Represents a shape that can have a position in space
 	"""
-	center : np.ndarray = dc.field(default_factory = lambda : np.zeros((2,)))
+	centre : np.ndarray = dc.field(default_factory = lambda : np.zeros((2,)))
 
 
 @dc.dataclass(slots=True)
@@ -36,7 +36,7 @@ class Circle(PolyShape):
 		return cls(np.zeros((2,)), radius)
 	
 	def __contains__(self, p : np.ndarray) -> bool:
-		return self.metric(p,self.center) <= self.radius
+		return self.metric(p,self.centre) <= self.radius
 	
 	@property
 	def diameter(self) -> float:
@@ -48,21 +48,21 @@ class Circle(PolyShape):
 @dc.dataclass(slots=True)
 class CompoundShape(GeoShape):
 	_members : list[GeoShape] = dc.field(default_factory=list)
-	_center : np.ndarray = dc.field(default_factory = lambda : np.zeros((2,)))
+	_centre : np.ndarray = dc.field(default_factory = lambda : np.zeros((2,)))
 	
 	@property
-	def center(self) -> np.ndarray:
-		return self._center
+	def centre(self) -> np.ndarray:
+		return self._centre
 	
-	@center.setter
-	def center(self, value:np.ndarray) -> None:
-		diff = value - self._center
+	@centre.setter
+	def centre(self, value:np.ndarray) -> None:
+		diff = value - self._centre
 		for shape in self._members:
-			shape.center += diff
+			shape.centre += diff
 	
 	def __add__(self, shape : GeoShape):
 		if len(self._members) == 0:
-			self.center = np.array(shape.center)
+			self.centre = np.array(shape.centre)
 		self._members.append(shape)
 		return self
 	

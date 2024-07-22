@@ -47,14 +47,14 @@ def ssa_deviations_interpolate_at_mask(
 		show_plots : bool | int = 0,
 	):
 	"""
-	Using SSA for interpolation. E.g. 
+	Using SSA for interpolation. E.g., 
 		1) pass in a set of pixels
 		2) Calculate the 'difference from median of SSA component' score for each pixel
 		3) For each pixel, only combine SSA components when the |score| < 'some value'
 		This should ensure that 'extreme' values for that pixel are ignored and the 
 		reconstructed pixel value is more similar to the surrounding pixels.
 	
-	This should help when interpolating across a e.g. "hot" pixel as the components
+	This should help when interpolating across a e.g., "hot" pixel as the components
 	that contribute to the "hotness" will be ignored and the components that are more
 	similar to the surroundings will contribute.
 	"""

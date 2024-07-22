@@ -701,9 +701,9 @@
     \iftabu@colortbl\else\let\LT@@hline   \tabu@LT@@hline \fi
     \tabu@trivlist     %<restore \\=\@normalcr inside lists>
     \let\@footnotetext \tabu@footnotetext \let\@xfootnotetext \tabu@xfootnotetext
-    \let\@xfootnote    \tabu@xfootnote    \let\centering      \tabu@centering
+    \let\@xfootnote    \tabu@xfootnote    \let\centreing      \tabu@centreing
     \let\raggedright   \tabu@raggedright  \let\raggedleft     \tabu@raggedleft
-    \let\tabudecimal   \tabu@tabudecimal  \let\Centering      \tabu@Centering
+    \let\tabudecimal   \tabu@tabudecimal  \let\centreing      \tabu@centreing
     \let\RaggedRight   \tabu@RaggedRight  \let\RaggedLeft     \tabu@RaggedLeft
     \let\justifying    \tabu@justifying   \let\rowfont        \tabu@rowfont
     \let\fbox          \tabu@fbox         \let\color@b@x      \tabu@color@b@x
@@ -996,11 +996,11 @@
    \or \tabu@Xtype {m}%
    \or \tabu@Xtype {b}%
    \or \tabu@Xalign \raggedright\relax
-   \or \tabu@Xalign \centering\relax
+   \or \tabu@Xalign \centreing\relax
    \or \tabu@Xalign \raggedleft\relax
    \or \tabu@Xalign \tabu@justify\relax
    \or \tabu@Xalign \RaggedRight\raggedright
-   \or \tabu@Xalign \Centering\centering
+   \or \tabu@Xalign \centreing\centreing
    \or \tabu@Xalign \RaggedLeft\raggedleft
    \or \tabu@Xalign \justifying\tabu@justify
    \or \expandafter \tabu@Xparsespace
@@ -1693,7 +1693,7 @@
             \d@llarbegin                % after \hbox ...
     \else
         \edef\tabu@temp{\ifnum\currentgrouptype=5\vtop
-                        \else\ifnum\currentgrouptype=12\vcenter
+                        \else\ifnum\currentgrouptype=12\vcentre
                         \else\vbox\fi\fi}%
         \setbox\tabu@box \hbox\bgroup$\tabu@temp \bgroup
             \let\tabu@verticalspacing \tabu@verticalsp@pmb
@@ -2203,11 +2203,11 @@
       {\tabu@flush1\tabu@ignorehfil}%                 right
       \raggedright
 }% \tabu@cell@l
-\def\tabu@cell@c{% force alignment to center
+\def\tabu@cell@c{% force alignment to centre
    \tabu@cell@align
-      {\tabu@removehfil \centering \tabu@flush{.5}\tabu@cellleft}
+      {\tabu@removehfil \centreing \tabu@flush{.5}\tabu@cellleft}
       {\tabu@flush{.5}\tabu@ignorehfil}
-      \centering
+      \centreing
 }% \tabu@cell@c
 \def\tabu@cell@r{% force alignment to right
    \tabu@cell@align
@@ -2232,11 +2232,11 @@
       {\tabu@flush 1\tabu@ignorehfil}
       \RaggedRight
 }% \tabu@cell@L
-\def\tabu@cell@C{% force alignment to center (ragged2e)
+\def\tabu@cell@C{% force alignment to centre (ragged2e)
    \tabu@cell@align
-      {\tabu@removehfil \Centering \tabu@flush{.5}\tabu@cellleft}
+      {\tabu@removehfil \centreing \tabu@flush{.5}\tabu@cellleft}
       {\tabu@flush{.5}\tabu@ignorehfil}
-      \Centering
+      \centreing
 }% \tabu@cell@C
 \def\tabu@cell@R{% force alignment to right (ragged2e)
    \tabu@cell@align
@@ -2333,13 +2333,13 @@
 %% No need for \arraybackslash ! ------------------------------------
 \def\tabu@latextwoe {%
 \def\tabu@temp##1##2##3{{\toks@\expandafter{##2##3}\xdef##1{\the\toks@}}}
-\tabu@temp \tabu@centering   \centering   \arraybackslash
+\tabu@temp \tabu@centreing   \centreing   \arraybackslash
 \tabu@temp \tabu@raggedleft  \raggedleft  \arraybackslash
 \tabu@temp \tabu@raggedright \raggedright \arraybackslash
 }% \tabu@latextwoe
 \def\tabu@raggedtwoe {%
 \def\tabu@temp ##1##2##3{{\toks@\expandafter{##2##3}\xdef##1{\the\toks@}}}
-\tabu@temp \tabu@Centering   \Centering   \arraybackslash
+\tabu@temp \tabu@centreing   \centreing   \arraybackslash
 \tabu@temp \tabu@RaggedLeft  \RaggedLeft  \arraybackslash
 \tabu@temp \tabu@RaggedRight \RaggedRight \arraybackslash
 \tabu@temp \tabu@justifying  \justifying  \arraybackslash

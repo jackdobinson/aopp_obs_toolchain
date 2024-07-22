@@ -7,11 +7,11 @@ Module containing small mathematical functions that are useful in lots of contex
 
 Working Definitions:
 	components
-		The pixel values of the underlying "real" image, i.e. our 'hypothetical' image
+		The pixel values of the underlying "real" image, i.e., our 'hypothetical' image
 	model
 		A "guess" as to what the underlying "real" image should be. Should be either
-		a physically informed model (e.g. a synthetic image of Neptune) or the pixel
-		values expected from an empty field (e.g. RMS noise values).
+		a physically informed model (e.g., a synthetic image of Neptune) or the pixel
+		values expected from an empty field (e.g., RMS noise values).
 	estimate
 		Our current estimate of the dirty_img (observation), is a convolution 
 		between the PSF and the components
@@ -46,9 +46,9 @@ def logistic_function(
 		left_limit : Number = 0, 
 		right_limit : Number = 1, 
 		transition_scale : Number = 1, 
-		center : Number = 0
+		centre : Number = 0
 	) -> Number | np.ndarray:
-	return (right_limit-left_limit)/(1+np.exp(-(np.e/transition_scale)*(x-center))) + left_limit
+	return (right_limit-left_limit)/(1+np.exp(-(np.e/transition_scale)*(x-centre))) + left_limit
 
 
 

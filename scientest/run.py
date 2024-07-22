@@ -40,7 +40,7 @@ import scientest.cfg.settings
 _lgr = scientest.cfg.logs.get_logger_at_level(__name__, 'INFO')
 
 
-from scientest.term_output import terminal_right, terminal_left, terminal_center, terminal_wrap #,terminal_fill, 
+from scientest.term_output import terminal_right, terminal_left, terminal_centre, terminal_wrap #,terminal_fill, 
 import scientest.discover
 
 
@@ -269,7 +269,7 @@ def main(
 	test_discovery_data = scientest.discover.discover_tests(test_dir, directory_search_predicate, modulefile_search_predicate, member_search_predicate)
 
 	print()
-	print(terminal_center(' Discovery Summary ', '='))
+	print(terminal_centre(' Discovery Summary ', '='))
 	errors = []
 	for full_module_name, test_data in test_discovery_data.items():
 		print(f'    module "{full_module_name}" contains tests:')
@@ -287,13 +287,13 @@ def main(
 			print(f'    {error_code} {full_module_name}: {error_description}')
 	
 	print()
-	print(terminal_center(' Running Tests ', '='))
+	print(terminal_centre(' Running Tests ', '='))
 	test_results = run_tests(test_discovery_data, continue_on_fail, live_output)
 
 
 	print()
 	if (not only_report_failures) or any(not td['success'] for td in test_results.values()):
-		print(terminal_center(' Test Result Details ', '='))
+		print(terminal_centre(' Test Result Details ', '='))
 		for tid, td in test_results.items():
 			
 			if (not only_report_failures) or not td['success']:

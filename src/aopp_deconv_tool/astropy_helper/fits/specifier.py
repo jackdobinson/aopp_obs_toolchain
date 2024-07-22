@@ -68,7 +68,7 @@ axes_type_info={
 help_fmt = """\
 # FITS SPECIFIER #
 
-	A string that describes which FITS file to load, the extension (i.e backplane) to use, the slices (i.e. sub-regions)
+	A string that describes which FITS file to load, the extension (i.e backplane) to use, the slices (i.e., sub-regions)
 	that should be operated upon, and (if required) the semantic meaning of the data axes.
 
 	Format:
@@ -95,16 +95,16 @@ help_fmt = """\
 			{axes_types}
 			
 		NOTE: As the format for a FITS specifier uses characters that a terminal application may interpret as special characters, 
-			e.g. square/curly/round brackets, and colons. It can be better to wrap specifiers in quotes or single quotes. When 
+			e.g., square/curly/round brackets, and colons. It can be better to wrap specifiers in quotes or single quotes. When 
 			doing this, it is important to un-escape any previously escaped characters. 
 			For example, specifies with timestamps in them would normally have the colons escaped, but when wrapped in quotes 
-			this is not required. E.g. the specifier ./example_data/MUSE.2019-10-17T23\\:46\\:14.117_normalised.fits(1,2) will not 
+			this is not required. E.g., the specifier ./example_data/MUSE.2019-10-17T23\\:46\\:14.117_normalised.fits(1,2) will not 
 			play nice with the bash shell due to the brackets. However, wrapping it in single quotes and removing the escaping 
-			slashes from the colons means it will work. E.g. './example_data/MUSE.2019-10-17T23:46:14.117_normalised.fits(1,2)'
+			slashes from the colons means it will work. E.g., './example_data/MUSE.2019-10-17T23:46:14.117_normalised.fits(1,2)'
 		
 		Examples:
 			~/home/datasets/MUSE/neptune_obs_1.fits{{DATA}}[100:200,:,:](1,2)
-				Selects the "DATA" extension, slices the 0th axis from 100->200 leaving the others untouched, and signals that axes 1 and 2 are important e.g. they are the RA-DEC axes.
+				Selects the "DATA" extension, slices the 0th axis from 100->200 leaving the others untouched, and signals that axes 1 and 2 are important e.g., they are the RA-DEC axes.
 			
 			~/home/datasets/MUSE/neptune_obs_1.fits{{DATA}}[100:200](1,2)
 				Does the same thing as above, but omits un-needed slice specifiers.

@@ -39,6 +39,7 @@ def run(
 		trim_to_shape : None | tuple[int,...] = None
 	):
 	
+	original_data_type=None
 	ACCEPTABLE_TRIM_LOSS_FACTOR = 1E-2
 	axes = fits_spec.axes['CELESTIAL']
 	
@@ -51,6 +52,7 @@ def run(
 		data_hdu = data_hdul[fits_spec.ext]
 		data = data_hdu.data[fits_spec.slices]
 		hdr = data_hdu.header
+		original_data_type=data_hdu.data.dtype
 		
 		_lgr.info('Remove NANs and INFs')
 		data[np.isnan(data) | np.isinf(data)] = 0
@@ -69,11 +71,11 @@ def run(
 			background_mask = ~psf_data_ops.get_roi_mask(data, axes, background_threshold, 1)
 			noise_model_offsets, noise_model_parameters, noise_model_at_values, noise_model_cdf, noise_model_cdf_residual = psf_data_ops.remove_offset(data, axes, background_mask, background_noise_model)
 		
-		_lgr.info('Get offsets to center around center of mass')
+		_lgr.info('Get offsets to centre around centre of mass')
 		roi_mask = psf_data_ops.get_roi_mask(data, axes, threshold, n_largest_regions)
-		com_offsets = psf_data_ops.get_center_of_mass_offsets(data, axes, roi_mask)
+		com_offsets = psf_data_ops.get_centre_of_mass_offsets(data, axes, roi_mask)
 	
-		_lgr.info('Recenter everything for easy comparison')
+		_lgr.info('Recentre everything for easy comparison')
 		normalised_data = psf_data_ops.apply_offsets(data, axes, com_offsets)
 		roi_mask = psf_data_ops.apply_offsets(roi_mask, axes, com_offsets)
 		background_mask = psf_data_ops.apply_offsets(background_mask, axes, com_offsets)
@@ -81,18 +83,18 @@ def run(
 		
 		
 		if trim_to_shape is not None:
-			_lgr.info('Trim everything around the center pixel')
+			_lgr.info('Trim everything around the centre pixel')
 			before_trim_sum = np.nansum(normalised_data)
 			
-			normalised_data = psf_data_ops.trim_around_center(normalised_data, axes, trim_to_shape)
-			roi_mask = psf_data_ops.trim_around_center(roi_mask, axes, trim_to_shape)
-			outlier_mask = psf_data_ops.trim_around_center(outlier_mask, axes, trim_to_shape)
+			normalised_data = psf_data_ops.trim_around_centre(normalised_data, axes, trim_to_shape)
+			roi_mask = psf_data_ops.trim_around_centre(roi_mask, axes, trim_to_shape)
+			outlier_mask = psf_data_ops.trim_around_centre(outlier_mask, axes, trim_to_shape)
 			
 			after_trim_sum = np.nansum(normalised_data)
 			trim_loss_factor = 1 - after_trim_sum/before_trim_sum
 			_lgr.debug(f'{trim_loss_factor=}')
 			if trim_loss_factor > ACCEPTABLE_TRIM_LOSS_FACTOR:
-				_lgr.warn(f'After trimming around center to shape {trim_to_shape}, have lost {trim_loss_factor} of original signal. This is above acceptable limit of {ACCEPTABLE_TRIM_LOSS_FACTOR}')
+				_lgr.warn(f'After trimming around centre to shape {trim_to_shape}, have lost {trim_loss_factor} of original signal. This is above acceptable limit of {ACCEPTABLE_TRIM_LOSS_FACTOR}')
 			
 			
 		
@@ -123,7 +125,7 @@ def run(
 	
 	hdus.append(fits.PrimaryHDU(
 		header = hdr,
-		data = normalised_data
+		data = normalised_data.astype(original_data_type)
 	))
 	hdus.append(fits.ImageHDU(
 		header = hdr,
@@ -231,8 +233,8 @@ def parse_args(argv):
 	parser.add_argument('--threshold', type=float, default=1E-2, help='When finding region of interest, only values larger than this fraction of the maximum value are included.')
 	parser.add_argument('--n_largest_regions', type=int, default=1, help="""
 		When finding region of interest, if using a threshold will only the n_largest_regions in the calculation.
-		A region is defined as a contiguous area where value >= `threshold` along `axes`. I.e. in a 3D cube, if
-		we recenter about the COM on the sky (CELESTIAL) axes the regions will be calculated on the sky, not in
+		A region is defined as a contiguous area where value >= `threshold` along `axes`. I.e., in a 3D cube, if
+		we recentre about the COM on the sky (CELESTIAL) axes the regions will be calculated on the sky, not in
 		the spectral axis (for example)."""
 	)
 	parser.add_argument('--background_threshold', type=float, default=1E-3, help='Exclude the largest connected region with values larger than this fraction of the maximum value when finding the background')
@@ -241,7 +243,7 @@ def parse_args(argv):
 		help='Model of background noise to use when removing offset. "none" will not mean offset is not calculated or removed'
 	)	
 	parser.add_argument('--n_sigma', type=float, default=5, help='When finding the outlier mask, the number of standard deviations away from the mean a pixel must be to be considered an outlier`')
-	parser.add_argument('--trim_to_shape', type=int, nargs=2, default=None, help='After centering etc. will trim data to this shape around the center pixel. Used to reduce data volume for faster processing.')
+	parser.add_argument('--trim_to_shape', type=int, nargs=2, default=None, help='After centreing etc. will trim data to this shape around the centre pixel. Used to reduce data volume for faster processing.')
 
 	args = parser.parse_args(argv)
 	

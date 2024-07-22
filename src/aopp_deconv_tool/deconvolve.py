@@ -152,10 +152,10 @@ def run(
 					The path to the FITS file
 				EXT : str | int
 					The name or number of the FITS extension (defaults to PRIMARY)
-				SLICE : "python slice format" (i.e. [1:5, 5:10:2])
+				SLICE : "python slice format" (i.e., [1:5, 5:10:2])
 					Slice of the FITS extension data to use (defaults to all data)
 				AXES : tuple[int,...]
-					Axes of the FITS extension that are "spatial" or "celestial" (i.e. RA, DEC),
+					Axes of the FITS extension that are "spatial" or "celestial" (i.e., RA, DEC),
 					by default will try to infer them from the FITS extension header.
 		psf_fits_spec : aph.fits.specifier.FitsSpecifier
 			FITS file specifier for PSF data, format is same as above
@@ -167,13 +167,14 @@ def run(
 			If `True` will plot the deconvolution progress
 	"""
 	
-
+	original_data_type=None
 	# Open the fits files
 	with fits.open(Path(obs_fits_spec.path)) as obs_hdul, fits.open(Path(psf_fits_spec.path)) as psf_hdul:
 		
 		# pull out the data we want
 		obs_data = obs_hdul[obs_fits_spec.ext].data
 		psf_data = psf_hdul[psf_fits_spec.ext].data
+		original_data_type=obs_data.dtype
 		
 		# Create holders for deconvolution products
 		deconv_components = np.full_like(obs_data, np.nan)
@@ -252,11 +253,11 @@ def run(
 	# Save the deconvolution products to a FITS file
 	hdu_components = fits.PrimaryHDU(
 		header = hdr,
-		data = deconv_components
+		data = deconv_components.astype(original_data_type)
 	)
 	hdu_residual = fits.ImageHDU(
 		header = hdr,
-		data = deconv_residual,
+		data = deconv_residual.astype(original_data_type),
 		name = 'RESIDUAL'
 	)
 	hdul_output = fits.HDUList([
@@ -296,7 +297,7 @@ def parse_args(argv):
 	parser.add_argument(
 		'obs_fits_spec',
 		help = '\n'.join((
-			f'The observation\'s (i.e. science target) FITS Specifier. See the end of the help message for more information',
+			f'The observation\'s (i.e., science target) FITS Specifier. See the end of the help message for more information',
 			f'required axes: {", ".join(DESIRED_FITS_AXES)}',
 		)),
 		type=str,
@@ -306,7 +307,7 @@ def parse_args(argv):
 	parser.add_argument(
 		'psf_fits_spec',
 		help = '\n'.join((
-			f'The psf\'s (i.e. calibration target) FITS Specifier. See the end of the help message for more information',
+			f'The psf\'s (i.e., calibration target) FITS Specifier. See the end of the help message for more information',
 			f'required axes: {", ".join(DESIRED_FITS_AXES)}',
 		)),
 		type=str,

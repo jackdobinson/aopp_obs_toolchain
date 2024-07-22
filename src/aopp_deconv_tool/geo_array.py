@@ -32,12 +32,12 @@ class GeoArray:
 		
 		
 	@staticmethod
-	def scale_to_axes(scale : tuple[float,...], shape : tuple[int,...], center : float = 0) -> np.ndarray:
+	def scale_to_axes(scale : tuple[float,...], shape : tuple[int,...], centre : float = 0) -> np.ndarray:
 		"""
-		Applies a `scale` to a `shape` such that the result is centered around `center`
+		Applies a `scale` to a `shape` such that the result is centreed around `centre`
 		"""
 		return tuple(
-			np.linspace(center-scale/2,center+scale/2,s) for scale, s in zip(scale,shape)
+			np.linspace(centre-scale/2,centre+scale/2,s) for scale, s in zip(scale,shape)
 		)
 	
 	def copy(self):
@@ -73,14 +73,14 @@ class GeoArray:
 	@property
 	def extent(self):
 		"""
-		Return the "extent" (i.e. min,max in each dimension) of the GeoArray
+		Return the "extent" (i.e., min,max in each dimension) of the GeoArray
 		"""
 		return tuple(it.chain.from_iterable((x[0],x[-1]) for x in self.axes))
 
 	@property
 	def scale(self) -> tuple[float,...]:
 		"""
-		Return the scale (i.e. difference between min and max) of the GeoArray
+		Return the scale (i.e., difference between min and max) of the GeoArray
 		"""
 		return tuple(x[-1]-x[0] for x in self.axes)
 
@@ -118,7 +118,7 @@ def plot_ga(
 		
 	a = f.subplots(2,2,squeeze=True).flatten()
 	
-	center_idx = tuple(s//2 for s in geo_array.data.shape)
+	centre_idx = tuple(s//2 for s in geo_array.data.shape)
 	
 	m_data = data_mutator(geo_array.data)
 	m_axes = geo_array.axes
@@ -128,13 +128,13 @@ def plot_ga(
 	a[0].set_xlabel(axes_units[0])
 	a[0].set_ylabel(axes_units[1])
 	
-	a[1].set_title('x=constant centerline')
-	a[1].plot(m_data[:, center_idx[1]], m_axes[0])
+	a[1].set_title('x=constant centreline')
+	a[1].plot(m_data[:, centre_idx[1]], m_axes[0])
 	a[1].set_xlabel(data_units)
 	a[1].set_ylabel(axes_units[0])
 	
-	a[2].set_title('y=constant centerline')
-	a[2].plot(m_axes[1], m_data[center_idx[0], :])
+	a[2].set_title('y=constant centreline')
+	a[2].plot(m_axes[1], m_data[centre_idx[0], :])
 	a[2].set_xlabel(axes_units[1])
 	a[2].set_ylabel(data_units)
 	

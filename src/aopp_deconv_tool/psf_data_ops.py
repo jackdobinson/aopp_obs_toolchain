@@ -37,16 +37,16 @@ def normalise(
 		data : np.ndarray, 
 		axes : tuple[int,...] | None=None, 
 		cutout_shape : tuple[int,...] | None = None,
-		recenter_around_center_of_mass = False,
+		recentre_around_centre_of_mass = False,
 		remove_background = True
 	) -> np.ndarray:
 	"""
 	Ensure an array of data fufils the following conditions:
 	
-	* odd shape, to ensure a center pixel exists
-	* center array on brightest pixel
+	* odd shape, to ensure a centre pixel exists
+	* centre array on brightest pixel
 	* ensure array sums to 1
-	* cut out a region around the center to remove unneeded data.
+	* cut out a region around the centre to remove unneeded data.
 	"""
 	if axes is None:
 		axes = tuple(range(data.ndim))
@@ -55,9 +55,9 @@ def normalise(
 	data = nph.array.ensure_odd_shape(data, axes)
 	
 	
-	# center around brightest pixel
+	# centre around brightest pixel
 	for idx in nph.slice.iter_indices(data, group=axes):
-		bp_offset = nph.array.get_center_offset_brightest_pixel(data[idx])
+		bp_offset = nph.array.get_centre_offset_brightest_pixel(data[idx])
 		data[idx] = nph.array.apply_offset(data[idx], bp_offset)
 		data[idx] /= np.nansum(data[idx]) # normalise
 	
@@ -69,22 +69,22 @@ def normalise(
 			data[idx] /= np.nansum(data[idx]) # normalise
 	
 	
-	# cutout region around the center of the image if desired,
-	# this is pretty important when adjusting for center of mass, as long
+	# cutout region around the centre of the image if desired,
+	# this is pretty important when adjusting for centre of mass, as long
 	# as the COM should be close to the brightest pixel
 	if cutout_shape is not None:
 		_lgr.debug(f'{tuple(data.shape[x] for x in axes)=} {cutout_shape=}')
-		center_slices = nph.slice.around_center(tuple(data.shape[x] for x in axes), cutout_shape)
-		_lgr.debug(f'{center_slices=}')
+		centre_slices = nph.slice.around_centre(tuple(data.shape[x] for x in axes), cutout_shape)
+		_lgr.debug(f'{centre_slices=}')
 		slices = [slice(None) for s in data.shape]
-		for i, center_slice in zip(axes, center_slices):
-			slices[i] = center_slice
+		for i, centre_slice in zip(axes, centre_slices):
+			slices[i] = centre_slice
 		_lgr.debug(f'{slices=}')
 		data = data[tuple(slices)]
 	
 	
-	if recenter_around_center_of_mass:
-		# move center of mass to middle of image
+	if recentre_around_centre_of_mass:
+		# move centre of mass to middle of image
 		# threshold
 		threshold = 1E-2
 		with nph.axes.to_start(data, axes) as (gdata, gaxes):
@@ -103,13 +103,13 @@ def normalise(
 			_lgr.debug(f'{gdata[idx].shape=}')
 			
 			
-			# calculate center of mass
+			# calculate centre of mass
 			#com_idxs = tuple(np.nansum(data[idx]*indices)/np.nansum(data[idx]) for indices in np.indices(data[idx].shape))
-			center_to_com_offset = np.array([com_i - s/2 for s, com_i in zip(gdata[idx].shape, com_idxs[idx][::-1])])
-			_lgr.debug(f'{idx=} {com_idxs[idx]=} {center_to_com_offset=}')
-			_lgr.debug(f'{sp.ndimage.center_of_mass(np.nan_to_num(gdata[idx]*(gdata[idx] > threshold*np.nanmax(gdata[idx]))))=}')
+			centre_to_com_offset = np.array([com_i - s/2 for s, com_i in zip(gdata[idx].shape, com_idxs[idx][::-1])])
+			_lgr.debug(f'{idx=} {com_idxs[idx]=} {centre_to_com_offset=}')
+			_lgr.debug(f'{sp.ndimage.centre_of_mass(np.nan_to_num(gdata[idx]*(gdata[idx] > threshold*np.nanmax(gdata[idx]))))=}')
 			
-			# regrid so that center of mass lies on an exact pixel
+			# regrid so that centre of mass lies on an exact pixel
 			old_points = tuple(np.linspace(0,s-1,s) for s in gdata[idx].shape)
 			interp = sp.interpolate.RegularGridInterpolator(
 				old_points, 
@@ -119,8 +119,8 @@ def normalise(
 				fill_value=0
 			)
 		
-			# have to reverse center_to_com_offset here
-			new_points = tuple(p-center_to_com_offset[i] for i,p in enumerate(old_points))
+			# have to reverse centre_to_com_offset here
+			new_points = tuple(p-centre_to_com_offset[i] for i,p in enumerate(old_points))
 			_lgr.debug(f'{[s.size for s in new_points]=}')
 			new_points = np.array(np.meshgrid(*new_points)).T
 			_lgr.debug(f'{[s.size for s in old_points]=} {gdata[idx].shape=} {new_points.shape=}')
@@ -210,7 +210,7 @@ def remove_offset(data, axes, mask, model_name='norm'):
 	return noise_model_offsets, noise_model_parameters, noise_model_at_values, noise_model_cdf, noise_model_cdf_residual
 
 
-def trim_around_center(
+def trim_around_centre(
 		data : np.ndarray,
 		axes : tuple[int,...],
 		output_shape : tuple[int,...]
@@ -219,7 +219,7 @@ def trim_around_center(
 	# ARGUMENTS #
 	
 	data : np.ndarray
-		Data to trim around center pixel, will remove pixels that are greater than shape[i]/2 from the center pixel.
+		Data to trim around centre pixel, will remove pixels that are greater than shape[i]/2 from the centre pixel.
 	axes : tuple[int,...]
 		Axes over which to operate
 	output_shape : tuple[int,...]
@@ -242,9 +242,9 @@ def trim_around_center(
 	slices = [slice(None)]*data.ndim
 	for i in range(data.ndim):
 		if i in axes:
-			center_idx = data.shape[i]//2
-			lo_idx = center_idx - new_shape[i]//2
-			hi_idx = center_idx + new_shape[i]//2 + 1
+			centre_idx = data.shape[i]//2
+			lo_idx = centre_idx - new_shape[i]//2
+			hi_idx = centre_idx + new_shape[i]//2 + 1
 			slices[i] = slice(lo_idx,hi_idx)
 		else:
 			slices[i] = slice(None)
@@ -311,8 +311,8 @@ def get_roi_mask(
 		When finding region of interest, only values larger than this fraction of the maximum value are included.
 	n_largest_regions : None | int = 1
 		When finding region of interest, if using a threshold will only the n_largest_regions in the calculation.
-		A region is defined as a contiguous area where value >= `threshold` along `axes`. I.e. in a 3D cube, if
-		we recenter about the COM on the sky (CELESTIAL) axes the regions will be calculated on the sky, not in
+		A region is defined as a contiguous area where value >= `threshold` along `axes`. I.e., in a 3D cube, if
+		we recentre about the COM on the sky (CELESTIAL) axes the regions will be calculated on the sky, not in
 		the spectral axis (for example).
 	"""
 	mask = np.zeros_like(data, dtype=bool)
@@ -335,16 +335,16 @@ def get_roi_mask(
 				
 	return mask
 
-def get_center_of_mass_offsets(
+def get_centre_of_mass_offsets(
 	data : np.ndarray, 
 		axes : tuple[int,...], 
 		roi_mask : np.ndarray | None = None,
 	) -> np.ndarray:
 	"""
 	data : np.ndarray
-		Array to recenter
+		Array to recentre
 	axes : tuple[int,...]
-		Axes to get center of mass and recenter along.
+		Axes to get centre of mass and recentre along.
 	roi_mask : np.ndarray | None = None
 		Mask for the region of interest. If present will restrict calculations to this region.
 	"""
@@ -361,9 +361,9 @@ def apply_offsets(
 	) -> np.ndarray:
 	"""
 	data : np.ndarray
-		Array to recenter
+		Array to recentre
 	axes : tuple[int,...]
-		Axes to get center of mass and recenter along.
+		Axes to get centre of mass and recentre along.
 	offsets : np.ndarray
 		Offsets to apply to data, will shift data's grid by this amount.
 	"""
@@ -377,13 +377,13 @@ def apply_offsets(
 		_lgr.debug(f'{gdata[idx].shape=}')
 		
 		
-		# calculate center of mass
+		# calculate centre of mass
 		#com_idxs = tuple(np.nansum(data[idx]*indices)/np.nansum(data[idx]) for indices in np.indices(data[idx].shape))
-		#center_to_com_offset = np.array([com_i - s/2 for s, com_i in zip(gdata[idx].shape, com_idxs[idx][::-1])])
-		center_to_com_offset = np.array([s/2 - com_i for s, com_i in zip(gdata[idx].shape, offsets[idx])])
-		_lgr.debug(f'{idx=} {offsets[idx]=} {center_to_com_offset=}')
+		#centre_to_com_offset = np.array([com_i - s/2 for s, com_i in zip(gdata[idx].shape, com_idxs[idx][::-1])])
+		centre_to_com_offset = np.array([s/2 - com_i for s, com_i in zip(gdata[idx].shape, offsets[idx])])
+		_lgr.debug(f'{idx=} {offsets[idx]=} {centre_to_com_offset=}')
 		
-		# regrid so that center of mass lies on an exact pixel
+		# regrid so that centre of mass lies on an exact pixel
 		old_points = tuple(np.linspace(0,s-1,s) for s in gdata[idx].shape)
 		interp = sp.interpolate.RegularGridInterpolator(
 			old_points, 
@@ -393,8 +393,8 @@ def apply_offsets(
 			fill_value=0
 		)
 	
-		# have to reverse center_to_com_offset here
-		new_points = tuple(p-center_to_com_offset[i] for i,p in enumerate(old_points))
+		# have to reverse centre_to_com_offset here
+		new_points = tuple(p-centre_to_com_offset[i] for i,p in enumerate(old_points))
 		_lgr.debug(f'{[s.size for s in new_points]=}')
 		new_points = np.array(np.meshgrid(*new_points)).T
 		_lgr.debug(f'{[s.size for s in old_points]=} {gdata[idx].shape=} {new_points.shape=}')

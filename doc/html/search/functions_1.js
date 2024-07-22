@@ -7,7 +7,7 @@ var searchData=
   ['apply_5foffsets_1093',['apply_offsets',['../de/daa/namespaceaopp__deconv__tool_1_1psf__data__ops.html#a2969163168d8875a18ecbc78c38594c1',1,'aopp_deconv_tool::psf_data_ops']]],
   ['apply_5fregion_5faction_1094',['apply_region_action',['../df/dfb/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1LineRegionPanel.html#a917e0d13eda408277cdbeb6d1062228b',1,'aopp_deconv_tool::graphical_frontends::ssa_filtering::LineRegionPanel']]],
   ['apply_5fregion_5flimits_1095',['apply_region_limits',['../df/dfb/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1LineRegionPanel.html#a83a9853a1dacc7cd65e79199c4ae834d',1,'aopp_deconv_tool::graphical_frontends::ssa_filtering::LineRegionPanel']]],
-  ['around_5fcenter_1096',['around_center',['../d5/d85/namespaceaopp__deconv__tool_1_1numpy__helper_1_1slice.html#a90f91c7168799147978c08f3b987ed5b',1,'aopp_deconv_tool::numpy_helper::slice']]],
+  ['around_5fcentre_1096',['around_centre',['../d5/d85/namespaceaopp__deconv__tool_1_1numpy__helper_1_1slice.html#a90f91c7168799147978c08f3b987ed5b',1,'aopp_deconv_tool::numpy_helper::slice']]],
   ['at_1097',['at',['../dc/def/classaopp__deconv__tool_1_1adaptive__optics__psf__model_1_1PSFModel.html#ab96767ba47b09eec52cef36d52833187',1,'aopp_deconv_tool::adaptive_optics_psf_model::PSFModel']]],
   ['attach_1098',['attach',['../d4/d84/classaopp__deconv__tool_1_1plot__helper_1_1base_1_1Base.html#a4f0406ec256077049d80b0987e0c156b',1,'aopp_deconv_tool::plot_helper::base::Base']]],
   ['attach_5fax_1099',['attach_ax',['../d4/d84/classaopp__deconv__tool_1_1plot__helper_1_1base_1_1Base.html#ac61f12d8a8d8f88afe7fca0c4afda0c8',1,'aopp_deconv_tool::plot_helper::base::Base']]],

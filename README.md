@@ -16,7 +16,7 @@ This section details how to set up a development environment for this project.
 Placeholders:
 
 	`<REPO_DIR>`
-		The top-level directory of this repository. I.e. the directory this file is in.
+		The top-level directory of this repository. I.e., the directory this file is in.
 
 	`<X.Y.Z>`
 		The version of python used in development, currently this is `3.12.2`.
@@ -29,10 +29,10 @@ Placeholders:
 
 * Created using python 3.12.2, I'll refer to the version number as `<X.Y.Z>` in code, where X is the major release, Y is the minor release, and Z is the build number.
 
-  - NOTE: Sometimes only some of the version numbers are used e.g. `<X.Y>` for just the major and minor number, or `<XYZ>` when the numbers are concatenated together 
-    without the dots inbetween them (i.e. `3122` instead of `3.12.2`).
+  - NOTE: Sometimes only some of the version numbers are used e.g., `<X.Y>` for just the major and minor number, or `<XYZ>` when the numbers are concatenated together 
+    without the dots inbetween them (i.e., `3122` instead of `3.12.2`).
 
-  - I.e. the python executable for some version would be `python<X.Y.Z>`
+  - I.e., the python executable for some version would be `python<X.Y.Z>`
 
 * Download and install python 3.12.2 from the [python website](https://www.python.org/downloads/release/python-3122/) or any other location.
   - Note: 3.12.2 is the python version used in development, newer and/or older versions may work as well.
@@ -80,9 +80,9 @@ PYTHON_INSTALL_DIRECTORY="${HOME:?}/python/python_versions" && \
 REPO_DIR="${HOME:?}/repos/aopp_obs_toolchain" && \
 VENV_PREFIX=".venv" && \
 echo "" && \
-echo "PYTHON_MAJOR_VERSION=${PYTHON_VERSION[0]:?ERROR: PYTHON_VERSION must have 3 entries (e.g. '(3 12 2)')}" && \
-echo "PYTHON_MINOR_VERSION=${PYTHON_VERSION[1]:?ERROR: PYTHON_VERSION must have 3 entries (e.g. '(3 12 2)')}" && \
-echo "PYTHON_BUILD_VERSION=${PYTHON_VERSION[2]:?ERROR: PYTHON_VERSION must have 3 entries (e.g. '(3 12 2)')}" && \
+echo "PYTHON_MAJOR_VERSION=${PYTHON_VERSION[0]:?ERROR: PYTHON_VERSION must have 3 entries (e.g., '(3 12 2)')}" && \
+echo "PYTHON_MINOR_VERSION=${PYTHON_VERSION[1]:?ERROR: PYTHON_VERSION must have 3 entries (e.g., '(3 12 2)')}" && \
+echo "PYTHON_BUILD_VERSION=${PYTHON_VERSION[2]:?ERROR: PYTHON_VERSION must have 3 entries (e.g., '(3 12 2)')}" && \
 echo "PYTHON_INSTALL_DIRECTORY=${PYTHON_INSTALL_DIRECTORY:?ERROR: PYTHON_INSTALL_DIRECTORY must be set}" && \
 echo "REPO_DIR=${REPO_DIR:?ERROR: REPO_DIR must be set}" && \
 echo "VENV_PREFIX=${VENV_PREFIX:?ERROR: VENV_PREFIX must be set}" && \
@@ -209,7 +209,7 @@ Often the way VSCode activates virtual environments is not the "normal" way, so 
     }
 ```
 
-  This adds the environment variable "VSCODE_WORKSPACE_DIR" to every terminal that VSCode opens, and sets it to the current **workspace** (i.e. top level) folder.
+  This adds the environment variable "VSCODE_WORKSPACE_DIR" to every terminal that VSCode opens, and sets it to the current **workspace** (i.e., top level) folder.
 
 * Run the following command to get your `~/.bashrc` file to load up the virtual environment properly when the terminal opens:
 ```
@@ -347,9 +347,9 @@ Option 1: Use a password manager of some sort. This isn't too bad, you put all A
 
 Option 2: Set an environment variable. This can work quite well, you set an environment variable (in your `~/.basrhc` file for example, not somewhere that is checked into git), then use that environment variable wherever you need it. It's nice and convenient, but you do have the token sitting in plain text somewhere and always loaded up in memory so if you ever need to send your environment variables to IT for debugging, your token gets sent as well unless you remember to remove it. Also a child process inherits it's parents environment variables, so you technically have to be sure that nothing else is sending environment variables to random places. However, it's easy to use as you just need to add `${PYPI_TOKEN}` in place of the token whenever you need to use it.
 
-Option 3: Store in a (preferably encrypted) file, not in the repository. This is sort-of half-way between (1) and (2). You store the password in a file (e.g. `~/.secrets/pypi_token`) and make sure that it is:
+Option 3: Store in a (preferably encrypted) file, not in the repository. This is sort-of half-way between (1) and (2). You store the password in a file (e.g., `~/.secrets/pypi_token`) and make sure that it is:
 
-* Only readable/writable by the user (e.g. `chmod u=rwx,g=,o= ~/.secrets` when making the directory and `chmod u=rw,g=o= ~/.secrets/pypi_token` when making the file, you can even fiddle around with [access control lists](https://www.redhat.com/sysadmin/linux-access-control-lists) if you want to). 
+* Only readable/writable by the user (e.g., `chmod u=rwx,g=,o= ~/.secrets` when making the directory and `chmod u=rw,g=o= ~/.secrets/pypi_token` when making the file, you can even fiddle around with [access control lists](https://www.redhat.com/sysadmin/linux-access-control-lists) if you want to). 
 * Not somewhere that is checked into git (yes I said that earlier, yes it needs repeating)
 * Encrypted if possible. There are various ways to do this, unfortunately you can't just encrypt with some key and decrypt it when you need it, as this now means you have the exact same problem with the new key. The best options I have found are:
   - [Encrypt the whole disk](https://wiki.archlinux.org/title/Data-at-rest_encryption)

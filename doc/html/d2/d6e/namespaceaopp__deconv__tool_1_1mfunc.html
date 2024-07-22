@@ -105,7 +105,7 @@ Functions</h2></td></tr>
 <tr class="separator:a1cbb37bad041332bc4f9ff58cfe221c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aadf619422119b1b6c1e394cad98fe186"><td class="memItemLeft" align="right" valign="top">np.ndarray&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc.html#aadf619422119b1b6c1e394cad98fe186">generalised_least_squares_preconv</a> (np.ndarray estimate, np.ndarray dirty_img, np.ndarray|float|int cov_mat)</td></tr>
 <tr class="separator:aadf619422119b1b6c1e394cad98fe186"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a891e413a7daf0728944d1a1318d02e64"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc.html#a2278800f4d74ae28100faeb52c995575">Number</a>|np.ndarray&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc.html#a891e413a7daf0728944d1a1318d02e64">logistic_function</a> (<a class="el" href="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc.html#a2278800f4d74ae28100faeb52c995575">Number</a>|np.ndarray x, <a class="el" href="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc.html#a2278800f4d74ae28100faeb52c995575">Number</a> left_limit=0, <a class="el" href="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc.html#a2278800f4d74ae28100faeb52c995575">Number</a> right_limit=1, <a class="el" href="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc.html#a2278800f4d74ae28100faeb52c995575">Number</a> transition_scale=1, <a class="el" href="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc.html#a2278800f4d74ae28100faeb52c995575">Number</a> center=0)</td></tr>
+<tr class="memitem:a891e413a7daf0728944d1a1318d02e64"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc.html#a2278800f4d74ae28100faeb52c995575">Number</a>|np.ndarray&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc.html#a891e413a7daf0728944d1a1318d02e64">logistic_function</a> (<a class="el" href="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc.html#a2278800f4d74ae28100faeb52c995575">Number</a>|np.ndarray x, <a class="el" href="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc.html#a2278800f4d74ae28100faeb52c995575">Number</a> left_limit=0, <a class="el" href="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc.html#a2278800f4d74ae28100faeb52c995575">Number</a> right_limit=1, <a class="el" href="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc.html#a2278800f4d74ae28100faeb52c995575">Number</a> transition_scale=1, <a class="el" href="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc.html#a2278800f4d74ae28100faeb52c995575">Number</a> centre=0)</td></tr>
 <tr class="separator:a891e413a7daf0728944d1a1318d02e64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae3b78e3c62436695a92fa6fab29dc87c"><td class="memItemLeft" align="right" valign="top">np.ndarray&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc.html#ae3b78e3c62436695a92fa6fab29dc87c">regularised_least_squares</a> (np.ndarray components, np.ndarray dirty_img, np.ndarray|float|int error, np.ndarray|float|int alpha, np.ndarray response, np.ndarray|float|int|None model=None, Callable[[np.ndarray, np.ndarray|float|int], np.ndarray] regularising_func=<a class="el" href="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc.html#a5cbfab661bdc048db0bc75f7951a3105">entropy_adj</a>)</td></tr>
 <tr class="separator:ae3b78e3c62436695a92fa6fab29dc87c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -124,11 +124,11 @@ Variables</h2></td></tr>
 
 Working Definitions:
     components
-        The pixel values of the underlying "real" image, i.e. our 'hypothetical' image
+        The pixel values of the underlying "real" image, i.e., our 'hypothetical' image
     model
         A "guess" as to what the underlying "real" image should be. Should be either
-        a physically informed model (e.g. a synthetic image of Neptune) or the pixel
-        values expected from an empty field (e.g. RMS noise values).
+        a physically informed model (e.g., a synthetic image of Neptune) or the pixel
+        values expected from an empty field (e.g., RMS noise values).
     estimate
         Our current estimate of the dirty_img (observation), is a convolution 
         between the PSF and the components
@@ -181,7 +181,7 @@ Useful Concepts:
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc_a5cbfab661bdc048db0bc75f7951a3105_cgraph.png" border="0" usemap="#ad2/d6e/namespaceaopp__deconv__tool_1_1mfunc_a5cbfab661bdc048db0bc75f7951a3105_cgraph" alt=""/></div>
+<div class="centre"><img src="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc_a5cbfab661bdc048db0bc75f7951a3105_cgraph.png" border="0" usemap="#ad2/d6e/namespaceaopp__deconv__tool_1_1mfunc_a5cbfab661bdc048db0bc75f7951a3105_cgraph" alt=""/></div>
 <map name="ad2/d6e/namespaceaopp__deconv__tool_1_1mfunc_a5cbfab661bdc048db0bc75f7951a3105_cgraph" id="ad2/d6e/namespaceaopp__deconv__tool_1_1mfunc_a5cbfab661bdc048db0bc75f7951a3105_cgraph">
 <area shape="rect" title=" " alt="" coords="5,13,272,39"/>
 <area shape="rect" href="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc.html#a97f11862f5ad9e1154aaa55989b99fcb" title=" " alt="" coords="320,5,559,47"/>
@@ -248,7 +248,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc_a97f11862f5ad9e1154aaa55989b99fcb_icgraph.png" border="0" usemap="#ad2/d6e/namespaceaopp__deconv__tool_1_1mfunc_a97f11862f5ad9e1154aaa55989b99fcb_icgraph" alt=""/></div>
+<div class="centre"><img src="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc_a97f11862f5ad9e1154aaa55989b99fcb_icgraph.png" border="0" usemap="#ad2/d6e/namespaceaopp__deconv__tool_1_1mfunc_a97f11862f5ad9e1154aaa55989b99fcb_icgraph" alt=""/></div>
 <map name="ad2/d6e/namespaceaopp__deconv__tool_1_1mfunc_a97f11862f5ad9e1154aaa55989b99fcb_icgraph" id="ad2/d6e/namespaceaopp__deconv__tool_1_1mfunc_a97f11862f5ad9e1154aaa55989b99fcb_icgraph">
 <area shape="rect" title=" " alt="" coords="320,5,559,47"/>
 <area shape="rect" href="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc.html#a5cbfab661bdc048db0bc75f7951a3105" title=" " alt="" coords="5,13,272,39"/>
@@ -327,7 +327,7 @@ Here is the caller graph for this function:</div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc_a926faa3c350bdb67b9c16f7285351553_icgraph.png" border="0" usemap="#ad2/d6e/namespaceaopp__deconv__tool_1_1mfunc_a926faa3c350bdb67b9c16f7285351553_icgraph" alt=""/></div>
+<div class="centre"><img src="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc_a926faa3c350bdb67b9c16f7285351553_icgraph.png" border="0" usemap="#ad2/d6e/namespaceaopp__deconv__tool_1_1mfunc_a926faa3c350bdb67b9c16f7285351553_icgraph" alt=""/></div>
 <map name="ad2/d6e/namespaceaopp__deconv__tool_1_1mfunc_a926faa3c350bdb67b9c16f7285351553_icgraph" id="ad2/d6e/namespaceaopp__deconv__tool_1_1mfunc_a926faa3c350bdb67b9c16f7285351553_icgraph">
 <area shape="rect" title=" " alt="" coords="316,5,581,47"/>
 <area shape="rect" href="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc.html#ae3b78e3c62436695a92fa6fab29dc87c" title=" " alt="" coords="5,5,268,47"/>
@@ -445,7 +445,7 @@ Here is the caller graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc.html#a2278800f4d74ae28100faeb52c995575">Number</a> &#160;</td>
-          <td class="paramname"><em>center</em> = <code>0</code>&#160;</td>
+          <td class="paramname"><em>centre</em> = <code>0</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -515,7 +515,7 @@ Here is the caller graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc_ae3b78e3c62436695a92fa6fab29dc87c_cgraph.png" border="0" usemap="#ad2/d6e/namespaceaopp__deconv__tool_1_1mfunc_ae3b78e3c62436695a92fa6fab29dc87c_cgraph" alt=""/></div>
+<div class="centre"><img src="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc_ae3b78e3c62436695a92fa6fab29dc87c_cgraph.png" border="0" usemap="#ad2/d6e/namespaceaopp__deconv__tool_1_1mfunc_ae3b78e3c62436695a92fa6fab29dc87c_cgraph" alt=""/></div>
 <map name="ad2/d6e/namespaceaopp__deconv__tool_1_1mfunc_ae3b78e3c62436695a92fa6fab29dc87c_cgraph" id="ad2/d6e/namespaceaopp__deconv__tool_1_1mfunc_ae3b78e3c62436695a92fa6fab29dc87c_cgraph">
 <area shape="rect" title=" " alt="" coords="5,5,268,47"/>
 <area shape="rect" href="../../d2/d6e/namespaceaopp__deconv__tool_1_1mfunc.html#a926faa3c350bdb67b9c16f7285351553" title=" " alt="" coords="316,5,581,47"/>

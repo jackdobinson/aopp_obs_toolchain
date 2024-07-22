@@ -37,7 +37,7 @@ def to_any(x : Any, types : Iterable[type]) -> Any:
 		x : Any
 			Object to cast
 		types : Iterable[type]
-			Iterable (e.g. list) of the types to attempt to cast to. Once one
+			Iterable (e.g., list) of the types to attempt to cast to. Once one
 			cast succeeds, the others are not attempted.
 	
 	Returns:

@@ -79,7 +79,7 @@ def test_on_example_data(n_iter=200):
 			):
 
 			psf_data = nph.array.ensure_odd_shape(psf_data)
-			psf_data_offset = nph.array.get_center_offset_brightest_pixel(psf_data)
+			psf_data_offset = nph.array.get_centre_offset_brightest_pixel(psf_data)
 			psf_data = nph.array.apply_offset(psf_data, psf_data_offset)
 
 			obs_data_bp_mask = algorithm.bad_pixels.get_map(obs_data)
@@ -320,7 +320,7 @@ def test_on_example_data_with_plotting_hooks(n_iter=200):
 			):
 
 			psf_data = nph.array.ensure_odd_shape(psf_data)
-			psf_data_offset = nph.array.get_center_offset_brightest_pixel(psf_data)
+			psf_data_offset = nph.array.get_centre_offset_brightest_pixel(psf_data)
 			psf_data = nph.array.apply_offset(psf_data, psf_data_offset)
 
 			obs_data_bp_mask = algorithm.bad_pixels.get_map(obs_data)

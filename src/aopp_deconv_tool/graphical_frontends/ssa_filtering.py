@@ -160,7 +160,7 @@ class LinePlot(BasePlot, CallbackMixin):
 	def sanitise_data(self, new_data):
 		# want to put data into a format where we have
 		# three dimensions: "dataset", "x or y data", "values"
-		# I.e. the shape is always (n_datasets, 2, n_points)
+		# I.e., the shape is always (n_datasets, 2, n_points)
 		ndim = 0
 		_lgr.debug(f'{type(new_data)=}')
 		if type(new_data) is np.ndarray:

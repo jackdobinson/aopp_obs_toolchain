@@ -24,7 +24,7 @@ _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
 # Hopefully creating these will be useful in making easy-to-read type hints
-T = TypeVar('T') # Represents a Type, e.g. float, int, str
+T = TypeVar('T') # Represents a Type, e.g., float, int, str
 N = TypeVar('N',bound=int) # Represents an integer
 M = TypeVar('M',bound=int) # Represents another integer that is not necessarily the same as N
 L = TypeVar('L',bound=int) # Represents another integer that is not necessarily the same as N or M
@@ -299,7 +299,7 @@ class SSA:
 		Perform the actual grouping of decomposed elements
 		
 		Takes lists of indices from `self.grouping`, and sums decomposed elements with those indices
-		i.e. self.grouping=[[0], [1,2,3], [4,5,6,7], [9]]
+		i.e., self.grouping=[[0], [1,2,3], [4,5,6,7], [9]]
 		then grouped components are X_g = [ X_0, X_1+X_2+X_3, X_4+X_5+X_6+X_7, X_9]
 		
 		# ARGUMENTS #
