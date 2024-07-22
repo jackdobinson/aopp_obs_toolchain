@@ -20,6 +20,7 @@ import scipy as sp
 import scipy.signal
 
 from astropy.io import fits
+from astropy import units as u
 
 import aopp_deconv_tool.astropy_helper as aph
 import aopp_deconv_tool.astropy_helper.fits.specifier
@@ -323,10 +324,11 @@ def rebin_hdu_over_axis_with_response_function(
 		response_function : ResponseFunction,
 		bin_start : float | None = None,
 		bin_step : float = 1E-9,
-		axis_unit_conversion_factors : float = 1,
+		axis_unit_conversion_factors : tuple[float,...] = (1,),
 		plot : bool = True
 	) -> tuple[np.ndarray, np.ndarray]:
 	
+	_lgr.debug(f'{axis_unit_conversion_factors=}')
 	ax_values = aph.fits.header.get_world_coords_of_axis(data_hdu.header, axis, wcs_unit_to_return_value_conversion_factor=axis_unit_conversion_factors)
 	_lgr.debug(f'{data_hdu.data.shape=} {ax_values.shape=}')
 	
@@ -364,11 +366,12 @@ def rebin_hdu_over_axis_with_response_function(
 def run(
 		fits_spec : aph.fits.specifier.FitsSpecifier, 
 		output_path : Path | str, 
-		bin_step : float = 1E-9, 
-		bin_width : float = 2E-9,
+		bin_step : float = 1E-9, # Assume SI units
+		bin_width : float = 2E-9, # Assume SI units
 		operation : Literal['sum'] | Literal['mean'] | Literal['mean_err'] = 'mean',
 		spectral_unit_in_meters : float = 1,
 		response_function_class : Literal[SquareResponseFunction] | Literal[TriangularResponseFunction] = TriangularResponseFunction,
+		output_unit : u.Unit | None = None,
 		plot : bool = False,
 	) -> tuple[np.ndarray, np.ndarray]:
 
@@ -381,10 +384,23 @@ def run(
 		#raise RuntimeError(f'DEBUGGING')
 	
 		data_hdu = data_hdul[fits_spec.ext]
+		
 	
 		axes_ordering =  aph.fits.header.get_axes_ordering(data_hdu.header, fits_spec.axes['SPECTRAL'])
+		axis_unit = u.Unit(aph.fits.header.get_axes_unit_string(data_hdu.header, (axes_ordering[0].fits,))[0], format='fits')
+		if output_unit is None:
+			output_unit = axis_unit
 		axis = axes_ordering[0].numpy
 		original_data_type = data_hdu.data.dtype
+				
+		axis_si_unit = None
+		match axis_unit.physical_type:
+			case 'length':
+				axis_si_unit = u.meter
+			case 'frequency':
+				axis_si_unit = u.Hz
+			case _:
+				raise RuntimeError(f'Unsupported physical type {axis_unit.physical_type} for unit {axis_unit}')
 	
 		#new_spec_bins, new_data = rebin_hdu_over_axis(data_hdu, axis, bin_step, bin_width, operation, plot=False)
 		
@@ -409,7 +425,7 @@ def run(
 			response_function_class(response_function_sum, bin_width),
 			bin_start=None, 
 			bin_step=bin_step, 
-			axis_unit_conversion_factors=spectral_unit_in_meters,
+			axis_unit_conversion_factors=1, # astropy always responds with SI units
 			plot=plot
 		)
 		
@@ -432,12 +448,15 @@ def run(
 			pkey_count_start=aph.fits.header.DictReader.find_max_pkey_n(hdr)
 		))
 		
+		#unit_factor = (1*output_unit / u.meter).value
+		#unit_factor = (1*u.meter).to(axis_unit, equivalencies=u.spectral()).to(output_unit, equivalencies=u.spectral()).value
+		unit_factor = (1*axis_si_unit).to(output_unit, equivalencies=u.spectral()).value
 		aph.fits.header.set_axes_transform(hdr, 
 			axis_fits, 
-			'Angstrom', 
+			u.format.Fits.to_string(output_unit), 
 			#np.mean(new_spec_bins[:,0])/1E-10,
-			new_spec_ax[0]/1E-10,
-			bin_step/1E-10,
+			new_spec_ax[0] * unit_factor,
+			bin_step * unit_factor,
 			#new_spec_bins.shape[1],
 			new_spec_ax.shape[0],
 			1
@@ -504,6 +523,7 @@ def parse_args(argv):
 	
 	parser.add_argument('--spectral_unit_in_meters', type=float, default=None, help='The conversion factor between the spectral unit and meters. Only required when the unit cannot be automatically determined, or there is a mismatch between unit and data. Any automatically found unit information will be overwritten.')
 	parser.add_argument('--rebin_operation', choices=['sum', 'mean', 'mean_err'], default='mean', help='Operation to perform when binning.')
+	parser.add_argument('--output_unit', type=str, default=None, help='Units to use for output datacube. If not specified will use the same units as the input datacube.')
 	
 	rebin_group = parser.add_mutually_exclusive_group(required=False)
 	rebin_group.add_argument('--rebin_preset', choices=list(named_spectral_binning_parameters.keys()), default='spex', help='Rebin according to the spectral resolution of the preset')
@@ -512,6 +532,25 @@ def parse_args(argv):
 	args = parser.parse_args(argv)
 	
 	args.fits_spec = aph.fits.specifier.parse(args.fits_spec, DESIRED_FITS_AXES)
+	
+	if args.output_unit is not None:
+		try:
+			args.output_unit = u.Unit(args.output_unit, format='fits')
+		except ValueError as e:
+			try:
+				desired_unit = u.Unit(args.output_unit)
+			except Exception as e:
+				raise e
+			else:
+				equiv_phys_types = {}
+				fits_compat_units = u.format.Fits._generate_unit_names()[0]
+				compat_units = desired_unit.compose(
+					#equivalencies=u.spectral(), 
+					units=fits_compat_units.values(), 
+					include_prefix_units=False
+				)
+				e.add_note(f'Acceptible equivalent FITS units for "{args.output_unit}":\n\t'+'\n\t'.join([str(x) for x in compat_units]))
+				raise e
 	
 	if args.rebin_preset is not None:
 		for k,v in named_spectral_binning_parameters[args.rebin_preset].items():
@@ -550,6 +589,7 @@ if __name__ == '__main__':
 		operation=args.rebin_operation, 
 		output_path=args.output_path, 
 		spectral_unit_in_meters= 1 if args.spectral_unit_in_meters is None else args.spectral_unit_in_meters,
-		response_function_class = args.response_function_class
+		response_function_class = args.response_function_class,
+		output_unit = args.output_unit,
 	)
 	

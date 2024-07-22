@@ -213,6 +213,9 @@ def get_axes_ordering(hdr, axes, ordering='numpy', wcsaxes_label=''):
 	wcsaxes = hdr.get(f'WCSACES{wcsaxes_label}', hdr['NAXIS'])
 	return tuple(AxesOrdering(_x, wcsaxes, ordering) for _x in axes)
 
+def get_axes_unit_string(hdr, axes : tuple[int,...]):
+	return tuple(hdr[f'CUNIT{axis}'] for axis in axes)
+
 def set_axes_transform(hdr, axis=None, unit=None, reference_value=None, delta_value=None, n_values=None, reference_pixel=None):
 	new_hdr_keys= {
 		f'CD{axis}_{axis}' : delta_value,	# Turn meters into Angstrom
