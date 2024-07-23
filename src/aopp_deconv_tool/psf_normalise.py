@@ -66,10 +66,13 @@ def run(
 		outlier_mask = psf_data_ops.get_outlier_mask(data, axes, n_sigma)
 		data[outlier_mask] = np.nan
 		
+		
 		if background_noise_model is not None:
 			_lgr.info('Remove background offset')
 			background_mask = ~psf_data_ops.get_roi_mask(data, axes, background_threshold, 1)
 			noise_model_offsets, noise_model_parameters, noise_model_at_values, noise_model_cdf, noise_model_cdf_residual = psf_data_ops.remove_offset(data, axes, background_mask, background_noise_model)
+		else:
+			background_mask = np.zeros_like(outlier_mask)
 		
 		_lgr.info('Get offsets to centre around centre of mass')
 		roi_mask = psf_data_ops.get_roi_mask(data, axes, threshold, n_largest_regions)
@@ -240,7 +243,7 @@ def parse_args(argv):
 	parser.add_argument('--background_threshold', type=float, default=1E-3, help='Exclude the largest connected region with values larger than this fraction of the maximum value when finding the background')
 	parser.add_argument('--background_noise_model', type=str, default='gennorm', 
 		choices=['norm', 'gennorm', 'none'],
-		help='Model of background noise to use when removing offset. "none" will not mean offset is not calculated or removed'
+		help='Model of background noise to use when removing offset. "none" will mean offset is not calculated or removed'
 	)	
 	parser.add_argument('--n_sigma', type=float, default=5, help='When finding the outlier mask, the number of standard deviations away from the mean a pixel must be to be considered an outlier`')
 	parser.add_argument('--trim_to_shape', type=int, nargs=2, default=None, help='After centreing etc. will trim data to this shape around the centre pixel. Used to reduce data volume for faster processing.')

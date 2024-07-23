@@ -226,10 +226,11 @@ def set_axes_transform(hdr, axis=None, unit=None, reference_value=None, delta_va
 		f'NAXIS{axis}' : n_values,			# Tell FITS the number of spectral planes
 	}
 	
+	# Only update already present header keys
+	for k,v in new_hdr_keys.items():
+		if k in hdr:
+			hdr[k] = v
 	
-	
-	hdr.update({(k,v if v is not None else hdr[k]) for k,v in new_hdr_keys.items()}) # Update the old header with the new values (in memory, not on disk) so we can use it to write the altered file.
-
 
 
 def get_iwc_matrix(hdr, wcsaxes_label=''):

@@ -452,7 +452,7 @@ Using the results from the rebinning example:
 
 Invoke via `python -m aopp_deconv_tool.create_bad_pixel_mask`.
 
-Accepts a `badness_map` heuristic, uses a set of value cuts to produce a boolean mask (the `bad_pixel_mask`) that describes which pixels are considered "bad" and should be interpolated over using a different script.
+Accepts a `badness_map` heuristic, uses a set of value cuts to produce a boolean mask (the `bad_pixel_mask`) that describes which pixels are considered "bad" and should be interpolated over using a different script. Also accepts DS9 region files (in IMAGE coords only at the moment), both constant and dynamic region files can be passed. Constant ones apply across all wavelengths, dynamic ones vary with wavelength.
 
 The `badness_map` is assumed to be a 3D cube, therefore the `bad_pixel_mask` is calculated from a set of (`index`,`value`) pairs. Where `index` is an index into the `badness_map`, and `value` is the value above which a pixel in the `badness_map` is considered "bad". Not all indices have to be specified, and values for unspecified indices will be interpolated (with the values clamped at the LHS and RHS). If no pairs are provided, a value of 3 is assumed for all indices. For each 1 above the cutoff value, a bad pixel is binary dilated. This way "very bad" pixels spread their "badness" to neighbouring pixels.
 
@@ -471,6 +471,12 @@ To get a set of (`index`, `value`) pairs, the following workflow is suggested:
 
 * `-x` or `--value_cut_at_index`
   - A single pair of `index` `value` numbers. Can be specified multiple times so the value cut can vary with index. Unspecified indices will be interpolated from the given (`index`,`value`) pairs, and `value` is clamped at the lowest and highest `index`. If not present, 3 is assumed for all indices.
+
+* `--const_regions`
+  - DS9 region files (one or more) that defines regions to be masked. Assumed to not move, and will be applied to all wavelengths. Must use IMAGE coordinates.
+
+* `--dynamic_regions`
+  - [index, path] pair. Defines a set of region files that denote **dynamic** regions that should be masked. `index` denotes the wavelength index the regions in a file apply to, region parameters are interpolated between index values, and are associated by order within a file so all files must have the same regions defined. Therefore, set a region to have zero size to remove it, but keep the entry present. Must have IMAGE coordinates.'
 
 #### Examples ####
 

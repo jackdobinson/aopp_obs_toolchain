@@ -454,10 +454,8 @@ def run(
 		aph.fits.header.set_axes_transform(hdr, 
 			axis_fits, 
 			u.format.Fits.to_string(output_unit), 
-			#np.mean(new_spec_bins[:,0])/1E-10,
 			new_spec_ax[0] * unit_factor,
 			bin_step * unit_factor,
-			#new_spec_bins.shape[1],
 			new_spec_ax.shape[0],
 			1
 		)
