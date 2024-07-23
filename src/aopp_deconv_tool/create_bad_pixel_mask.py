@@ -55,9 +55,14 @@ def load_dynamic_regions(dynamic_regions : list[tuple[int,str]]) -> dict[int, li
 
 class DynamicRegionInterpolator:
 	def __init__(self, dynamic_region_dict):
-		self.dynamic_region_defaults = [x for x in [z for z in dynamic_region_dict.values()][0]]
+		
 		self.indices = np.array(list(sorted(dynamic_region_dict.keys())), dtype=int)
-		self.n_regions = len(dynamic_region_dict[self.indices[0]])
+		if len(dynamic_region_dict) !=0:
+			self.dynamic_region_defaults = [x for x in [z for z in dynamic_region_dict.values()][0]]
+			self.n_regions = len(dynamic_region_dict[self.indices[0]])
+		else:
+			self.dynamic_region_defaults = []
+			self.n_regions = 0
 		
 		self.region_classes = []
 		
@@ -118,14 +123,15 @@ class DynamicRegionInterpolator:
 					match r_attr_value.__class__:
 						case regions.PixCoord:
 							self.attr_value_dict[j][attr]['values'].append(np.array((r_attr_value.x, r_attr_value.y)))
-						case float | int:
+						case builtins.int:
+							self.attr_value_dict[j][attr]['values'].append(np.array((r_attr_value,)))
+						case builtins.float:
 							self.attr_value_dict[j][attr]['values'].append(np.array((r_attr_value,)))
 						case _:
 							raise RuntimeError(f'Cannot convert from unknown region attribute type {attr.__class__} to numpy array')
 				self.attr_value_dict[j][attr]['values'] = np.array(self.attr_value_dict[j][attr]['values'])
-		_lgr.debug(f'{self.attr_value_dict=} {(self.attr_value_dict[0]['center']['values'][0] + self.attr_value_dict[0]['center']['values'][1])/2}')
+		return
 	
-		_lgr.debug(f'{self.interp(self.indices[0]+10)}')
 	
 	def interp(self, idx):
 	
@@ -153,7 +159,9 @@ class DynamicRegionInterpolator:
 				match value['type']:
 					case regions.PixCoord:
 						interp_attr = regions.PixCoord(*interp_value)
-					case float | int:
+					case builtins.int:
+						interp_attr = interp_value
+					case builtins.float:
 						interp_attr = interp_value
 					case _:
 						raise RuntimeError(f'Cannot convert from numpy to unknown region attribute type {value["type"]}')
