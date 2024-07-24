@@ -221,6 +221,8 @@ class Image(Base):
 			kwargs = dict(origin='lower', interpolation='none')
 			kwargs.update(self.plt_kwargs)
 			self.hdl = self.ax.imshow(self._z_data, label=self.datasource_name, **kwargs)
+			#self.hdl = self.ax.imshow(np.full_like(self._z_data, fill_value=0), label=self.datasource_name, **kwargs)
+			#self.hdl = self.ax.imshow(np.zeros_like(self._z_data), label=self.datasource_name, **kwargs)
 			#self.ax.legend()
 		else:
 			self.hdl.set_data(self._z_data)

@@ -49,7 +49,7 @@ arg_error() { echo "${THIS_SCRIPT} ERROR: ${1}"; echo "${USAGE}"; exit 1; }
 RECALC=0
 
 # let positional arguments and optional arguments be intermixed
-# Therfore, must do this without useing "getopts"
+# Therefore, must do this without useing "getopts"
 N_REQUIRED_POS_ARGS=2
 N_OPTIONAL_POS_ARGS=3
 N_MAX_POS_ARGS=$((${N_REQUIRED_POS_ARGS}+${N_OPTIONAL_POS_ARGS}))

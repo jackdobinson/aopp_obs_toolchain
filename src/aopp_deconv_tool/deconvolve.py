@@ -47,14 +47,29 @@ def create_plot_set(deconvolver, cadence = 1):
 	a7_2 = axes[7].twinx()
 	
 	try:
-		cmap = mpl.cm.get_cmap('bwr_oob')
-	except ValueError:
-		cmap = copy.copy(mpl.cm.get_cmap('bwr'))
+		cmap = mpl.colormaps['bwr_oob']
+	except KeyError:
+		cmap = copy.copy(mpl.colormaps['bwr'])
 		cmap.set_over('magenta')
 		cmap.set_under('green')
 		cmap.set_bad('black')
 		mpl.cm.register_cmap(name='bwr_oob', cmap=cmap)
-	#mpl.rcParams['image.cmap'] = 'user_cmap'
+	
+	try:
+		viridis_oob = mpl.colormaps['viridis_oob']
+	except KeyError:
+		viridis_oob = mpl.colormaps['viridis'].copy()
+		viridis_oob.set_bad(color='magenta', alpha=1)
+		#viridis_oob.set_under(color='black', alpha=1)
+		#viridis_oob.set_over(color='black', alpha=1)
+		mpl.cm.register_cmap(name='viridis_oob', cmap=viridis_oob)
+	
+	
+	
+	def selected_pixels_non_selected_are_nan(x):
+		r = np.array(x._selected_px)
+		r[r==0] = np.nan
+		return r
 	
 	plot_set = PlotSet(
 		fig,
@@ -86,8 +101,9 @@ def create_plot_set(deconvolver, cadence = 1):
 			).attach(next(axes_iter), deconvolver, lambda x: x._components),
 			
 			Image(
-		 		'selected pixels'
-			).attach(next(axes_iter), deconvolver, lambda x: x._selected_px),
+		 		'selected pixels',
+				plt_kwargs = {'cmap': viridis_oob},
+			).attach(next(axes_iter), deconvolver, lambda x: selected_pixels_non_selected_are_nan(x)),
 			
 			Image(
 		 		'pixel choice metric',
