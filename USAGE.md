@@ -415,7 +415,7 @@ After both commands are complete there should be two new files that contain thei
 
 Invoke via `python -m aopp_deconv_tool.artefact_detection`.
 
-NOTE: The current implementation of artefact detection is tuned for observations of objects of a significant fraction of the field size. Therefore it will not give good results for standard star observations.
+WARNING: The current implementation of artefact detection is tuned for observations of objects of a significant fraction of the field size. Therefore, **it will not give good results for standard star observations**.
 
 Accepts a FITS specifier, uses a singular spectrum analysis (SSA) based algorithm to produce a heuristic `badness_map` that reflects how likely a pixel is to be part of an artefact.
 
@@ -457,17 +457,45 @@ Using the results from the rebinning example:
 
 Invoke via `python -m aopp_deconv_tool.create_bad_pixel_mask`.
 
+NOTE: By setting the `value` part of `--value_cut_at_index` argument, this script can be used to only apply dynamic and/or constant regions without applying value cuts. This can be useful when manually removing artifacts from standard star datacubes. However, note that the [psf normalisation script](#psf-normalisation-script) does include a routine for removing outliers so creating a bad pixel mask and interpolating is normally not required for a standard star.
+
 Accepts a `badness_map` heuristic, uses a set of value cuts to produce a boolean mask (the `bad_pixel_mask`) that describes which pixels are considered "bad" and should be interpolated over using a different script. Also accepts DS9 region files (in IMAGE coords only at the moment), both constant and dynamic region files can be passed. Constant ones apply across all wavelengths, dynamic ones vary with wavelength.
 
 The `badness_map` is assumed to be a 3D cube, therefore the `bad_pixel_mask` is calculated from a set of (`index`,`value`) pairs. Where `index` is an index into the `badness_map`, and `value` is the value above which a pixel in the `badness_map` is considered "bad". Not all indices have to be specified, and values for unspecified indices will be interpolated (with the values clamped at the LHS and RHS). If no pairs are provided, a value of 3 is assumed for all indices. For each 1 above the cutoff value, a bad pixel is binary dilated. This way "very bad" pixels spread their "badness" to neighbouring pixels.
 
-To get a set of (`index`, `value`) pairs, the following workflow is suggested:
+To get a set of (`index`, `value`) pairs for use with the artefact `badness_map`, the following workflow is suggested:
 
 1. Open the `badness_map` FITS file in a FITS viewer of some sort (e.g., [DS9](https://sites.google.com/cfa.harvard.edu/saoimageds9) or [QFitsView](https://sites.google.com/cfa.harvard.edu/saoimageds9)), you may need to use a logarithmic scale.
 2. Open the data the `badness_map` was created from as well so you can compare them.
 3. Choose some representative indices (i.e., wavelengths) to work on. For illustrative purposes we will assume indices, (10, 99, 135).
 4. In the `badness_map` viewer, alter the minimum value of the data display range (somewhere around 4 or 5 is a good starting point) until the visible pixels select artefacts reliably, but do not select real image features (e.g., the edge of the planetary disk). Once found, record the (`index`,`value`) pair.
 5. Repeat (4) for each index you chose in step (3).
+
+To get a set of (`index`, `path`) pairs for use with the `--dynamic_regions` argument, the following workflow is suggested:
+
+* Open the observation FITS file in a FITS viewer that can create [DS9](https://sites.google.com/cfa.harvard.edu/saoimageds9) compatible region files. Note, all keyboard/menu/shortcut instructions will assume DS9 is being used. Here is a quick description of how to use regions in DS9:
+  - Switch to "Region Edit" mode via the keyboard shortcut [CTRL]+[R] or via `Edit` -> `Region` on the top menu bar.
+  - Switch to the "region" tab, the 9th tab above the image area.
+  - Select the region shape via `Region` -> `Shape` on the top menu bar.
+  - **Place** a region with a [left-click], or [left-click] + [drag] to set the size at the same time.
+  - Once placed, select a region with a [left-click] on its centre.
+  - When selected:
+    + **Resize** by [left-click] + [drag] on the corner handles.
+	+ **Delete** by pressing the [DELETE] key on the keyboard
+	+ **Move** by [left-click] + [drag] when the mouse is over the region.
+	+ **Label** the region by clicking the "information" button (1st button above the image area when the "region" tab is selected), filling in the "text" field, and clicking "apply".
+	+ NOTE: You may have to move your mouse between operations (e.g. creation, selection, moving, resizing) to let DS9's event loop "catch up" with the new situation.
+  - **Save** the current state of regions to a file using the "save" button in the "region" tab. Give the new file a name related to the observation and which wavelength channel the regions belong to (e.g., "neptune_observation_dynamic_000.reg". IMPORTANT: When saving, set the "Coordinate System" to "image" **not** "physical" (the package used to read the region files does not work with "physical" coordinates).
+* Scroll through the wavelength channels of the image. For each moving artefact to mask out, do the following as required:
+  - Periodically (every 50 or so channels):
+    + Align regions with their associated artefacts (e.g., move artefact-regions over their associated artefacts, change thier shapes as required to cover their associated artefacts) and save the regions to a file.
+  - When an artefact appears:
+    + Create a new region for the new artefact, label it, align regions with their associated artefacts, and save the regions to a file.
+  - When an artefact disappears:
+    + Delete the region for the artefact that disappeared, align regions with their associated artefacts, and save the regions to a file.
+* When all channels have been gone through, close the FITS viewer.
+
+NOTE: The current implementation using regions to mask out moving artefacts does this by associating regions within region-files across multiple (`index`, `path`) pairs by either: the "text" label of the region; or the region's location within a region-file if it has no text label. Therefore, it is recommended to **use text labels for ALL dynamic regions** as otherwise you have to never delete or create a region. Region properties are linearly interpolated between the wavelength channel index of the first region file they are present in, the index of any intermediate region files, and the index of the last region file they are present in. Outside the index of the first and last files a region is in, a region is not present and therefore does not mask any pixels. If you want a region to be present in all wavelength channels, include it in the region files for the first wavelength channel and the last wavelength channel.
 
 #### Module Arguments ####
 
@@ -483,7 +511,7 @@ NOTE: argument type is specified by a colon (:) following the argument name, mul
   - DS9 region files (one or more) that defines regions to be masked. Assumed to not move, and will be applied to all wavelengths. Must use IMAGE coordinates.
 
 * `--dynamic_regions` : int str
-  - [index, path] pair. Defines a set of region files that denote **dynamic** regions that should be masked. `index` denotes the wavelength index the regions in a file apply to, region parameters are interpolated between index values, and are associated by order within a file so all files must have the same regions defined. Therefore, set a region to have zero size to remove it, but keep the entry present. Must have IMAGE coordinates.'
+  - (`index`, `path`) pair. Defines a set of region files that denote **dynamic** regions that should be masked. `index` denotes the wavelength index the regions in a file apply to, region parameters are interpolated between index values, and are associated by text label. Must use IMAGE coordinates.'
 
 #### Examples ####
 

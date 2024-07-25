@@ -1,4 +1,4 @@
-"""
+r"""
 Given a badness map, will apply a value cut (or possibly a range of interpolated value cuts) to the badness map to give a boolean mask that defines "bad" pixels
 
 # EXAMPLE
@@ -7,6 +7,7 @@ Given a badness map, will apply a value cut (or possibly a range of interpolated
 """
 
 import sys, os
+import builtins
 from pathlib import Path
 import dataclasses as dc
 from typing import Literal, Any, Type, Callable
@@ -46,128 +47,109 @@ def load_const_regions(const_regions : list[str]) -> list[regions.Regions]:
 		region_list.extend(regions.Regions.read(fpath))
 	return region_list
 
-def load_dynamic_regions(dynamic_regions : list[tuple[int,str]]) -> dict[int, list[regions.Regions]]:
-	idx_region_dict = dict()
-	for index, fpath in sorted(dynamic_regions, key=lambda x: x[0]):
-		_lgr.debug(f'{index} {fpath=}')
-		idx_region_dict[index] = idx_region_dict.get(index, []) + load_const_regions([fpath])
-	return idx_region_dict
+def load_dynamic_regions(dynamic_regions : list[tuple[int,str]]) -> dict[int|str, list[tuple[int,regions.Regions]]]:
+	region_dict = {}
+	for index, fpath in sorted(dynamic_regions, key=lambda x:x[0]):
+		
+		region_list = load_const_regions([fpath])
+		
+		j=0
+		for region in region_list:
+			if 'text' in region.meta:
+				region_key = region.meta['text']
+			else:
+				region_key = j
+				j+=1
+			
+			region_dict[region_key] = region_dict.get(region_key, []) + [(index, region)]
+	return region_dict
+
+
+@dc.dataclass
+class Attr:
+	type : Type
+	values : np.ndarray
+
 
 class DynamicRegionInterpolator:
-	def __init__(self, dynamic_region_dict):
+	def __init__(self, index_region_list : list[tuple[int, regions.Region]]):
+		self.indices = np.array([x[0] for x in index_region_list])
+		self.region_example = index_region_list[0][1] if len(index_region_list) > 0 else None
 		
-		self.indices = np.array(list(sorted(dynamic_region_dict.keys())), dtype=int)
-		if len(dynamic_region_dict) !=0:
-			self.dynamic_region_defaults = [x for x in [z for z in dynamic_region_dict.values()][0]]
-			self.n_regions = len(dynamic_region_dict[self.indices[0]])
-		else:
-			self.dynamic_region_defaults = []
-			self.n_regions = 0
+		self.region_class = self.region_example.__class__
 		
-		self.region_classes = []
+		assert all([self.region_class is x[1].__class__ for x in index_region_list]), "A dynamic region must not change type"
+
+		_lgr.debug(f'{self.indices=} {self.region_example=} {self.region_class=}')
 		
-		#check we always have the same number of regions
-		for idx in self.indices:
-			assert len(dynamic_region_dict[idx]) == self.n_regions, "Must have a constant number of dynamic regions"
-			for j, r in enumerate(dynamic_region_dict[idx]):
-				if len(self.region_classes) <= j:
-					self.region_classes.append(r.__class__)
-				else:
-					assert r.__class__ is self.region_classes[j], "Dynamic regions must not change type"
-		_lgr.debug(f'{self.indices=} {self.n_regions=} {self.region_classes=}')
+		self.attr_vary_names = []
+		attr_prev_values = {}
 		
-		# get the names of attributes that vary with index for each region
-		do_region_attrs_vary = {}
-		for idx in self.indices:
-			for j, r in enumerate(dynamic_region_dict[idx]):
-				if j not in do_region_attrs_vary:
-					do_region_attrs_vary[j] = {}
-				for k,v in r.__dict__.items():
-					if k in ('meta', 'visual') or k.startswith('_'): # Don't bother with these attributes
-						continue
-					if k not in do_region_attrs_vary[j]:
-						do_region_attrs_vary[j][k] = {'last_value' : v, 'varies' : False}
-					else:
-						_lgr.debug(f"{j=} {k=}")
-						_lgr.debug(f'{do_region_attrs_vary[j][k]['varies']=}')
-						if not do_region_attrs_vary[j][k]['varies']:
-							do_region_attrs_vary[j][k]['varies'] = do_region_attrs_vary[j][k]['last_value'] != v
-							_lgr.debug(f"{do_region_attrs_vary[j][k]['last_value']=} {v=} {do_region_attrs_vary[j][k]['last_value'] != v}")
-							do_region_attrs_vary[j][k]['last_value'] = v
-					
-		_lgr.debug(f'\n#####\n{do_region_attrs_vary=}\n#####')
+		self.attrs = {}
 		
-		self.interp_attrs = []
-		for j, do_attrs_vary in do_region_attrs_vary.items():
-			if len(self.interp_attrs) <= j:
-				self.interp_attrs.append(list())
-			
-			for k,v in do_attrs_vary.items():
-				if v['varies']:
-					self.interp_attrs[j].append(k)
-		_lgr.debug(f'{self.interp_attrs=}')
-		
-		self.attr_value_dict = {}
-		for j, attrs in enumerate(self.interp_attrs):
-			if j not in self.attr_value_dict:
-				self.attr_value_dict[j] = {}
-			for attr in attrs:
-				self.attr_value_dict[j][attr] = {'type' : None, 'values' : []}
-				for idx in self.indices:
-					r_attr_value = getattr(dynamic_region_dict[idx][j], attr)
-					_lgr.debug(f'{r_attr_value.__class__}')
-					if self.attr_value_dict[j][attr]['type'] is None:
-						self.attr_value_dict[j][attr]['type'] = r_attr_value.__class__
-					
-					assert r_attr_value.__class__ is self.attr_value_dict[j][attr]['type'], "dynamic region attributes cannot change type"
-					match r_attr_value.__class__:
-						case regions.PixCoord:
-							self.attr_value_dict[j][attr]['values'].append(np.array((r_attr_value.x, r_attr_value.y)))
+		for i, (idx, region) in enumerate(index_region_list):
+			for attr_name, attr_value in region.__dict__.items():
+				_lgr.debug(f'{attr_name=} {attr_value=}')
+				if attr_name in ('meta', 'visual') or attr_name.startswith('_'):
+					continue
+				
+				if attr_name not in self.attrs:
+					match attr_value.__class__:
 						case builtins.int:
-							self.attr_value_dict[j][attr]['values'].append(np.array((r_attr_value,)))
+							self.attrs[attr_name] = Attr(attr_value.__class__, np.zeros((*self.indices.shape,), dtype=int))
 						case builtins.float:
-							self.attr_value_dict[j][attr]['values'].append(np.array((r_attr_value,)))
+							self.attrs[attr_name] = Attr(attr_value.__class__, np.zeros((*self.indices.shape,), dtype=float))
+						case regions.PixCoord:
+							self.attrs[attr_name] = Attr(attr_value.__class__, np.zeros((*self.indices.shape,2), dtype=float))
 						case _:
-							raise RuntimeError(f'Cannot convert from unknown region attribute type {attr.__class__} to numpy array')
-				self.attr_value_dict[j][attr]['values'] = np.array(self.attr_value_dict[j][attr]['values'])
-		return
-	
-	
-	def interp(self, idx):
-	
-		new_regions = []
-	
-		for j in range(self.n_regions):
-			new_regions.append(self.dynamic_region_defaults[j])
-			
-			for attr, value in self.attr_value_dict[j].items():
-				arg_lt_idx = np.argwhere(self.indices > idx)
-				if np.any(arg_lt_idx):
-					i_min =np.min(arg_lt_idx)
-				else:
-					i_min = len(self.indices)-1
-				if i_min >=0 and i_min < (len(self.indices)-1):
-					frac = (idx - self.indices[i_min]) / (self.indices[i_min+1] - self.indices[i_min])
-					diff = value['values'][i_min+1] - value['values'][i_min]
-				else:
-					frac = 0
-					diff = 0
-				
-				
-				interp_value = value['values'][i_min] + frac*diff
-				
-				match value['type']:
-					case regions.PixCoord:
-						interp_attr = regions.PixCoord(*interp_value)
+							raise RuntimeError(f'Cannot find index-varying attribute information for attribute {attr_name} of type {attr_value.__class__}')
+
+				match self.attrs[attr_name].type:
 					case builtins.int:
-						interp_attr = interp_value
+						self.attrs[attr_name].values[i] = attr_value
 					case builtins.float:
-						interp_attr = interp_value
+						self.attrs[attr_name].values[i] = attr_value
+					case regions.PixCoord:
+						self.attrs[attr_name].values[i][0] = attr_value.x
+						self.attrs[attr_name].values[i][1] = attr_value.y
 					case _:
-						raise RuntimeError(f'Cannot convert from numpy to unknown region attribute type {value["type"]}')
-				setattr(new_regions[j], attr, interp_attr)
-		return new_regions
+						raise RuntimeError(f'Cannot assign values to index-varying attribute information for attribute {attr_name} of type {sefl.attrs[attr_name].type}')
+
+		_lgr.debug(f'{self.attrs=}')
 		
+	def interp(self, index):
+		if self.indices.size == 0 or index < self.indices[0] or self.indices[-1] < index:
+			return None
+		
+		i_gt = np.sum(index >= self.indices)
+		
+		
+		for attr_name, attr in self.attrs.items():
+			if i_gt < self.indices.size:
+				frac = (index - self.indices[i_gt-1])/(self.indices[i_gt] - self.indices[i_gt-1])
+				diff = attr.values[i_gt] - attr.values[i_gt-1]
+			else:
+				frac = 0
+				diff = attr.values[i_gt-1] - attr.values[i_gt-1]
+			
+			_lgr.debug(f'{i_gt=} {attr.values[i_gt-1]=} {frac=} {diff=}')
+			interp_value = attr.values[i_gt-1] + frac*diff
+			
+			match attr.type:
+				case builtins.int:
+					interp_attr = interp_value
+				case builtins.float:
+					interp_attr = interp_value
+				case regions.PixCoord:
+					interp_attr = regions.PixCoord(*interp_value)
+				case _:
+					raise RuntimeError(f'Cannot interpolate value for attribute {attr_name} of unrecognised type {attr.type}')
+			
+			setattr(self.region_example, attr_name, interp_attr)
+		return self.region_example
+		
+
+	
 def run(
 		fits_spec,
 		output_path,
@@ -182,15 +164,19 @@ def run(
 	const_region_list = load_const_regions(const_regions)
 	dynamic_region_dict = load_dynamic_regions(dynamic_regions)
 	
-	print(const_region_list)
-	
+	for r in const_region_list:
+		_lgr.debug(f'{r=} {r.meta=} {r.visual=}')
+		
+	for k in dynamic_region_dict:
+		_lgr.debug(f'dynamic_region_dict[{k}] = {dynamic_region_dict[k]}')
+		
+	dynamic_region_interpolators = [DynamicRegionInterpolator(v) for v in dynamic_region_dict.values()]
 
 	
 	with fits.open(Path(fits_spec.path)) as data_hdul:
 		
 		
 		_lgr.debug(f'{fits_spec.path=} {fits_spec.ext=} {fits_spec.slices=} {fits_spec.axes=}')
-		#raise RuntimeError(f'DEBUGGING')
 	
 		data_hdu = data_hdul[fits_spec.ext]
 		data = data_hdu.data
@@ -203,7 +189,6 @@ def run(
 		for const_region in const_region_list:
 			bad_pixel_mask |= const_region.to_mask(mode='center').to_image(bad_pixel_mask.shape[1:], dtype=bool)[None,:,:]
 		
-		dynamic_region_interpolator = DynamicRegionInterpolator(dynamic_region_dict)
 
 		# Loop over the index range specified by `obs_fits_spec` and `psf_fits_spec`
 		for i, idx in enumerate(nph.slice.iter_indices(data, fits_spec.slices, fits_spec.axes['CELESTIAL'])):
@@ -216,8 +201,10 @@ def run(
 			
 			_lgr.debug(f'{current_data_idx=}')
 			
-			for r in dynamic_region_interpolator.interp(current_data_idx):
-				bad_pixel_mask[idx] |= r.to_mask(mode='center').to_image(bad_pixel_mask[idx].shape, dtype=bool)
+			for dri in dynamic_region_interpolators:
+				r = dri.interp(current_data_idx)
+				if r is not None:
+					bad_pixel_mask[idx] |= r.to_mask(mode='center').to_image(bad_pixel_mask[idx].shape, dtype=bool)
 			
 			while next_cv_pos < len(index_cut_values) and index_cut_values[next_cv_pos][0] < current_data_idx:
 				next_cv_pos += 1
