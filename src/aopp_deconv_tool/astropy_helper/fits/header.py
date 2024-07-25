@@ -132,6 +132,10 @@ def get_key_fmt_max(hdr : ap.io.fits.Header, key_fmt, key_fmt_arg_iter) -> str:
 			last_valid_key = key
 	return last_valid_key
 
+def get_all_axes(hdr : ap.io.fits.Header, wcsaxes_label=''):
+	return tuple(i.numpy for i in AxesOrdering.range(hdr['NAXIS']))
+		
+
 def get_celestial_axes(hdr : ap.io.fits.Header, wcsaxes_label=''):
 	placeholders = ('x','y')
 	fits_celestial_codes = ['RA--', 'DEC-', 'xLON','xLAT', 'xyLN', 'xyLT']
@@ -217,6 +221,9 @@ def get_axes_unit_string(hdr, axes : tuple[int,...]):
 	return tuple(hdr[f'CUNIT{axis}'] for axis in axes)
 
 def set_axes_transform(hdr, axis=None, unit=None, reference_value=None, delta_value=None, n_values=None, reference_pixel=None):
+	if axis is None:
+		return
+		
 	new_hdr_keys= {
 		f'CD{axis}_{axis}' : delta_value,	# Turn meters into Angstrom
 		f'CDELT{axis}' : delta_value,		# Turn meters into Angstrom
@@ -228,7 +235,7 @@ def set_axes_transform(hdr, axis=None, unit=None, reference_value=None, delta_va
 	
 	# Only update already present header keys
 	for k,v in new_hdr_keys.items():
-		if k in hdr:
+		if k in hdr and v is not None:
 			hdr[k] = v
 	
 

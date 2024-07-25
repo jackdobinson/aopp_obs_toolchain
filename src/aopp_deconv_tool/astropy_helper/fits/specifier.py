@@ -63,6 +63,7 @@ axes_type_info={
 	"CELESTIAL" : AxesInfo("sky position varies along this axis", aph.fits.header.get_celestial_axes),
 	"POLARISATION" : AxesInfo("polarisation varies along this axis, could be linear of circular", aph.fits.header.get_polarisation_axes),
 	"TIME" : AxesInfo("time varies along this axis", aph.fits.header.get_time_axes),
+	"ALL" : AxesInfo("all axes of a fits file", aph.fits.header.get_all_axes),
 }
 
 help_fmt = """\
