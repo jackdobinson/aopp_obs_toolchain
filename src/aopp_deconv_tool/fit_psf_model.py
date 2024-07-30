@@ -24,7 +24,8 @@ import aopp_deconv_tool.plot_helper as plot_helper
 from aopp_deconv_tool.optimise_compat import PriorParam, PriorParamSet
 from aopp_deconv_tool.optimise_compat.ultranest_compat import UltranestResultSet, fitting_function_factory
 
-from aopp_deconv_tool.psf_model_dependency_injector import (
+
+from aopp_deconv_tool.psf_model.dependency_injector import (
 	RadialPSFModelDependencyInjector, 
 	GaussianPSFModelDependencyInjector,
 	TurbulencePSFModelDependencyInjector,

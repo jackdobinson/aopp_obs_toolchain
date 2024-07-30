@@ -165,7 +165,7 @@ if [[ ${RECALC} == 1 || ! -f ${FITS_STD_REBIN_NORM} ]]; then
 fi
 
 echo "Modelling PSF"
-if [[ ${RECALC} == 1 || ! -f ${FITS_STD_REBIN_NORM_MODEL} ]]; then
+if [[ ${RECALC} == 1 || ! -f ${FITS_STD_REBIN_NORM_MODEL} || 1 == 1 ]]; then # DEBUGGING
 	python -m aopp_deconv_tool.fit_psf_model "${FITS_STD_REBIN_NORM}${SLICE}${CELESTIAL_AXES}" --model "${PSF_MODEL_STR}"
 fi
 

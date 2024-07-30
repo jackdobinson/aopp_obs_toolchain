@@ -1,0 +1,8 @@
+"""
+Dependency injectors for each psf model, consistent interface means they work well with psf_data_ops
+"""
+
+from aopp_deconv_tool.psf_model.dependency_injector.radial_psf_model_di import RadialPSFModelDependencyInjector
+from aopp_deconv_tool.psf_model.dependency_injector.adaptive_optics_psf_model_di import MUSEAdaptiveOpticsPSFModelDependencyInjector
+from aopp_deconv_tool.psf_model.dependency_injector.gaussian_psf_model_di import GaussianPSFModelDependencyInjector
+from aopp_deconv_tool.psf_model.dependency_injector.turbulence_psf_model_di import TurbulencePSFModelDependencyInjector
