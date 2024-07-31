@@ -8,13 +8,35 @@ set -o errexit -o nounset -o pipefail
 #./example_data/ifu_observation_datasets/MUSE.2021-10-25T06\:56\:42.763.fits[3000:3300]
 
 THIS_SCRIPT=$0
+source "${THIS_SCRIPT%/*}/argparse.sh"
 
-REDUCED_VOLUME_NAME="reduced_data_volume"
+set_usage_info ${THIS_SCRIPT##*/} 'Reduces data volume of input datafiles'
+add_argument SCI_FILE path "Science observation to reduce volume of"
+add_argument STD_FILE path "Standard star observation for the science observation"
+add_argument --slice str "Python slice synatx to apply to both files" '' '[3000:3300]'
+add_argument --output_name str "Name used for reduced volume datafiles" '' 'reduced_data_volume'
+add_argument --all_axes str "All axes to use for python routines" '' '(0,1,2)'
+add_argument --celestial_axes str "Celestial axes to use for python routines" '' ''
+add_argument -h flag "Show usage message" print_usage_and_exit
 
-SLICE="[3000:3300]"
+trap "echo 'ERROR: Something went wrong'; print_usage_and_exit" EXIT
+
+argparse "$@"
+
+#REDUCED_VOLUME_NAME="reduced_data_volume"
+REDUCED_VOLUME_NAME="${ARGS['--output_name']}"
+
+#SLICE="[3000:3300]"
+SLICE="${ARGS[--slice]}"
+AXES="{CELESTIAL:${ARGS[--celestial_axes]},ALL:${ARGS[--all_axes]}}"
+
 
 COUNT=0
-for FILE in ${@:1}; do
+FILES=(
+	${ARGS['SCI_FILE']}
+	${ARGS['STD_FILE']}
+)
+for FILE in ${FILES[@]}; do
 	DIR=${FILE%/*}
 	FPATH=${FILE%.*}
 	EXT=${FILE##*.}
@@ -34,8 +56,8 @@ for FILE in ${@:1}; do
 	echo "RV1=$RV1"
 	echo "RV2=$RV2"
 	
-	python -m aopp_deconv_tool.slice_fits "${FILE}${SLICE}" -o ${RV1}
-	python -m aopp_deconv_tool.spatial_rebin ${RV1} -o ${RV2} --rebin_step 3E-5 3E-5
+	python -m aopp_deconv_tool.slice_fits "${FILE}${SLICE}${AXES}" -o ${RV1}
+	python -m aopp_deconv_tool.spatial_rebin "${RV1}${AXES}" -o ${RV2} --rebin_step 3E-5 3E-5
 	
 	#python -m aopp_deconv_tool.spatial_rebin ${FILE} -o ${RV1} --rebin_step 3E-5 3E-5
 	#python -m aopp_deconv_tool.spectral_rebin ${RV1} -o ${RV2} --rebin_params 1E-8 2E-8
