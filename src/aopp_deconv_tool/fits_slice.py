@@ -1,4 +1,6 @@
-
+"""
+Apply slices to a FITS file, reducing the number of entries across a set of axes.
+"""
 
 
 import sys, os
@@ -10,6 +12,7 @@ from astropy.io import fits
 import aopp_deconv_tool.astropy_helper as aph
 import aopp_deconv_tool.astropy_helper.fits.header
 import aopp_deconv_tool.astropy_helper.fits.specifier
+from aopp_deconv_tool.astropy_helper.fits.specifier import FitsSpecifier
 
 from aopp_deconv_tool.fpath import FPath
 from aopp_deconv_tool.numpy_helper.axes import AxesOrdering
@@ -20,8 +23,8 @@ _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
 def run(
-		fits_spec,
-		output_path
+		fits_spec : FitsSpecifier,
+		output_path : Path|str
 	):
 	
 	with fits.open(Path(fits_spec.path)) as hdul:

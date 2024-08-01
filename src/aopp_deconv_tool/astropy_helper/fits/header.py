@@ -172,6 +172,53 @@ def get_time_axes(hdr, wcsaxes_label=''):
 	raise NotImplementedError
 
 
+def get_wcs_of_axes(hdr, axes=None, wcsaxes_label=''):
+	if axes is None:
+		axes = tuple(range(hdr['NAXIS']))
+	ax_idxs = tuple((x if type(x)==AxesOrdering else AxesOrdering(x, hdr['NAXIS'], 'numpy')) for x in (axes if (type(axes) in (list,tuple)) else (axes,)))
+	return WCS(hdr, key=' ' if wcsaxes_label=='' else wcsaxes_label.upper(), naxis=tuple(x.fits for x in ax_idxs))
+
+
+def get_wcs_axis_key_1d(key : str, axis : int, wcsaxes_label : str = ''):
+	return f'{key}{axis}{wcsaxes_label}'
+	
+def get_wcs_axis_key_2d(key : str, axis1 : int, axis2 : int, wcsaxes_label : str = ''):
+	return f'{key}{axis1}_{axis2}{wcsaxes_label}'
+
+def get_wcs_header_keys(hdr, axes=None, wcsaxes_label=''):
+	header_keys_to_retrieve_1d = (
+		'CUNIT',
+		'CTYPE',
+		'CRVAL',
+		'NAXIS',
+		'CRPIX',
+		'CDELT'
+	)
+	header_keys_to_retrieve_2d = (
+		'CD',
+		'PC'
+	)
+	if axes is None:
+		axes = tuple(range(hdr['NAXIS']))
+	ax_idxs = tuple((x if type(x)==AxesOrdering else AxesOrdering(x, hdr['NAXIS'], 'numpy')) for x in (axes if (type(axes) in (list,tuple)) else (axes,)))
+	
+	wcs_header_keys = {}
+	for key in header_keys_to_retrieve_1d:
+		for ax in ax_idxs:
+			ax_key = get_wcs_axis_key_1d(key, ax.fits, wcsaxes_label)
+			wcs_header_keys[ax_key] = hdr.get(ax_key,None)
+	
+	for key in header_keys_to_retrieve_2d:
+		for ax in ax_idxs:
+			for bx in ax_idxs:
+				ax_key = get_wcs_axis_key_2d(key, ax.fits, bx.fits, wcsaxes_label)
+				wcs_header_keys[ax_key] = hdr.get(ax_key,None)
+	
+	return wcs_header_keys
+	
+	
+	
+
 def get_world_coords_of_axis(hdr, ax_idx, wcsaxes_label='', squeeze=True, wcs_unit_to_return_value_conversion_factor=1):
 	"""
 	Gets the world coordiates of an axis
@@ -214,7 +261,7 @@ def is_CDi_j_present(header, wcsaxes_label=''):
 	return(False)
 
 def get_axes_ordering(hdr, axes, ordering='numpy', wcsaxes_label=''):
-	wcsaxes = hdr.get(f'WCSACES{wcsaxes_label}', hdr['NAXIS'])
+	wcsaxes = hdr.get(f'WCSAXES{wcsaxes_label}', hdr['NAXIS'])
 	return tuple(AxesOrdering(_x, wcsaxes, ordering) for _x in axes)
 
 def get_axes_unit_string(hdr, axes : tuple[int,...]):

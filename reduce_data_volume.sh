@@ -15,20 +15,26 @@ add_argument SCI_FILE path "Science observation to reduce volume of"
 add_argument STD_FILE path "Standard star observation for the science observation"
 add_argument --slice str "Python slice synatx to apply to both files" '' '[3000:3300]'
 add_argument --output_name str "Name used for reduced volume datafiles" '' 'reduced_data_volume'
-add_argument --all_axes str "All axes to use for python routines" '' '(0,1,2)'
+add_argument --all_axes str "All axes to use for python routines" '' ''
 add_argument --celestial_axes str "Celestial axes to use for python routines" '' ''
 add_argument -h flag "Show usage message" print_usage_and_exit
 
+# If something goes wrong then pring the usage message
 trap "echo 'ERROR: Something went wrong'; print_usage_and_exit" EXIT
 
 argparse "$@"
 
-#REDUCED_VOLUME_NAME="reduced_data_volume"
 REDUCED_VOLUME_NAME="${ARGS['--output_name']}"
 
-#SLICE="[3000:3300]"
 SLICE="${ARGS[--slice]}"
-AXES="{CELESTIAL:${ARGS[--celestial_axes]},ALL:${ARGS[--all_axes]}}"
+ALL_AXES="${ARGS[--all_axes]}"
+CELESTIAL_AXES="${ARGS[--celestial_axes]}"
+
+
+
+echo "SLICE=$SLICE"
+echo "ALL_AXES=$ALL_AXES"
+echo "CELESTIAL_AXES=$CELESTIAL_AXES"
 
 
 COUNT=0
@@ -56,8 +62,8 @@ for FILE in ${FILES[@]}; do
 	echo "RV1=$RV1"
 	echo "RV2=$RV2"
 	
-	python -m aopp_deconv_tool.slice_fits "${FILE}${SLICE}${AXES}" -o ${RV1}
-	python -m aopp_deconv_tool.spatial_rebin "${RV1}${AXES}" -o ${RV2} --rebin_step 3E-5 3E-5
+	python -m aopp_deconv_tool.fits_slice "${FILE}${SLICE}${ALL_AXES}" -o ${RV1}
+	python -m aopp_deconv_tool.spatial_rebin "${RV1}${CELESTIAL_AXES}" -o ${RV2} --rebin_step 3E-5 3E-5
 	
 	#python -m aopp_deconv_tool.spatial_rebin ${FILE} -o ${RV1} --rebin_step 3E-5 3E-5
 	#python -m aopp_deconv_tool.spectral_rebin ${RV1} -o ${RV2} --rebin_params 1E-8 2E-8
@@ -82,3 +88,6 @@ for FILE in ${FILES[@]}; do
 	
 	COUNT=$((COUNT + 1))
 done
+
+# Remove trap for successful exit
+trap - EXIT
