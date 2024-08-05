@@ -3,4 +3,4 @@
 * example
 * list
 
-Testing [usage](./USAGE.md) {{ page.url }}
+Testing [usage](./USAGE.md) {{ page.url }} {{ site.baseurl }} {{ site.data.top-menu }}
