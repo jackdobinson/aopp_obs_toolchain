@@ -1,5 +1,6 @@
 source: ./www
 lang: en-GB
+google_analytics:false
 liquid:
   error_mode: warn
   strict_variables: true
