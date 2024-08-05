@@ -2,6 +2,14 @@ source: ./www
 lang: en-GB
 google_analytics: false
 
+defaults:
+  -
+    scope:
+      path: "" # an empty string here means all files in the project
+    values:
+      layout: "default"
+
+
 liquid:
   error_mode: strict
   strict_variables: true
