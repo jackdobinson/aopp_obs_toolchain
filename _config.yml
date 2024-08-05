@@ -1,4 +1,4 @@
-source: ./www/
+source: ./www
 liquid:
   error_mode: strict
   strict_variables: true
