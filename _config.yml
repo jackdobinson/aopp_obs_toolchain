@@ -1,5 +1,6 @@
 source: ./www
+
 liquid:
-  error_mode: strict
+  error_mode: warn
   strict_variables: true
   strict_filters: true
