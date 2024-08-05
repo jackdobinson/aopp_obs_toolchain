@@ -6,3 +6,8 @@ liquid:
   error_mode: strict
   strict_variables: true
   strict_filters: true
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: pygments
