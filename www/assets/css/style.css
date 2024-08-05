@@ -20,3 +20,7 @@ nav.top-menu a:hover {
 nav.top-menu a.current-url {
   background-color: #555555;
 }
+
+footer {
+	font-size: x-small;
+}
