@@ -1,0 +1,22 @@
+nav.top-menu {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333333;
+  display: flex;
+}
+nav.top-menu a{
+  display: inline-flex;
+  color: white;
+  text-align: center;
+  padding: 16px;
+  text-decoration: none;
+}
+
+nav.top-menu a:hover {
+  background-color: #111111;
+}
+
+nav.top-menu a.current-url {
+  background-color: #555555;
+}

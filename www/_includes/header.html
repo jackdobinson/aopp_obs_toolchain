@@ -1,35 +1,6 @@
-<html>
-<head>
-<style>
-
-nav.top-menu {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: #333333;
-  display: flex;
-}
-nav.top-menu a{
-  display: inline-flex;
-  color: white;
-  text-align: center;
-  padding: 16px;
-  text-decoration: none;
-}
-
-nav.top-menu a:hover {
-  background-color: #111111;
-}
-</style>
-</head>
 <body>
 <nav class="top-menu">
-  <a href="/aopp_obs_toolchain/index.html">Home</a>
-  <a href="/aopp_obs_toolchain/getting_started/index.html">Getting Started</a>
-  <a href="/aopp_obs_toolchain/examples/index.html">Examples</a>
-  <a href="/aopp_obs_toolchain/documentation/index.html">Documentation</a>
+  {% for item in site.data.navigation %}
+    <a href="{{ item.link }}" {% if page.url == item.link %}class="current-url"{% endif %}>{{ item.text }}</a>
+  {% endfor %}
 </nav>
-
-</body>
-</html>
-
