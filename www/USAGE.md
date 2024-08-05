@@ -1210,7 +1210,7 @@ E.g., for a 2-dimensional array `b=np.array([[10,11,15],[16,19,20],[33,35,36]])`
 * `b[2,1]` is equal to 35
 
 Similarly, slicing an N-dimensional array uses tuples of slices. E.g.,
-```
+```python
 >>> b
 array([[10, 11, 15],
        [16, 19, 20],
@@ -1224,7 +1224,7 @@ array([[20, 19, 16]])
 ```
 
 Slices and indices can be mixed, so you can slice one dimension and select an index from another. E.g.,
-```
+```python
 >>> b[:1, 2]
 array([15])
 >>> b[::-1, 0]
@@ -1236,7 +1236,7 @@ array([15, 11, 10])
 There is a `slice` object in Python that can be used to programmatically create slices, its prototype is `slice(start,stop,step)`,
 but only `stop` is required, and if `stop=None` the slice will continue until the end of the array dimension. Slice objects
 are almost interchangeable with the slice syntax. E.g.,
-```
+```python
 >>> s = slice(2)
 >>> b[s,0]
 array([10, 16])
@@ -1251,7 +1251,7 @@ array([10, 16])
 
 Below is an example *bash* script for performing every step of the deconvolution process on an observation and standard star file
 
-```
+```bash
 #!/usr/bin/env bash
 
 # Turn on "strict" mode
@@ -1452,7 +1452,7 @@ are not already installed, you will need `sudo` access so the script can install
 * Run the script with : `./install_python.sh`
 
 
-```
+```bash
 #!/usr/bin/env bash
 
 # Turn on "strict" mode
