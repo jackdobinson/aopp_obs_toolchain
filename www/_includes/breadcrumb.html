@@ -4,6 +4,10 @@
   {% assign page_url_accumulator = '' %}
   {% for url_part in page_url_parts %}
     {% assign page_url_accumulator = page_url_accumulator | append: url_part %}
-      <a href="{{ site.baseurl }}{{ page_url_accumulator }}"> > {{ page_url_accumulator }}</a>
+      <span class="breadcrumb-sep">></span> <a href="{{ site.baseurl }}{{ page_url_accumulator }}"> {{ page_url_accumulator }}</a>
   {% endfor %}
 </nav>
+
+<p class="debugging">
+{{ page_url_parts }}
+</p>

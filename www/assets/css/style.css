@@ -35,6 +35,13 @@ nav.breadcrumb a{
 nav.breadcrumb a:hover {
 }
 
+nav.breadcrumb span.breadcrumb-sep{
+  display: inline-flex;
+}
+
+p.debugging {
+  color: red;
+}
 
 footer {
 	font-size: x-small;
