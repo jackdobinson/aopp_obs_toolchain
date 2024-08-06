@@ -1,6 +1,6 @@
 <body>
 <nav class="breadcrumb">
-  {% assign page_url_parts = page.url | split: ", " %}
+  {% assign page_url_parts = page.url | split: "/" %}
   {% assign page_url_accumulator = '' %}
   {% for url_part in page_url_parts %}
     {% assign page_url_accumulator = page_url_accumulator | append: url_part %}
