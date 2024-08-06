@@ -28,43 +28,38 @@
 		window.onload = function () {
 			console.log('HELLO WORLD')
 			var toc = "";
-			var level = 0;
-
+			var list_level = 1;
+			var item_level = 1;
+			var item_anchor = null
+			
+			var toc_html = '<ul>'
+			
 			for (const item of document.querySelectorAll("h1, h2, h3, h4, h5, h6")){
-				console.log(item)
+				item_level = parseInt(item.nodeName[1])
+				console.log(item_level)
+				
+				item_anchor = item.textContent.toLowerCase().replace(' ', '-')
+				
+				const item_anchor_element = document.createElement('a');
+				item_anchor_element.setAttribute('id', item_anchor)
+				item.appendChild(item_anchor_element)
+				
+				
+				
+				if (list_level < item_level){
+					list_level = item_level
+					toc_html += `<ul class="toc-level-${list_level}">`
+				}
+				else if (list_level > item_level){
+					toc_html += '<\\ul>'
+				}
+				toc_html += `<li><a href=#${anchor}\>${item.textContent}<\a><\li>`
+				
+				
+				
 			}
-
-			document.getElementById("content").innerHTML =
-				document.getElementById("content").innerHTML.replace(
-					/<h([\d])>([^<]+)<\/h([\d])>/gi,
-					function (str, openLevel, titleText, closeLevel) {
-						console.log(str, openLevel, titleText, closeLevel)
-						if (openLevel != closeLevel) {
-							return str;
-						}
-
-						if (openLevel > level) {
-							toc += (new Array(openLevel - level + 1)).join("<ul>");
-						} else if (openLevel < level) {
-							toc += (new Array(level - openLevel + 1)).join("</ul>");
-						}
-
-						level = parseInt(openLevel);
-
-						var anchor = titleText.replace(/ /g, "_");
-						toc += "<li><a href=\"#" + anchor + "\">" + titleText
-							+ "</a></li>";
-
-						return "<h" + openLevel + "><a name=\"" + anchor + "\">"
-							+ titleText + "</a></h" + closeLevel + ">";
-					}
-				);
-
-			if (level) {
-				toc += (new Array(level + 1)).join("</ul>");
-			}
-
-			document.getElementById("toc").innerHTML += toc;
+			
+			document.getElementById("toc").innerHTML += toc_html;
 		};
 	</script>
 	</body>
