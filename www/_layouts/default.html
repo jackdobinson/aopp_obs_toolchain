@@ -4,6 +4,43 @@
 		<meta charset="utf-8">
 		<title>{{ page.title }}</title>
 		<link rel="stylesheet" href="{{ site.baseurl }}/assets/css/style.css">
+		<script>
+			window.onload = function () {
+				var toc = "";
+				var level = 0;
+
+				document.getElementById("content").innerHTML =
+					document.getElementById("content").innerHTML.replace(
+						/<h([\d])>([^<]+)<\/h([\d])>/gi,
+						function (str, openLevel, titleText, closeLevel) {
+							if (openLevel != closeLevel) {
+								return str;
+							}
+
+							if (openLevel > level) {
+								toc += (new Array(openLevel - level + 1)).join("<ul>");
+							} else if (openLevel < level) {
+								toc += (new Array(level - openLevel + 1)).join("</ul>");
+							}
+
+							level = parseInt(openLevel);
+
+							var anchor = titleText.replace(/ /g, "_");
+							toc += "<li><a href=\"#" + anchor + "\">" + titleText
+								+ "</a></li>";
+
+							return "<h" + openLevel + "><a name=\"" + anchor + "\">"
+								+ titleText + "</a></h" + closeLevel + ">";
+						}
+					);
+
+				if (level) {
+					toc += (new Array(level + 1)).join("</ul>");
+				}
+
+				document.getElementById("toc").innerHTML += toc;
+			};
+		</script>
 	</head>
 	<body>
 		{% include top-menu.html %}
@@ -11,9 +48,11 @@
 	<section id="toc">
 	</section>
 	<section id="content">
+		<!--
 		<pre class="debugging">
 			{{ page.content }}
 		</pre>
+		-->
 	
 		{{ content }}
 	</section>
@@ -22,40 +61,3 @@
 	</footer>
 	</body>
 </html>
-<script>
-	window.onload = function () {
-		var toc = "";
-		var level = 0;
-
-		document.getElementById("content").innerHTML =
-			document.getElementById("content").innerHTML.replace(
-				/<h([\d])>([^<]+)<\/h([\d])>/gi,
-				function (str, openLevel, titleText, closeLevel) {
-					if (openLevel != closeLevel) {
-						return str;
-					}
-
-					if (openLevel > level) {
-						toc += (new Array(openLevel - level + 1)).join("<ul>");
-					} else if (openLevel < level) {
-						toc += (new Array(level - openLevel + 1)).join("</ul>");
-					}
-
-					level = parseInt(openLevel);
-
-					var anchor = titleText.replace(/ /g, "_");
-					toc += "<li><a href=\"#" + anchor + "\">" + titleText
-						+ "</a></li>";
-
-					return "<h" + openLevel + "><a name=\"" + anchor + "\">"
-						+ titleText + "</a></h" + closeLevel + ">";
-				}
-			);
-
-		if (level) {
-			toc += (new Array(level + 1)).join("</ul>");
-		}
-
-		document.getElementById("toc").innerHTML += toc;
-	};
-</script>
