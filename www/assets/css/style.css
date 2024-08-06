@@ -5,6 +5,7 @@ nav.top-menu {
   background-color: #333333;
   display: flex;
 }
+
 nav.top-menu a{
   display: inline-flex;
   color: white;
@@ -20,6 +21,20 @@ nav.top-menu a:hover {
 nav.top-menu a.current-url {
   background-color: #555555;
 }
+
+nav.breadcrumb {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+nav.breadcrumb a{
+  display: inline-flex;
+}
+
+nav.breadcrumb a:hover {
+}
+
 
 footer {
 	font-size: x-small;
