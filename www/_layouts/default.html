@@ -52,7 +52,7 @@
 			create_toc_li = (toc_ul_stack, anchor, text)=>{
 				const li = document.createElement('li')
 				const a = document.createElement('a')
-				a.setAttribute('href', `'${anchor}`)
+				a.setAttribute('href', '#'+anchor)
 				a.innerHTML=text
 				li.appendChild(a)
 				const ul_class = toc_ul_stack.at(-1).getAttribute('class')
