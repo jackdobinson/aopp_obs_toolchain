@@ -61,6 +61,7 @@ nav.breadcrumb span.breadcrumb-sep{
 }
 
 pre.debugging {
+	/*display: none;*/
 	color: red;
 }
 
