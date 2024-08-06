@@ -73,9 +73,10 @@ section.table-of-contents {
 	border-color: var(--secondary-bg-color);
 }
 
-div {
+#content {
 	clear: both;
 }
+
 section.table-of-contents:before { 
 	padding: 0em;
 	font-size: x-large;
