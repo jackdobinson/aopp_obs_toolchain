@@ -5,8 +5,8 @@
 	--main-selected-bg-color: #555555;
 	--main-focus-bg-color: #111111;
 	
-	--secondary-bg-color: #555555;
-	--secondary-fg-color: #FFFFFF;
+	--secondary-bg-color: #AAAAAA;
+	--secondary-fg-color: #0000AA;
 }
 
 
@@ -31,13 +31,14 @@ nav.top-menu a:hover {
 }
 
 nav.top-menu a.current-url {
-	background-color: var(--main-selected-bg-color);
+	background-color: linear-gradient(top to bottom, var(--main-selected-bg-color), var(--secondary-bg-color));
 }
 
 nav.breadcrumb {
 	margin: 0;
 	padding: 0;
 	overflow: hidden;
+	text-align: center;
 	font-size: small;
 	color: var(--secondary-fg-color);
 	background-color: var(--secondary-bg-color);
@@ -45,6 +46,10 @@ nav.breadcrumb {
 
 nav.breadcrumb a{
 	display: inline-flex;
+	text-decoration: none;
+}
+nav.breadcrumb a:hover{
+	text-decoration: underline;
 }
 
 nav.breadcrumb span.breadcrumb-sep{
