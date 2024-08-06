@@ -67,7 +67,7 @@ pre.debugging {
 
 /* Enable section numbering like "2.1.3.2) "*/
 .table-of-contents ol { 
-	padding-left: 0;
+	padding-left: 4em;
 	list-style-position: outside;
 	counter-reset: item 
 }
@@ -75,7 +75,7 @@ pre.debugging {
 	display: block 
 }
 .table-of-contents li:before { 
-	content: counters(item, ".") ") "; 
+	content: counters(item, ".") " "; 
 	counter-increment: item ;
 }
 
