@@ -38,7 +38,9 @@
 				item_level = parseInt(item.nodeName[1])
 				console.log(item_level)
 				
-				item_anchor = item.textContent.toLowerCase().replace(' ', '-')
+				item_anchor = item.textContent.toLowerCase()
+					.replace(' ', '-')
+					.replace('/', '-slash-')
 				
 				//const item_anchor_element = document.createElement('a');
 				item.setAttribute('id', item_anchor)
