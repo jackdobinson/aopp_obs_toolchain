@@ -67,7 +67,8 @@ pre.debugging {
 
 /* Enable section numbering like "2.1.3.2) "*/
 .table-of-contents ol { 
-	list-style-position: inside;
+	padding-left: 0;
+	list-style-position: outside;
 	counter-reset: item 
 }
 .table-of-contents li { 
