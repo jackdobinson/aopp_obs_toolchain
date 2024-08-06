@@ -21,7 +21,7 @@ nav.top-menu {
 nav.top-menu a{
 	display: inline-flex;
 	color: var(--main-fg-color);
-	text-align: center;
+	text-align: left;
 	padding: 16px;
 	text-decoration: none;
 }
@@ -31,14 +31,14 @@ nav.top-menu a:hover {
 }
 
 nav.top-menu a.current-url {
-	background-color: linear-gradient(top to bottom, var(--main-selected-bg-color), var(--secondary-bg-color));
+	background-color: linear-gradient(var(--main-selected-bg-color), var(--secondary-bg-color));
 }
 
 nav.breadcrumb {
 	margin: 0;
 	padding: 0;
 	overflow: hidden;
-	text-align: center;
+	text-align: left;
 	font-size: small;
 	color: var(--secondary-fg-color);
 	background-color: var(--secondary-bg-color);
@@ -46,6 +46,7 @@ nav.breadcrumb {
 
 nav.breadcrumb a{
 	display: inline-flex;
+	text-align: center;
 	text-decoration: none;
 }
 nav.breadcrumb a:hover{
@@ -54,6 +55,7 @@ nav.breadcrumb a:hover{
 
 nav.breadcrumb span.breadcrumb-sep{
 	display: inline-flex;
+	text-align: center;
 }
 
 pre.debugging {
