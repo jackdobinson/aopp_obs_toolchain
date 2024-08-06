@@ -43,9 +43,9 @@ export class TableOfContents{
 		this.current_level_element.setAttribute('class', 'table-of-contents')
 		
 		
-		for (const [level, element] of toc_level_to_element_pairs.entries()){
-			console.log(level, element)
-			this.process(level, element)
+		for (const pair of toc_level_to_element_pairs.entries()){
+			console.log(pair[0], pair[1])
+			this.process(pair[0], pair[1])
 		}
 	
 	}
