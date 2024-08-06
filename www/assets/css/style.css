@@ -26,13 +26,12 @@ nav.breadcrumb {
   margin: 0;
   padding: 0;
   overflow: hidden;
+  font-size: small;
+  background-color: #AAAAAA;
 }
 
 nav.breadcrumb a{
   display: inline-flex;
-}
-
-nav.breadcrumb a:hover {
 }
 
 nav.breadcrumb span.breadcrumb-sep{
