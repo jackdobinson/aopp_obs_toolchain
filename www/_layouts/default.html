@@ -40,6 +40,7 @@
 				const ul = document.createElement('ul')
 				ul.setAttribute('class', `${level} empty`)
 				toc_ul_stack.at(-1).appendChild(ul)
+				toc_ul_stack.push(ul)
 				return toc_ul_stack
 			}
 			
