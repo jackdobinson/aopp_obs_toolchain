@@ -9,7 +9,7 @@
 	<body>
 		{% include top-menu.html %}
 		{% include breadcrumb.html %}
-	<section id="toc">
+	<section id="table-of-contents">
 	</section>
 	<section id="content">
 		<!--
@@ -25,6 +25,17 @@
 	</footer>
 	
 	<script>
+		import {TableOfContents} from '/assets/js/toc.js'
+		
+		window.onload = function() {
+			TableOfContents.from_headings_in(
+				document.getElementById('content')
+			).as_child_of(
+				document.getElementById('table-of-contents')
+			)
+		}
+		
+		/*
 		window.onload = function () {
 			console.log('HELLO WORLD')
 			const toc_id_str= "toc";
@@ -94,6 +105,7 @@
 			
 			//document.getElementById("toc").innerHTML += toc_html;
 		};
+		*/
 	</script>
 	</body>
 </html>
