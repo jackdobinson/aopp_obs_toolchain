@@ -33,7 +33,7 @@ export class TableOfContents{
 		)
 	}
 
-	constructor(document, toc_level_to_element_pairs, list_type='ul', item_type='li'){
+	constructor(document, toc_level_to_element_pairs, list_type='ol', item_type='li'){
 		this.doc = document
 		this.list_type = list_type
 		this.item_type = item_type
@@ -44,7 +44,7 @@ export class TableOfContents{
 		
 		
 		for (const pair of toc_level_to_element_pairs){
-			console.log(pair[0], pair[1])
+			//console.log(pair[0], pair[1])
 			this.process(pair[0], pair[1])
 		}
 	
