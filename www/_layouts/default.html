@@ -24,8 +24,9 @@
 		default template
 	</footer>
 	
-	<script src='{{ site.basepath }}/assets/js/toc.js' type="module" mimetype></script>
-	<script>
+	<!--<script src='{{ site.basepath }}/assets/js/toc.js' type="module" mimetype></script>-->
+	<script type="module">
+		import {TableOfContents} from '{{ site.basepath }}/assets/js/toc.js'
 		
 		window.onload = function() {
 			TableOfContents.from_headings_in(
