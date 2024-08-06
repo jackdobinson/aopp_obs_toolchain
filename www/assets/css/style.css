@@ -65,9 +65,18 @@ pre.debugging {
 	color: red;
 }
 
-.table-of-contents ol { counter-reset: item }
-.table-of-contents li { display: block }
-.table-of-contents li:before { content: counters(item, ".") ") "; counter-increment: item }
+/* Enable section numbering like "2.1.3.2) "*/
+.table-of-contents ol { 
+	list-style-position: inside;
+	counter-reset: item 
+}
+.table-of-contents li { 
+	display: block 
+}
+.table-of-contents li:before { 
+	content: counters(item, ".") ") "; 
+	counter-increment: item ;
+}
 
 
 footer {
