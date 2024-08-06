@@ -1,3 +1,8 @@
+liquid:
+  error_mode: strict
+  strict_variables: true
+  strict_filters: true
+
 source: ./www
 lang: en-GB
 google_analytics: false
@@ -10,10 +15,7 @@ defaults:
       layout: "default"
 
 
-liquid:
-  error_mode: strict
-  strict_variables: true
-  strict_filters: true
+
 
 markdown: kramdown
 kramdown:
