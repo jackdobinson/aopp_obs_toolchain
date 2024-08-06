@@ -28,13 +28,17 @@
 	<script type="module">
 		import {TableOfContents} from '{{ site.basepath }}/assets/js/toc.js'
 		
+		console.log('running module')
 		window.onload = function() {
-			TableOfContents.from_headings_in(
+			const toc = TableOfContents.from_headings_in(
 				document.getElementById('content')
-			).as_child_of(
+			)
+			console.log(toc)
+			toc.as_child_of(
 				document.getElementById('table-of-contents')
 			)
 		}
+		console.log('module has run')
 		
 		/*
 		window.onload = function () {
