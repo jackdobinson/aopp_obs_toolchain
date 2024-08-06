@@ -13,7 +13,7 @@ export class TableOfContents{
 	static from_headings_in(container){
 		const elements = container.querySelectorAll("h1, h2, h3, h4, h5, h6")
 		return TableOfContents(
-			toc_parent_element.ownerDocument,
+			container.ownerDocument,
 			Map.groupBy(elements, (e)=>{return parseInt(e.nodeName[1])})
 		)
 	}
