@@ -98,7 +98,7 @@ export class TableOfContents{
 			element.setAttribute('id', anchor)
 		}
 		
-		this.current_level_element.addChild(this.new_list_item(anchor, text))
+		this.current_level_element.appendChild(this.new_list_item(anchor, text))
 		this.current_level_element.setAttribute('class',
 			this.current_level_element.getAttribute('class').replace(' empty', '')
 		)
