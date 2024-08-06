@@ -40,24 +40,22 @@
 				
 				item_anchor = item.textContent.toLowerCase().replace(' ', '-')
 				
-				const item_anchor_element = document.createElement('a');
-				item_anchor_element.setAttribute('id', item_anchor)
-				item.appendChild(item_anchor_element)
+				//const item_anchor_element = document.createElement('a');
+				item.setAttribute('id', item_anchor)
+				//item.appendChild(item_anchor_element)
 				
-				
-				
-				if (list_level < item_level){
-					list_level = item_level
+				while(list_level < item_level){
+					list_level += 1
 					toc_html += `<ul class="toc-level-${list_level}">`
 				}
-				else if (list_level > item_level){
-					list_level = item_level
+			
+				while (list_level > item_level){
+					list_level -= 1
 					toc_html += '<\\ul>'
 				}
+				
 				toc_html += `<li><a href=#${item_anchor}\>${item.textContent}<\a><\li>`
-				
-				
-				
+
 			}
 			
 			document.getElementById("toc").innerHTML += toc_html;
