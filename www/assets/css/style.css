@@ -62,8 +62,7 @@ nav.breadcrumb span.breadcrumb-sep{
 
 section.table-of-contents {
 	display: block;
-	float: left;
-	clear: both;
+	float: right;
 	font-size: small;
 	height:2em;
 	overflow: hidden;
@@ -84,9 +83,6 @@ section.table-of-contents:before {
 	content: "\25B7  Table Of Contents";
 }
 section.table-of-contents:hover {
-	float: left;
-	font-size: small;
-	display: default;
 	height: auto;
 }
 section.table-of-contents:hover:before { 
