@@ -1,4 +1,3 @@
-<body>
 <nav class="breadcrumb">
 	{% assign page_url_parts = page.url | split: "/" %}
 	{% assign n_page_url_parts = page_url_parts | size %}
@@ -6,17 +5,10 @@
 		{% assign page_url_parts = page_url_parts | slice : 1, n_page_url_parts %}
 	{% endif %}
 	{% assign page_url_accumulator = '' %}
-	<a href="{{ site.baseurl }}"> Home </a>
+	<a href="{{ site.baseurl }}">home</a>
 	{% for url_part in page_url_parts %}
 		{% assign page_url_accumulator = page_url_accumulator | append: url_part %}
 			<span class="breadcrumb-sep">></span>
 			<a href="{{ site.baseurl }}/{{ page_url_accumulator }}">{{ page_url_accumulator | replace: "_"," " | downcase }}</a>
 	{% endfor %}
 </nav>
-
-<pre class="debugging">
-{{ page_url_parts | size }}
-{% for url_part in page_url_parts %}
-	"{{ url_part }}"
-{% endfor %}
-</pre>
