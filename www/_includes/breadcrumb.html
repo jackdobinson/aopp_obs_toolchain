@@ -1,6 +1,10 @@
 <body>
 <nav class="breadcrumb">
 	{% assign page_url_parts = page.url | split: "/" %}
+	{% assign n_page_url_parts = page_url_parts | size %}
+	{% if n_page_url_parts > 0 %}
+		{% assign page_url_parts = page_url_parts | slice : 1, n_page_url_parts %}
+	{% endif %}
 	{% assign page_url_accumulator = '' %}
 	<a href="{{ site.baseurl }}"> Home </a>
 	{% for url_part in page_url_parts %}
