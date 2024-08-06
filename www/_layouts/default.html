@@ -28,7 +28,7 @@
 		window.onload = function () {
 			console.log('HELLO WORLD')
 			const toc_id_str= "toc";
-			var list_level = 1;
+			var list_level = 0;
 			var item_level = 1;
 			var item_anchor = null
 			
@@ -54,7 +54,7 @@
 				a.setAttribute('href', `'${anchor}`)
 				a.innerHTML=text
 				li.appendChild(a)
-				ul_class = toc_ul_stack.at(-1).getAttribute('class')
+				const ul_class = toc_ul_stack.at(-1).getAttribute('class')
 				toc_ul_stack.at(-1).setAttribute('class', ul_class.replace(' empty', ''))
 				toc_ul_stack.at(-1).appendChild(li)
 				return toc_ul_stack
