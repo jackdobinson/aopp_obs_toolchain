@@ -27,12 +27,38 @@
 	<script>
 		window.onload = function () {
 			console.log('HELLO WORLD')
-			var toc = "";
+			const toc_id_str= "toc";
 			var list_level = 1;
 			var item_level = 1;
 			var item_anchor = null
 			
-			var toc_html = '<div class="toc-container">'
+			const toc_container = document.elementById(toc_id_str)
+			
+			const toc_ul_stack = [toc_container]
+			
+			create_toc_ul = (toc_ul_stack, level)=>{
+				const ul = document.createElement('ul')
+				ul.setAttribute('class', `${level} empty`)
+				toc_ul_stack.at(-1).appendChild(ul)
+				return toc_ul_stack
+			}
+			
+			previous_toc_ul = (toc_ul_stack)=>{
+				toc_ul_stack.pop()
+				return toc_ul_stack
+			}
+			
+			create_toc_li = (toc_ul_stack, anchor, text)=>{
+				const li = document.createElement('li')
+				const a = document.createElement('a')
+				a.setAttribute('href', `'${anchor}`)
+				a.innerHTML=text
+				li.appendChild(a)
+				ul_class = toc_ul_stack.at(-1).getAttribute('class')
+				toc_ul_stack.at(-1).setAttribute('class', ul_class.replace(' empty', ''))
+				toc_ul_stack.at(-1).appendChild(li)
+				return toc_ul_stack
+			}
 			
 			for (const item of document.querySelectorAll("h1, h2, h3, h4, h5, h6")){
 				item_level = parseInt(item.nodeName[1])
@@ -48,15 +74,18 @@
 				
 				while(list_level < item_level){
 					list_level += 1
-					toc_html += `<ul class="toc-level-${list_level}">`
+					create_toc_ul(toc_ul_stack, list_level)
+					//toc_html += `<ul class="toc-level-${list_level}">`
 				}
 			
 				while (list_level > item_level){
 					list_level -= 1
-					toc_html += '<\\ul>'
+					previous_toc_ul(toc_ul_stack)
+					//toc_html += '<\\ul>'
 				}
+				create_toc_li(toc_ul_stack, item_anchor, item.textContent)
 				
-				toc_html += `<li><a href=#${item_anchor}\>${item.textContent}<\a><\li>`
+				//toc_html += `<li><a href=#${item_anchor}\>${item.textContent}<\a><\li>`
 
 			}
 			
