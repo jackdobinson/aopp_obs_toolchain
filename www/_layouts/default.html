@@ -51,6 +51,7 @@
 					toc_html += `<ul class="toc-level-${list_level}">`
 				}
 				else if (list_level > item_level){
+					list_level = item_level
 					toc_html += '<\\ul>'
 				}
 				toc_html += `<li><a href=#${anchor}\>${item.textContent}<\a><\li>`
