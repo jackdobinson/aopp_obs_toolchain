@@ -9,5 +9,7 @@
 </nav>
 
 <p class="debugging">
-{{ page_url_parts }}
+{% for url_part in page_url_parts %}
+  "{{ url_part }}"
+{% endfor %}
 </p>
