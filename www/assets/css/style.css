@@ -45,7 +45,7 @@ nav.breadcrumb {
 }
 
 nav.breadcrumb a{
-	padding: 1em;
+	padding: 0.2em;
 	display: inline-flex;
 	text-align: center;
 	text-decoration: none;
@@ -55,7 +55,7 @@ nav.breadcrumb a:hover{
 }
 
 nav.breadcrumb span.breadcrumb-sep{
-	padding: 1em;
+	padding: 0.2em;
 	display: inline-flex;
 	text-align: center;
 }
