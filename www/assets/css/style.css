@@ -1,25 +1,37 @@
+/* define constants for background colours etc. here */
+:root {
+  --main-fg-color: #FFFFFF;
+  --main-bg-color: #333333;
+  --main-selected-bg-color: #555555;
+  --main-focus-bg-color: #111111;
+  
+  --secondary-bg-color: #AAAAAA;
+  --secondary-fg-color: #5555FF;
+}
+
+
 nav.top-menu {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #333333;
+  background-color: var(--main-bg-color);
   display: flex;
 }
 
 nav.top-menu a{
   display: inline-flex;
-  color: white;
+  color: var(--main-fg-color);
   text-align: center;
   padding: 16px;
   text-decoration: none;
 }
 
 nav.top-menu a:hover {
-  background-color: #111111;
+  background-color: var(--main-focus-bg-color);
 }
 
 nav.top-menu a.current-url {
-  background-color: #555555;
+  background-color: var(--main-selected-bg-color);
 }
 
 nav.breadcrumb {
@@ -27,7 +39,8 @@ nav.breadcrumb {
   padding: 0;
   overflow: hidden;
   font-size: small;
-  background-color: #AAAAAA;
+  color: var(--secondary-fg-color);
+  background-color: var(--secondary-bg-color);
 }
 
 nav.breadcrumb a{
