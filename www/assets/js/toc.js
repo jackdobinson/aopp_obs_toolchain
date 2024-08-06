@@ -1,5 +1,20 @@
 "use strict"
 
+export class Pair{
+	
+	static listFromIterable(iterable, pair_creator){
+		const a = []
+		for(const item of iterable){
+			a.push(pair_creator(item))
+		}
+		return a
+	}
+	
+	constructor(a,b){
+		this[0] = a
+		this[1] = b
+	}
+}
 
 export class TableOfContents{
 
@@ -14,11 +29,11 @@ export class TableOfContents{
 		const elements = container.querySelectorAll("h1, h2, h3, h4, h5, h6")
 		return new TableOfContents(
 			container.ownerDocument,
-			Map.groupBy(elements, (e)=>{return parseInt(e.nodeName[1])})
+			Pair.listFromIterable(elements, (e)=>{return new Pair(parseInt(e.nodeName[1]), e)})
 		)
 	}
 
-	constructor(document, toc_level_to_element_map, list_type='ul', item_type='li'){
+	constructor(document, toc_level_to_element_pairs, list_type='ul', item_type='li'){
 		this.doc = document
 		this.list_type = list_type
 		this.item_type = item_type
@@ -28,7 +43,8 @@ export class TableOfContents{
 		this.current_level_element.setAttribute('class', 'table-of-contents')
 		
 		
-		for (const [level, element] of toc_level_to_element_map.entries()){
+		for (const [level, element] of toc_level_to_element_pairs.entries()){
+			console.log(level, element)
 			this.process(level, element)
 		}
 	
