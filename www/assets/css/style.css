@@ -65,9 +65,9 @@ pre.debugging {
 	color: red;
 }
 
-#toc ul.empty{
-	display: none;
-}
+.table-of-contents ol { counter-reset: item }
+.table-of-contents li { display: block }
+.table-of-contents li:before { content: counters(item, ".") " "; counter-increment: item }
 
 
 footer {
