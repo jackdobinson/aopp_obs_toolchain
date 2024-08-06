@@ -12,7 +12,7 @@ export class TableOfContents{
 
 	static from_headings_in(container){
 		const elements = container.querySelectorAll("h1, h2, h3, h4, h5, h6")
-		return TableOfContents(
+		return new TableOfContents(
 			container.ownerDocument,
 			Map.groupBy(elements, (e)=>{return parseInt(e.nodeName[1])})
 		)
@@ -36,7 +36,7 @@ export class TableOfContents{
 	
 	as_child_of(html_parent_element){
 		for(const child of this.toc_level_stack[0]){
-			html_parent_element.appendChild(child) // child.cloneNode()
+			html_parent_element.appendChild(child) // child.cloneNode() if we get complaints about node being in two places at once.
 		}
 	}
 	
