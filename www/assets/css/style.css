@@ -39,7 +39,7 @@ nav.breadcrumb span.breadcrumb-sep{
   display: inline-flex;
 }
 
-p.debugging {
+pre.debugging {
   color: red;
 }
 
