@@ -1,48 +1,9 @@
 
-# Contents <a id="contents"></a> #
-
-1. [aopp_obs_toolchain](#aopp_obs_toolchain)
-	1. [TODO](#todo)
-	1. [Python Installation and Virtual Environment Setup](#python-installation-and-virtual-environment-setup)
-		1. [Installing Python](#installing-python)
-		1. [Creating and Activating a Virtual Environment](creating-and-activating-a-virtual-environment)
-	1. [Installing the Package via Pip](#installing-the-package-via-pip)
-
-1. [aopp_deconv_tool](#aopp_deconv_tool)
-	1. [Examples](#examples)
-	1. [FITS Specifier](#fits-specifier)
-	1. [Command-line Scripts](#command-line-scripts)
-		1. [Spectral Rebinning](#spectral-rebinning-script)
-		1. [Artefact Detection](#artefact-detection-script)
-		1. [Bad Pixel Mask](#bad-pixel-mask-script)
-		1. [Interpolation](#interpolation-script)
-		1. [PSF Normalisation](#psf-normalisation-script)
-		1. [PSF Model Fitting](#psf-model-fitting-script)
-		1. [Deconvolution](#deconvolution-script)
-	1. [Using the Package in Code](#using-the-package-in-code)
-		1. [Deconvolution](#deconvolution-code)
-		1. [PSF Fitting](#psf-fitting-code)
-		1. [SSA Filtering](#ssa-filtering-code)
-
-1. [APPENDICES](#appendices)
-	1. [APPENDIX: Supplementary Information](#appendix:-supplementary-information)
-		1. [Overview of Help Message Syntax](#overview-of-help-message-syntax)
-		1. [FITS File Format Information](#fits-file-format-information)
-	1. [APPENDIX: Snippets](#appendix:-snippets)
-		1. [Sudo Access Test](#sudo-access-test)
-		1. [Location of package source files](#location-of-package-source-files)
-		1. [Getting documentation from within python](#getting-documentation-from-within-python)
-		1. [Python tuple syntax](#python-tuple-syntax)
-		1. [Python slice syntax](#python-slice-syntax)
-	1. [APPENDIX: Scripts](#appendix:-scripts)
-		1. [Whole Process Bash Script](#whole-process-bash-script)
-		1. [Python Installation on Linux Bash Script](#python-installation-on-linux-bash-script)
-
 # aopp_obs_toolchain <a id="aopp_obs_toolchain"></a> #
 
 Eventually this will consist of multiple packages, for now it just consists of aopp_deconv_tool.
 
-See the [github](https://github.com/jackdobinson/aopp_obs_toolchain)(NOTE: Currently private, so you need to be logged in to github, eventually the repo will be public) for more details about the internal workings.
+See the [github](https://github.com/jackdobinson/aopp_obs_toolchain) for more details about the internal workings.
 
 If you download the repository, there is doxygen documentation available. See the `README.md` file for more information on how it is generated and how to view it.
 
