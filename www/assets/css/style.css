@@ -17,6 +17,30 @@
 	z-index: auto;
 }
 
+table {
+	border: 1px solid var(--secondary-bg-color);
+	text-align: center;
+}
+th{
+	border-style: none solid solid none;
+	border-color: var(--main-bg-color);
+	border-width: 1px;
+	padding: 0.2em;
+}
+tr{
+	border-style: none solid none none;
+	border-color: var(--main-bg-color);
+	border-width: 1px;
+	padding: 0.2em;
+}
+th:last-child{
+	border-style: none none solid none;
+}
+tr:last-child{
+	border-style: none none none none;
+}
+
+
 
 nav.top-menu {
 	margin: 0;
