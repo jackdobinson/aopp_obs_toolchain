@@ -50,7 +50,7 @@ where N is the number of dimensions, f_i is the FITS/FOTRAN axis number, p_i is 
 The upshot is that even though both FITS and Python label the axes of an array from left-to-right, (the "leftmost" axis being 0 for python, 1 for FITS), the ordering of the data in memory means that when reading a FITS array in Python, the axes are reversed.
 
 Example:
-```
+
 
 Let `x` be a 3 by 4 matrix, it has two axes.
 The FOTRAN convention is they are labelled 1 and 2,
@@ -59,9 +59,11 @@ To make it obvious when we are talking about axes numbers
 in c or fortran I will use (f1, f2) for fortran, and
 (c0, c1) for c.
 
-	/ a b c d \
+```
+    / a b c d \
 x = | e f g h |
-	\ i j k l /
+    \ i j k l /
+```
 
 Assume `x` is stored as a 2 dimensional array.
 
@@ -179,7 +181,7 @@ NOTE: axis numbers are always from the left hand side.
 |     1      |   fastest     |  N-1  |
 --------------------------------------
 
-```
+
 
 
 
