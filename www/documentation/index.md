@@ -74,7 +74,7 @@ The underlying algorithm does the following:
 
 #### Module Arguments ####
 
-NOTE: argument type is specified by a colon (:) following the argument name, multiple accepted types are separated by the pipe (|) character, some arguments take more than one value these are separated by spaces; arguments with an equals sign (=) take the specified value as a default.
+{% include module_arguments_note.md %}
 
 * `-o` or `--output_path`
   - Output fits file path. If not specified, it is same as the path to the input file with "_rebin" appended to the filename.
@@ -196,7 +196,7 @@ NOTE: The current implementation using regions to mask out moving artefacts does
 
 #### Module Arguments ####
 
-NOTE: argument type is specified by a colon (:) following the argument name, multiple accepted types are separated by the pipe (|) character, some arguments take more than one value these are separated by spaces; arguments with an equals sign (=) take the specified value as a default.
+{% include module_arguments_note.md %}
 
 * `-o` or `--output_path` : str
   - Output fits file path. If not specified, it is same as the path to the input file with "_bpmask" appended to the filename.
@@ -236,7 +236,7 @@ This process removes hard edges and reduces edge effects in a similar way to a "
 
 #### Module Arguments ####
 
-NOTE: argument type is specified by a colon (:) following the argument name, multiple accepted types are separated by the pipe (|) character, some arguments take more than one value these are separated by spaces; arguments with an equals sign (=) take the specified value as a default.
+{% include module_arguments_note.md %}
 
 
 * `-o` or `--output_path`
@@ -270,7 +270,7 @@ Performs the following operations:
 
 #### Module Arguments ####
 
-NOTE: argument type is specified by a colon (:) following the argument name, multiple accepted types are separated by the pipe (|) character, some arguments take more than one value these are separated by spaces; arguments with an equals sign (=) take the specified value(s) as a default.
+{% include module_arguments_note.md %}
 
 * `-o` or `--output_path` : str
   - Output fits file path. If not specified, it is same as the path to the input file with "_normalised" appended to the filename.
@@ -319,7 +319,7 @@ Fitting Methods:
 
 #### Module Arguments ####
 
-NOTE: argument type is specified by a colon (:) following the argument name, multiple accepted types are separated by the pipe (|) character, some arguments take more than one value these are separated by spaces; arguments with an equals sign (=) take the specified value as a default.
+{% include module_arguments_note.md %}
 
 * `-o` or `--output_path` : str
   - Output fits file path. If not specified, it is same as the path to the input file with "_modelled" appended to the filename.
@@ -366,7 +366,7 @@ Assumes the observation data has no NAN or INF pixels, assumes the PSF data is c
 
 #### Module Arguments ####
 
-NOTE: argument type is specified by a colon (:) following the argument name, multiple accepted types are separated by the pipe (|) character, some arguments take more than one value these are separated by spaces; arguments with an equals sign (=) take the specified value as a default.
+{% include module_arguments_note.md %}
 
 * `-o` or `--output_path`
   - Output fits file path. If not specified, it is same as the path to the input file with "_deconv" appended to the filename.
