@@ -1,3 +1,7 @@
+
+/* imports */
+@import "syntax-highlighting.css";
+
 /* define constants for background colours etc. here */
 :root {
 	--main-fg-color: #FFFFFF;
@@ -90,6 +94,19 @@ section.table-of-contents {
 	h2:after {
 		content: "  \25C1";
 	}
+}
+
+code {
+	tab-size: 4;
+}
+pre {
+	tab-size: 4;
+	padding: 1em;
+	border: solid;
+	border-width: 2px;
+	border-color: var(--secondary-bg-color);
+	width: auto;
+	overflow: scroll;
 }
 
 #content {
