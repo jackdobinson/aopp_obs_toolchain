@@ -170,7 +170,7 @@ Confusion happens because:
 
 
 NOTE: axis numbers are always from the left hand side.
-|------------------------------------|
+
 |FORTRAN     | In memory     |C axis |
 |axis number | varying speed |number |
 |------------|---------------|-------|
@@ -179,7 +179,6 @@ NOTE: axis numbers are always from the left hand side.
 |    ...     |   ...         |  ...  |
 |     2      |   fast        |  N-2  |
 |     1      |   fastest     |  N-1  |
-|------------------------------------|
 
 
 
