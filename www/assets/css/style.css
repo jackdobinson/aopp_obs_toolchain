@@ -20,26 +20,21 @@
 table {
 	border: 1px solid var(--secondary-bg-color);
 	text-align: center;
+	border-collapse: collapse;
 }
-th{
-	border-style: none solid solid none;
-	border-color: var(--main-bg-color);
-	border-width: 1px;
-	padding: 0.2em;
-}
-tr{
+th, td{
+	font-weight: normal;
 	border-style: none solid none none;
 	border-color: var(--main-bg-color);
 	border-width: 1px;
 	padding: 0.2em;
 }
-th:last-child{
-	border-style: none none solid none;
+td:last-child, th:last-child{
+	border-right-style: none;
 }
-tr:last-child{
-	border-style: none none none none;
+tr:last-child th{
+	border-bottom-style: solid;
 }
-
 
 
 nav.top-menu {
