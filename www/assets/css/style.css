@@ -193,10 +193,10 @@ footer {
 		content: counter(h1c)"."counter(h2c)"."counter(h3c)"."counter(h4c)" ";
 	}
 	h5:before {
-		content: counter(h1c)"."counter(h2c)"."counter(h3c)"."counter(h4c)."."counter(h5c)" ";
+		content: counter(h1c)"."counter(h2c)"."counter(h3c)"."counter(h4c)"."counter(h5c)" ";
 	}
 	h6:before {
-		content: counter(h1c)"."counter(h2c)"."counter(h3c)"."counter(h4c)."."counter(h5c)"."counter(h6c)" ";
+		content: counter(h1c)"."counter(h2c)"."counter(h3c)"."counter(h4c)"."counter(h5c)"."counter(h6c)" ";
 	}
 
 	h1, h2, h3 {
