@@ -7,6 +7,10 @@
 	
 	--secondary-bg-color: #CCCCCC;
 	--secondary-fg-color: #000000;
+	
+	--heading-font-size: x-large;
+	--subheading-font-size: large;
+	z-index: auto;
 }
 
 
@@ -35,6 +39,7 @@ nav.top-menu a.current-url {
 }
 
 nav.breadcrumb {
+	display: flex;
 	margin: 0;
 	padding: 0;
 	overflow: hidden;
@@ -61,36 +66,61 @@ nav.breadcrumb span.breadcrumb-sep{
 }
 
 section.table-of-contents {
+	z-index: 1;
+	position: absolute;
+	right: 8px;
 	display: block;
 	float: right;
 	font-size: small;
-	height:2em;
+	height:32px;
+	width: 18em;
 	overflow: hidden;
-	padding: 0.5em;
+	padding-left: 0em;
+	padding-right: 1em;
 	margin: 0em;
 	border-style: solid;
 	border-width: 1px;
 	border-color: var(--secondary-bg-color);
+	background-color: #FFFFFFEE;
+
+	h2 {
+		text-align: right;
+		margin-top: 0.2em;
+	}
+	h2:after {
+		content: "  \25C1";
+	}
 }
 
 #content {
-	clear: both;
+	position: relative;
+	top: 14px;
+	padding:0px;
+	margin:0px;
+	width:100%;
+	
+	/*clear: both;*/
+	h1, h2, h3, h4, h5, h6{
+		margin-top: 20px;
+		padding-top: 5px;
+		padding-bottom: 5px;
+		padding-left: 0.2em;
+		padding-right: 0.2em;
+	}
 }
 
-section.table-of-contents:before { 
-	padding: 0em;
-	font-size: x-large;
-	font-weight: bold;
-	content: "\25B7  Table Of Contents";
+footer {
+	position: static;
+	top: auto;
 }
+
 section.table-of-contents:hover {
 	height: auto;
-}
-section.table-of-contents:hover:before { 
-	padding: 0em;
-	font-size: x-large;
-	font-weight: bold;
-	content: "\25BD  Table Of Contents";
+	width: auto;
+
+	h2:after{
+		content: "  \25BD";
+	}
 }
 
 pre.debugging {
@@ -98,23 +128,116 @@ pre.debugging {
 	color: red;
 }
 
-/* Enable section numbering like "2.1.3.2) "*/
-.table-of-contents ol { 
-	padding-left: 0em;
-	list-style-position: outside;
-	counter-reset: item 
-}
-.table-of-contents ol ol { 
-	padding-left: 2em;
-}
-.table-of-contents li { 
-	display: block 
-}
-.table-of-contents li:before { 
-	content: counters(item, ".") " "; 
-	counter-increment: item ;
+/* Enable section numbering like "2.1.3.2 "*/
+.table-of-contents {
+	ol:before {
+		content: "";
+		counter-reset: item;
+	}
+	li {
+		counter-increment: item;
+	}
+	li:before { 
+		content: counters(item, ".") " "; 
+	}
+	li { 
+		display: block 
+	}
 }
 
 footer {
 	font-size: x-small;
 }
+
+
+
+
+
+#content{
+	section {
+		counter-reset: h1c;
+	}
+	h1 {
+		counter-reset: h2c;
+		counter-increment: h1c;
+	}
+	h2 {
+		counter-reset: h3c;
+		counter-increment: h2c;
+	}
+	h3 {
+		counter-reset: h4c;
+		counter-increment: h3c;
+	}
+	h4 {
+		counter-reset: h5c;
+		counter-increment: h4c;
+	}
+	h5 {
+		counter-reset: h6c;
+		counter-increment: h5c;
+	}
+	h6 {
+		counter-increment: h6c;
+	}
+	h1:before {
+		content: counter(h1c)" ";
+	}
+	h2:before {
+		content: counter(h1c)"."counter(h2c)" ";
+	}
+	h3:before {
+		content: counter(h1c)"."counter(h2c)"."counter(h3c)" ";
+	}
+	h4:before {
+		content: counter(h1c)"."counter(h2c)"."counter(h3c)"."counter(h4c)" ";
+	}
+	h5:before {
+		content: counter(h1c)"."counter(h2c)"."counter(h3c)"."counter(h4c)."."counter(h5c)" ";
+	}
+	h6:before {
+		content: counter(h1c)"."counter(h2c)"."counter(h3c)"."counter(h4c)."."counter(h5c)"."counter(h6c)" ";
+	}
+
+	h1, h2, h3 {
+		font-size: var(--heading-font-size);
+		font-weight: bold;
+	}
+	h4, h5, h6 {
+		font-size: var(--subheading-font-size);
+	}
+	h1 {
+		background-color: var(--main-bg-color);
+		color : var(--main-fg-color);
+	}
+
+	h2 {
+		background-color: var(--secondary-bg-color);
+		/*color : var(--main-fg-color);*/
+	}
+	h3:after {
+		content: "";
+		display:block;
+		border:2px solid var(--secondary-bg-color);
+	}
+	h4 {
+		font-weight: bold;
+	}
+	h5 {
+		text-transform: uppercase;
+		font-weight: normal;
+	}
+	h5 {
+		font-style: italic;
+		font-weight: normal;
+	}
+}
+
+
+
+
+
+
+
+
+
