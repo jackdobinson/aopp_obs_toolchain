@@ -20,7 +20,7 @@
 
 /* Styling defaults for everything */
 * {
-	font-family: didcot, serif;
+	font-family: Didcot;
 	/*font-family: helvetica, sans-serif;*/
 }
 
@@ -123,25 +123,33 @@ nav.breadcrumb {
 }
 
 
+.table-of-contents{
+	position: absolute;
+	right: 0px;
+	display: block;
+	
+	
+}
+
 .table-of-contents-container{
 	z-index: 1;
-	display: block;
 	position: relative;
-	float: right;
-	text-align:right;
-	
-	height: 2.5em;
-	width: auto;
-	
+	text-align: right;
+	height: calc(5ex + 2px);
+	font-size:normal;
 	overflow: hidden;
+	border:none;
+	margin:none;
+	padding:none;
+	
 	
 	.table-of-contents-heading-container {
 		position: static;
 		display: block;
 		margin: 0 0 0 auto;
 		width: 18em;
-		height: 2.45em;
-		padding-right:0.5em;
+		height:5ex;
+		padding: 0em 0.5em 0em 0em;
 		border-style: solid;
 		border-width: 1px;
 		border-color: var(--secondary-bg-color);
@@ -160,28 +168,40 @@ nav.breadcrumb {
 		height: auto;
 		width: auto;
 		text-align:left;
+		float:left;
 	}
 }
 
-.table-of-contents-container:has(.table-of-contents:hover, .table-of-contents:focus-within){
+.table-of-contents-container:has(
+ .table-of-contents-heading-container:hover, 
+ .table-of-contents-heading-container:focus-within,
+ .table-of-contents-list-container:hover,
+ .table-of-contents-list-container:focus-within
+){
 	border-style: none;
 	overflow:visible;
 	
 	.table-of-contents-heading-container {
-		border: none;
+		border-bottom: none;
 		background: none;
 	}
 	
 	.table-of-contents {
+		grid-template-rows: 1fr 1fr;
+		xborder-style: solid;
+		xborder-width: 1px;
+		xborder-color: var(--secondary-bg-color);
+		xbackground-color: var(--table-of-contents-bg-color);
+	}
+	.table-of-contents-heading:after{
+		content: "  \25BD";
+	}
+	.table-of-contents-list-container{
 		border-style: solid;
 		border-width: 1px;
 		border-color: var(--secondary-bg-color);
 		background-color: var(--table-of-contents-bg-color);
 	}
-	.table-of-contents-heading:after{
-		content: "  \25BD";
-	}
-	
 }
 
 
