@@ -123,14 +123,6 @@ nav.breadcrumb {
 }
 
 
-.table-of-contents{
-	position: absolute;
-	right: 0px;
-	display: block;
-	
-	
-}
-
 .table-of-contents-container{
 	z-index: 1;
 	position: relative;
@@ -139,10 +131,14 @@ nav.breadcrumb {
 	font-size:normal;
 	overflow: hidden;
 	border:none;
-	margin:none;
-	padding:none;
+	margin:0;
+	padding:0;
 	
-	
+	.table-of-contents{
+		position: absolute;
+		right: 0px;
+		display: block;
+	}
 	.table-of-contents-heading-container {
 		position: static;
 		display: block;
@@ -178,20 +174,11 @@ nav.breadcrumb {
  .table-of-contents-list-container:hover,
  .table-of-contents-list-container:focus-within
 ){
-	border-style: none;
 	overflow:visible;
 	
 	.table-of-contents-heading-container {
 		border-bottom: none;
 		background: none;
-	}
-	
-	.table-of-contents {
-		grid-template-rows: 1fr 1fr;
-		xborder-style: solid;
-		xborder-width: 1px;
-		xborder-color: var(--secondary-bg-color);
-		xbackground-color: var(--table-of-contents-bg-color);
 	}
 	.table-of-contents-heading:after{
 		content: "  \25BD";
@@ -208,7 +195,6 @@ nav.breadcrumb {
 /* Styling content */
 #content {
 	position: static;
-	xtop: 14px;
 	padding:0px;
 	margin:0px;
 	width:100%;
@@ -220,6 +206,10 @@ nav.breadcrumb {
 		padding-bottom: 5px;
 		padding-left: 0.2em;
 		padding-right: 0.2em;
+	}
+	
+	> h1 {
+		margin-top:0px;
 	}
 }
 
@@ -308,12 +298,3 @@ nav.breadcrumb {
 		font-weight: normal;
 	}
 }
-
-
-
-
-
-
-
-
-
