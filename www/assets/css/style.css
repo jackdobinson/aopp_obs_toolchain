@@ -1,6 +1,6 @@
 
 /* imports */
-@import "syntax-highlighting.css";
+/*@import "syntax-highlighting.css";*/
 
 /* define constants for background colours etc. here */
 :root {
@@ -15,6 +15,14 @@
 	--heading-font-size: x-large;
 	--subheading-font-size: large;
 	z-index: auto;
+}
+
+* {
+	font-family: didcot, serif;
+	/*font-family: helvetica, sans-serif;*/
+}
+pre, code {
+	font-family: courier, monospace;
 }
 
 table {
