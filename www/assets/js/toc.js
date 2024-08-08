@@ -50,7 +50,7 @@ export class TableOfContents{
 	
 	}
 	
-	as_child_of(html_parent_element, element_to_delete=null, delete_if_no_toc=true){
+	as_child_of(html_parent_element, element_to_delete=null, delete_if_no_toc=false){
 		var n_toc_entries = 0
 		for(const child of this.toc_level_stack[0].childNodes){
 			html_parent_element.appendChild(child) // child.cloneNode() if we get complaints about node being in two places at once.
