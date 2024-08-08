@@ -166,6 +166,21 @@ nav.breadcrumb {
 		text-align:left;
 		float:left;
 		padding-right: 2em;
+		
+		/* Enable table of contents numbering like "2.1.3.2 "*/
+		ol:before {
+			content: "";
+			counter-reset: item;
+		}
+		li {
+			counter-increment: item;
+		}
+		li:before { 
+			content: counters(item, ".") " "; 
+		}
+		li { 
+			display: block 
+		}
 	}
 }
 
