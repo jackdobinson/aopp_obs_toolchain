@@ -170,7 +170,7 @@ section.table-of-contents {
 }
 
 /* Actions on table of contents */
-section.table-of-contents:hover {
+section.table-of-contents:hover, section.table-of-contents:focus-within {
 	height: auto;
 	width: auto;
 
