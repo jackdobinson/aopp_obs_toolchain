@@ -279,7 +279,6 @@ nav.breadcrumb {
 
 	h2 {
 		background-color: var(--secondary-bg-color);
-		/*color : var(--main-fg-color);*/
 	}
 	h3:after {
 		content: "";
