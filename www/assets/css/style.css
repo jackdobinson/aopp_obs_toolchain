@@ -121,14 +121,34 @@ nav.breadcrumb {
 }
 
 
-.table-of-contents{
+.table-of-contents-container{
+	z-index: 1;
 	display: block;
-	position: static;
+	position: relative;
 	float: right;
 	
-	font-size: small;
+	height: 3em;
+	width: 18em;
+	
+	border-style: solid;
+	border-width: 1px;
+	border-color: var(--secondary-bg-color);
+	background-color: #FFFFFFEE;
+	
 	overflow: hidden;
-	padding-left: 0em;
+
+}
+
+.table-of-contents{
+	h2 {
+		text-align: right;
+		margin-top: 0.2em;
+	}
+	h2:after {
+		content: "  \25C1";
+	}
+	font-size: small;
+	padding-left: 1em;
 	padding-right: 1em;
 	margin: 0em;
 	border-style: solid;
@@ -137,23 +157,22 @@ nav.breadcrumb {
 	background-color: #FFFFFFEE;
 	
 	.table-of-contents-list-container {
-		display: none;
-		border-style: solid;
-		border-width: 1px;
-		border-color: var(--secondary-bg-color);
-		background-color: #FFFFFFEE;
+		display: block;
 	}
+	
 }
 
-.table-of-contents:hover {
+.table-of-contents-container:hover, .table-of-contents:focus {
 	overflow: visible;
 	border-style: none;
 	
 	.table-of-contents-list-container {
 		display: block;
 	}
+	h2:after{
+		content: "  \25BD";
+	}
 }
-
 
 
 
