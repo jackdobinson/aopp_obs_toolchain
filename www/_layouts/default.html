@@ -12,9 +12,11 @@
 		{% include breadcrumb.html %}
 
 		<section class="table-of-contents" tabindex="0">
-			<details id="table-of-contents">
-				<summary><h2 class="table-of-contents">Table of Contents</h2></summary>
-			</details>
+			<div class="table-of-contents-heading-container">
+				<h2 class="table-of-contents-heading">Table of Contents</h2>
+			</div>
+			<div class="table-of-contents-list-container">
+			</div>
 		</section>
 
 		
@@ -33,9 +35,10 @@
 				const toc = TableOfContents.from_headings_in(
 					document.getElementById('content')
 				)
-				toc.as_child_of(
-					document.getElementById('table-of-contents')
-				)
+				
+				for (const element of document.getElementsByClassName('table-of-contents-list-container')){
+					toc.as_child_of(element)
+				}
 			}
 		</script>
 	</body>
