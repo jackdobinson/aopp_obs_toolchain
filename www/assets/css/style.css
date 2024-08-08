@@ -14,6 +14,8 @@
 	
 	--heading-font-size: x-large;
 	--subheading-font-size: large;
+	
+	--table-of-contents-bg-color: #FFFFFFEE;
 }
 
 /* Styling defaults for everything */
@@ -126,127 +128,72 @@ nav.breadcrumb {
 	display: block;
 	position: relative;
 	float: right;
+	text-align:right;
 	
-	height: 3em;
-	width: 18em;
-	
-	border-style: solid;
-	border-width: 1px;
-	border-color: var(--secondary-bg-color);
-	background-color: #FFFFFFEE;
+	height: 2.5em;
+	width: auto;
 	
 	overflow: hidden;
-
-}
-
-.table-of-contents{
-	h2 {
-		text-align: right;
-		margin-top: 0.2em;
+	
+	.table-of-contents-heading-container {
+		position: static;
+		display: block;
+		margin: 0 0 0 auto;
+		width: 18em;
+		height: 2.45em;
+		padding-right:0.5em;
+		border-style: solid;
+		border-width: 1px;
+		border-color: var(--secondary-bg-color);
+		background-color: var(--table-of-contents-bg-color);
+		
+		.table-of-contents-heading {
+			margin-top: 0.2em;
+		}
+		.table-of-contents-heading:after {
+			content: "  \25C1";
+		}
 	}
-	h2:after {
-		content: "  \25C1";
-	}
-	font-size: small;
-	padding-left: 1em;
-	padding-right: 1em;
-	margin: 0em;
-	border-style: solid;
-	border-width: 1px;
-	border-color: var(--secondary-bg-color);
-	background-color: #FFFFFFEE;
 	
 	.table-of-contents-list-container {
-		display: block;
+		position: static;
+		height: auto;
+		width: auto;
+		text-align:left;
 	}
-	
 }
 
-.table-of-contents-container:hover, .table-of-contents:focus {
-	overflow: visible;
+.table-of-contents-container:has(.table-of-contents:hover, .table-of-contents:focus-within){
 	border-style: none;
+	overflow:visible;
 	
-	.table-of-contents-list-container {
-		display: block;
+	.table-of-contents-heading-container {
+		border: none;
+		background: none;
 	}
-	h2:after{
+	
+	.table-of-contents {
+		border-style: solid;
+		border-width: 1px;
+		border-color: var(--secondary-bg-color);
+		background-color: var(--table-of-contents-bg-color);
+	}
+	.table-of-contents-heading:after{
 		content: "  \25BD";
 	}
-}
-
-
-
-/* Layout table of contents 
-section.table-of-contents {
-	 z-index: 1;
-	position: absolute;
-	   right: 8px;
-	 display: block;
-	   float: right;
-	  height: 32px;
-	   width: 18em;
-}
-
-/* Styling table of contents
-section.table-of-contents {
-	       font-size: small;
-	        overflow: hidden;
-	    padding-left: 0em;
-	   padding-right: 1em;
-	          margin: 0em;
-	    border-style: solid;
-	    border-width: 1px;
-	    border-color: var(--secondary-bg-color);
-	background-color: #FFFFFFEE;
-
-	h2 {
-		text-align: right;
-		margin-top: 0.2em;
-	}
-	h2:after {
-		content: "  \25C1";
-	}
 	
-	
-	/* Enable table of contents numbering like "2.1.3.2 "
-	ol:before {
-		content: "";
-		counter-reset: item;
-	}
-	li {
-		counter-increment: item;
-	}
-	li:before { 
-		content: counters(item, ".") " "; 
-	}
-	li { 
-		display: block 
-	}
 }
-
-/* Actions on table of contents 
-section.table-of-contents:hover, section.table-of-contents:focus-within {
-	height: auto;
-	width: auto;
-
-	h2:after{
-		content: "  \25BD";
-	}
-}
-*/
-
-
 
 
 /* Styling content */
 #content {
-	position: relative;
-	top: 14px;
+	position: static;
+	xtop: 14px;
 	padding:0px;
 	margin:0px;
 	width:100%;
 	
-	/*clear: both;*/
+	clear: both;
 	h1, h2, h3, h4, h5, h6{
 		margin-top: 20px;
 		padding-top: 5px;
