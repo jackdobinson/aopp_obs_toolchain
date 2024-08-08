@@ -165,6 +165,7 @@ nav.breadcrumb {
 		width: auto;
 		text-align:left;
 		float:left;
+		padding-right: 2em;
 	}
 }
 
@@ -190,7 +191,10 @@ nav.breadcrumb {
 		background-color: var(--table-of-contents-bg-color);
 	}
 }
-
+.table-of-contents-container:has(
+.table-of-contents-list-container:empty){
+	display:none;
+}
 
 /* Styling content */
 #content {
