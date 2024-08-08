@@ -26,6 +26,7 @@
 pre, code {
 	font-family: courier, monospace;
 	tab-size: 4;
+	font-size: large;
 }
 pre {
 	padding: 1em;
@@ -146,20 +147,9 @@ section.table-of-contents {
 	h2:after {
 		content: "  \25C1";
 	}
-}
-
-
-section.table-of-contents:hover {
-	height: auto;
-	width: auto;
-
-	h2:after{
-		content: "  \25BD";
-	}
-}
-
-/* Enable table of contents numbering like "2.1.3.2 "*/
-.table-of-contents {
+	
+	
+	/* Enable table of contents numbering like "2.1.3.2 "*/
 	ol:before {
 		content: "";
 		counter-reset: item;
@@ -172,6 +162,16 @@ section.table-of-contents:hover {
 	}
 	li { 
 		display: block 
+	}
+}
+
+
+section.table-of-contents:hover {
+	height: auto;
+	width: auto;
+
+	h2:after{
+		content: "  \25BD";
 	}
 }
 
