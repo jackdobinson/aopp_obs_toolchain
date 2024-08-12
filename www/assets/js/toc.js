@@ -94,7 +94,7 @@ export class TableOfContents{
 		console.log('this.current_level_element', this.current_level_element)
 		console.log('this.current_level_element.hasChildNodes()', this.current_level_element.hasChildNodes())
 		if (this.current_level_element.hasChildNodes()){
-			this.last_anchor_stack[this.last_anchor_stack.length-1] = this.current_level_element.lastChild.getAttribute('id')
+			this.last_anchor_stack[this.last_anchor_stack.length-1] = this.current_level_element.lastChild.getAttribute('href').slice(1)
 		}
 		console.log(this.last_anchor_stack)
 	}
