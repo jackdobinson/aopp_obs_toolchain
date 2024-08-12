@@ -55,7 +55,7 @@ in all code snippets. Alter this appropriately if using windows or a non-suggest
   - Build and [install python from source](https://docs.python.org/3/using/unix.html).
 
 	+ NOTE: Building from source can be a little fiddly, but there are [online tools to help with building from source](https://www.build-python-from-source.com/).
-	  There is also a [python installation script on the resources page]({{site.baseurl}}/resources#linux-installation-bash-script) that will fetch the python 
+	  There is also a [python installation script on the resources page]({{site.baseurl}}/resources#linux-python-installation) that will fetch the python 
 	  source code, install it, and create a virtual environment.
 
 * **OTHERWISE**, if you don't have `sudo` access, [anaconda python](https://docs.anaconda.com/free/miniconda/index.html#quick-command-line-install)
@@ -186,7 +186,7 @@ path_to_fits_file{ext}[slice0,slice1,...,sliceM]{axes_type_1:(ax11,ax12,...,ax1L
 
 In words, a *fits specifier* consists of: a string that describes which FITS file to load; the extension (i.e., backplane) name or number to use enclosed in curly brackets; the slices (i.e., sub-regions) that should be operated upon in [python slice syntax]({{site.baseurl}}/resources#python-slice-syntax); and the data axes to operate on as a [tuple]({{site.baseurl}}/resources#python-tuple-syntax) or as a [python dictionary](https://docs.python.org/3/tutorial/datastructures.html#dictionaries) with strings as keys and [tuples]({{site.baseurl}}/resources#python-tuple-syntax) as values.
 
-See the appendix for a [quick introduction to the FITS format]({{site.baseurl}}/resources#fits-file-format-information) for a description of why this information is needed, and why [axis numbers are different between FITS and Python]({{site.baseurl}}/resources#fits-data-order).
+See the resources page for a [quick introduction to the FITS format]({{site.baseurl}}/resources#fits-file-format-information) for a description of why this information is needed, and why [axis numbers are different between FITS and Python]({{site.baseurl}}/resources#fits-data-order).
 
 
 ## Running the First Example ##
