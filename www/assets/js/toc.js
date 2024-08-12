@@ -91,7 +91,10 @@ export class TableOfContents{
 			this.last_anchor_stack.pop()
 		}
 		this.add_entry_for(element)
-		this.last_anchor_stack[this.last_anchor_stack.length-1] = this.current_level_element.lastChild.getAttribute('id')
+		if (this.current_level_element.hasChildNodes()){
+			this.last_anchor_stack[this.last_anchor_stack.length-1] = this.current_level_element.lastChild.getAttribute('id')
+		}
+		console.log(this.last_anchor_stack)
 	}
 	
 	new_list_container() {
