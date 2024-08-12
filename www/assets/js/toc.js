@@ -92,7 +92,7 @@ export class TableOfContents{
 		}
 		this.add_entry_for(element)
 		if (this.last_anchor_stack.at(-1) ===  null){
-			this.last_anchor_stack.at(-1) = this.current_level_element.lastChild.getAttribute('id')
+			this.last_anchor_stack[this.last_anchor_stack.length-1] = this.current_level_element.lastChild.getAttribute('id')
 		}
 	}
 	
