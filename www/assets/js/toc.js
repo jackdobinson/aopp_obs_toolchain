@@ -25,8 +25,8 @@ export class TableOfContents{
 		return text
 			.trim()
 			.toLowerCase()
-			.replace(' ','-')
-			.replace('/', '-back-slash-')
+			.replaceAll(' ','-')
+			.replaceAll('/', '-back-slash-')
 	}
 
 	static from_headings_in(container){
