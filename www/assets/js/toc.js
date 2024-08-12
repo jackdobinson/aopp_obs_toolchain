@@ -46,6 +46,8 @@ export class TableOfContents{
 		this.toc_level_stack = [this.doc.createElement('div')]
 		this.current_level_element.setAttribute('class', 'table-of-contents')
 		
+		this.used_ids = []
+		
 		
 		for (const pair of toc_level_to_element_pairs){
 			//console.log(pair[0], pair[1])
@@ -102,13 +104,33 @@ export class TableOfContents{
 	
 	
 	add_entry_for(element){
-		const text = element.textContent
+		var text = element.textContent
 		
-		var anchor = element.getAttribute('id')
+		//var anchor = element.getAttribute('id')
+		//if (anchor === null){
+		var anchor = null;
+		var cle = this.current_level_element
+		var i=1
+		var prefix = null
 		if (anchor === null){
 			anchor = TableOfContents.text_to_anchor(text)
-			element.setAttribute('id', anchor)
+			
+			while (this.used_ids.some(anchor)){
+				if (cle !== null){
+					prefix = cle.getAttribute('id')
+					cle = cle.parentNode
+				} else {
+					prefix = null
+				}
+				if (prefix !== null){
+					anchor = prefix + '--' + text
+				} else {
+					anchor += `-${i}`
+					i += 1
+				}
+			}
 		}
+		element.setAttribute('id', anchor)
 		console.log(`anchor=${anchor}`) // DEBUGGING
 		
 		this.current_level_element.appendChild(this.new_list_item(anchor, text))
