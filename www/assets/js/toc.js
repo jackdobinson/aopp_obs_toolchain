@@ -20,7 +20,7 @@ export class TableOfContents{
 
 
 	static text_to_anchor(text){
-		return text.toLowerCase()
+		return text.trim().toLowerCase()
 			.replace(' ','-')
 			.replace('/', '-back-slash-')
 	}
