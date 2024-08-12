@@ -1,6 +1,6 @@
 # Overview of aopp_deconv_tool #
 
-The routines in the `aopp_deconv_tool` package are intended to be used when deconvolving observations of extended objects. The following nomencature is used.
+The routines in the `aopp_deconv_tool` package are intended to be used when deconvolving observations of extended objects. The following nomenclature is used.
 
 
 instrument
