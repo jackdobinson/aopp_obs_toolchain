@@ -17,7 +17,9 @@ export class Pair{
 }
 
 export class TableOfContents{
-
+	/*
+	TODO: Ensure each ID is unique within a page. Possible solution: If an ID is not unique, prepend parent ids (delimited with colon) until it is unique. If still not unique, append an increasing integer.
+	*/
 
 	static text_to_anchor(text){
 		return text.trim().toLowerCase()
@@ -29,7 +31,7 @@ export class TableOfContents{
 		const elements = container.querySelectorAll("h1, h2, h3, h4, h5, h6")
 		return new TableOfContents(
 			container.ownerDocument,
-			Pair.listFromIterable(elements, (e)=>{return new Pair(parseInt(e.nodeName[1]), e)})
+			Pair.listFromIterable(elements, (e)=>{return new Pair(parseInt(e.nodeName[1]), e)}) // list of (html_tag, element) pairs.
 		)
 	}
 
