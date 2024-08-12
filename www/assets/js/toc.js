@@ -94,7 +94,7 @@ export class TableOfContents{
 		console.log('this.current_level_element', this.current_level_element)
 		console.log('this.current_level_element.hasChildNodes()', this.current_level_element.hasChildNodes())
 		if (this.current_level_element.hasChildNodes()){
-			this.last_anchor_stack[this.last_anchor_stack.length-1] = this.current_level_element.lastChild.getAttribute('href').slice(1)
+			this.last_anchor_stack[this.last_anchor_stack.length-1] = this.current_level_element.lastChild.getAttribute('id').slice(5)
 		}
 		console.log(this.last_anchor_stack)
 	}
@@ -108,6 +108,7 @@ export class TableOfContents{
 	
 	new_list_item(anchor, text){
 		const item = this.doc.createElement(this.item_type)
+		item.setAttribute('id', `link-${anchor}`)
 		const a = this.doc.createElement('a')
 		a.setAttribute('href', `#${anchor}`)
 		a.textContent = text
