@@ -22,7 +22,9 @@ export class TableOfContents{
 	*/
 
 	static text_to_anchor(text){
-		return text.trim().toLowerCase()
+		return text
+			.trim()
+			.toLowerCase()
 			.replace(' ','-')
 			.replace('/', '-back-slash-')
 	}
@@ -107,6 +109,7 @@ export class TableOfContents{
 			anchor = TableOfContents.text_to_anchor(text)
 			element.setAttribute('id', anchor)
 		}
+		console.log(`anchor=${anchor}`) // DEBUGGING
 		
 		this.current_level_element.appendChild(this.new_list_item(anchor, text))
 		this.current_level_element.setAttribute('class',
