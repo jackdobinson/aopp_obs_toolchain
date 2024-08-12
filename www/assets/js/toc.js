@@ -131,6 +131,7 @@ export class TableOfContents{
 			}
 		}
 		element.setAttribute('id', anchor)
+		this.used_ids.push(anchor)
 		console.log(`anchor=${anchor}`) // DEBUGGING
 		
 		this.current_level_element.appendChild(this.new_list_item(anchor, text))
