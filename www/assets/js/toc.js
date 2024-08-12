@@ -115,7 +115,7 @@ export class TableOfContents{
 		if (anchor === null){
 			anchor = TableOfContents.text_to_anchor(text)
 			
-			while (this.used_ids.some(anchor)){
+			while (this.used_ids.some((x)=>x==anchor)){
 				if (cle !== null){
 					prefix = cle.getAttribute('id')
 					cle = cle.parentNode
