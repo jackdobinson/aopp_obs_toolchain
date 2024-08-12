@@ -116,6 +116,7 @@ export class TableOfContents{
 		if (anchor === null){
 			anchor = TableOfContents.text_to_anchor(text)
 			candidate = anchor
+			console.log(cle)
 			while (this.used_ids.some((x)=>x==candidate)){
 				if (cle !== null){
 					prefix = cle.getAttribute('id')
