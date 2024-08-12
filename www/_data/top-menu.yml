@@ -1,6 +1,9 @@
 - text: Home
   link: /
   
+- text: Overview
+  link: /overview/
+  
 - text: Getting Started
   link: /getting_started/
   
@@ -9,9 +12,6 @@
   
 - text: Documentation
   link: /documentation/
-  
-- text: Overview
-  link: /overview/
 
 - text: Resources
   link: /resources/
