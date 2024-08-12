@@ -48,7 +48,7 @@ export class TableOfContents{
 		this.current_level_element.setAttribute('id', 'contents-root')
 		
 		this.used_ids = []
-		this.last_anchor_stack = []
+		this.last_anchor_stack = ['root']
 		
 		
 		for (const pair of toc_level_to_element_pairs){
@@ -91,6 +91,8 @@ export class TableOfContents{
 			this.last_anchor_stack.pop()
 		}
 		this.add_entry_for(element)
+		console.log('this.current_level_element', this.current_level_element)
+		console.log('this.current_level_element.hasChildNodes()', this.current_level_element.hasChildNodes())
 		if (this.current_level_element.hasChildNodes()){
 			this.last_anchor_stack[this.last_anchor_stack.length-1] = this.current_level_element.lastChild.getAttribute('id')
 		}
