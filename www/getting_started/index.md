@@ -113,11 +113,11 @@ On the command line, use one of the following commands:
 
 * PowerShell (Windows, maybe Linux): `<VENV_DIR>/bin/Activate.ps1`
 
-* bash|zsh (Linux, Mac): `source <VENV_DIR>/bin/activate`
+* bash\|zsh (Linux, Mac): `source <VENV_DIR>/bin/activate`
 
 * fish (Linux, Mac): `source <VENV_DIR>/bin/activate.fish`
 
-* csh|tcsh (Linux, Mac): `source <VENV_DIR>/bin/activate.csh`
+* csh\|tcsh (Linux, Mac): `source <VENV_DIR>/bin/activate.csh`
 
 Once activated, your command line prompt should change to have something like `(.venv_3.12.2)` infront of it.
 
@@ -175,7 +175,7 @@ path_to_fits_file{ext}[slice0,slice1,...,sliceM]{axes_type_1:(ax11,ax12,...,ax1L
 ```
 * `path_to_fits_file` : str
   - (required) A string that represents  the path to the FITS file on the file system
-* `ext` : str | int
+* `ext` : str \| int
   - (optional) A string or integer that specifies the extension of the FITS file to operate upon
 * `sliceM` : slice
   - (optional) A slice (in python slice syntax) that chooses a sub-set of the of the data in the FITS file extension.

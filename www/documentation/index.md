@@ -128,7 +128,7 @@ The badness map is calculated as follows for each 2D image in the FITS data:
 
 #### Module Arguments ####
 
-NOTE: argument type is specified by a colon (:) following the argument name, multiple accepted types are separated by the pipe (|) character, some arguments take more than one value these are separated by spaces; arguments with an equals sign (=) take the specified value as a default.
+NOTE: argument type is specified by a colon (:) following the argument name, multiple accepted types are separated by the pipe (\|) character, some arguments take more than one value these are separated by spaces; arguments with an equals sign (=) take the specified value as a default.
 
 * `-o` or `--output_path` : str
   - Output fits file path. If not specified, it is same as the path to the input file with "_artefactmap" appended to the filename.
@@ -138,9 +138,9 @@ NOTE: argument type is specified by a colon (:) following the argument name, mul
 	+ `ssa` : Uses singular spectrum analysis (SSA) to determine how likely a pixel is to belong to an artefact
 * `--ssa.w_shape` : int = 10
   - Shape of the window used for the `ssa` strategy.
-* `--ssa.start` : int | float = -0.25
+* `--ssa.start` : int \| float = -0.25
   - First SSA component to be included in artefact detection calc. Negative numbers are fractions of range.
-* `--ssa.stop` : int | float = -0.75
+* `--ssa.stop` : int \| float = -0.75
   - Last SSA component to be included in artefact detection calc. Negative numbers are fractions of range.
 
 
@@ -293,7 +293,7 @@ Performs the following operations:
 * `--n_sigma` = 5
   - When finding the outlier mask, the number of standard deviations away from the mean a pixel must be to be considered an outlier
 
-* `--trim_to_shape` : None | int int = None
+* `--trim_to_shape` : None \| int int = None
   - After centring etc. if not None, will trim data to the specified shape (i.e., rectangle of pixels) around the centre pixel. Used to reduce data volume for faster processing.
 
 #### Examples ####
@@ -324,7 +324,7 @@ Fitting Methods:
 * `-o` or `--output_path` : str
   - Output fits file path. If not specified, it is same as the path to the input file with "_modelled" appended to the filename.
 
-* `--fit_result_dir` : None | str = None
+* `--fit_result_dir` : None \| str = None
   - Directory to store results of PSF fit in. Will create a sub-directory below the given path. If None, will create a sibling folder to the output file (i.e., output file parent directory is used)
 
 * `--model` : str = `radial`
@@ -464,8 +464,8 @@ TODO: Write a description of how LR deconvolution works.
   - Clip the correction factors to be no smaller than this value. A crude method to control numerical instability.
 * `--offset_obs` : bool = False
   - Should we offset the observation so there are no negative pixels? Enables the algorithm to find -ve values as the offset is reversed at the end.
-* `--threshold` : None | float = None
-  - Below this value LR will not be applied to pixels. This is useful as at low brightness LR has a tendency to fit itself to noise. If -ve will use |threshold|*brightest_pixel as threshold each step. If zero will use mean and standard deviation to work out a threshold, if None will not be used.
+* `--threshold` : None \| float = None
+  - Below this value LR will not be applied to pixels. This is useful as at low brightness LR has a tendency to fit itself to noise. If -ve will use \|threshold\|*brightest_pixel as threshold each step. If zero will use mean and standard deviation to work out a threshold, if None will not be used.
 * `--pad_observation` : bool = True
   - Should we pad the input data with extra space to avoid edge effects? Padding will take the form of convolving the observation with the psf, but only keeping the edges of the convolved data. This will hopefully cause a smooth-ish drop-off at the edges instead of a hard cutoff, thus reducing insability.
 
