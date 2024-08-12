@@ -112,10 +112,11 @@ export class TableOfContents{
 		var cle = this.current_level_element
 		var i=1
 		var prefix = null
+		var candidate
 		if (anchor === null){
 			anchor = TableOfContents.text_to_anchor(text)
-			
-			while (this.used_ids.some((x)=>x==anchor)){
+			candidate = anchor
+			while (this.used_ids.some((x)=>x==candidate)){
 				if (cle !== null){
 					prefix = cle.getAttribute('id')
 					cle = cle.parentNode
@@ -123,13 +124,15 @@ export class TableOfContents{
 					prefix = null
 				}
 				if (prefix !== null){
-					anchor = prefix + '--' + text
+					anchor = prefix + '--' + anchor
+					candidate = anchor
 				} else {
-					anchor += `-${i}`
+					candidate = anchor + `-${i}`
 					i += 1
 				}
 			}
 		}
+		anchor = candidate
 		element.setAttribute('id', anchor)
 		this.used_ids.push(anchor)
 		console.log(`anchor=${anchor}`) // DEBUGGING
