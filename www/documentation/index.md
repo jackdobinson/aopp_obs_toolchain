@@ -4,11 +4,11 @@
 
 ## Command-line Scripts <a id="command-line-scripts"></a> ##
 
-When running command-line scripts, use the `-h` option to see the help message. The appendix has a [overview of help message syntax]({{site.baseurl}}/resources/python-conventions#command-line-script-help-message-syntax).
+When running command-line scripts, use the `-h` option to see the help message. The appendix has a [overview of help message syntax]({{site.baseurl}}/resources#command-line-script-help-message-syntax).
 
 The examples in this section use [example data stored on an external site](TODO: ADD LINK TO EXAMPLE DATA).
 
-See the appendix for a [bash script that performs all steps on a given dataset]({{site.baseurl}}/resources/scripts#full-deconvolution-process)
+See the appendix for a [bash script that performs all steps on a given dataset]({{site.baseurl}}/resources#full-deconvolution-process)
 
 ### Spectral Rebinning <a id="spectral-rebinning-script"></a> ##
 

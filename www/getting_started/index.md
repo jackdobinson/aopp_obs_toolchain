@@ -26,7 +26,7 @@ Suggested installation locations:
 
 * Unix/Linux/Mac: `${HOME}/python/python3.12`
 
-Installation instructions for [windows, mac](#windows/mac-installation-instructions), [unix and linux](#unix/linux-installation-instructions) are slightly
+Installation instructions for [windows, mac](#windows-back-slash-mac-installation-instructions), [unix and linux](#unix-back-slash-linux-installation-instructions) are slightly
 different, so please refer to the appropriate section below.
 
 Once installed, if using the suggested installation location, the actual Python interpreter executable will be at one of the following
@@ -48,14 +48,14 @@ in all code snippets. Alter this appropriately if using windows or a non-suggest
 
 ##### Unix/Linux Installation Instructions <a id="unix/linux-installation-instructions"></a> #####
 
-* **IF** you have `sudo` access [see the appendix for a test for sudo access](#sudo-access-test), try one of the following:
+* **IF** you have `sudo` access [see this snippet for a sudo access]({{site.baseurl}}/resources#sudo-access-test), try one of the following:
 
   - Install the desired version of Python via the Package Manager included in your operating system
 
   - Build and [install python from source](https://docs.python.org/3/using/unix.html).
 
 	+ NOTE: Building from source can be a little fiddly, but there are [online tools to help with building from source](https://www.build-python-from-source.com/).
-	  There is also a [python installation script in the appendix](#linux-installation-bash-script) that will fetch the python 
+	  There is also a [python installation script on the resources page]({{site.baseurl}}/resources#linux-installation-bash-script) that will fetch the python 
 	  source code, install it, and create a virtual environment.
 
 * **OTHERWISE**, if you don't have `sudo` access, [anaconda python](https://docs.anaconda.com/free/miniconda/index.html#quick-command-line-install)
@@ -184,9 +184,9 @@ path_to_fits_file{ext}[slice0,slice1,...,sliceM]{axes_type_1:(ax11,ax12,...,ax1L
 * `(axN1, ..., axNL)` : (int, ..., int)
   - (optional) A tuple (in python tuple syntax) of integers that denotes the axes (in C ordering, **not** FORTRAN ordering) that correspond to the physical quantities described by `axes_type_N`. These can often be found automatically, and even when not can be specified without the corresponding `axes_type_N` much of the time).
 
-In words, a *fits specifier* consists of: a string that describes which FITS file to load; the extension (i.e., backplane) name or number to use enclosed in curly brackets; the slices (i.e., sub-regions) that should be operated upon in [python slice syntax](#python-slice-syntax); and the data axes to operate on as a [tuple](#python-tuple-syntax) or as a [python dictionary](https://docs.python.org/3/tutorial/datastructures.html#dictionaries) with strings as keys and [tuples](#python-tuple-syntax) as values.
+In words, a *fits specifier* consists of: a string that describes which FITS file to load; the extension (i.e., backplane) name or number to use enclosed in curly brackets; the slices (i.e., sub-regions) that should be operated upon in [python slice syntax]({{site.baseurl}}/resources#python-slice-syntax); and the data axes to operate on as a [tuple]({{site.baseurl}}/resources#python-tuple-syntax) or as a [python dictionary](https://docs.python.org/3/tutorial/datastructures.html#dictionaries) with strings as keys and [tuples]({{site.baseurl}}/resources#python-tuple-syntax) as values.
 
-See the appendix for a [quick introduction to the FITS format](#fits-file-format-information) for a description of why this information is needed, and why [axis numbers are different between FITS and Python](#fits-data-order).
+See the appendix for a [quick introduction to the FITS format]({{site.baseurl}}/resources#fits-file-format-information) for a description of why this information is needed, and why [axis numbers are different between FITS and Python]({{site.baseurl}}/resources#fits-data-order).
 
 
 ## Running the First Example ##

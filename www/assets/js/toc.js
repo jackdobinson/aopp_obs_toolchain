@@ -91,12 +91,12 @@ export class TableOfContents{
 			this.last_anchor_stack.pop()
 		}
 		this.add_entry_for(element)
-		console.log('this.current_level_element', this.current_level_element)
-		console.log('this.current_level_element.hasChildNodes()', this.current_level_element.hasChildNodes())
+		//console.log('this.current_level_element', this.current_level_element)
+		//console.log('this.current_level_element.hasChildNodes()', this.current_level_element.hasChildNodes())
 		if (this.current_level_element.hasChildNodes()){
 			this.last_anchor_stack[this.last_anchor_stack.length-1] = this.current_level_element.lastChild.getAttribute('id').slice(5)
 		}
-		console.log(this.last_anchor_stack)
+		//console.log(this.last_anchor_stack)
 	}
 	
 	new_list_container() {
@@ -154,7 +154,7 @@ export class TableOfContents{
 		
 		element.setAttribute('id', anchor)
 		this.used_ids.push(anchor)
-		console.log(`anchor=${anchor}`) // DEBUGGING
+		//console.log(`anchor=${anchor}`) // DEBUGGING
 		
 		this.current_level_element.appendChild(this.new_list_item(anchor, text))
 		this.current_level_element.setAttribute('class',
