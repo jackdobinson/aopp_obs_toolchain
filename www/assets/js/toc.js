@@ -45,8 +45,10 @@ export class TableOfContents{
 		this.toc_level = 0
 		this.toc_level_stack = [this.doc.createElement('div')]
 		this.current_level_element.setAttribute('class', 'table-of-contents')
+		this.current_level_element.setAttribute('id', 'contents-root')
 		
 		this.used_ids = []
+		this.last_anchor_stack = []
 		
 		
 		for (const pair of toc_level_to_element_pairs){
@@ -76,14 +78,22 @@ export class TableOfContents{
 	
 	process(level, element){
 		while(this.toc_level < level){
+			if (this.last_anchor_stack.at(-1) !==  null){
+				this.current_level_element.setAttribute('id', 'contents-'+this.last_anchor_stack.at(-1))
+			}
 			this.toc_level += 1
 			this.push()
+			this.last_anchor_stack.push(null)
 		}
 		while (this.toc_level > level){
 			this.toc_level -= 1
 			this.pop()
+			this.last_anchor_stack.pop()
 		}
 		this.add_entry_for(element)
+		if (this.last_anchor_stack.at(-1) ===  null){
+			this.last_anchor_stack.at(-1) = this.current_level_element.lastChild.getAttribute('id')
+		}
 	}
 	
 	new_list_container() {
@@ -125,6 +135,9 @@ export class TableOfContents{
 					prefix = null
 				}
 				if (prefix !== null){
+					if (prefix.startsWith('contents-')){
+						prefix = prefix.slice(9)
+					}
 					anchor = prefix + '--' + anchor
 					candidate = anchor
 				} else {
@@ -134,6 +147,7 @@ export class TableOfContents{
 			}
 		}
 		anchor = candidate
+		
 		element.setAttribute('id', anchor)
 		this.used_ids.push(anchor)
 		console.log(`anchor=${anchor}`) // DEBUGGING
