@@ -162,7 +162,7 @@
         
         
             <div class="itemName expandableItem">
-                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4414"> 
+                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4555"> 
                     
                 </input>
 
@@ -254,11 +254,11 @@
         
         
             <div class="itemName expandableItem">
-                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4415"> 
+                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4556"> 
                     
                 </input>
 
-                <label class="lbl-toggle" for="expandableItemId4415">
+                <label class="lbl-toggle" for="expandableItemId4556">
                     
                     
                 </label>
@@ -376,11 +376,11 @@
         
         
             <div class="itemName expandableItem">
-                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4416"> 
+                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4557"> 
                     
                 </input>
 
-                <label class="lbl-toggle" for="expandableItemId4416">
+                <label class="lbl-toggle" for="expandableItemId4557">
                     
                     
                 </label>
@@ -399,11 +399,11 @@
         
         
             <div class="itemName expandableItem">
-                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4417"> 
+                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4558"> 
                     
                 </input>
 
-                <label class="lbl-toggle" for="expandableItemId4417">
+                <label class="lbl-toggle" for="expandableItemId4558">
                     
                     
                 </label>
@@ -560,11 +560,11 @@
         
         
             <div class="itemName expandableItem">
-                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4418"> 
+                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4559"> 
                     
                 </input>
 
-                <label class="lbl-toggle" for="expandableItemId4418">
+                <label class="lbl-toggle" for="expandableItemId4559">
                     
                     
                 </label>
@@ -629,11 +629,11 @@
         
         
             <div class="itemName expandableItem">
-                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4419"> 
+                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4560"> 
                     
                 </input>
 
-                <label class="lbl-toggle" for="expandableItemId4419">
+                <label class="lbl-toggle" for="expandableItemId4560">
                     
                     
                 </label>
@@ -960,50 +960,38 @@
         </div>
 
         <div class="moduleDocstring">
-          <div><p class="pre">Regrids a numpy array.
-
-
-Example of grid definition:
-
-        #############################################################
-
-        input_grid    : |---^---|   |---^---|   |---^---|   |---^---|
-                      :       |---^---|   |---^---|   |---^---|         
-        
-        bin_width     : |-------|
-
-        bin_step      : |-----|
-
-        #############################################################
-
-        output_grid   :     |--------^-------|    |--------^-------|
-                      :                |--------^-------|
-        
-        offset        : |---|
-
-        new_bin_width :     |----------------|
-        
-        new_bin_step  :     |----------|
-
-
-        #############################################################
-
-        "|" = bin edge
-
-        "^" = bin centre
-
-        width
-                The distance between the start and end of a bin
-        
-        step
-                The distance between the start of two consencutive bins
-
-        offset
-                The distance between the start/end of the new grid and the start/end of the old grid</p></div>
+          <div><p>Regrids a numpy array.</p>
+<p>Example of grid definition:</p>
+<blockquote>
+<dl class="rst-docutils">
+<dt>input_grid <span class="classifier-delimiter">:</span> <span class="rst-classifier">|---^---|   |---^---|   |---^---|   |---^---|</span></dt>
+<dd>:       |---^---|   |---^---|   |---^---|</dd>
+</dl>
+<p>bin_width     : |-------|</p>
+<p>bin_step      : |-----|</p>
+<dl class="rst-docutils">
+<dt>output_grid <span class="classifier-delimiter">:</span> <span class="rst-classifier">|--------^-------|    |--------^-------|</span></dt>
+<dd>:                |--------^-------|</dd>
+</dl>
+<p>offset        : |---|</p>
+<p>new_bin_width :     |----------------|</p>
+<p>new_bin_step  :     |----------|</p>
+<p>"|" = bin edge</p>
+<p>"^" = bin centre</p>
+<dl class="rst-docutils">
+<dt>width</dt>
+<dd>The distance between the start and end of a bin</dd>
+<dt>step</dt>
+<dd>The distance between the start of two consencutive bins</dd>
+<dt>offset</dt>
+<dd>The distance between the start/end of the new grid and the start/end of the old grid</dd>
+</dl>
+</blockquote>
+</div>
         </div>
 
         <div id="splitTables">
-          <table class="children sortable" id="id108">
+          <table class="children sortable" id="id114">
   
   
   <tr class="function">
@@ -1056,25 +1044,32 @@ Example of grid definition:
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Get the bin edges of bins defined by a lower bound, upper bound, steps between bins, and widths of each bin.
-
-# ARGUMENTS #
-        lbound : float
-                Lower bound of the range to create bins on.
-        ubound : float
-                Upper bound of the range to create bins on.
-        steps : float
-                Size of the steps between the starting edge of each bin.
-        widths : float
-                Size of the bins, i.e., distance between the starting edge and ending edge of each bin.
-        bins_extend_past_ubound : bool = True
-                Should the bins be allowed to extend past "ubound" if they could contain values &lt; "ubound".
-                I.e., Could a bin of width = 5, start at ubound-2 and end at ubound+3?
-
-# RETURNS #
-        edges : np.ndarray[2,N]
-                A 2D numpy array, "edges[0]" holds the starting edges of each bin, 
-                "edges[1]" holds the ending edges of each bin.</p></div>
+    <div><p>Get the bin edges of bins defined by a lower bound, upper bound, steps between bins, and widths of each bin.</p>
+<dl class="rst-docutils">
+<dt># ARGUMENTS #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>lbound <span class="classifier-delimiter">:</span> <span class="rst-classifier">float</span></dt>
+<dd>Lower bound of the range to create bins on.</dd>
+<dt>ubound <span class="classifier-delimiter">:</span> <span class="rst-classifier">float</span></dt>
+<dd>Upper bound of the range to create bins on.</dd>
+<dt>steps <span class="classifier-delimiter">:</span> <span class="rst-classifier">float</span></dt>
+<dd>Size of the steps between the starting edge of each bin.</dd>
+<dt>widths <span class="classifier-delimiter">:</span> <span class="rst-classifier">float</span></dt>
+<dd>Size of the bins, i.e., distance between the starting edge and ending edge of each bin.</dd>
+<dt>bins_extend_past_ubound <span class="classifier-delimiter">:</span> <span class="rst-classifier">bool = True</span></dt>
+<dd>Should the bins be allowed to extend past "ubound" if they could contain values &lt; "ubound".
+I.e., Could a bin of width = 5, start at ubound-2 and end at ubound+3?</dd>
+</dl>
+</dd>
+<dt># RETURNS #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>edges <span class="classifier-delimiter">:</span> <span class="rst-classifier">np.ndarray[2,N]</span></dt>
+<dd>A 2D numpy array, "edges[0]" holds the starting edges of each bin,
+"edges[1]" holds the ending edges of each bin.</dd>
+</dl>
+</dd>
+</dl>
+</div>
   </div>
 </div><div class="basefunction">
   
@@ -1098,20 +1093,26 @@ Example of grid definition:
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Get bin edges as a 2d-numpy array of shape (2,N), where the
-0th sub-array is the starting point of each bin, and the 1st sub-array is the ending points.
-
-# ARGUMENTS #
-        midpoints : np.ndarray[N]
-                Midpoints of bins to find the edges of.
-        fix_edges : bool = True
-                If we should account for bin size when working out the 0th and Nth bin edges.
-
-# RETURNS #
-        edges : np.ndarray[2,N]
-                A 2D numpy array, "edges[0]" holds the starting edges of each bin, 
-                "edges[1]" holds the ending edges of each bin.
-                </p></div>
+    <div><p>Get bin edges as a 2d-numpy array of shape (2,N), where the
+0th sub-array is the starting point of each bin, and the 1st sub-array is the ending points.</p>
+<dl class="rst-docutils">
+<dt># ARGUMENTS #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>midpoints <span class="classifier-delimiter">:</span> <span class="rst-classifier">np.ndarray[N]</span></dt>
+<dd>Midpoints of bins to find the edges of.</dd>
+<dt>fix_edges <span class="classifier-delimiter">:</span> <span class="rst-classifier">bool = True</span></dt>
+<dd>If we should account for bin size when working out the 0th and Nth bin edges.</dd>
+</dl>
+</dd>
+<dt># RETURNS #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>edges <span class="classifier-delimiter">:</span> <span class="rst-classifier">np.ndarray[2,N]</span></dt>
+<dd>A 2D numpy array, "edges[0]" holds the starting edges of each bin,
+"edges[1]" holds the ending edges of each bin.</dd>
+</dl>
+</dd>
+</dl>
+</div>
   </div>
 </div><div class="basefunction">
   
@@ -1135,28 +1136,35 @@ Example of grid definition:
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Rebin data from the old bins to a new set of bins, old data is summed into new data bins.
-Set NANs to zero before summing if you want to treat them that way.
-
-# ARGUMENTS #
-        data : np.array[...,N,...]
-                The data to be re-gridded. Should make sense to add the data together,
-                N is the size of the axis over which data is to be rebinned. Choice of axis
-                is controlled by "axis" argument.
-        input_bin_edges : np.array[2,N]
-                Edges of the old bins, input_bin_edges[0] are the starts of each bin
-                input_bin_edges[1] are the ends of each bin.
-        output_bin_edges : np.array[2,M]
-                Edges of the new bins, output_bin_edges[0] are the starts of each bin,
-                output_bin_edges[1] are the ends of each bin.
-        axis : int = 0
-                Axis to rebin "data" across.
-
-# RETURNS #
-        output_bin_values : np.array[...,M,...]
-                Rebinned data values, same shape as "data" except along the rebinned axis.
-        n_bins_combined : np.array[M]
-                Number of original bins combined into each new bin, fractional bins accounted for.</p></div>
+    <div><p>Rebin data from the old bins to a new set of bins, old data is summed into new data bins.
+Set NANs to zero before summing if you want to treat them that way.</p>
+<dl class="rst-docutils">
+<dt># ARGUMENTS #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>data <span class="classifier-delimiter">:</span> <span class="rst-classifier">np.array[...,N,...]</span></dt>
+<dd>The data to be re-gridded. Should make sense to add the data together,
+N is the size of the axis over which data is to be rebinned. Choice of axis
+is controlled by "axis" argument.</dd>
+<dt>input_bin_edges <span class="classifier-delimiter">:</span> <span class="rst-classifier">np.array[2,N]</span></dt>
+<dd>Edges of the old bins, input_bin_edges[0] are the starts of each bin
+input_bin_edges[1] are the ends of each bin.</dd>
+<dt>output_bin_edges <span class="classifier-delimiter">:</span> <span class="rst-classifier">np.array[2,M]</span></dt>
+<dd>Edges of the new bins, output_bin_edges[0] are the starts of each bin,
+output_bin_edges[1] are the ends of each bin.</dd>
+<dt>axis <span class="classifier-delimiter">:</span> <span class="rst-classifier">int = 0</span></dt>
+<dd>Axis to rebin "data" across.</dd>
+</dl>
+</dd>
+<dt># RETURNS #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>output_bin_values <span class="classifier-delimiter">:</span> <span class="rst-classifier">np.array[...,M,...]</span></dt>
+<dd>Rebinned data values, same shape as "data" except along the rebinned axis.</dd>
+<dt>n_bins_combined <span class="classifier-delimiter">:</span> <span class="rst-classifier">np.array[M]</span></dt>
+<dd>Number of original bins combined into each new bin, fractional bins accounted for.</dd>
+</dl>
+</dd>
+</dl>
+</div>
   </div>
 </div><div class="basevariable private">
   
@@ -1195,7 +1203,7 @@ Set NANs to zero before summing if you want to treat them that way.
     <div class="container">
       <a href="index.html">API Documentation</a> for aopp_obs_toolchain::aopp_deconv_tool,
     generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a>
-      24.3.3 at 2024-08-13 13:40:11.
+      24.3.3 at 2024-08-13 13:58:58.
     </div>
     
     <script src="ajax.js" type="text/javascript"></script>

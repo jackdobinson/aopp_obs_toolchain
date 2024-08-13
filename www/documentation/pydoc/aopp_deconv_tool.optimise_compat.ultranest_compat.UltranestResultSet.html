@@ -285,7 +285,7 @@
         
         
             <div class="itemName expandableItem">
-                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4642"> 
+                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4788"> 
                     
                 </input>
 
@@ -653,12 +653,12 @@
         </div>
 
         <div class="moduleDocstring">
-          <div><p class="pre">Defines some routines for interacting with a folder that has ultranest runs in it. Allows association of
+          <div><p>Defines some routines for interacting with a folder that has ultranest runs in it. Allows association of
 metadata with ultranest runs and some simple plotting routines.</p></div>
         </div>
 
         <div id="splitTables">
-          <table class="children sortable" id="id121">
+          <table class="children sortable" id="id127">
   
   
   <tr class="method">
@@ -675,7 +675,7 @@ metadata with ultranest runs and some simple plotting routines.</p></div>
     
     <td>Method</td>
     <td><code><a href="#clear_metadata" class="internal-link" title="aopp_deconv_tool.optimise_compat.ultranest_compat.UltranestResultSet.clear_metadata">clear<wbr></wbr>_metadata</a></code></td>
-    <td>Remove all metadata from this instance. Will not update the saved metadata until `self.save_metadata()` is called.</td>
+    <td>Remove all metadata from this instance. Will not update the saved metadata until <code>self.save_metadata()</code> is called.</td>
   </tr><tr class="method">
     
     <td>Method</td>
@@ -705,7 +705,7 @@ metadata with ultranest runs and some simple plotting routines.</p></div>
     
     <td>Method</td>
     <td><code><a href="#plot_params_vs_run_index" class="internal-link" title="aopp_deconv_tool.optimise_compat.ultranest_compat.UltranestResultSet.plot_params_vs_run_index">plot<wbr></wbr>_params<wbr></wbr>_vs<wbr></wbr>_run<wbr></wbr>_index</a></code></td>
-    <td>x_var : str | None         Variable to display along x-axis. If `None`, uses run index. show : bool = False         If `True` will display plots save : bool = True         If `True` will save plots to `self...</td>
+    <td>Variable to display along x-axis. If <code>None</code>, uses run index.</td>
   </tr><tr class="method">
     
     <td>Method</td>
@@ -740,7 +740,7 @@ metadata with ultranest runs and some simple plotting routines.</p></div>
     
     <td>Property</td>
     <td><code><a href="#plot_directory" class="internal-link" title="aopp_deconv_tool.optimise_compat.ultranest_compat.UltranestResultSet.plot_directory">plot<wbr></wbr>_directory</a></code></td>
-    <td>Directory (within `self.directory`) where plots are saved. Defaults to `self.directory / "resultset_plots"</td>
+    <td>Directory (within <code>self.directory</code>) where plots are saved. Defaults to `self.directory / "resultset_plots"</td>
   </tr>
 </table>
           
@@ -771,11 +771,16 @@ metadata with ultranest runs and some simple plotting routines.</p></div>
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Initialises a result set
-
-# ARGUMENTS # 
-        result_set_directory : Path | str
-                The directory where ultranest should put it's run_N folders.</p></div>
+    <div><p>Initialises a result set</p>
+<dl class="rst-docutils">
+<dt># ARGUMENTS #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>result_set_directory <span class="classifier-delimiter">:</span> <span class="rst-classifier">Path | str</span></dt>
+<dd>The directory where ultranest should put it's run_N folders.</dd>
+</dl>
+</dd>
+</dl>
+</div>
   </div>
 </div><div class="basemethod">
   
@@ -823,7 +828,7 @@ metadata with ultranest runs and some simple plotting routines.</p></div>
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Remove all metadata from this instance. Will not update the saved metadata until `self.save_metadata()` is called.</p></div>
+    <div><p>Remove all metadata from this instance. Will not update the saved metadata until <code>self.save_metadata()</code> is called.</p></div>
   </div>
 </div><div class="basemethod">
   
@@ -847,21 +852,28 @@ metadata with ultranest runs and some simple plotting routines.</p></div>
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Gets all parameters (and optionally metadata) for each run in the resultset
-
-# ARGUMENTS #
-        metadata_keys_to_include : list[str]
-                Will include these metadata keys in the results
-        sort_by : None | str = None
-                Metadata or parameter name to sort by. If `None`, sort by run index
-
-# RETURNS #
-        run_indices : list[int,...]
-                A list of all run indices found
-        metadata_values : dict[str, np.ndarray]
-                A dictionary of metadata values for each run
-        param_values : dict[str, np.ndarray]
-                A dictionary of parameter values for each run</p></div>
+    <div><p>Gets all parameters (and optionally metadata) for each run in the resultset</p>
+<dl class="rst-docutils">
+<dt># ARGUMENTS #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>metadata_keys_to_include <span class="classifier-delimiter">:</span> <span class="rst-classifier">list[str]</span></dt>
+<dd>Will include these metadata keys in the results</dd>
+<dt>sort_by <span class="classifier-delimiter">:</span> <span class="rst-classifier">None | str = None</span></dt>
+<dd>Metadata or parameter name to sort by. If <code>None</code>, sort by run index</dd>
+</dl>
+</dd>
+<dt># RETURNS #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>run_indices <span class="classifier-delimiter">:</span> <span class="rst-classifier">list[int,...]</span></dt>
+<dd>A list of all run indices found</dd>
+<dt>metadata_values <span class="classifier-delimiter">:</span> <span class="rst-classifier">dict[str, np.ndarray]</span></dt>
+<dd>A dictionary of metadata values for each run</dd>
+<dt>param_values <span class="classifier-delimiter">:</span> <span class="rst-classifier">dict[str, np.ndarray]</span></dt>
+<dd>A dictionary of parameter values for each run</dd>
+</dl>
+</dd>
+</dl>
+</div>
   </div>
 </div><div class="basemethod">
   
@@ -885,7 +897,7 @@ metadata with ultranest runs and some simple plotting routines.</p></div>
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Pulls the results of an ultranest run from a "result_set_directory/run[INT]" path.</p></div>
+    <div><p>Pulls the results of an ultranest run from a "result_set_directory/run[INT]" path.</p></div>
   </div>
 </div><div class="basemethod">
   
@@ -909,7 +921,7 @@ metadata with ultranest runs and some simple plotting routines.</p></div>
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Ultranest has "result_set_directory/run[INT]" to hold data for each run</p></div>
+    <div><p>Ultranest has "result_set_directory/run[INT]" to hold data for each run</p></div>
   </div>
 </div><div class="basemethod">
   
@@ -933,7 +945,7 @@ metadata with ultranest runs and some simple plotting routines.</p></div>
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Gets the indices of all runs in a result set</p></div>
+    <div><p>Gets the indices of all runs in a result set</p></div>
   </div>
 </div><div class="basemethod">
   
@@ -957,7 +969,7 @@ metadata with ultranest runs and some simple plotting routines.</p></div>
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Loads metadata for the result set (saved as a json file)</p></div>
+    <div><p>Loads metadata for the result set (saved as a json file)</p></div>
   </div>
 </div><div class="basemethod">
   
@@ -981,14 +993,17 @@ metadata with ultranest runs and some simple plotting routines.</p></div>
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">x_var : str | None
-        Variable to display along x-axis. If `None`, uses run index.
-show : bool = False
-        If `True` will display plots
-save : bool = True
-        If `True` will save plots to `self.plot_directory`
-kwargs : dict[str,Any]
-        Forwarded to `self.get_params_vs_run_index(...)`</p></div>
+    <div><p><dl class="rst-docutils">
+<dt>x_var <span class="classifier-delimiter">:</span> <span class="rst-classifier">str | None</span></dt>
+<dd>Variable to display along x-axis. If <code>None</code>, uses run index.</dd>
+<dt>show <span class="classifier-delimiter">:</span> <span class="rst-classifier">bool = False</span></dt>
+<dd>If <code>True</code> will display plots</dd>
+<dt>save <span class="classifier-delimiter">:</span> <span class="rst-classifier">bool = True</span></dt>
+<dd>If <code>True</code> will save plots to <code>self.plot_directory</code></dd>
+<dt>kwargs <span class="classifier-delimiter">:</span> <span class="rst-classifier">dict[str,Any]</span></dt>
+<dd>Forwarded to <code>self.get_params_vs_run_index(...)</code></dd>
+</dl>
+</p></div>
   </div>
 </div><div class="basemethod">
   
@@ -1012,18 +1027,23 @@ kwargs : dict[str,Any]
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Plots all results in the resultset
-
-# ARGUMENTS #
-        result_providers : list[Callable[tuple[float,...], np.ndarray]]
-                A list of callables that accept an ordered tuple of results, much like objective functions for the scipy library.
-                Should be ordered corresponding to the index of a run (i.e., 0th entry gives results for lowest run number)
-        ref_data : np.ndarray
-                An array of data, it should have an entry for each run index (i.e., for run folder "run_128", we use ref_data[128])
-        show : bool = False
-                If `True` will show the plots as they are made
-        save : bool = True
-                If `True` will save the results to `self.plot_directory`</p></div>
+    <div><p>Plots all results in the resultset</p>
+<dl class="rst-docutils">
+<dt># ARGUMENTS #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>result_providers <span class="classifier-delimiter">:</span> <span class="rst-classifier">list[Callable[tuple[float,...], np.ndarray]]</span></dt>
+<dd>A list of callables that accept an ordered tuple of results, much like objective functions for the scipy library.
+Should be ordered corresponding to the index of a run (i.e., 0th entry gives results for lowest run number)</dd>
+<dt>ref_data <span class="classifier-delimiter">:</span> <span class="rst-classifier">np.ndarray</span></dt>
+<dd>An array of data, it should have an entry for each run index (i.e., for run folder "run_128", we use ref_data[128])</dd>
+<dt>show <span class="classifier-delimiter">:</span> <span class="rst-classifier">bool = False</span></dt>
+<dd>If <code>True</code> will show the plots as they are made</dd>
+<dt>save <span class="classifier-delimiter">:</span> <span class="rst-classifier">bool = True</span></dt>
+<dd>If <code>True</code> will save the results to <code>self.plot_directory</code></dd>
+</dl>
+</dd>
+</dl>
+</div>
   </div>
 </div><div class="basemethod">
   
@@ -1047,11 +1067,16 @@ kwargs : dict[str,Any]
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Saves metadata for the result set as a json file.
-
-# ARGUMENTS #
-        make_parent_dirs : bool
-                If `True` (default) will create parent directory (the result set directory) when saving the metadata</p></div>
+    <div><p>Saves metadata for the result set as a json file.</p>
+<dl class="rst-docutils">
+<dt># ARGUMENTS #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>make_parent_dirs <span class="classifier-delimiter">:</span> <span class="rst-classifier">bool</span></dt>
+<dd>If <code>True</code> (default) will create parent directory (the result set directory) when saving the metadata</dd>
+</dl>
+</dd>
+</dl>
+</div>
   </div>
 </div><div class="baseclassvariable">
   
@@ -1170,7 +1195,7 @@ kwargs : dict[str,Any]
   </div>
   <div class="functionBody">
     
-    <div><p class="pre">Directory (within `self.directory`) where plots are saved. Defaults to `self.directory / "resultset_plots"</p></div>
+    <div><p>Directory (within <code>self.directory</code>) where plots are saved. Defaults to `self.directory / "resultset_plots"</p></div>
     
   </div>
 </div>
@@ -1186,7 +1211,7 @@ kwargs : dict[str,Any]
     <div class="container">
       <a href="index.html">API Documentation</a> for aopp_obs_toolchain::aopp_deconv_tool,
     generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a>
-      24.3.3 at 2024-08-13 13:40:11.
+      24.3.3 at 2024-08-13 13:58:58.
     </div>
     
     <script src="ajax.js" type="text/javascript"></script>

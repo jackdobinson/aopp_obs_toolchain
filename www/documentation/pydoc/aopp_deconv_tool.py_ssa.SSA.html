@@ -465,7 +465,7 @@
         
         
             <div class="itemName expandableItem">
-                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId5967"> 
+                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId6138"> 
                     
                 </input>
 
@@ -1137,14 +1137,14 @@
         </div>
 
         <div id="splitTables">
-          <table class="children sortable" id="id177">
+          <table class="children sortable" id="id183">
   
   
   <tr class="staticmethod">
     
     <td>Static Method</td>
     <td><code><a href="#diagsums" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.diagsums">diagsums</a></code></td>
-    <td>Diagonally sum matrices `a` and `b`. This is practically the same as convolution using FFT.</td>
+    <td>Diagonally sum matrices <code><a href="aopp_deconv_tool.py_ssa.SSA.html#a" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.a">a</a></code> and <code>b</code>. This is practically the same as convolution using FFT.</td>
   </tr><tr class="staticmethod">
     
     <td>Static Method</td>
@@ -1340,19 +1340,27 @@
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Diagonally sum matrices `a` and `b`. This is practically the same as convolution using FFT.
-
-# ARGUMENTS #
-        a : Array_2D
-        b : Array_2D
-        mode : Convolution_Mode_literals = 'full'
-                Convolution mode to use
-        fac : int | float = 1
-                Factor to multiply convolution by.
-
-# RETURNS #
-        conv : Array_2D
-                Diagonal sum of `a` and `b`</p></div>
+    <div><p>Diagonally sum matrices <code><a href="#a" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.a">a</a></code> and <code>b</code>. This is practically the same as convolution using FFT.</p>
+<dl class="rst-docutils">
+<dt># ARGUMENTS #</dt>
+<dd><p class="rst-first">a : Array_2D
+b : Array_2D
+mode : Convolution_Mode_literals = 'full'</p>
+<blockquote>
+Convolution mode to use</blockquote>
+<dl class="rst-docutils rst-last">
+<dt>fac <span class="classifier-delimiter">:</span> <span class="rst-classifier">int | float = 1</span></dt>
+<dd>Factor to multiply convolution by.</dd>
+</dl>
+</dd>
+<dt># RETURNS #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>conv <span class="classifier-delimiter">:</span> <span class="rst-classifier">Array_2D</span></dt>
+<dd>Diagonal sum of <code><a href="#a" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.a">a</a></code> and <code>b</code></dd>
+</dl>
+</dd>
+</dl>
+</div>
   </div>
 </div><div class="basestaticmethod">
   
@@ -1376,7 +1384,7 @@
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Calculate single value decomposition from eigenvalues</p></div>
+    <div><p>Calculate single value decomposition from eigenvalues</p></div>
   </div>
 </div><div class="basemethod">
   
@@ -1400,59 +1408,68 @@
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Set up initial values of useful constants
-
-# ARGUMENTS #
-        
-        a : [nx] | [nx,ny]
-                Array to operate on, should be 1D or 2D. 
-        
-        w_shape : None | int | [wx] | [wx, wy]
-                Window shape to use for SSA, no array is actually created
-                from this shape, it's used as indices to loops etc. If not given,
-                will use a.shape//4 as window size
-        
-        svd_strategy : 'eigval' | 'numpy'
-                How should we calculate single value decomposition, 'eigval' is
-                fastest and uses least memory so it's normally the best choice.
-        
-        rev_mapping : 'fft' | 'direct'
-                How should we reverse the embedding? 'fft' is fastest so normally best.
-        
-        grouping : dict[str, Any]
-                How should we group the tarjectory matricies? Values other than
-                'elementary' do not give exact results. Some modes require extra arguments
-                detailed below:
-                
-                ## Required Keys ##
-                        'mode' : 'elementary' 
-                                                | 'pairs' 
-                                                | 'pairs_after_first' 
-                                                | 'similar_eigenvalues' 
-                                                | 'blocks_of_n'
-                                Required to set the mode, default is 'elementary'. Values other than
-                                'elementary' do not give exact results. Some values require extra
-                                keys.
-                        
-                        ### Required for 'mode'='similar_eigenvalues' ###
-                                'tolerance' : float
-                                        Maximum fractional difference that two eigenvalues can have
-                                        if their eigenvectors are to be grouped into one eigenvector.
-                        
-                        ### Required for 'mode'='blocks_of_n' ###
-                                'n' : int
-                                        Number of eigenvectors to be grouped together in each group.
-                                        
-        n_eigen_values : None | int
-                Number of eigenvalues/vectors that should be used in calculations. `None` means
-                to use all of them.
-
-        
-# RETURNS #
-
-        Nothing, but the object will hold the single spectrum analysis of the
-        array 'a' in self.X_ssa
-        </p></div>
+    <div><p>Set up initial values of useful constants</p>
+<p># ARGUMENTS #</p>
+<blockquote>
+<dl class="rst-docutils">
+<dt>a <span class="classifier-delimiter">:</span> <span class="rst-classifier">[nx] | [nx,ny]</span></dt>
+<dd>Array to operate on, should be 1D or 2D.</dd>
+<dt>w_shape <span class="classifier-delimiter">:</span> <span class="rst-classifier">None | int | [wx] | [wx, wy]</span></dt>
+<dd>Window shape to use for SSA, no array is actually created
+from this shape, it's used as indices to loops etc. If not given,
+will use a.shape//4 as window size</dd>
+<dt>svd_strategy <span class="classifier-delimiter">:</span> <span class="rst-classifier">'eigval' | 'numpy'</span></dt>
+<dd>How should we calculate single value decomposition, 'eigval' is
+fastest and uses least memory so it's normally the best choice.</dd>
+<dt>rev_mapping <span class="classifier-delimiter">:</span> <span class="rst-classifier">'fft' | 'direct'</span></dt>
+<dd>How should we reverse the embedding? 'fft' is fastest so normally best.</dd>
+<dt>grouping <span class="classifier-delimiter">:</span> <span class="rst-classifier">dict[str, Any]</span></dt>
+<dd><p class="rst-first">How should we group the tarjectory matricies? Values other than
+'elementary' do not give exact results. Some modes require extra arguments
+detailed below:</p>
+<dl class="rst-docutils rst-last">
+<dt>## Required Keys ##</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>'mode' <span class="classifier-delimiter">:</span> <span class="rst-classifier">'elementary'</span></dt>
+<dd><blockquote class="rst-first">
+<div class="rst-line-block">
+<div class="rst-line">'pairs'</div>
+<div class="rst-line">'pairs_after_first'</div>
+<div class="rst-line">'similar_eigenvalues'</div>
+<div class="rst-line">'blocks_of_n'</div>
+</div>
+</blockquote>
+<p class="rst-last">Required to set the mode, default is 'elementary'. Values other than
+'elementary' do not give exact results. Some values require extra
+keys.</p>
+</dd>
+<dt>### Required for 'mode'='similar_eigenvalues' ###</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>'tolerance' <span class="classifier-delimiter">:</span> <span class="rst-classifier">float</span></dt>
+<dd>Maximum fractional difference that two eigenvalues can have
+if their eigenvectors are to be grouped into one eigenvector.</dd>
+</dl>
+</dd>
+<dt>### Required for 'mode'='blocks_of_n' ###</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>'n' <span class="classifier-delimiter">:</span> <span class="rst-classifier">int</span></dt>
+<dd>Number of eigenvectors to be grouped together in each group.</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dt>n_eigen_values <span class="classifier-delimiter">:</span> <span class="rst-classifier">None | int</span></dt>
+<dd>Number of eigenvalues/vectors that should be used in calculations. <code>None</code> means
+to use all of them.</dd>
+</dl>
+</blockquote>
+<p># RETURNS #</p>
+<blockquote>
+Nothing, but the object will hold the single spectrum analysis of the
+array 'a' in self.X_ssa</blockquote>
+</div>
   </div>
 </div><div class="basemethod">
   
@@ -1476,7 +1493,7 @@
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Peform embedding of our data, a, into the trajectory matrix, self.X.</p></div>
+    <div><p>Peform embedding of our data, a, into the trajectory matrix, self.X.</p></div>
   </div>
 </div><div class="basemethod">
   
@@ -1500,17 +1517,24 @@
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Define how the eigentriples (evals, evecs, fvecs) should be grouped.
-
-# ARGUMENTS #
-        mode : str
-                How the grouping will be performed
-        **kwargs : Dict[str,Any]
-                Data required depending upon mode, see SSA.__init__ docstring for details
-
-# RETURNS #
-        grouping : list[list[int]]
-                List of indices that will make up each group.</p></div>
+    <div><p>Define how the eigentriples (evals, evecs, fvecs) should be grouped.</p>
+<dl class="rst-docutils">
+<dt># ARGUMENTS #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>mode <span class="classifier-delimiter">:</span> <span class="rst-classifier">str</span></dt>
+<dd>How the grouping will be performed</dd>
+<dt>**kwargs <span class="classifier-delimiter">:</span> <span class="rst-classifier">Dict[str,Any]</span></dt>
+<dd>Data required depending upon mode, see SSA.__init__ docstring for details</dd>
+</dl>
+</dd>
+<dt># RETURNS #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>grouping <span class="classifier-delimiter">:</span> <span class="rst-classifier">list[list[int]]</span></dt>
+<dd>List of indices that will make up each group.</dd>
+</dl>
+</dd>
+</dl>
+</div>
   </div>
 </div><div class="basemethod">
   
@@ -1534,24 +1558,27 @@
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Perform the actual grouping of decomposed elements
-
-Takes lists of indices from `self.grouping`, and sums decomposed elements with those indices
+    <div><p>Perform the actual grouping of decomposed elements</p>
+<p>Takes lists of indices from <code>self.grouping</code>, and sums decomposed elements with those indices
 i.e., self.grouping=[[0], [1,2,3], [4,5,6,7], [9]]
-then grouped components are X_g = [ X_0, X_1+X_2+X_3, X_4+X_5+X_6+X_7, X_9]
-
-# ARGUMENTS #
-        None, but uses `self.X_decomp`, `self.u`, `self.s`, `self.v_star`, `self.grouping`, `self.d`, `self.m`
-
-# RETURNS #
-        X_g : Array_3D
-                Grouped matrixes
-        u_g : Array_2D
-                Grouped left singular vectors
-        v_star_g : Array_2D
-                Grouped right singular vectors
-        s_g : Array_2D
-                Grouped singular values</p></div>
+then grouped components are X_g = [ X_0, X_1+X_2+X_3, X_4+X_5+X_6+X_7, X_9]</p>
+<dl class="rst-docutils">
+<dt># ARGUMENTS #</dt>
+<dd>None, but uses <code>self.X_decomp</code>, <code>self.u</code>, <code>self.s</code>, <code>self.v_star</code>, <code>self.grouping</code>, <code>self.d</code>, <code>self.m</code></dd>
+<dt># RETURNS #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>X_g <span class="classifier-delimiter">:</span> <span class="rst-classifier">Array_3D</span></dt>
+<dd>Grouped matrixes</dd>
+<dt>u_g <span class="classifier-delimiter">:</span> <span class="rst-classifier">Array_2D</span></dt>
+<dd>Grouped left singular vectors</dd>
+<dt>v_star_g <span class="classifier-delimiter">:</span> <span class="rst-classifier">Array_2D</span></dt>
+<dd>Grouped right singular vectors</dd>
+<dt>s_g <span class="classifier-delimiter">:</span> <span class="rst-classifier">Array_2D</span></dt>
+<dd>Grouped singular values</dd>
+</dl>
+</dd>
+</dl>
+</div>
   </div>
 </div><div class="basemethod">
   
@@ -1575,7 +1602,7 @@ then grouped components are X_g = [ X_0, X_1+X_2+X_3, X_4+X_5+X_6+X_7, X_9]
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Plot all details of SSA. Makes lots of plots</p></div>
+    <div><p>Plot all details of SSA. Makes lots of plots</p></div>
   </div>
 </div><div class="basemethod">
   
@@ -1599,7 +1626,7 @@ then grouped components are X_g = [ X_0, X_1+X_2+X_3, X_4+X_5+X_6+X_7, X_9]
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Plots grouped decomposed trajectory matrix of SSA</p></div>
+    <div><p>Plots grouped decomposed trajectory matrix of SSA</p></div>
   </div>
 </div><div class="basemethod">
   
@@ -1623,7 +1650,7 @@ then grouped components are X_g = [ X_0, X_1+X_2+X_3, X_4+X_5+X_6+X_7, X_9]
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Plots grouped decomposed trajectory matrix of SSA</p></div>
+    <div><p>Plots grouped decomposed trajectory matrix of SSA</p></div>
   </div>
 </div><div class="basemethod">
   
@@ -1647,7 +1674,7 @@ then grouped components are X_g = [ X_0, X_1+X_2+X_3, X_4+X_5+X_6+X_7, X_9]
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Plots eigenvectors (left singular vectors) of SSA</p></div>
+    <div><p>Plots eigenvectors (left singular vectors) of SSA</p></div>
   </div>
 </div><div class="basemethod">
   
@@ -1671,7 +1698,7 @@ then grouped components are X_g = [ X_0, X_1+X_2+X_3, X_4+X_5+X_6+X_7, X_9]
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Plots factorvectors (right singular vectors) of SSA</p></div>
+    <div><p>Plots factorvectors (right singular vectors) of SSA</p></div>
   </div>
 </div><div class="basemethod">
   
@@ -1695,7 +1722,7 @@ then grouped components are X_g = [ X_0, X_1+X_2+X_3, X_4+X_5+X_6+X_7, X_9]
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Plots an overview of the SSA results</p></div>
+    <div><p>Plots an overview of the SSA results</p></div>
   </div>
 </div><div class="basemethod">
   
@@ -1719,7 +1746,7 @@ then grouped components are X_g = [ X_0, X_1+X_2+X_3, X_4+X_5+X_6+X_7, X_9]
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Plots SVD used in SSA</p></div>
+    <div><p>Plots SVD used in SSA</p></div>
   </div>
 </div><div class="basemethod">
   
@@ -1743,7 +1770,7 @@ then grouped components are X_g = [ X_0, X_1+X_2+X_3, X_4+X_5+X_6+X_7, X_9]
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Plots decomposed trajectory matrix of SSA</p></div>
+    <div><p>Plots decomposed trajectory matrix of SSA</p></div>
   </div>
 </div><div class="basemethod">
   
@@ -1767,7 +1794,7 @@ then grouped components are X_g = [ X_0, X_1+X_2+X_3, X_4+X_5+X_6+X_7, X_9]
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Plots grouped decomposed trajectory matrix of SSA</p></div>
+    <div><p>Plots grouped decomposed trajectory matrix of SSA</p></div>
   </div>
 </div><div class="basemethod">
   
@@ -1791,11 +1818,16 @@ then grouped components are X_g = [ X_0, X_1+X_2+X_3, X_4+X_5+X_6+X_7, X_9]
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Reverses the embedding map, faster than the direct method but less accurate. Is almost always good enough.
-
-# RETURNS #
-        X_ssa : Array_2D | Array_3D
-                2D (for 1D input data) or 3D (for 2D input data) singular spectrum analysis components. First index is the component number.</p></div>
+    <div><p>Reverses the embedding map, faster than the direct method but less accurate. Is almost always good enough.</p>
+<dl class="rst-docutils">
+<dt># RETURNS #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>X_ssa <span class="classifier-delimiter">:</span> <span class="rst-classifier">Array_2D | Array_3D</span></dt>
+<dd>2D (for 1D input data) or 3D (for 2D input data) singular spectrum analysis components. First index is the component number.</dd>
+</dl>
+</dd>
+</dl>
+</div>
   </div>
 </div><div class="basemethod">
   
@@ -1819,11 +1851,16 @@ then grouped components are X_g = [ X_0, X_1+X_2+X_3, X_4+X_5+X_6+X_7, X_9]
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Reverses the embedding map. This version is slow but more accurate, use quasi_hankelisation instead in most applications
-
-# RETURNS #
-        X_ssa : Array_2D | Array_3D
-                2D (for 1D input data) or 3D (for 2D input data) singular spectrum analysis components. First index is the component number.</p></div>
+    <div><p>Reverses the embedding map. This version is slow but more accurate, use quasi_hankelisation instead in most applications</p>
+<dl class="rst-docutils">
+<dt># RETURNS #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>X_ssa <span class="classifier-delimiter">:</span> <span class="rst-classifier">Array_2D | Array_3D</span></dt>
+<dd>2D (for 1D input data) or 3D (for 2D input data) singular spectrum analysis components. First index is the component number.</dd>
+</dl>
+</dd>
+</dl>
+</div>
   </div>
 </div><div class="baseinstancevariable">
   
@@ -2246,7 +2283,7 @@ then grouped components are X_g = [ X_0, X_1+X_2+X_3, X_4+X_5+X_6+X_7, X_9]
     <div class="container">
       <a href="index.html">API Documentation</a> for aopp_obs_toolchain::aopp_deconv_tool,
     generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a>
-      24.3.3 at 2024-08-13 13:40:11.
+      24.3.3 at 2024-08-13 13:58:58.
     </div>
     
     <script src="ajax.js" type="text/javascript"></script>

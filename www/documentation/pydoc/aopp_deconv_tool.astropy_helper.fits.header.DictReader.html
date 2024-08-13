@@ -1,0 +1,1187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+          "DTD/xhtml1-strict.dtd">
+<html>
+  
+
+  <head>
+    
+    <title>aopp_deconv_tool.astropy_helper.fits.header.DictReader</title>
+    <meta name="generator" content="pydoctor 24.3.3"> 
+        
+    </meta>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1 maximum-scale=1" />
+    <link rel="stylesheet" type="text/css" href="apidocs.css" />
+    <link rel="stylesheet" type="text/css" href="readthedocstheme.css" />
+    <link rel="stylesheet" type="text/css" href="extra.css" />
+</head>
+
+  <body>
+
+    
+
+    <nav class="navbar navbar-default mainnavbar">
+      
+  
+  <div class="container-fluid">
+
+
+    <div class="navbar-header">
+      
+      <div class="navlinks">
+        <span class="navbar-brand">
+          aopp_obs_toolchain::aopp_deconv_tool <a href="index.html">API Documentation</a>
+        </span>
+
+        <a href="moduleIndex.html">
+          Modules
+        </a>
+
+        <a href="classIndex.html">
+          Classes
+        </a>
+
+        <a href="nameIndex.html">
+          Names
+        </a>
+
+        <div id="search-box-container">
+          <div class="input-group">
+            <input id="search-box" type="search" name="search-query" placeholder="Search..." aria-label="Search" minlength="2" class="form-control" autocomplete="off" />
+            
+            <span class="input-group-btn">
+              <a style="display: none;" class="btn btn-default" id="search-clear-button" title="Clear" onclick="clearSearch()"><img src="fonts/x-circle.svg" alt="Clear" /></a>
+              <a class="btn btn-default" id="search-help-button" title="Help" onclick="toggleSearchHelpText()"><img src="fonts/info.svg" alt="Help" /></a>
+            </span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+    
+        <!-- Side navigation -->
+      <div class="sidebarcontainer">
+        <nav class="sidebar">
+  
+
+  <div>
+
+      <div class="thingTitle">
+        <span>Class</span>
+        <code class="thisobject"><a href="aopp_deconv_tool.astropy_helper.fits.header.DictReader.html" class="internal-link" title="This class"><wbr></wbr>Dict<wbr></wbr>Reader</a></code> 
+      </div>
+      
+      <div>
+        
+
+        
+         
+
+        
+        
+
+        <div class="childrenKindTitle">Methods</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#find_max_pkey_n" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.find_max_pkey_n">find<wbr></wbr>_max<wbr></wbr>_pkey<wbr></wbr>_n</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#remove_pkeys" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.remove_pkeys">remove<wbr></wbr>_pkeys</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#__init__" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.__init__">__init__</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#__iter__" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.__iter__">__iter__</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_add_kv_to_fits_dict" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader._add_kv_to_fits_dict">_add<wbr></wbr>_kv<wbr></wbr>_to<wbr></wbr>_fits<wbr></wbr>_dict</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_to_fits_format" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader._to_fits_format">_to<wbr></wbr>_fits<wbr></wbr>_format</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_to_fits_hierarch_format" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader._to_fits_hierarch_format">_to<wbr></wbr>_fits<wbr></wbr>_hierarch<wbr></wbr>_format</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        
+         
+
+        <div class="childrenKindTitle">Attributes</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#adict" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.adict">adict</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#fits_dict" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.fits_dict">fits<wbr></wbr>_dict</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#key_count" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.key_count">key<wbr></wbr>_count</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#mode" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.mode">mode</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#prefix" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.prefix">prefix</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_key_count_start" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader._key_count_start">_key<wbr></wbr>_count<wbr></wbr>_start</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        
+         
+        
+      </div>
+  </div><div>
+
+      <div class="thingTitle">
+        <span>Module</span>
+        <code><a href="aopp_deconv_tool.astropy_helper.fits.header.html" class="internal-link" title="The parent of this class">header</a></code> 
+      </div>
+      
+      <div>
+        
+
+        
+         
+
+        <div class="childrenKindTitle">Classes</div>
+        <ul>
+    
+    <li class=" thisobject">
+        
+        
+        
+            <div class="itemName expandableItem">
+                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId970"> 
+                    
+                </input>
+
+                <label class="lbl-toggle notExpandable" for="">
+                    
+                    
+                </label>
+
+                <code><a href="aopp_deconv_tool.astropy_helper.fits.header.DictReader.html" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader"><wbr></wbr>Dict<wbr></wbr>Reader</a></code>
+
+                <div class="expandableContent">
+                    <div>
+        
+
+        
+         
+
+        
+        
+
+        <div class="childrenKindTitle">Methods</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#find_max_pkey_n" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.find_max_pkey_n">find<wbr></wbr>_max<wbr></wbr>_pkey<wbr></wbr>_n</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#remove_pkeys" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.remove_pkeys">remove<wbr></wbr>_pkeys</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#__init__" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.__init__">__init__</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#__iter__" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.__iter__">__iter__</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_add_kv_to_fits_dict" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader._add_kv_to_fits_dict">_add<wbr></wbr>_kv<wbr></wbr>_to<wbr></wbr>_fits<wbr></wbr>_dict</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_to_fits_format" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader._to_fits_format">_to<wbr></wbr>_fits<wbr></wbr>_format</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_to_fits_hierarch_format" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader._to_fits_hierarch_format">_to<wbr></wbr>_fits<wbr></wbr>_hierarch<wbr></wbr>_format</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        
+         
+
+        <div class="childrenKindTitle">Attributes</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#adict" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.adict">adict</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#fits_dict" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.fits_dict">fits<wbr></wbr>_dict</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#key_count" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.key_count">key<wbr></wbr>_count</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#mode" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.mode">mode</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#prefix" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.prefix">prefix</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_key_count_start" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader._key_count_start">_key<wbr></wbr>_count<wbr></wbr>_start</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        
+         
+        
+      </div>
+                </div>
+            </div>
+            
+        
+
+        
+
+    </li>
+</ul>
+
+        <div class="childrenKindTitle">Functions</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.astropy_helper.fits.header.html#get_all_axes" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.get_all_axes">get<wbr></wbr>_all<wbr></wbr>_axes</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.astropy_helper.fits.header.html#get_axes_ordering" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.get_axes_ordering">get<wbr></wbr>_axes<wbr></wbr>_ordering</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.astropy_helper.fits.header.html#get_axes_unit_string" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.get_axes_unit_string">get<wbr></wbr>_axes<wbr></wbr>_unit<wbr></wbr>_string</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.astropy_helper.fits.header.html#get_celestial_axes" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.get_celestial_axes">get<wbr></wbr>_celestial<wbr></wbr>_axes</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.astropy_helper.fits.header.html#get_iwc_matrix" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.get_iwc_matrix">get<wbr></wbr>_iwc<wbr></wbr>_matrix</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.astropy_helper.fits.header.html#get_key_fmt_max" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.get_key_fmt_max">get<wbr></wbr>_key<wbr></wbr>_fmt<wbr></wbr>_max</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.astropy_helper.fits.header.html#get_polarisation_axes" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.get_polarisation_axes">get<wbr></wbr>_polarisation<wbr></wbr>_axes</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.astropy_helper.fits.header.html#get_spectral_axes" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.get_spectral_axes">get<wbr></wbr>_spectral<wbr></wbr>_axes</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.astropy_helper.fits.header.html#get_time_axes" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.get_time_axes">get<wbr></wbr>_time<wbr></wbr>_axes</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.astropy_helper.fits.header.html#get_wcs_axis_key_1d" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.get_wcs_axis_key_1d">get<wbr></wbr>_wcs<wbr></wbr>_axis<wbr></wbr>_key<wbr></wbr>_1d</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.astropy_helper.fits.header.html#get_wcs_axis_key_2d" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.get_wcs_axis_key_2d">get<wbr></wbr>_wcs<wbr></wbr>_axis<wbr></wbr>_key<wbr></wbr>_2d</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.astropy_helper.fits.header.html#get_wcs_header_keys" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.get_wcs_header_keys">get<wbr></wbr>_wcs<wbr></wbr>_header<wbr></wbr>_keys</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.astropy_helper.fits.header.html#get_wcs_of_axes" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.get_wcs_of_axes">get<wbr></wbr>_wcs<wbr></wbr>_of<wbr></wbr>_axes</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.astropy_helper.fits.header.html#get_world_coords_of_axis" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.get_world_coords_of_axis">get<wbr></wbr>_world<wbr></wbr>_coords<wbr></wbr>_of<wbr></wbr>_axis</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.astropy_helper.fits.header.html#is_CDi_j_present" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.is_CDi_j_present">is_<wbr></wbr>CDi_j_present</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.astropy_helper.fits.header.html#remove_key_fmt" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.remove_key_fmt">remove<wbr></wbr>_key<wbr></wbr>_fmt</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.astropy_helper.fits.header.html#set_axes_transform" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.set_axes_transform">set<wbr></wbr>_axes<wbr></wbr>_transform</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.astropy_helper.fits.header.html#set_iwc_matrix" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.set_iwc_matrix">set<wbr></wbr>_iwc<wbr></wbr>_matrix</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        
+         
+
+        <div class="childrenKindTitle">Variables</div>
+        <ul>
+    
+    <li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.astropy_helper.fits.header.html#_lgr" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header._lgr">_lgr</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        
+         
+        
+      </div>
+  </div>
+
+</nav>
+        <!-- No sidebar toggle for read the docs theme, the sidebar is always
+          visible when the screen is width enough.
+        -->
+      </div>
+
+    </nav>
+    
+    <div class="container-fluid">
+
+      <div id="main" class="">
+        
+
+        
+
+        <div id="search-results-container" style="display: none;">
+        
+          <div id="search-buttons">
+            <span class="label label-default" id="search-docstrings-button">
+            <label class="checkbox-inline">
+              <input type="checkbox" id="toggle-search-in-docstrings-checkbox" value="false" onclick="toggleSearchInDocstrings()">
+                search in docstrings
+              </input>
+            </label>
+            </span>
+            
+          </div>
+          
+          <noscript>
+              <h1>Cannot search: JavaScript is not supported/enabled in your browser.</h1>
+          </noscript>
+  
+          <div class="hint" id="search-help-box">
+            <p class="rst-last">
+        
+              Search bar offers the following options:
+              <ul>   
+                  <li>
+                    <strong>Term presence.</strong> The below example searches for documents that 
+                      must contain “foo”, might contain “bar” and must not contain “baz”: <code>+foo bar -baz</code>
+                  </li> 
+  
+                  <li>
+                    <strong>Wildcards.</strong> The below example searches for documents with words beginning with “foo”: <code>foo*</code>
+                  </li> 
+  
+                  <li>
+                    <strong>Search in specific fields.</strong> The following search matches all objects 
+                    in "twisted.mail" that matches “search”: <code>+qname:twisted.mail.* +search</code>
+  
+                    <p>
+                      Possible fields: 'name', 'qname' (fully qualified name), 'docstring', and 'kind'.
+                      Last two fields are only applicable if "search in docstrings" is enabled.
+                    </p>
+                  </li>
+  
+                  <li>
+                    <strong>Fuzzy matches.</strong> The following search matches all documents 
+                    that have a word within 1 edit distance of “foo”: <code>foo~1</code>
+                  </li>
+              </ul>
+  
+            </p>
+          </div>
+  
+          <div id="search-status"> </div>
+  
+          <div class="warning" id="search-warn-box" style="display: none;">
+            <p class="rst-last"><span id="search-warn"></span></p>
+          </div>
+  
+          <table id="search-results">
+            <!-- Filled dynamically by JS -->
+          </table>
+          
+          <div style="margin-top: 8px;">
+            <p>Results provided by <a href="https://lunrjs.com">Lunr.js</a></p>
+          </div>
+        </div>
+
+        <div class="page-header">
+          <h1 class="class"><code><code><a href="index.html" class="internal-link">aopp_deconv_tool</a></code><wbr></wbr>.<code><a href="aopp_deconv_tool.astropy_helper.html" class="internal-link" title="aopp_deconv_tool.astropy_helper">astropy_helper</a></code><wbr></wbr>.<code><a href="aopp_deconv_tool.astropy_helper.fits.html" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits">fits</a></code><wbr></wbr>.<code><a href="aopp_deconv_tool.astropy_helper.fits.header.html" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header">header</a></code><wbr></wbr>.<code><a href="aopp_deconv_tool.astropy_helper.fits.header.DictReader.html" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader">DictReader</a></code></code></h1>
+          <div id="showPrivate">
+            <button class="btn btn-link" onclick="togglePrivate()">Toggle Private API</button>
+          </div>
+        </div>
+
+        <div class="categoryHeader">
+          class documentation
+        </div>
+
+        <div class="extrasDocstring">
+          <p class="class-signature"><code><span class="py-keyword">class</span> <span class="py-defname">DictReader</span>:</code></p><p>Constructor: <code><a href="#__init__" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.__init__">DictReader(adict, mode, prefix, pkey_count_start)</a></code></p>
+          <p><a href="classIndex.html#aopp_deconv_tool.astropy_helper.fits.header.DictReader">View In Hierarchy</a></p>
+        </div>
+
+        <div class="moduleDocstring">
+          <div><p>Put a dictionary into a format that we can insert into a FITS header file.
+Make all uppercase, replace dots with spaces, turn everything into a string
+and hope it's not over 80 characters long. Will need to use HIERARCH keys
+to have long parameter names, see
+<a class="rst-external rst-reference" href="https://fits.gsfc.nasa.gov/fits_standard.html" target="_top">https://fits.gsfc.nasa.gov/fits_standard.html</a></p>
+<p>Also we should combine dictionaries so that we have a flat structure, one
+way to do this is to concatenate the keys for member dictionaries with the
+parent dictionary, i.e:</p>
+<blockquote>
+{"some.key" : {"child_key_1" : X1, "child_key_2": X2}}</blockquote>
+<dl class="rst-docutils">
+<dt>becomes</dt>
+<dd>{"some.key.child_key_1" : X1, "some.key.child_key_2": X2}</dd>
+<dt>and is turned into a FITS header like</dt>
+<dd>HIERARCH SOME KEY CHILD_KEY_1 = "X1"
+HIERARCH SOME KEY CHILD_KEY_2 = "X2"</dd>
+</dl>
+<p>If we need to we can split header entries into a "name" and "value" format,
+e.g., the above example would become:</p>
+<blockquote>
+PKEY1   = some.key.child_key_1
+PVAL1   = "X1"
+PKEY2   = some.key.child_key_2
+PVAL1   = "X2"</blockquote>
+</div>
+        </div>
+
+        <div id="splitTables">
+          <table class="children sortable" id="id26">
+  
+  
+  <tr class="staticmethod">
+    
+    <td>Static Method</td>
+    <td><code><a href="#find_max_pkey_n" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.find_max_pkey_n">find<wbr></wbr>_max<wbr></wbr>_pkey<wbr></wbr>_n</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="staticmethod">
+    
+    <td>Static Method</td>
+    <td><code><a href="#remove_pkeys" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.remove_pkeys">remove<wbr></wbr>_pkeys</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#__init__" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.__init__">__init__</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#__iter__" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.__iter__">__iter__</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#adict" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.adict">adict</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#fits_dict" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.fits_dict">fits<wbr></wbr>_dict</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#key_count" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.key_count">key<wbr></wbr>_count</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#mode" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.mode">mode</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#prefix" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.prefix">prefix</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method private">
+    
+    <td>Method</td>
+    <td><code><a href="#_add_kv_to_fits_dict" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader._add_kv_to_fits_dict">_add<wbr></wbr>_kv<wbr></wbr>_to<wbr></wbr>_fits<wbr></wbr>_dict</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method private">
+    
+    <td>Method</td>
+    <td><code><a href="#_to_fits_format" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader._to_fits_format">_to<wbr></wbr>_fits<wbr></wbr>_format</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method private">
+    
+    <td>Method</td>
+    <td><code><a href="#_to_fits_hierarch_format" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader._to_fits_hierarch_format">_to<wbr></wbr>_fits<wbr></wbr>_hierarch<wbr></wbr>_format</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_key_count_start" class="internal-link" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader._key_count_start">_key<wbr></wbr>_count<wbr></wbr>_start</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr>
+</table>
+          
+
+            
+        </div>
+
+        <div id="childList">
+          <div class="basestaticmethod">
+  
+  
+  <a name="aopp_deconv_tool.astropy_helper.fits.header.DictReader.find_max_pkey_n">
+    
+  </a>
+  <a name="find_max_pkey_n">
+    
+  </a>
+  <div class="functionHeader">
+    
+    @staticmethod<br />
+    <span class="py-keyword">def</span> <span class="py-defname">find_max_pkey_n</span><span class="function-signature">(hdr, n_max=1000)</span>:
+    
+    <a class="headerLink" href="#find_max_pkey_n" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.find_max_pkey_n">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="basestaticmethod">
+  
+  
+  <a name="aopp_deconv_tool.astropy_helper.fits.header.DictReader.remove_pkeys">
+    
+  </a>
+  <a name="remove_pkeys">
+    
+  </a>
+  <div class="functionHeader">
+    
+    @staticmethod<br />
+    <span class="py-keyword">def</span> <span class="py-defname">remove_pkeys</span><span class="function-signature">(hdr, n_max=1000)</span>:
+    
+    <a class="headerLink" href="#remove_pkeys" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.remove_pkeys">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.astropy_helper.fits.header.DictReader.__init__">
+    
+  </a>
+  <a name="__init__">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">__init__</span><span class="function-signature">(self, adict: <code>dict</code>, mode: <code>str</code> = <span class="rst-variable-quote">'</span><span class="rst-variable-string">standard</span><span class="rst-variable-quote">'</span>, prefix: <code>str</code> = None, pkey_count_start: <code>int</code> = 0)</span>:
+    
+    <a class="headerLink" href="#__init__" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.__init__">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.astropy_helper.fits.header.DictReader.__iter__">
+    
+  </a>
+  <a name="__iter__">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">__iter__</span><span class="function-signature">(self)</span>:
+    
+    <a class="headerLink" href="#__iter__" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.__iter__">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.astropy_helper.fits.header.DictReader.adict">
+    
+  </a>
+  <a name="adict">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">adict</span> =
+    
+    <a class="headerLink" href="#adict" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.adict">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.astropy_helper.fits.header.DictReader.fits_dict">
+    
+  </a>
+  <a name="fits_dict">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">fits_dict</span>: <code>dict</code> =
+    
+    <a class="headerLink" href="#fits_dict" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.fits_dict">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.astropy_helper.fits.header.DictReader.key_count">
+    
+  </a>
+  <a name="key_count">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">key_count</span> =
+    
+    <a class="headerLink" href="#key_count" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.key_count">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.astropy_helper.fits.header.DictReader.mode">
+    
+  </a>
+  <a name="mode">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">mode</span> =
+    
+    <a class="headerLink" href="#mode" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.mode">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.astropy_helper.fits.header.DictReader.prefix">
+    
+  </a>
+  <a name="prefix">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">prefix</span> =
+    
+    <a class="headerLink" href="#prefix" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader.prefix">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="basemethod private">
+  
+  
+  <a name="aopp_deconv_tool.astropy_helper.fits.header.DictReader._add_kv_to_fits_dict">
+    
+  </a>
+  <a name="_add_kv_to_fits_dict">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">_add_kv_to_fits_dict</span><span class="function-signature">(self, k, v)</span>:
+    
+    <a class="headerLink" href="#_add_kv_to_fits_dict" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader._add_kv_to_fits_dict">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="basemethod private">
+  
+  
+  <a name="aopp_deconv_tool.astropy_helper.fits.header.DictReader._to_fits_format">
+    
+  </a>
+  <a name="_to_fits_format">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">_to_fits_format</span><span class="function-signature">(self, bdict, prefix=None)</span>:
+    
+    <a class="headerLink" href="#_to_fits_format" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader._to_fits_format">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="basemethod private">
+  
+  
+  <a name="aopp_deconv_tool.astropy_helper.fits.header.DictReader._to_fits_hierarch_format">
+    
+  </a>
+  <a name="_to_fits_hierarch_format">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">_to_fits_hierarch_format</span><span class="function-signature">(self, bdict, prefix=None)</span>:
+    
+    <a class="headerLink" href="#_to_fits_hierarch_format" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader._to_fits_hierarch_format">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.astropy_helper.fits.header.DictReader._key_count_start">
+    
+  </a>
+  <a name="_key_count_start">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_key_count_start</span> =
+    
+    <a class="headerLink" href="#_key_count_start" title="aopp_deconv_tool.astropy_helper.fits.header.DictReader._key_count_start">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div>
+        </div>
+      
+      </div>
+    </div>
+
+    <footer class="navbar navbar-default">
+    <hr />
+    
+    
+    <div class="container">
+      <a href="index.html">API Documentation</a> for aopp_obs_toolchain::aopp_deconv_tool,
+    generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a>
+      24.3.3 at 2024-08-13 13:58:58.
+    </div>
+    
+    <script src="ajax.js" type="text/javascript"></script>
+    <script src="searchlib.js" type="text/javascript"></script>
+    <script src="search.js" type="text/javascript"></script>
+  
+  </footer>
+  
+    <script src="pydoctor.js" type="text/javascript"></script>
+
+  </body>
+</html>

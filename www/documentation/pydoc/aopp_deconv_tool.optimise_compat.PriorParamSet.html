@@ -302,11 +302,11 @@
         
         
             <div class="itemName expandableItem">
-                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4647"> 
+                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4793"> 
                     
                 </input>
 
-                <label class="lbl-toggle" for="expandableItemId4647">
+                <label class="lbl-toggle" for="expandableItemId4793">
                     
                     
                 </label>
@@ -328,11 +328,11 @@
         
         
             <div class="itemName expandableItem">
-                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4648"> 
+                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4794"> 
                     
                 </input>
 
-                <label class="lbl-toggle" for="expandableItemId4648">
+                <label class="lbl-toggle" for="expandableItemId4794">
                     
                     
                 </label>
@@ -615,11 +615,11 @@
         
         
             <div class="itemName expandableItem">
-                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4649"> 
+                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4795"> 
                     
                 </input>
 
-                <label class="lbl-toggle" for="expandableItemId4649">
+                <label class="lbl-toggle" for="expandableItemId4795">
                     
                     
                 </label>
@@ -757,7 +757,7 @@
         
         
             <div class="itemName expandableItem">
-                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4650"> 
+                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4796"> 
                     
                 </input>
 
@@ -1135,11 +1135,11 @@
         </div>
 
         <div class="moduleDocstring">
-          <div><p class="pre">A collection of PriorParam instances, used to define the fitting region for a fitting function.</p></div>
+          <div><p>A collection of PriorParam instances, used to define the fitting region for a fitting function.</p></div>
         </div>
 
         <div id="splitTables">
-          <table class="children sortable" id="id123">
+          <table class="children sortable" id="id129">
   
   
   <tr class="staticmethod">
@@ -1171,12 +1171,12 @@
     
     <td>Method</td>
     <td><code><a href="#append" class="internal-link" title="aopp_deconv_tool.optimise_compat.PriorParamSet.append">append</a></code></td>
-    <td>Adds a PriorParam to the set </td>
+    <td>Adds a PriorParam to the set</td>
   </tr><tr class="method">
     
     <td>Method</td>
     <td><code><a href="#apply_to_callable" class="internal-link" title="aopp_deconv_tool.optimise_compat.PriorParamSet.apply_to_callable">apply<wbr></wbr>_to<wbr></wbr>_callable</a></code></td>
-    <td>Given some callable `acallable`, that accepts `arg_names`. Call it with the values for those arguments provided in `variable_param_values`, `const_param_values`, `defaults`, `not_found_value`. Where that list is in order of preference (e...</td>
+    <td>Given some callable <code>acallable</code>, that accepts <code>arg_names</code>. Call it with the values for those arguments provided in <code>variable_param_values</code>, <code>const_param_values</code>, <code>defaults</code>, <code>not_found_value</code>. Where that list is in order of preference (e...</td>
   </tr><tr class="method">
     
     <td>Method</td>
@@ -1186,12 +1186,12 @@
     
     <td>Method</td>
     <td><code><a href="#wrap_callable_for_scipy_parameter_order" class="internal-link" title="aopp_deconv_tool.optimise_compat.PriorParamSet.wrap_callable_for_scipy_parameter_order">wrap<wbr></wbr>_callable<wbr></wbr>_for<wbr></wbr>_scipy<wbr></wbr>_parameter<wbr></wbr>_order</a></code></td>
-    <td>Put in a callable with some arguments `callable(arg1, arg2, arg3,...)`, returns a callable  that packs all variable params as the first argument, and all const params as the other arguments.</td>
+    <td>Put in a callable with some arguments <code>callable(arg1, arg2, arg3,...)</code>, returns a callable that packs all variable params as the first argument, and all const params as the other arguments.</td>
   </tr><tr class="method">
     
     <td>Method</td>
     <td><code><a href="#wrap_callable_for_ultranest_parameter_order" class="internal-link" title="aopp_deconv_tool.optimise_compat.PriorParamSet.wrap_callable_for_ultranest_parameter_order">wrap<wbr></wbr>_callable<wbr></wbr>_for<wbr></wbr>_ultranest<wbr></wbr>_parameter<wbr></wbr>_order</a></code></td>
-    <td>Put in a callable with some arguments `callable(arg1, arg2, arg3,...)`, returns a callable  that packs all params as the first argument.</td>
+    <td>Put in a callable with some arguments <code>callable(arg1, arg2, arg3,...)</code>, returns a callable that packs all params as the first argument.</td>
   </tr><tr class="instancevariable">
     
     <td>Instance Variable</td>
@@ -1262,13 +1262,18 @@
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Returns the argument names of the passed callable, if the callable has a "arg_names" attribute, returns that otherwise uses the inspect module.
-
-# ARGUMENTS #
-        acallable : Callable
-                Some callable to get the argument names of
-        arg_names : None | list[str,...]
-                If not None, returns this instead of doing any work. Useful if you know exactly what the argument names of the callable are.</p></div>
+    <div><p>Returns the argument names of the passed callable, if the callable has a "arg_names" attribute, returns that otherwise uses the inspect module.</p>
+<dl class="rst-docutils">
+<dt># ARGUMENTS #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>acallable <span class="classifier-delimiter">:</span> <span class="rst-classifier">Callable</span></dt>
+<dd>Some callable to get the argument names of</dd>
+<dt>arg_names <span class="classifier-delimiter">:</span> <span class="rst-classifier">None | list[str,...]</span></dt>
+<dd>If not None, returns this instead of doing any work. Useful if you know exactly what the argument names of the callable are.</dd>
+</dl>
+</dd>
+</dl>
+</div>
   </div>
 </div><div class="basemethod">
   
@@ -1292,7 +1297,7 @@
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Retrieves a parameter by name or index</p></div>
+    <div><p>Retrieves a parameter by name or index</p></div>
   </div>
 </div><div class="basemethod">
   
@@ -1388,7 +1393,7 @@
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Adds a PriorParam to the set </p></div>
+    <div><p>Adds a PriorParam to the set</p></div>
   </div>
 </div><div class="basemethod">
   
@@ -1412,11 +1417,11 @@
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Given some callable `acallable`, that accepts `arg_names`. Call it with the values for those arguments provided in `variable_param_values`,
-`const_param_values`, `defaults`, `not_found_value`. Where that list is in order of preference (e.g., an argument in both `const_param_values` and `defaults`
-will have the value specified in `const_param_values`.
-
-If `arg_names` is None, will try and infer the argument names of `acallable` via `self.get_arg_names_of_callable()`.</p></div>
+    <div><p>Given some callable <code>acallable</code>, that accepts <code>arg_names</code>. Call it with the values for those arguments provided in <code>variable_param_values</code>,
+<code>const_param_values</code>, <code>defaults</code>, <code>not_found_value</code>. Where that list is in order of preference (e.g., an argument in both <code>const_param_values</code> and <code>defaults</code>
+will have the value specified in <code>const_param_values</code>.</p>
+<p>If <code>arg_names</code> is None, will try and infer the argument names of <code>acallable</code> via <code>self.get_arg_names_of_callable()</code>.</p>
+</div>
   </div>
 </div><div class="basemethod">
   
@@ -1440,7 +1445,7 @@ If `arg_names` is None, will try and infer the argument names of `acallable` via
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Gets a linear transform from some input domain to some output domain for a set of parameter names</p></div>
+    <div><p>Gets a linear transform from some input domain to some output domain for a set of parameter names</p></div>
   </div>
 </div><div class="basemethod">
   
@@ -1464,22 +1469,27 @@ If `arg_names` is None, will try and infer the argument names of `acallable` via
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Put in a callable with some arguments `callable(arg1, arg2, arg3,...)`, returns a callable 
-that packs all variable params as the first argument, and all const params as the other arguments.
-
-i.e., 
-accepts callable: 
-        `callable(arg1, arg2, arg3, arg4, ...)`
-returns callable: 
-        `callable((arg1,arg3,...), arg2, arg4, ...)`
-
-# RETURNS #
-        new_callable
-                A wrapper that accepts all variable parameters as the first argument, and all constant parameters as the other arguments
-        var_params
-                A list of the variable parameters in the first argument of `new_callable`, in the order they are present in the first argument
-        const_params
-                A list of the constant parameters that make up the rest of the arguments to `new_callable`, in the order they are present in the argument list.</p></div>
+    <div><p>Put in a callable with some arguments <code>callable(arg1, arg2, arg3,...)</code>, returns a callable
+that packs all variable params as the first argument, and all const params as the other arguments.</p>
+<p>i.e.,
+accepts callable:</p>
+<blockquote>
+<code>callable(arg1, arg2, arg3, arg4, ...)</code></blockquote>
+<dl class="rst-docutils">
+<dt>returns callable:</dt>
+<dd><code>callable((arg1,arg3,...), arg2, arg4, ...)</code></dd>
+<dt># RETURNS #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>new_callable</dt>
+<dd>A wrapper that accepts all variable parameters as the first argument, and all constant parameters as the other arguments</dd>
+<dt>var_params</dt>
+<dd>A list of the variable parameters in the first argument of <code>new_callable</code>, in the order they are present in the first argument</dd>
+<dt>const_params</dt>
+<dd>A list of the constant parameters that make up the rest of the arguments to <code>new_callable</code>, in the order they are present in the argument list.</dd>
+</dl>
+</dd>
+</dl>
+</div>
   </div>
 </div><div class="basemethod">
   
@@ -1503,23 +1513,30 @@ returns callable:
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Put in a callable with some arguments `callable(arg1, arg2, arg3,...)`, returns a callable 
-that packs all params as the first argument.
-
-i.e., 
-accepts callable: 
-        `callable(arg1, arg2, arg3, arg4, ...)`
-
-returns callable: 
-        `callable(
-                (arg1,arg3, arg2, arg4, ...)
-        )`
-
-# RETURNS #
-        new_callable
-                Wrapper that accepts arguments as a single tuple
-        param_names
-                Parameters names in the order they go into `new_callable`</p></div>
+    <div><p>Put in a callable with some arguments <code>callable(arg1, arg2, arg3,...)</code>, returns a callable
+that packs all params as the first argument.</p>
+<p>i.e.,
+accepts callable:</p>
+<blockquote>
+<code>callable(arg1, arg2, arg3, arg4, ...)</code></blockquote>
+<dl class="rst-docutils">
+<dt>returns callable:</dt>
+<dd><dl class="rst-docutils rst-first">
+<dt>`callable(</dt>
+<dd>(arg1,arg3, arg2, arg4, ...)</dd>
+</dl>
+<p class="rst-last">)`</p>
+</dd>
+<dt># RETURNS #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>new_callable</dt>
+<dd>Wrapper that accepts arguments as a single tuple</dd>
+<dt>param_names</dt>
+<dd>Parameters names in the order they go into <code>new_callable</code></dd>
+</dl>
+</dd>
+</dl>
+</div>
   </div>
 </div><div class="baseinstancevariable">
   
@@ -1638,7 +1655,7 @@ returns callable:
   </div>
   <div class="functionBody">
     
-    <div><p class="pre">The names of all paramters</p></div>
+    <div><p>The names of all paramters</p></div>
     
   </div>
 </div><div class="baseproperty">
@@ -1662,7 +1679,7 @@ returns callable:
   </div>
   <div class="functionBody">
     
-    <div><p class="pre">The names of the constant parameters</p></div>
+    <div><p>The names of the constant parameters</p></div>
     
   </div>
 </div><div class="baseproperty">
@@ -1686,7 +1703,7 @@ returns callable:
   </div>
   <div class="functionBody">
     
-    <div><p class="pre">Returns a dictionary of the constant parameter names and values</p></div>
+    <div><p>Returns a dictionary of the constant parameter names and values</p></div>
     
   </div>
 </div><div class="baseproperty">
@@ -1710,7 +1727,7 @@ returns callable:
   </div>
   <div class="functionBody">
     
-    <div><p class="pre">The names of the variable parameters</p></div>
+    <div><p>The names of the variable parameters</p></div>
     
   </div>
 </div>
@@ -1726,7 +1743,7 @@ returns callable:
     <div class="container">
       <a href="index.html">API Documentation</a> for aopp_obs_toolchain::aopp_deconv_tool,
     generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a>
-      24.3.3 at 2024-08-13 13:40:11.
+      24.3.3 at 2024-08-13 13:58:58.
     </div>
     
     <script src="ajax.js" type="text/javascript"></script>

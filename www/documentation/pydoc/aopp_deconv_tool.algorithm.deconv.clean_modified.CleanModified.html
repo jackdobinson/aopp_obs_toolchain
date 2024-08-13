@@ -681,7 +681,7 @@
         
         
             <div class="itemName expandableItem">
-                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId402"> 
+                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId412"> 
                     
                 </input>
 
@@ -1412,50 +1412,53 @@
         </div>
 
         <div class="moduleDocstring">
-          <div><p class="pre">A modified verison of the CLEAN algorithm, designed to account for extended emission.
-
-# ARGUMENTS #
-        n_iter : int = 1000
-                Number of iterations to perform
-        loop_gain : float = 0.02
-                Fraction of emission that could be accounted for by a PSF added to components with each iteration.
-                Higher values are faster but unstable
-        threshold : float = 0.3
-                Fraction of maximum brightness of residual above which pixels will be included in CLEAN step, if 
-                negative will use the "maximum fractional difference otsu threshold". 0.3 is a  good default value, 
-                if stippling becomes an issue, reduce or set to a negative value. Lower positive numbers will 
-                require more iterations, but give a more "accurate" result.
-        n_positive_iter : int = 0
-                Number of iterations to do that only "adds" emission, before switching to "adding and subtracting" 
-                emission.
-        noise_std : float = 1E-1
-                Estimate of the deviation of the noise present in the observation
-        rms_frac_threshold : float = 1E-3
-                Fraction of original RMS of residual at which iteration is stopped, lower values continue iteration 
-                for longer.
-        fabs_frac_threshold : float = 1E-3
-                Fraction of original Absolute Brightest Pixel of residual at which iteration is stopped, lower 
-                values continue iteration for longer.
-        max_stat_increase : float = np.inf
-                Maximum fractional increase of a statistic before terminating
-        min_frac_stat_delta : float = 1E-3
-                Minimum fractional standard deviation of statistics before assuming no progress is being made and 
-                terminating iteration.
-        give_best_result : bool = True
-                If True, will return the best (measured by statistics) result instead of final result.
-
-# RETURNS #
-        A "CleanModified" instance. Run the model using the __call__(...) method.
-        e.g.
-        ```
-        from aopp_deconv_tool.algorithm.deconv.clean_modified import CleanModified
-        
-        deconvolver = CleanModified()
-        ...
-        deconv_components, deconv_residual, deconv_iters = deconvolver(processed_obs, normed_psf)
-        
-        ```
-        See `aopp_deconv_tool.deconvolve` for a full example.</p></div>
+          <div><p>A modified verison of the CLEAN algorithm, designed to account for extended emission.</p>
+<dl class="rst-docutils">
+<dt># ARGUMENTS #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>n_iter <span class="classifier-delimiter">:</span> <span class="rst-classifier">int = 1000</span></dt>
+<dd>Number of iterations to perform</dd>
+<dt>loop_gain <span class="classifier-delimiter">:</span> <span class="rst-classifier">float = 0.02</span></dt>
+<dd>Fraction of emission that could be accounted for by a PSF added to components with each iteration.
+Higher values are faster but unstable</dd>
+<dt>threshold <span class="classifier-delimiter">:</span> <span class="rst-classifier">float = 0.3</span></dt>
+<dd>Fraction of maximum brightness of residual above which pixels will be included in CLEAN step, if
+negative will use the "maximum fractional difference otsu threshold". 0.3 is a  good default value,
+if stippling becomes an issue, reduce or set to a negative value. Lower positive numbers will
+require more iterations, but give a more "accurate" result.</dd>
+<dt>n_positive_iter <span class="classifier-delimiter">:</span> <span class="rst-classifier">int = 0</span></dt>
+<dd>Number of iterations to do that only "adds" emission, before switching to "adding and subtracting"
+emission.</dd>
+<dt>noise_std <span class="classifier-delimiter">:</span> <span class="rst-classifier">float = 1E-1</span></dt>
+<dd>Estimate of the deviation of the noise present in the observation</dd>
+<dt>rms_frac_threshold <span class="classifier-delimiter">:</span> <span class="rst-classifier">float = 1E-3</span></dt>
+<dd>Fraction of original RMS of residual at which iteration is stopped, lower values continue iteration
+for longer.</dd>
+<dt>fabs_frac_threshold <span class="classifier-delimiter">:</span> <span class="rst-classifier">float = 1E-3</span></dt>
+<dd>Fraction of original Absolute Brightest Pixel of residual at which iteration is stopped, lower
+values continue iteration for longer.</dd>
+<dt>max_stat_increase <span class="classifier-delimiter">:</span> <span class="rst-classifier">float = np.inf</span></dt>
+<dd>Maximum fractional increase of a statistic before terminating</dd>
+<dt>min_frac_stat_delta <span class="classifier-delimiter">:</span> <span class="rst-classifier">float = 1E-3</span></dt>
+<dd>Minimum fractional standard deviation of statistics before assuming no progress is being made and
+terminating iteration.</dd>
+<dt>give_best_result <span class="classifier-delimiter">:</span> <span class="rst-classifier">bool = True</span></dt>
+<dd>If True, will return the best (measured by statistics) result instead of final result.</dd>
+</dl>
+</dd>
+<dt># RETURNS #</dt>
+<dd><p class="rst-first">A "CleanModified" instance. Run the model using the __call__(...) method.
+e.g.
+```
+from aopp_deconv_tool.algorithm.deconv.clean_modified import CleanModified</p>
+<p>deconvolver = CleanModified()
+...
+deconv_components, deconv_residual, deconv_iters = deconvolver(processed_obs, normed_psf)</p>
+<p class="rst-last">```
+See <code><a href="aopp_deconv_tool.deconvolve.html" class="internal-link">aopp_deconv_tool.deconvolve</a></code> for a full example.</p>
+</dd>
+</dl>
+</div>
         </div>
 
         <div id="splitTables">
@@ -1631,7 +1634,7 @@
     
     <td>Instance Variable</td>
     <td><code><a href="#_pixel_threshold" class="internal-link" title="aopp_deconv_tool.algorithm.deconv.clean_modified.CleanModified._pixel_threshold">_pixel<wbr></wbr>_threshold</a></code></td>
-    <td>label_map, n_labels = sp.ndimage.label(self._selected_map) # order labels by number of pixels they contain                                  ordered_labels = list(range(1,n_labels+1)) # label 0 is background ordered_labels...</td>
+    <td>label_map, n_labels = sp.ndimage.label(self._selected_map) # order labels by number of pixels they contain</td>
   </tr><tr class="instancevariable private">
     
     <td>Instance Variable</td>
@@ -1695,7 +1698,7 @@
     
     <td>Method</td>
     <td><code><a href="aopp_deconv_tool.algorithm.deconv.base.Base.html#__call__" class="internal-link" title="aopp_deconv_tool.algorithm.deconv.base.Base.__call__">__call__</a></code></td>
-    <td>Apply algorithm to `obs` and `psf`, parameters are set at instantiation, but can be overwritten for a single call by passing new values via `**kwargs`. Initialises and  iterates the algorithm. Subclasses should overload the `_init_algorithm` and `_iter` methods.</td>
+    <td>Apply algorithm to <code>obs</code> and <code>psf</code>, parameters are set at instantiation, but can be overwritten for a single call by passing new values via <code>**kwargs</code>. Initialises and iterates the algorithm. Subclasses should overload the ...</td>
   </tr><tr class="basemethod">
     
     <td>Method</td>
@@ -2160,7 +2163,7 @@
   </div>
   <div class="docstring functionBody">
     <div class="interfaceinfo">overrides <code><a href="aopp_deconv_tool.algorithm.deconv.base.Base.html#_init_algorithm" class="internal-link">aopp_deconv_tool.algorithm.deconv.base.Base._init_algorithm</a></code></div>
-    <div><p class="pre">Perform any initialisation that needs to be done before the algorithm runs.</p></div>
+    <div><p>Perform any initialisation that needs to be done before the algorithm runs.</p></div>
   </div>
 </div><div class="basemethod private">
   
@@ -2184,7 +2187,7 @@
   </div>
   <div class="docstring functionBody">
     <div class="interfaceinfo">overrides <code><a href="aopp_deconv_tool.algorithm.deconv.base.Base.html#_iter" class="internal-link">aopp_deconv_tool.algorithm.deconv.base.Base._iter</a></code></div>
-    <div><p class="pre">Perform a single iteration of the algorithm.</p></div>
+    <div><p>Perform a single iteration of the algorithm.</p></div>
   </div>
 </div><div class="basemethod private">
   
@@ -2567,16 +2570,19 @@
   </div>
   <div class="functionBody">
     
-    <div><p class="pre">label_map, n_labels = sp.ndimage.label(self._selected_map)
-# order labels by number of pixels they contain
-                                
-ordered_labels = list(range(1,n_labels+1)) # label 0 is background
-ordered_labels.sort(key = lambda x: np.count_nonzero(label_map == x), reverse=True)
-
-self._selected_map *= False
-for i in range(n_labels):
-        if np.count_nonzero(label_map == ordered_labels[i]) &gt;= min_region_size:
-                self._selected_map |= (label_map == ordered_labels[i])</p></div>
+    <div><p>label_map, n_labels = sp.ndimage.label(self._selected_map)
+# order labels by number of pixels they contain</p>
+<p>ordered_labels = list(range(1,n_labels+1)) # label 0 is background
+ordered_labels.sort(key = lambda x: np.count_nonzero(label_map == x), reverse=True)</p>
+<p>self._selected_map *= False
+for i in range(n_labels):</p>
+<blockquote>
+<dl class="rst-docutils">
+<dt>if np.count_nonzero(label_map == ordered_labels[i]) &gt;= min_region_size:</dt>
+<dd>self._selected_map |= (label_map == ordered_labels[i])</dd>
+</dl>
+</blockquote>
+</div>
     
   </div>
 </div><div class="baseinstancevariable private">
@@ -2832,7 +2838,7 @@ for i in range(n_labels):
     <div class="container">
       <a href="index.html">API Documentation</a> for aopp_obs_toolchain::aopp_deconv_tool,
     generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a>
-      24.3.3 at 2024-08-13 13:40:11.
+      24.3.3 at 2024-08-13 13:58:58.
     </div>
     
     <script src="ajax.js" type="text/javascript"></script>

@@ -295,7 +295,7 @@
         
         
             <div class="itemName expandableItem">
-                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId394"> 
+                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId404"> 
                     
                 </input>
 
@@ -640,10 +640,10 @@
         </div>
 
         <div class="moduleDocstring">
-          <div><p class="pre">Implements basic iteration of an algorithm.
-
-Algorithm parameters are set on class construction, data to operate upon is
-set when an instance is called.</p></div>
+          <div><p>Implements basic iteration of an algorithm.</p>
+<p>Algorithm parameters are set on class construction, data to operate upon is
+set when an instance is called.</p>
+</div>
         </div>
 
         <div id="splitTables">
@@ -654,7 +654,7 @@ set when an instance is called.</p></div>
     
     <td>Method</td>
     <td><code><a href="#__call__" class="internal-link" title="aopp_deconv_tool.algorithm.deconv.base.Base.__call__">__call__</a></code></td>
-    <td>Apply algorithm to `obs` and `psf`, parameters are set at instantiation, but can be overwritten for a single call by passing new values via `**kwargs`. Initialises and  iterates the algorithm. Subclasses should overload the `_init_algorithm` and `_iter` methods.</td>
+    <td>Apply algorithm to <code>obs</code> and <code>psf</code>, parameters are set at instantiation, but can be overwritten for a single call by passing new values via <code>**kwargs</code>. Initialises and iterates the algorithm. Subclasses should overload the ...</td>
   </tr><tr class="method">
     
     <td>Method</td>
@@ -765,25 +765,32 @@ set when an instance is called.</p></div>
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Apply algorithm to `obs` and `psf`, parameters are set at instantiation, but can
-be overwritten for a single call by passing new values via `**kwargs`. Initialises and 
-iterates the algorithm. Subclasses should overload the `_init_algorithm` and `_iter` methods.
-
-# Arguments #
-        obs : np.ndarray
-                Numpy array containing observation data to deconvolve
-        psf : np.ndarray
-                Numpy array containing the point-spread-function for the observation.
-        **kwargs
-                Other passed arguments are assumed to overwrite algorithm parameters during a singular invocation.
-
-# Returns #
-        self._components : np.ndarray
-                Components found that make up the deconvolved image, ideally these components convolved with `psf` will give `obs`
-        self._residual : np.ndarray
-                The residual between the convolution of `self._components with` `psf`, and `obs`
-        self._i : int
-                The number of iterations performed before terminating</p></div>
+    <div><p>Apply algorithm to <code>obs</code> and <code>psf</code>, parameters are set at instantiation, but can
+be overwritten for a single call by passing new values via <code>**kwargs</code>. Initialises and
+iterates the algorithm. Subclasses should overload the <code><a href="#_init_algorithm" class="internal-link" title="aopp_deconv_tool.algorithm.deconv.base.Base._init_algorithm">_init_algorithm</a></code> and <code><a href="#_iter" class="internal-link" title="aopp_deconv_tool.algorithm.deconv.base.Base._iter">_iter</a></code> methods.</p>
+<dl class="rst-docutils">
+<dt># Arguments #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>obs <span class="classifier-delimiter">:</span> <span class="rst-classifier">np.ndarray</span></dt>
+<dd>Numpy array containing observation data to deconvolve</dd>
+<dt>psf <span class="classifier-delimiter">:</span> <span class="rst-classifier">np.ndarray</span></dt>
+<dd>Numpy array containing the point-spread-function for the observation.</dd>
+<dt>**kwargs</dt>
+<dd>Other passed arguments are assumed to overwrite algorithm parameters during a singular invocation.</dd>
+</dl>
+</dd>
+<dt># Returns #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>self._components <span class="classifier-delimiter">:</span> <span class="rst-classifier">np.ndarray</span></dt>
+<dd>Components found that make up the deconvolved image, ideally these components convolved with <code>psf</code> will give <code>obs</code></dd>
+<dt>self._residual <span class="classifier-delimiter">:</span> <span class="rst-classifier">np.ndarray</span></dt>
+<dd>The residual between the convolution of <code>self._components with</code> <code>psf</code>, and <code>obs</code></dd>
+<dt>self._i <span class="classifier-delimiter">:</span> <span class="rst-classifier">int</span></dt>
+<dd>The number of iterations performed before terminating</dd>
+</dl>
+</dd>
+</dl>
+</div>
   </div>
 </div><div class="basemethod">
   
@@ -1023,7 +1030,7 @@ iterates the algorithm. Subclasses should overload the `_init_algorithm` and `_i
   </div>
   <div class="docstring functionBody">
     <div class="interfaceinfo">overridden in <code><a href="aopp_deconv_tool.algorithm.deconv.clean_modified.CleanModified.html" class="internal-link">aopp_deconv_tool.algorithm.deconv.clean_modified.CleanModified</a></code>, <code><a href="aopp_deconv_tool.algorithm.deconv.lucy_richardson.LucyRichardson.html" class="internal-link">aopp_deconv_tool.algorithm.deconv.lucy_richardson.LucyRichardson</a></code></div>
-    <div><p class="pre">Perform any initialisation that needs to be done before the algorithm runs.</p></div>
+    <div><p>Perform any initialisation that needs to be done before the algorithm runs.</p></div>
   </div>
 </div><div class="basemethod private">
   
@@ -1047,7 +1054,7 @@ iterates the algorithm. Subclasses should overload the `_init_algorithm` and `_i
   </div>
   <div class="docstring functionBody">
     <div class="interfaceinfo">overridden in <code><a href="aopp_deconv_tool.algorithm.deconv.clean_modified.CleanModified.html" class="internal-link">aopp_deconv_tool.algorithm.deconv.clean_modified.CleanModified</a></code>, <code><a href="aopp_deconv_tool.algorithm.deconv.lucy_richardson.LucyRichardson.html" class="internal-link">aopp_deconv_tool.algorithm.deconv.lucy_richardson.LucyRichardson</a></code></div>
-    <div><p class="pre">Perform a single iteration of the algorithm.</p></div>
+    <div><p>Perform a single iteration of the algorithm.</p></div>
   </div>
 </div><div class="basemethod private">
   
@@ -1182,7 +1189,7 @@ iterates the algorithm. Subclasses should overload the `_init_algorithm` and `_i
     <div class="container">
       <a href="index.html">API Documentation</a> for aopp_obs_toolchain::aopp_deconv_tool,
     generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a>
-      24.3.3 at 2024-08-13 13:40:11.
+      24.3.3 at 2024-08-13 13:58:58.
     </div>
     
     <script src="ajax.js" type="text/javascript"></script>

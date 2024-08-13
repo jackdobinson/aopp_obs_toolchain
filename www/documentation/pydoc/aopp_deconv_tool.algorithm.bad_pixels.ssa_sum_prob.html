@@ -182,7 +182,7 @@
         
         
             <div class="itemName expandableItem">
-                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId368"> 
+                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId378"> 
                     
                 </input>
 
@@ -454,7 +454,7 @@
     
     <td>Function</td>
     <td><code><a href="#get_bp_mask_from_badness_map" class="internal-link" title="aopp_deconv_tool.algorithm.bad_pixels.ssa_sum_prob.get_bp_mask_from_badness_map">get<wbr></wbr>_bp<wbr></wbr>_mask<wbr></wbr>_from<wbr></wbr>_badness<wbr></wbr>_map</a></code></td>
-    <td>if 'median_prob' in transform_value_as:         value = prob_median_transform_func(value) if 'ppf' in transform_value_as:         cutoff_func = lambda _test, _value: EmpiricalDistribution(_test.ravel())...</td>
+    <td>value = prob_median_transform_func(value)</td>
   </tr><tr class="function">
     
     <td>Function</td>
@@ -469,7 +469,7 @@
     
     <td>Function</td>
     <td><code><a href="#ssa2d_deviations" class="internal-link" title="aopp_deconv_tool.algorithm.bad_pixels.ssa_sum_prob.ssa2d_deviations">ssa2d<wbr></wbr>_deviations</a></code></td>
-    <td>Average standard deviation of a pixel from a region `size` around it. Same as `ssa2d_sum_prob_map` but a bit more efficient (less customisable).</td>
+    <td>Average standard deviation of a pixel from a region <code>size</code> around it. Same as <code><a href="aopp_deconv_tool.algorithm.bad_pixels.ssa_sum_prob.html#ssa2d_sum_prob_map" class="internal-link" title="aopp_deconv_tool.algorithm.bad_pixels.ssa_sum_prob.ssa2d_sum_prob_map">ssa2d_sum_prob_map</a></code> but a bit more efficient (less customisable).</td>
   </tr><tr class="function">
     
     <td>Function</td>
@@ -510,12 +510,15 @@
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">if 'median_prob' in transform_value_as:
-        value = prob_median_transform_func(value)
-if 'ppf' in transform_value_as:
-        cutoff_func = lambda _test, _value: EmpiricalDistribution(_test.ravel()).ppf(_value)
-else:
-        cutoff_func = lambda _test, _value: _value</p></div>
+    <div><p><dl class="rst-docutils">
+<dt>if 'median_prob' in transform_value_as:</dt>
+<dd>value = prob_median_transform_func(value)</dd>
+<dt>if 'ppf' in transform_value_as:</dt>
+<dd>cutoff_func = lambda _test, _value: EmpiricalDistribution(_test.ravel()).ppf(_value)</dd>
+<dt>else:</dt>
+<dd>cutoff_func = lambda _test, _value: _value</dd>
+</dl>
+</p></div>
   </div>
 </div><div class="basefunction">
   
@@ -539,34 +542,47 @@ else:
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Finds a mask for an image based on values in 'test'.
-
-# ARGUMENTS #
-        img : np.ndarray([:,:], type.T1)
-                image to construct mask for (not actually used in calculation, but used in plotting)
-        test : np.ndarray([:,:], type.T2)
-                Array that cutoff will be applied to to find mask
-        value : type.T3
-                Value to calculate cutoff from using 'cutoff_func'
-        show_plots : bool
-                If True, will plot results of mapping.
-        plot_kw : dict
-                Dictionary to pass optional arguments to plots.
-                {       'suptitle' : str
-                                A string to display as the super-title of the plotted figure
-                }
-        cutoff_func : Callable[np.ndarray([:,:],type.T2), type.T3] -&gt; type.T4
-                        = lambda _t, _v: ut.sp.construct_ppf_from(_t.ravel())(_v)
-                A function that calculates the cutoff from 'value'. The cutoff is used
-                to detemine the mask.
-        bp_mask_func : Callable[np.ndarray([:,:],type.T2), type.T4] -&gt; np.ndarray([:,:],bool)
-                        = lambda _t, _c: _t &gt; _c
-                A function that calculates the mask from the test and cutoff (cutoff is calculated
-                from 'cutoff_func')
-                
-# RETURNS #
-        mask : np.ndarray([:,:],bool)
-                A boolean array that can be used to mask 'img'</p></div>
+    <div><p>Finds a mask for an image based on values in 'test'.</p>
+<dl class="rst-docutils">
+<dt># ARGUMENTS #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>img <span class="classifier-delimiter">:</span> <span class="rst-classifier">np.ndarray([:,:], type.T1)</span></dt>
+<dd>image to construct mask for (not actually used in calculation, but used in plotting)</dd>
+<dt>test <span class="classifier-delimiter">:</span> <span class="rst-classifier">np.ndarray([:,:], type.T2)</span></dt>
+<dd>Array that cutoff will be applied to to find mask</dd>
+<dt>value <span class="classifier-delimiter">:</span> <span class="rst-classifier">type.T3</span></dt>
+<dd>Value to calculate cutoff from using 'cutoff_func'</dd>
+<dt>show_plots <span class="classifier-delimiter">:</span> <span class="rst-classifier">bool</span></dt>
+<dd>If True, will plot results of mapping.</dd>
+<dt>plot_kw <span class="classifier-delimiter">:</span> <span class="rst-classifier">dict</span></dt>
+<dd><p class="rst-first">Dictionary to pass optional arguments to plots.
+{       'suptitle' : str</p>
+<blockquote>
+A string to display as the super-title of the plotted figure</blockquote>
+<p class="rst-last">}</p>
+</dd>
+<dt>cutoff_func <span class="classifier-delimiter">:</span> <span class="rst-classifier">Callable[np.ndarray([:,:],type.T2), type.T3] -&gt; type.T4</span></dt>
+<dd><blockquote class="rst-first">
+= lambda _t, _v: ut.sp.construct_ppf_from(_t.ravel())(_v)</blockquote>
+<p class="rst-last">A function that calculates the cutoff from 'value'. The cutoff is used
+to detemine the mask.</p>
+</dd>
+<dt>bp_mask_func <span class="classifier-delimiter">:</span> <span class="rst-classifier">Callable[np.ndarray([:,:],type.T2), type.T4] -&gt; np.ndarray([:,:],bool)</span></dt>
+<dd><blockquote class="rst-first">
+= lambda _t, _c: _t &gt; _c</blockquote>
+<p class="rst-last">A function that calculates the mask from the test and cutoff (cutoff is calculated
+from 'cutoff_func')</p>
+</dd>
+</dl>
+</dd>
+<dt># RETURNS #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>mask <span class="classifier-delimiter">:</span> <span class="rst-classifier">np.ndarray([:,:],bool)</span></dt>
+<dd>A boolean array that can be used to mask 'img'</dd>
+</dl>
+</dd>
+</dl>
+</div>
   </div>
 </div><div class="basefunction">
   
@@ -614,8 +630,8 @@ else:
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Average standard deviation of a pixel from a region `size` around it.
-Same as `ssa2d_sum_prob_map` but a bit more efficient (less customisable).</p></div>
+    <div><p>Average standard deviation of a pixel from a region <code>size</code> around it.
+Same as <code><a href="#ssa2d_sum_prob_map" class="internal-link" title="aopp_deconv_tool.algorithm.bad_pixels.ssa_sum_prob.ssa2d_sum_prob_map">ssa2d_sum_prob_map</a></code> but a bit more efficient (less customisable).</p></div>
   </div>
 </div><div class="basefunction">
   
@@ -639,68 +655,85 @@ Same as `ssa2d_sum_prob_map` but a bit more efficient (less customisable).</p></
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Computes a bad pixel map from an SSA2D object. Concentrates on hot/cold pixels w.r.t background.
-
-Idea is that for a hot/cold pixel, the high frequency components of the SSA decomposition must 
-also be hot/cold. Therefore, the hot/cold pixels will consistently be at the *edges* of the
+    <div><p>Computes a bad pixel map from an SSA2D object. Concentrates on hot/cold pixels w.r.t background.</p>
+<p>Idea is that for a hot/cold pixel, the high frequency components of the SSA decomposition must
+also be hot/cold. Therefore, the hot/cold pixels will consistently be at the <em>edges</em> of the
 pixel probability distribution for the higher frequency SSA components. As high frequency
-SSA components outnumber low frequency SSA components, we can just use all components as 
+SSA components outnumber low frequency SSA components, we can just use all components as
 long as we don't weight them by their eigenvalues (if we do, we should try and be selective
-to only the components where the scale of changes matches the scale of the hot/cold pixels).
-
-For each component of the SSA decomposition, a map is made of how far a given pixel deviates 
+to only the components where the scale of changes matches the scale of the hot/cold pixels).</p>
+<p>For each component of the SSA decomposition, a map is made of how far a given pixel deviates
 from the median (range [-1,1]). The median differences for each component are combined together
 (by mean or weighted mean) to give a 'score' for each pixel. Bad pixels should have scores at the
 extreme ends of the [-1,1] range. A bad pixel map is chosen by taking the absolute value of the score,
-and selecting all pixels whose |score| is larger than a give value.
-
-# ARGUMENTS #
-        ssa
-                An SSA2D object
-        start
-                The first SSA component to include in the probability map
-        stop
-                The last SSA component to include in the probability map.
-                If None, then will include as many SSA components as are present
-        value
-                A float that describes the quantile that denotes a 'bad pixel'
-        strategy : 'prob_frac_from_median' | 'n_std_dev_from_median'
-                How should we define an 'improbable' pixel?
-                        'prob_frac_from_median'
-                                Fraction of probability space a pixel is away from 
-                                the median value
-                        'n_std_dev_from_median'
-                                Number of standard deviations a pixel is away from
-                                the median value
-        show_plots
-                0 = do not show plots
-                1 = show some plots
-                2 = show interim plots
-        transform_value_as
-                List of literal strings that tells us how to tranform the "value"
-                argument after which it is used as the cutoff for a bad pixel.
-                If no options are given, "value" is used as the cutoff directly,
-                i.e., if "value" is 0.99, then only pixels which have a median
-                probability &gt; 0.99 are classified as "bad pixels".
-
-                Options are:
-                        "identity"
-                                Use the value as-is, do not transform it
-                        "median_prob"
-                                Transform "value" using the same function that we use to
-                                change cumulative probabilities of pixels into probability
-                                a pixel is a certain distance from the median.
-                        "ppf"
-                                Transform "value" so that the cutoff is the percentage
-                                point function of the pixel median probabilities. I.e.
-                                if "value" is 0.9, then the cutoff will be set such that
-                                10% of the pixels will be classified as "bad pixels"
-        weight_by_evals
-                If True, will weight each SSA component pixel probability by
-                the component's eigenvalue when averaging into a combined score.
-# RETURNS #
-        bp_mask
-                A bad pixel mask. Pixels to reject are coded as True.</p></div>
+and selecting all pixels whose |score| is larger than a give value.</p>
+<dl class="rst-docutils">
+<dt># ARGUMENTS #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>ssa</dt>
+<dd>An SSA2D object</dd>
+<dt>start</dt>
+<dd>The first SSA component to include in the probability map</dd>
+<dt>stop</dt>
+<dd>The last SSA component to include in the probability map.
+If None, then will include as many SSA components as are present</dd>
+<dt>value</dt>
+<dd>A float that describes the quantile that denotes a 'bad pixel'</dd>
+<dt>strategy <span class="classifier-delimiter">:</span> <span class="rst-classifier">'prob_frac_from_median' | 'n_std_dev_from_median'</span></dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>How should we define an 'improbable' pixel?</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>'prob_frac_from_median'</dt>
+<dd>Fraction of probability space a pixel is away from
+the median value</dd>
+<dt>'n_std_dev_from_median'</dt>
+<dd>Number of standard deviations a pixel is away from
+the median value</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dt>show_plots</dt>
+<dd>0 = do not show plots
+1 = show some plots
+2 = show interim plots</dd>
+<dt>transform_value_as</dt>
+<dd><p class="rst-first">List of literal strings that tells us how to tranform the "value"
+argument after which it is used as the cutoff for a bad pixel.
+If no options are given, "value" is used as the cutoff directly,
+i.e., if "value" is 0.99, then only pixels which have a median
+probability &gt; 0.99 are classified as "bad pixels".</p>
+<dl class="rst-docutils rst-last">
+<dt>Options are:</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>"identity"</dt>
+<dd>Use the value as-is, do not transform it</dd>
+<dt>"median_prob"</dt>
+<dd>Transform "value" using the same function that we use to
+change cumulative probabilities of pixels into probability
+a pixel is a certain distance from the median.</dd>
+<dt>"ppf"</dt>
+<dd>Transform "value" so that the cutoff is the percentage
+point function of the pixel median probabilities. I.e.
+if "value" is 0.9, then the cutoff will be set such that
+10% of the pixels will be classified as "bad pixels"</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dt>weight_by_evals</dt>
+<dd>If True, will weight each SSA component pixel probability by
+the component's eigenvalue when averaging into a combined score.</dd>
+</dl>
+</dd>
+<dt># RETURNS #</dt>
+<dd><dl class="rst-docutils rst-first rst-last">
+<dt>bp_mask</dt>
+<dd>A bad pixel mask. Pixels to reject are coded as True.</dd>
+</dl>
+</dd>
+</dl>
+</div>
   </div>
 </div><div class="basevariable private">
   
@@ -739,7 +772,7 @@ and selecting all pixels whose |score| is larger than a give value.
     <div class="container">
       <a href="index.html">API Documentation</a> for aopp_obs_toolchain::aopp_deconv_tool,
     generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a>
-      24.3.3 at 2024-08-13 13:40:11.
+      24.3.3 at 2024-08-13 13:58:58.
     </div>
     
     <script src="ajax.js" type="text/javascript"></script>

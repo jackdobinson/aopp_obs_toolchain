@@ -182,7 +182,7 @@
         
         
             <div class="itemName expandableItem">
-                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4433"> 
+                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4574"> 
                     
                 </input>
 
@@ -430,11 +430,11 @@
         </div>
 
         <div class="moduleDocstring">
-          <div><p class="pre">ND interpolation for numpy arrays</p></div>
+          <div><p>ND interpolation for numpy arrays</p></div>
         </div>
 
         <div id="splitTables">
-          <table class="children sortable" id="id112">
+          <table class="children sortable" id="id118">
   
   
   <tr class="function">
@@ -497,7 +497,7 @@
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Set masked elements to a constant value</p></div>
+    <div><p>Set masked elements to a constant value</p></div>
   </div>
 </div><div class="basefunction">
   
@@ -545,12 +545,8 @@
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Replaces masked elements with linear interpolation of surrounding values in place.
-
-Arguments:
-        a : np.ndarray
-                A numpy array of pixel data
-        m : np.ndarray</p></div>
+    <div><p>Replaces masked elements with linear interpolation of surrounding values in place.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">a:</span><code>np.ndarray[<wbr></wbr>S[<wbr></wbr>N], <wbr></wbr><a href="#T" class="internal-link" title="aopp_deconv_tool.numpy_helper.array.mask.interp.T">T</a>]</code></td><td class="fieldArgDesc">np.ndarray
+A numpy array of pixel data</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">m:</span><code>np.ndarray[<wbr></wbr>S[<wbr></wbr>N], <wbr></wbr>bool]</code></td><td class="fieldArgDesc">np.ndarray</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">fix<wbr></wbr>_edges:</span><code>bool</code></td><td class="fieldArgDesc"><span class="undocumented">Undocumented</span></td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">**kwargs</span></td><td class="fieldArgDesc"><span class="undocumented">Undocumented</span></td></tr><tr class="fieldStart"><td class="fieldName" colspan="2">Returns</td></tr><tr><td class="fieldArgContainer"><code>np.ndarray[<wbr></wbr>S[<wbr></wbr>N], <wbr></wbr><a href="#T" class="internal-link" title="aopp_deconv_tool.numpy_helper.array.mask.interp.T">T</a>]</code></td><td class="fieldArgDesc"><span class="undocumented">Undocumented</span></td></tr></table></div>
   </div>
 </div><div class="basefunction">
   
@@ -574,24 +570,17 @@ Arguments:
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="pre">Replaces masked elements with mean of surrounding values in place.
-
-Arguments:
-        a : np.ndarray[T]
-                A numpy array of pixel data
-        m : np.ndarray[bool]
-                A mask of the elements of a to replace
-        window : np.ndarray[bool] | tuple[int,...] | int
-                The surrounding values we should use in the mean calculation. NANs
-                and INFs will be ignored. If an `np.ndarray[bool]` will use the
-                True elements as memmbers of the calculation, if a tuple will create
-                a mask by using each element of the tuple as a manhattan distance 
-                from the point whose mean is being calculated, if an integer will
-                use the same manhattan distance for each axis.
-        boundary : str
-                How boundaries are handled, one of ['pacman','const','reflect']
-        const : T
-                Value</p></div>
+    <div><p>Replaces masked elements with mean of surrounding values in place.</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">a:</span><code>np.ndarray[<wbr></wbr>S[<wbr></wbr>N], <wbr></wbr><a href="#T" class="internal-link" title="aopp_deconv_tool.numpy_helper.array.mask.interp.T">T</a>]</code></td><td class="fieldArgDesc">np.ndarray[T]
+A numpy array of pixel data</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">m:</span><code>np.ndarray[<wbr></wbr>S[<wbr></wbr>N], <wbr></wbr>bool]</code></td><td class="fieldArgDesc">np.ndarray[bool]
+A mask of the elements of a to replace</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">window:</span><code>np.ndarray[<wbr></wbr>Q[<wbr></wbr>M], <wbr></wbr>bool] | Q[<wbr></wbr>M] | int</code></td><td class="fieldArgDesc">np.ndarray[bool] | tuple[int,...] | int
+The surrounding values we should use in the mean calculation. NANs
+and INFs will be ignored. If an <code>np.ndarray[bool]</code> will use the
+True elements as memmbers of the calculation, if a tuple will create
+a mask by using each element of the tuple as a manhattan distance
+from the point whose mean is being calculated, if an integer will
+use the same manhattan distance for each axis.</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">boundary:</span><code>str</code></td><td class="fieldArgDesc">str
+How boundaries are handled, one of ['pacman','const','reflect']</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">const:</span><code><a href="#T" class="internal-link" title="aopp_deconv_tool.numpy_helper.array.mask.interp.T">T</a></code></td><td class="fieldArgDesc">T
+Value</td></tr><tr class="fieldStart"><td class="fieldName" colspan="2">Returns</td></tr><tr><td class="fieldArgContainer"><code>np.ndarray[<wbr></wbr>S[<wbr></wbr>N], <wbr></wbr><a href="#T" class="internal-link" title="aopp_deconv_tool.numpy_helper.array.mask.interp.T">T</a>]</code></td><td class="fieldArgDesc"><span class="undocumented">Undocumented</span></td></tr></table></div>
   </div>
 </div><div class="basetypevariable">
   
@@ -654,7 +643,7 @@ Arguments:
     <div class="container">
       <a href="index.html">API Documentation</a> for aopp_obs_toolchain::aopp_deconv_tool,
     generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a>
-      24.3.3 at 2024-08-13 13:40:11.
+      24.3.3 at 2024-08-13 13:58:58.
     </div>
     
     <script src="ajax.js" type="text/javascript"></script>

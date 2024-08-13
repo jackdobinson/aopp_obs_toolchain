@@ -404,4 +404,5 @@ To generate the `pydoctor` documentation:
 
 * Ensure [`pydoctor` is installed](https://pydoctor.readthedocs.io/en/latest/quickstart.html)
 * Use `cd <REPO>` to get the repository directory
-* Run the command `python -m pydoctor ./src/aopp_deconv_tool --project-name aopp_obs_toolchain::aopp_deconv_tool --project-base-dir ./src/aopp_deconv_tool --make-html --docformat plaintext --html-output ./www/documentation/pydoc --sidebar-expand-depth 5 --theme readthedocs`
+* Run the command `python -m pydoctor ./src/aopp_deconv_tool --project-name aopp_obs_toolchain::aopp_deconv_tool --project-base-dir ./src/aopp_deconv_tool --make-html --docformat google --html-output ./www/documentation/pydoc --sidebar-expand-depth 5 --theme readthedocs`
+* view the file `<REPO>/www/documentation/pydoc/index.html` in your browser.
