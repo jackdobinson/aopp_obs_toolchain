@@ -74,15 +74,20 @@ def run(
 		else:
 			background_mask = np.zeros_like(outlier_mask)
 		
+		
+		
 		_lgr.info('Get offsets to centre around centre of mass')
 		roi_mask = psf_data_ops.get_roi_mask(data, axes, threshold, n_largest_regions)
-		com_offsets = psf_data_ops.get_centre_of_mass_offsets(data, axes, roi_mask)
+		center_offsets = psf_data_ops.get_centre_of_mass_offsets(data, axes, roi_mask)
+		#center_offsets = psf_data_ops.get_brightest_pixel_offsets(data, axes, roi_mask)
 	
 		_lgr.info('Recentre everything for easy comparison')
-		normalised_data = psf_data_ops.apply_offsets(data, axes, com_offsets)
-		roi_mask = psf_data_ops.apply_offsets(roi_mask, axes, com_offsets)
-		background_mask = psf_data_ops.apply_offsets(background_mask, axes, com_offsets)
-		outlier_mask = psf_data_ops.apply_offsets(outlier_mask, axes, com_offsets)
+		normalised_data = psf_data_ops.apply_offsets(data, axes, center_offsets)		
+		roi_mask = psf_data_ops.apply_offsets(roi_mask, axes, center_offsets)
+		background_mask = psf_data_ops.apply_offsets(background_mask, axes, center_offsets)
+		outlier_mask = psf_data_ops.apply_offsets(outlier_mask, axes, center_offsets)
+		
+		
 		
 		
 		if trim_to_shape is not None:
@@ -105,6 +110,7 @@ def run(
 		original_sum = np.nansum(normalised_data, axis=axes)
 		with nph.axes.to_start(normalised_data, axes) as (gdata, gaxes):
 			gdata /= original_sum
+		
 		
 		param_dict = {
 			'original_file' : Path(fits_spec.path).name, # record the file we used

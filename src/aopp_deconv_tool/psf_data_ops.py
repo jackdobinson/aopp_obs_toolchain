@@ -3,6 +3,7 @@ Module containing routines that operate on point spread function data
 """
 from typing import Callable, TypeVar, Generic, ParamSpec, TypeVarTuple, Any
 import functools
+import itertools
 import numpy as np
 import scipy as sp
 import scipy.ndimage
@@ -15,7 +16,7 @@ from aopp_deconv_tool.optimise_compat import PriorParamSet
 from aopp_deconv_tool.stats.empirical import EmpiricalDistribution
 
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'INFO')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
 #DEBUGGING
@@ -341,6 +342,7 @@ def get_centre_of_mass_offsets(
 		roi_mask : np.ndarray | None = None,
 	) -> np.ndarray:
 	"""
+	Gets the location of the center of mass along `axes` (not an offset from the `data` center)
 	data : np.ndarray
 		Array to recentre
 	axes : tuple[int,...]
@@ -354,18 +356,57 @@ def get_centre_of_mass_offsets(
 	
 	return com_offsets
 
+def get_brightest_pixel_offsets(
+	data : np.ndarray, 
+		axes : tuple[int,...], 
+		roi_mask : np.ndarray | None = None,
+	) -> np.ndarray:
+	"""
+	Gets the location of the brightest pixel (not an offset from the center)
+	
+	data : np.ndarray
+		Array to recentre
+	axes : tuple[int,...]
+		Axes to get centre of mass and recentre along.
+	roi_mask : np.ndarray | None = None
+		Mask for the region of interest. If present will restrict calculations to this region.
+	"""
+	import matplotlib.pyplot as plt # DEBUGGING
+	
+	data = np.array(data, dtype=data.dtype) # copy data
+	
+	axes_shape = tuple(s for i,s in enumerate(data.shape) if i in axes)
+	not_axes = tuple(i for i in range(data.ndim) if i not in axes)
+	indices = np.indices(data.shape) # shape = (n,s1,s2,s2,...,sn)
+	
+	data[~roi_mask] = np.nan
+	offsets = np.zeros((len(axes), *tuple(s for i,s in enumerate(data.shape) if i not in axes)))
+	for not_idxs in itertools.product(*tuple(range(data.shape[a]) for a in not_axes)):
+	
+		not_idx_iter = iter(not_idxs)
+		not_slices = tuple(next(not_idx_iter) if a in not_axes else slice(None) for a in range(data.ndim))
+		
+		offsets[:,*not_idxs] = tuple(x for x,s in zip(np.unravel_index(np.nanargmax(data[not_slices]), shape=axes_shape), axes_shape))
+		
+	return np.moveaxis(offsets, 0, -1)
+
 def apply_offsets(
 		data : np.ndarray, 
 		axes : tuple[int,...], 
 		offsets : np.ndarray
 	) -> np.ndarray:
 	"""
+	At the moment doesn't actually apply an offset, just shifts the data so the point at `offsets` is now the center.
+	
+	# Arguments #
+	
 	data : np.ndarray
 		Array to recentre
 	axes : tuple[int,...]
 		Axes to get centre of mass and recentre along.
 	offsets : np.ndarray
 		Offsets to apply to data, will shift data's grid by this amount.
+		
 	"""
 	_lgr.debug(f'{data.shape=}')
 	_lgr.debug(f'{axes=}')
@@ -380,7 +421,7 @@ def apply_offsets(
 		# calculate centre of mass
 		#com_idxs = tuple(np.nansum(data[idx]*indices)/np.nansum(data[idx]) for indices in np.indices(data[idx].shape))
 		#centre_to_com_offset = np.array([com_i - s/2 for s, com_i in zip(gdata[idx].shape, com_idxs[idx][::-1])])
-		centre_to_com_offset = np.array([s/2 - com_i for s, com_i in zip(gdata[idx].shape, offsets[idx])])
+		centre_to_com_offset = np.array([s//2 - com_i for s, com_i in zip(gdata[idx].shape, offsets[idx])])
 		_lgr.debug(f'{idx=} {offsets[idx]=} {centre_to_com_offset=}')
 		
 		# regrid so that centre of mass lies on an exact pixel
