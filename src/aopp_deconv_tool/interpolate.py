@@ -6,7 +6,7 @@ Quick tool for interpolating data in a FITS file
 import sys
 from pathlib import Path
 import dataclasses as dc
-from typing import Literal, Callable
+from typing import Literal, Callable, NewType
 import functools
 
 import numpy as np
@@ -38,6 +38,9 @@ import matplotlib.pyplot as plt
 
 import aopp_deconv_tool.cfg.logs
 _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+
+
+type NM = NewType('NM', int)
 
 
 def array_ssa_deviations_interpolate_at_mask(a : np.ndarray, mask : np.ndarray, **kwargs):

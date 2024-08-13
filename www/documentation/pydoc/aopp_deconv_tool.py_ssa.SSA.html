@@ -1,0 +1,2261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+          "DTD/xhtml1-strict.dtd">
+<html>
+  
+
+  <head>
+    
+    <title>aopp_deconv_tool.py_ssa.SSA</title>
+    <meta name="generator" content="pydoctor 24.3.3"> 
+        
+    </meta>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1 maximum-scale=1" />
+    <link rel="stylesheet" type="text/css" href="apidocs.css" />
+    <link rel="stylesheet" type="text/css" href="readthedocstheme.css" />
+    <link rel="stylesheet" type="text/css" href="extra.css" />
+</head>
+
+  <body>
+
+    
+
+    <nav class="navbar navbar-default mainnavbar">
+      
+  
+  <div class="container-fluid">
+
+
+    <div class="navbar-header">
+      
+      <div class="navlinks">
+        <span class="navbar-brand">
+          aopp_obs_toolchain::aopp_deconv_tool <a href="index.html">API Documentation</a>
+        </span>
+
+        <a href="moduleIndex.html">
+          Modules
+        </a>
+
+        <a href="classIndex.html">
+          Classes
+        </a>
+
+        <a href="nameIndex.html">
+          Names
+        </a>
+
+        <div id="search-box-container">
+          <div class="input-group">
+            <input id="search-box" type="search" name="search-query" placeholder="Search..." aria-label="Search" minlength="2" class="form-control" autocomplete="off" />
+            
+            <span class="input-group-btn">
+              <a style="display: none;" class="btn btn-default" id="search-clear-button" title="Clear" onclick="clearSearch()"><img src="fonts/x-circle.svg" alt="Clear" /></a>
+              <a class="btn btn-default" id="search-help-button" title="Help" onclick="toggleSearchHelpText()"><img src="fonts/info.svg" alt="Help" /></a>
+            </span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+    
+        <!-- Side navigation -->
+      <div class="sidebarcontainer">
+        <nav class="sidebar">
+  
+
+  <div>
+
+      <div class="thingTitle">
+        <span>Class</span>
+        <code class="thisobject"><a href="aopp_deconv_tool.py_ssa.SSA.html" class="internal-link" title="This class">SSA</a></code> 
+      </div>
+      
+      <div>
+        
+
+        
+         
+
+        
+        
+
+        <div class="childrenKindTitle">Methods</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#diagsums" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.diagsums">diagsums</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#eigval_svd" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.eigval_svd">eigval<wbr></wbr>_svd</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#__init__" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.__init__">__init__</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#embed" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.embed">embed</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#get_grouping" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.get_grouping">get<wbr></wbr>_grouping</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#group" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.group">group</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#plot_all" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_all">plot<wbr></wbr>_all</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#plot_component_slices" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_component_slices">plot<wbr></wbr>_component<wbr></wbr>_slices</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#plot_components" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_components">plot<wbr></wbr>_components</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#plot_eigenvectors" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_eigenvectors">plot<wbr></wbr>_eigenvectors</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#plot_factorvectors" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_factorvectors">plot<wbr></wbr>_factorvectors</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#plot_ssa" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_ssa">plot<wbr></wbr>_ssa</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#plot_svd" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_svd">plot<wbr></wbr>_svd</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#plot_trajectory_decomp" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_trajectory_decomp">plot<wbr></wbr>_trajectory<wbr></wbr>_decomp</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#plot_trajectory_groups" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_trajectory_groups">plot<wbr></wbr>_trajectory<wbr></wbr>_groups</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#quasi_hankelisation" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.quasi_hankelisation">quasi<wbr></wbr>_hankelisation</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#reverse_mapping" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.reverse_mapping">reverse<wbr></wbr>_mapping</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        
+         
+
+        <div class="childrenKindTitle">Attributes</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#a" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.a">a</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#d" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.d">d</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#grouping" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.grouping">grouping</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#k" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.k">k</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#K" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.K">K</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#l" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.l">l</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#L" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.L">L</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#m" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.m">m</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#n" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.n">n</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#N" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.N">N</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#ndim" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.ndim">ndim</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#s_g" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.s_g">s<wbr></wbr>_g</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#u_g" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.u_g">u<wbr></wbr>_g</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#v_star_g" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.v_star_g">v<wbr></wbr>_star<wbr></wbr>_g</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#X" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.X">X</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#X_decomp" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.X_decomp"><wbr></wbr>X_decomp</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#X_g" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.X_g"><wbr></wbr>X_g</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        
+         
+        
+      </div>
+  </div><div>
+
+      <div class="thingTitle">
+        <span>Module</span>
+        <code><a href="aopp_deconv_tool.py_ssa.html" class="internal-link" title="The parent of this class">py<wbr></wbr>_ssa</a></code> 
+      </div>
+      
+      <div>
+        
+
+        
+         
+
+        <div class="childrenKindTitle">Classes</div>
+        <ul>
+    
+    <li class=" thisobject">
+        
+        
+        
+            <div class="itemName expandableItem">
+                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId5967"> 
+                    
+                </input>
+
+                <label class="lbl-toggle notExpandable" for="">
+                    
+                    
+                </label>
+
+                <code><a href="aopp_deconv_tool.py_ssa.SSA.html" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA">SSA</a></code>
+
+                <div class="expandableContent">
+                    <div>
+        
+
+        
+         
+
+        
+        
+
+        <div class="childrenKindTitle">Methods</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#diagsums" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.diagsums">diagsums</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#eigval_svd" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.eigval_svd">eigval<wbr></wbr>_svd</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#__init__" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.__init__">__init__</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#embed" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.embed">embed</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#get_grouping" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.get_grouping">get<wbr></wbr>_grouping</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#group" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.group">group</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#plot_all" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_all">plot<wbr></wbr>_all</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#plot_component_slices" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_component_slices">plot<wbr></wbr>_component<wbr></wbr>_slices</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#plot_components" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_components">plot<wbr></wbr>_components</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#plot_eigenvectors" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_eigenvectors">plot<wbr></wbr>_eigenvectors</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#plot_factorvectors" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_factorvectors">plot<wbr></wbr>_factorvectors</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#plot_ssa" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_ssa">plot<wbr></wbr>_ssa</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#plot_svd" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_svd">plot<wbr></wbr>_svd</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#plot_trajectory_decomp" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_trajectory_decomp">plot<wbr></wbr>_trajectory<wbr></wbr>_decomp</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#plot_trajectory_groups" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_trajectory_groups">plot<wbr></wbr>_trajectory<wbr></wbr>_groups</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#quasi_hankelisation" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.quasi_hankelisation">quasi<wbr></wbr>_hankelisation</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#reverse_mapping" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.reverse_mapping">reverse<wbr></wbr>_mapping</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        
+         
+
+        <div class="childrenKindTitle">Attributes</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#a" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.a">a</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#d" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.d">d</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#grouping" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.grouping">grouping</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#k" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.k">k</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#K" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.K">K</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#l" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.l">l</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#L" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.L">L</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#m" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.m">m</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#n" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.n">n</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#N" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.N">N</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#ndim" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.ndim">ndim</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#s_g" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.s_g">s<wbr></wbr>_g</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#u_g" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.u_g">u<wbr></wbr>_g</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#v_star_g" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.v_star_g">v<wbr></wbr>_star<wbr></wbr>_g</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#X" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.X">X</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#X_decomp" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.X_decomp"><wbr></wbr>X_decomp</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#X_g" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.X_g"><wbr></wbr>X_g</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        
+         
+        
+      </div>
+                </div>
+            </div>
+            
+        
+
+        
+
+    </li>
+</ul>
+
+        <div class="childrenKindTitle">Functions</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.py_ssa.html#frobenius_inner_prod" class="internal-link" title="aopp_deconv_tool.py_ssa.frobenius_inner_prod">frobenius<wbr></wbr>_inner<wbr></wbr>_prod</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.py_ssa.html#frobenius_norm" class="internal-link" title="aopp_deconv_tool.py_ssa.frobenius_norm">frobenius<wbr></wbr>_norm</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.py_ssa.html#unvectorise_mat" class="internal-link" title="aopp_deconv_tool.py_ssa.unvectorise_mat">unvectorise<wbr></wbr>_mat</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.py_ssa.html#vectorise_mat" class="internal-link" title="aopp_deconv_tool.py_ssa.vectorise_mat">vectorise<wbr></wbr>_mat</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        
+         
+
+        <div class="childrenKindTitle">Variables</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.py_ssa.html#L" class="internal-link" title="aopp_deconv_tool.py_ssa.L">L</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.py_ssa.html#M" class="internal-link" title="aopp_deconv_tool.py_ssa.M">M</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.py_ssa.html#N" class="internal-link" title="aopp_deconv_tool.py_ssa.N">N</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.py_ssa.html#T" class="internal-link" title="aopp_deconv_tool.py_ssa.T">T</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.py_ssa.html#Array_1D" class="internal-link" title="aopp_deconv_tool.py_ssa.Array_1D"><wbr></wbr>Array_1<wbr></wbr>D</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.py_ssa.html#Array_2D" class="internal-link" title="aopp_deconv_tool.py_ssa.Array_2D"><wbr></wbr>Array_2<wbr></wbr>D</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.py_ssa.html#Array_3D" class="internal-link" title="aopp_deconv_tool.py_ssa.Array_3D"><wbr></wbr>Array_3<wbr></wbr>D</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.py_ssa.html#Convolution_Mode_literals" class="internal-link" title="aopp_deconv_tool.py_ssa.Convolution_Mode_literals"><wbr></wbr>Convolution_<wbr></wbr>Mode_literals</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.py_ssa.html#Grouping_Mode_Literals" class="internal-link" title="aopp_deconv_tool.py_ssa.Grouping_Mode_Literals"><wbr></wbr>Grouping_<wbr></wbr>Mode_<wbr></wbr>Literals</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.py_ssa.html#Reverse_Mapping_Strategy_Literals" class="internal-link" title="aopp_deconv_tool.py_ssa.Reverse_Mapping_Strategy_Literals"><wbr></wbr>Reverse_<wbr></wbr>Mapping_<wbr></wbr>Strategy_<wbr></wbr>Literals</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.py_ssa.html#SVD_Strategy_Literals" class="internal-link" title="aopp_deconv_tool.py_ssa.SVD_Strategy_Literals"><wbr></wbr>SVD_<wbr></wbr>Strategy_<wbr></wbr>Literals</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.py_ssa.html#_lgr" class="internal-link" title="aopp_deconv_tool.py_ssa._lgr">_lgr</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        
+         
+        
+      </div>
+  </div>
+
+</nav>
+        <!-- No sidebar toggle for read the docs theme, the sidebar is always
+          visible when the screen is width enough.
+        -->
+      </div>
+
+    </nav>
+    
+    <div class="container-fluid">
+
+      <div id="main" class="">
+        
+
+        
+
+        <div id="search-results-container" style="display: none;">
+        
+          <div id="search-buttons">
+            <span class="label label-default" id="search-docstrings-button">
+            <label class="checkbox-inline">
+              <input type="checkbox" id="toggle-search-in-docstrings-checkbox" value="false" onclick="toggleSearchInDocstrings()">
+                search in docstrings
+              </input>
+            </label>
+            </span>
+            
+          </div>
+          
+          <noscript>
+              <h1>Cannot search: JavaScript is not supported/enabled in your browser.</h1>
+          </noscript>
+  
+          <div class="hint" id="search-help-box">
+            <p class="rst-last">
+        
+              Search bar offers the following options:
+              <ul>   
+                  <li>
+                    <strong>Term presence.</strong> The below example searches for documents that 
+                      must contain “foo”, might contain “bar” and must not contain “baz”: <code>+foo bar -baz</code>
+                  </li> 
+  
+                  <li>
+                    <strong>Wildcards.</strong> The below example searches for documents with words beginning with “foo”: <code>foo*</code>
+                  </li> 
+  
+                  <li>
+                    <strong>Search in specific fields.</strong> The following search matches all objects 
+                    in "twisted.mail" that matches “search”: <code>+qname:twisted.mail.* +search</code>
+  
+                    <p>
+                      Possible fields: 'name', 'qname' (fully qualified name), 'docstring', and 'kind'.
+                      Last two fields are only applicable if "search in docstrings" is enabled.
+                    </p>
+                  </li>
+  
+                  <li>
+                    <strong>Fuzzy matches.</strong> The following search matches all documents 
+                    that have a word within 1 edit distance of “foo”: <code>foo~1</code>
+                  </li>
+              </ul>
+  
+            </p>
+          </div>
+  
+          <div id="search-status"> </div>
+  
+          <div class="warning" id="search-warn-box" style="display: none;">
+            <p class="rst-last"><span id="search-warn"></span></p>
+          </div>
+  
+          <table id="search-results">
+            <!-- Filled dynamically by JS -->
+          </table>
+          
+          <div style="margin-top: 8px;">
+            <p>Results provided by <a href="https://lunrjs.com">Lunr.js</a></p>
+          </div>
+        </div>
+
+        <div class="page-header">
+          <h1 class="class"><code><code><a href="index.html" class="internal-link">aopp_deconv_tool</a></code><wbr></wbr>.<code><a href="aopp_deconv_tool.py_ssa.html" class="internal-link" title="aopp_deconv_tool.py_ssa">py_ssa</a></code><wbr></wbr>.<code><a href="aopp_deconv_tool.py_ssa.SSA.html" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA">SSA</a></code></code></h1>
+          <div id="showPrivate">
+            <button class="btn btn-link" onclick="togglePrivate()">Toggle Private API</button>
+          </div>
+        </div>
+
+        <div class="categoryHeader">
+          class documentation
+        </div>
+
+        <div class="extrasDocstring">
+          <p class="class-signature"><code><span class="py-keyword">class</span> <span class="py-defname">SSA</span>:</code></p><p>Constructor: <code><a href="#__init__" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.__init__">SSA(a, w_shape, svd_strategy, rev_mapping, ...)</a></code></p>
+          <p><a href="classIndex.html#aopp_deconv_tool.py_ssa.SSA">View In Hierarchy</a></p>
+        </div>
+
+        <div class="moduleDocstring">
+          <div><p class="undocumented">Undocumented</p></div>
+        </div>
+
+        <div id="splitTables">
+          <table class="children sortable" id="id177">
+  
+  
+  <tr class="staticmethod">
+    
+    <td>Static Method</td>
+    <td><code><a href="#diagsums" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.diagsums">diagsums</a></code></td>
+    <td>Diagonally sum matrices `a` and `b`. This is practically the same as convolution using FFT.</td>
+  </tr><tr class="staticmethod">
+    
+    <td>Static Method</td>
+    <td><code><a href="#eigval_svd" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.eigval_svd">eigval<wbr></wbr>_svd</a></code></td>
+    <td>Calculate single value decomposition from eigenvalues</td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#__init__" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.__init__">__init__</a></code></td>
+    <td>Set up initial values of useful constants</td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#embed" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.embed">embed</a></code></td>
+    <td>Peform embedding of our data, a, into the trajectory matrix, self.X.</td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#get_grouping" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.get_grouping">get<wbr></wbr>_grouping</a></code></td>
+    <td>Define how the eigentriples (evals, evecs, fvecs) should be grouped.</td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#group" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.group">group</a></code></td>
+    <td>Perform the actual grouping of decomposed elements</td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#plot_all" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_all">plot<wbr></wbr>_all</a></code></td>
+    <td>Plot all details of SSA. Makes lots of plots</td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#plot_component_slices" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_component_slices">plot<wbr></wbr>_component<wbr></wbr>_slices</a></code></td>
+    <td>Plots grouped decomposed trajectory matrix of SSA</td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#plot_components" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_components">plot<wbr></wbr>_components</a></code></td>
+    <td>Plots grouped decomposed trajectory matrix of SSA</td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#plot_eigenvectors" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_eigenvectors">plot<wbr></wbr>_eigenvectors</a></code></td>
+    <td>Plots eigenvectors (left singular vectors) of SSA</td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#plot_factorvectors" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_factorvectors">plot<wbr></wbr>_factorvectors</a></code></td>
+    <td>Plots factorvectors (right singular vectors) of SSA</td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#plot_ssa" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_ssa">plot<wbr></wbr>_ssa</a></code></td>
+    <td>Plots an overview of the SSA results</td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#plot_svd" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_svd">plot<wbr></wbr>_svd</a></code></td>
+    <td>Plots SVD used in SSA</td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#plot_trajectory_decomp" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_trajectory_decomp">plot<wbr></wbr>_trajectory<wbr></wbr>_decomp</a></code></td>
+    <td>Plots decomposed trajectory matrix of SSA</td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#plot_trajectory_groups" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.plot_trajectory_groups">plot<wbr></wbr>_trajectory<wbr></wbr>_groups</a></code></td>
+    <td>Plots grouped decomposed trajectory matrix of SSA</td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#quasi_hankelisation" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.quasi_hankelisation">quasi<wbr></wbr>_hankelisation</a></code></td>
+    <td>Reverses the embedding map, faster than the direct method but less accurate. Is almost always good enough.</td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#reverse_mapping" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.reverse_mapping">reverse<wbr></wbr>_mapping</a></code></td>
+    <td>Reverses the embedding map. This version is slow but more accurate, use quasi_hankelisation instead in most applications</td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#a" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.a">a</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#d" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.d">d</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#grouping" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.grouping">grouping</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#k" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.k">k</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#K" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.K">K</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#l" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.l">l</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#L" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.L">L</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#m" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.m">m</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#n" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.n">n</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#N" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.N">N</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#ndim" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.ndim">ndim</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#s_g" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.s_g">s<wbr></wbr>_g</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#u_g" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.u_g">u<wbr></wbr>_g</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#v_star_g" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.v_star_g">v<wbr></wbr>_star<wbr></wbr>_g</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#X" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.X">X</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#X_decomp" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.X_decomp"><wbr></wbr>X_decomp</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#X_g" class="internal-link" title="aopp_deconv_tool.py_ssa.SSA.X_g"><wbr></wbr>X_g</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr>
+</table>
+          
+
+            
+        </div>
+
+        <div id="childList">
+          <div class="basestaticmethod">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.diagsums">
+    
+  </a>
+  <a name="diagsums">
+    
+  </a>
+  <div class="functionHeader">
+    
+    @staticmethod<br />
+    <span class="py-keyword">def</span> <span class="py-defname">diagsums</span><span class="function-signature">(a: <code><a href="aopp_deconv_tool.py_ssa.html#Array_2D" class="internal-link" title="aopp_deconv_tool.py_ssa.Array_2D">Array_2D</a></code>, b: <code><a href="aopp_deconv_tool.py_ssa.html#Array_2D" class="internal-link" title="aopp_deconv_tool.py_ssa.Array_2D">Array_2D</a></code>, mode: <code><a href="aopp_deconv_tool.py_ssa.html#Convolution_Mode_literals" class="internal-link" title="aopp_deconv_tool.py_ssa.Convolution_Mode_literals">Convolution_Mode_literals</a></code> = <span class="rst-variable-quote">'</span><span class="rst-variable-string">full</span><span class="rst-variable-quote">'</span>, fac: <code>int | float</code> = 1) -&gt; <code><a href="aopp_deconv_tool.py_ssa.html#Array_2D" class="internal-link" title="aopp_deconv_tool.py_ssa.Array_2D">Array_2D</a></code></span>:
+    
+    <a class="headerLink" href="#diagsums" title="aopp_deconv_tool.py_ssa.SSA.diagsums">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="pre">Diagonally sum matrices `a` and `b`. This is practically the same as convolution using FFT.
+
+# ARGUMENTS #
+        a : Array_2D
+        b : Array_2D
+        mode : Convolution_Mode_literals = 'full'
+                Convolution mode to use
+        fac : int | float = 1
+                Factor to multiply convolution by.
+
+# RETURNS #
+        conv : Array_2D
+                Diagonal sum of `a` and `b`</p></div>
+  </div>
+</div><div class="basestaticmethod">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.eigval_svd">
+    
+  </a>
+  <a name="eigval_svd">
+    
+  </a>
+  <div class="functionHeader">
+    
+    @staticmethod<br />
+    <span class="py-keyword">def</span> <span class="py-defname">eigval_svd</span><span class="function-signature">(X: <code><a href="aopp_deconv_tool.py_ssa.html#Array_2D" class="internal-link" title="aopp_deconv_tool.py_ssa.Array_2D">Array_2D</a></code>, n_eigen_values: <code>None | int</code> = None)</span>:
+    
+    <a class="headerLink" href="#eigval_svd" title="aopp_deconv_tool.py_ssa.SSA.eigval_svd">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="pre">Calculate single value decomposition from eigenvalues</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.__init__">
+    
+  </a>
+  <a name="__init__">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">__init__</span><span class="function-signature">(self, a: <code><a href="aopp_deconv_tool.py_ssa.html#Array_1D" class="internal-link" title="aopp_deconv_tool.py_ssa.Array_1D">Array_1D</a> | <a href="aopp_deconv_tool.py_ssa.html#Array_2D" class="internal-link" title="aopp_deconv_tool.py_ssa.Array_2D">Array_2D</a></code>, w_shape: <code>None | int | tuple[<wbr></wbr><a href="aopp_deconv_tool.py_ssa.html#N" class="internal-link" title="aopp_deconv_tool.py_ssa.N">N</a>] | tuple[<wbr></wbr><a href="aopp_deconv_tool.py_ssa.html#N" class="internal-link" title="aopp_deconv_tool.py_ssa.N">N</a>, <wbr></wbr><a href="aopp_deconv_tool.py_ssa.html#M" class="internal-link" title="aopp_deconv_tool.py_ssa.M">M</a>]</code> = None, svd_strategy: <code><a href="aopp_deconv_tool.py_ssa.html#SVD_Strategy_Literals" class="internal-link" title="aopp_deconv_tool.py_ssa.SVD_Strategy_Literals">SVD_Strategy_Literals</a></code> = <span class="rst-variable-quote">'</span><span class="rst-variable-string">eigval</span><span class="rst-variable-quote">'</span>, rev_mapping: <code><a href="aopp_deconv_tool.py_ssa.html#Reverse_Mapping_Strategy_Literals" class="internal-link" title="aopp_deconv_tool.py_ssa.Reverse_Mapping_Strategy_Literals">Reverse_Mapping_Strategy_Literals</a></code> = <span class="rst-variable-quote">'</span><span class="rst-variable-string">fft</span><span class="rst-variable-quote">'</span>, grouping: <code>dict[<wbr></wbr>str, <wbr></wbr>Any]</code> = {<wbr></wbr><span class="rst-variable-quote">'</span><span class="rst-variable-string">mode</span><span class="rst-variable-quote">'</span>: <span class="rst-variable-quote">'</span><span class="rst-variable-string">elementary</span><span class="rst-variable-quote">'</span>}, n_eigen_values: <code>None | int</code> = None)</span>:
+    
+    <a class="headerLink" href="#__init__" title="aopp_deconv_tool.py_ssa.SSA.__init__">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="pre">Set up initial values of useful constants
+
+# ARGUMENTS #
+        
+        a : [nx] | [nx,ny]
+                Array to operate on, should be 1D or 2D. 
+        
+        w_shape : None | int | [wx] | [wx, wy]
+                Window shape to use for SSA, no array is actually created
+                from this shape, it's used as indices to loops etc. If not given,
+                will use a.shape//4 as window size
+        
+        svd_strategy : 'eigval' | 'numpy'
+                How should we calculate single value decomposition, 'eigval' is
+                fastest and uses least memory so it's normally the best choice.
+        
+        rev_mapping : 'fft' | 'direct'
+                How should we reverse the embedding? 'fft' is fastest so normally best.
+        
+        grouping : dict[str, Any]
+                How should we group the tarjectory matricies? Values other than
+                'elementary' do not give exact results. Some modes require extra arguments
+                detailed below:
+                
+                ## Required Keys ##
+                        'mode' : 'elementary' 
+                                                | 'pairs' 
+                                                | 'pairs_after_first' 
+                                                | 'similar_eigenvalues' 
+                                                | 'blocks_of_n'
+                                Required to set the mode, default is 'elementary'. Values other than
+                                'elementary' do not give exact results. Some values require extra
+                                keys.
+                        
+                        ### Required for 'mode'='similar_eigenvalues' ###
+                                'tolerance' : float
+                                        Maximum fractional difference that two eigenvalues can have
+                                        if their eigenvectors are to be grouped into one eigenvector.
+                        
+                        ### Required for 'mode'='blocks_of_n' ###
+                                'n' : int
+                                        Number of eigenvectors to be grouped together in each group.
+                                        
+        n_eigen_values : None | int
+                Number of eigenvalues/vectors that should be used in calculations. `None` means
+                to use all of them.
+
+        
+# RETURNS #
+
+        Nothing, but the object will hold the single spectrum analysis of the
+        array 'a' in self.X_ssa
+        </p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.embed">
+    
+  </a>
+  <a name="embed">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">embed</span><span class="function-signature">(self, a: <code><a href="aopp_deconv_tool.py_ssa.html#Array_1D" class="internal-link" title="aopp_deconv_tool.py_ssa.Array_1D">Array_1D</a> | <a href="aopp_deconv_tool.py_ssa.html#Array_2D" class="internal-link" title="aopp_deconv_tool.py_ssa.Array_2D">Array_2D</a></code>) -&gt; <code><a href="aopp_deconv_tool.py_ssa.html#Array_2D" class="internal-link" title="aopp_deconv_tool.py_ssa.Array_2D">Array_2D</a></code></span>:
+    
+    <a class="headerLink" href="#embed" title="aopp_deconv_tool.py_ssa.SSA.embed">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="pre">Peform embedding of our data, a, into the trajectory matrix, self.X.</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.get_grouping">
+    
+  </a>
+  <a name="get_grouping">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">get_grouping</span><span class="function-signature">(self, mode: <code><a href="aopp_deconv_tool.py_ssa.html#Grouping_Mode_Literals" class="internal-link" title="aopp_deconv_tool.py_ssa.Grouping_Mode_Literals">Grouping_Mode_Literals</a></code> = <span class="rst-variable-quote">'</span><span class="rst-variable-string">elementary</span><span class="rst-variable-quote">'</span>, **kwargs) -&gt; <code>list[<wbr></wbr>list[<wbr></wbr>int]]</code></span>:
+    
+    <a class="headerLink" href="#get_grouping" title="aopp_deconv_tool.py_ssa.SSA.get_grouping">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="pre">Define how the eigentriples (evals, evecs, fvecs) should be grouped.
+
+# ARGUMENTS #
+        mode : str
+                How the grouping will be performed
+        **kwargs : Dict[str,Any]
+                Data required depending upon mode, see SSA.__init__ docstring for details
+
+# RETURNS #
+        grouping : list[list[int]]
+                List of indices that will make up each group.</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.group">
+    
+  </a>
+  <a name="group">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">group</span><span class="function-signature">(self) -&gt; <code>tuple[<wbr></wbr><a href="aopp_deconv_tool.py_ssa.html#Array_3D" class="internal-link" title="aopp_deconv_tool.py_ssa.Array_3D">Array_3D</a>, <wbr></wbr><a href="aopp_deconv_tool.py_ssa.html#Array_2D" class="internal-link" title="aopp_deconv_tool.py_ssa.Array_2D">Array_2D</a>, <wbr></wbr><a href="aopp_deconv_tool.py_ssa.html#Array_2D" class="internal-link" title="aopp_deconv_tool.py_ssa.Array_2D">Array_2D</a>, <wbr></wbr><a href="aopp_deconv_tool.py_ssa.html#Array_2D" class="internal-link" title="aopp_deconv_tool.py_ssa.Array_2D">Array_2D</a>]</code></span>:
+    
+    <a class="headerLink" href="#group" title="aopp_deconv_tool.py_ssa.SSA.group">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="pre">Perform the actual grouping of decomposed elements
+
+Takes lists of indices from `self.grouping`, and sums decomposed elements with those indices
+i.e., self.grouping=[[0], [1,2,3], [4,5,6,7], [9]]
+then grouped components are X_g = [ X_0, X_1+X_2+X_3, X_4+X_5+X_6+X_7, X_9]
+
+# ARGUMENTS #
+        None, but uses `self.X_decomp`, `self.u`, `self.s`, `self.v_star`, `self.grouping`, `self.d`, `self.m`
+
+# RETURNS #
+        X_g : Array_3D
+                Grouped matrixes
+        u_g : Array_2D
+                Grouped left singular vectors
+        v_star_g : Array_2D
+                Grouped right singular vectors
+        s_g : Array_2D
+                Grouped singular values</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.plot_all">
+    
+  </a>
+  <a name="plot_all">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">plot_all</span><span class="function-signature">(self, n_max=36)</span>:
+    
+    <a class="headerLink" href="#plot_all" title="aopp_deconv_tool.py_ssa.SSA.plot_all">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="pre">Plot all details of SSA. Makes lots of plots</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.plot_component_slices">
+    
+  </a>
+  <a name="plot_component_slices">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">plot_component_slices</span><span class="function-signature">(self, slice_tuples: <code>list[<wbr></wbr>tuple[<wbr></wbr>int, <wbr></wbr>int]]</code>)</span>:
+    
+    <a class="headerLink" href="#plot_component_slices" title="aopp_deconv_tool.py_ssa.SSA.plot_component_slices">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="pre">Plots grouped decomposed trajectory matrix of SSA</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.plot_components">
+    
+  </a>
+  <a name="plot_components">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">plot_components</span><span class="function-signature">(self, n_max=None)</span>:
+    
+    <a class="headerLink" href="#plot_components" title="aopp_deconv_tool.py_ssa.SSA.plot_components">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="pre">Plots grouped decomposed trajectory matrix of SSA</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.plot_eigenvectors">
+    
+  </a>
+  <a name="plot_eigenvectors">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">plot_eigenvectors</span><span class="function-signature">(self, n_max=None)</span>:
+    
+    <a class="headerLink" href="#plot_eigenvectors" title="aopp_deconv_tool.py_ssa.SSA.plot_eigenvectors">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="pre">Plots eigenvectors (left singular vectors) of SSA</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.plot_factorvectors">
+    
+  </a>
+  <a name="plot_factorvectors">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">plot_factorvectors</span><span class="function-signature">(self, n_max=None)</span>:
+    
+    <a class="headerLink" href="#plot_factorvectors" title="aopp_deconv_tool.py_ssa.SSA.plot_factorvectors">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="pre">Plots factorvectors (right singular vectors) of SSA</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.plot_ssa">
+    
+  </a>
+  <a name="plot_ssa">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">plot_ssa</span><span class="function-signature">(self, n=4, noise_estimate=None)</span>:
+    
+    <a class="headerLink" href="#plot_ssa" title="aopp_deconv_tool.py_ssa.SSA.plot_ssa">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="pre">Plots an overview of the SSA results</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.plot_svd">
+    
+  </a>
+  <a name="plot_svd">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">plot_svd</span><span class="function-signature">(self, recomp_n=None)</span>:
+    
+    <a class="headerLink" href="#plot_svd" title="aopp_deconv_tool.py_ssa.SSA.plot_svd">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="pre">Plots SVD used in SSA</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.plot_trajectory_decomp">
+    
+  </a>
+  <a name="plot_trajectory_decomp">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">plot_trajectory_decomp</span><span class="function-signature">(self, n_max=None)</span>:
+    
+    <a class="headerLink" href="#plot_trajectory_decomp" title="aopp_deconv_tool.py_ssa.SSA.plot_trajectory_decomp">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="pre">Plots decomposed trajectory matrix of SSA</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.plot_trajectory_groups">
+    
+  </a>
+  <a name="plot_trajectory_groups">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">plot_trajectory_groups</span><span class="function-signature">(self, n_max=None)</span>:
+    
+    <a class="headerLink" href="#plot_trajectory_groups" title="aopp_deconv_tool.py_ssa.SSA.plot_trajectory_groups">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="pre">Plots grouped decomposed trajectory matrix of SSA</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.quasi_hankelisation">
+    
+  </a>
+  <a name="quasi_hankelisation">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">quasi_hankelisation</span><span class="function-signature">(self) -&gt; <code><a href="aopp_deconv_tool.py_ssa.html#Array_2D" class="internal-link" title="aopp_deconv_tool.py_ssa.Array_2D">Array_2D</a> | <a href="aopp_deconv_tool.py_ssa.html#Array_3D" class="internal-link" title="aopp_deconv_tool.py_ssa.Array_3D">Array_3D</a></code></span>:
+    
+    <a class="headerLink" href="#quasi_hankelisation" title="aopp_deconv_tool.py_ssa.SSA.quasi_hankelisation">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="pre">Reverses the embedding map, faster than the direct method but less accurate. Is almost always good enough.
+
+# RETURNS #
+        X_ssa : Array_2D | Array_3D
+                2D (for 1D input data) or 3D (for 2D input data) singular spectrum analysis components. First index is the component number.</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.reverse_mapping">
+    
+  </a>
+  <a name="reverse_mapping">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">reverse_mapping</span><span class="function-signature">(self) -&gt; <code><a href="aopp_deconv_tool.py_ssa.html#Array_2D" class="internal-link" title="aopp_deconv_tool.py_ssa.Array_2D">Array_2D</a> | <a href="aopp_deconv_tool.py_ssa.html#Array_3D" class="internal-link" title="aopp_deconv_tool.py_ssa.Array_3D">Array_3D</a></code></span>:
+    
+    <a class="headerLink" href="#reverse_mapping" title="aopp_deconv_tool.py_ssa.SSA.reverse_mapping">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="pre">Reverses the embedding map. This version is slow but more accurate, use quasi_hankelisation instead in most applications
+
+# RETURNS #
+        X_ssa : Array_2D | Array_3D
+                2D (for 1D input data) or 3D (for 2D input data) singular spectrum analysis components. First index is the component number.</p></div>
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.a">
+    
+  </a>
+  <a name="a">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">a</span> =
+    
+    <a class="headerLink" href="#a" title="aopp_deconv_tool.py_ssa.SSA.a">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.d">
+    
+  </a>
+  <a name="d">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">d</span> =
+    
+    <a class="headerLink" href="#d" title="aopp_deconv_tool.py_ssa.SSA.d">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.grouping">
+    
+  </a>
+  <a name="grouping">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">grouping</span> =
+    
+    <a class="headerLink" href="#grouping" title="aopp_deconv_tool.py_ssa.SSA.grouping">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.k">
+    
+  </a>
+  <a name="k">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">k</span> =
+    
+    <a class="headerLink" href="#k" title="aopp_deconv_tool.py_ssa.SSA.k">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.K">
+    
+  </a>
+  <a name="K">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">K</span> =
+    
+    <a class="headerLink" href="#K" title="aopp_deconv_tool.py_ssa.SSA.K">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.l">
+    
+  </a>
+  <a name="l">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">l</span> =
+    
+    <a class="headerLink" href="#l" title="aopp_deconv_tool.py_ssa.SSA.l">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.L">
+    
+  </a>
+  <a name="L">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">L</span> =
+    
+    <a class="headerLink" href="#L" title="aopp_deconv_tool.py_ssa.SSA.L">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.m">
+    
+  </a>
+  <a name="m">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">m</span> =
+    
+    <a class="headerLink" href="#m" title="aopp_deconv_tool.py_ssa.SSA.m">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.n">
+    
+  </a>
+  <a name="n">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">n</span> =
+    
+    <a class="headerLink" href="#n" title="aopp_deconv_tool.py_ssa.SSA.n">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.N">
+    
+  </a>
+  <a name="N">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">N</span> =
+    
+    <a class="headerLink" href="#N" title="aopp_deconv_tool.py_ssa.SSA.N">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.ndim">
+    
+  </a>
+  <a name="ndim">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">ndim</span> =
+    
+    <a class="headerLink" href="#ndim" title="aopp_deconv_tool.py_ssa.SSA.ndim">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.s_g">
+    
+  </a>
+  <a name="s_g">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">s_g</span> =
+    
+    <a class="headerLink" href="#s_g" title="aopp_deconv_tool.py_ssa.SSA.s_g">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.u_g">
+    
+  </a>
+  <a name="u_g">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">u_g</span> =
+    
+    <a class="headerLink" href="#u_g" title="aopp_deconv_tool.py_ssa.SSA.u_g">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.v_star_g">
+    
+  </a>
+  <a name="v_star_g">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">v_star_g</span> =
+    
+    <a class="headerLink" href="#v_star_g" title="aopp_deconv_tool.py_ssa.SSA.v_star_g">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.X">
+    
+  </a>
+  <a name="X">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">X</span> =
+    
+    <a class="headerLink" href="#X" title="aopp_deconv_tool.py_ssa.SSA.X">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.X_decomp">
+    
+  </a>
+  <a name="X_decomp">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">X_decomp</span> =
+    
+    <a class="headerLink" href="#X_decomp" title="aopp_deconv_tool.py_ssa.SSA.X_decomp">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.py_ssa.SSA.X_g">
+    
+  </a>
+  <a name="X_g">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">X_g</span> =
+    
+    <a class="headerLink" href="#X_g" title="aopp_deconv_tool.py_ssa.SSA.X_g">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div>
+        </div>
+      
+      </div>
+    </div>
+
+    <footer class="navbar navbar-default">
+    <hr />
+    
+    
+    <div class="container">
+      <a href="index.html">API Documentation</a> for aopp_obs_toolchain::aopp_deconv_tool,
+    generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a>
+      24.3.3 at 2024-08-13 13:40:11.
+    </div>
+    
+    <script src="ajax.js" type="text/javascript"></script>
+    <script src="searchlib.js" type="text/javascript"></script>
+    <script src="search.js" type="text/javascript"></script>
+  
+  </footer>
+  
+    <script src="pydoctor.js" type="text/javascript"></script>
+
+  </body>
+</html>

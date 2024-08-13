@@ -1,0 +1,1884 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+          "DTD/xhtml1-strict.dtd">
+<html>
+  
+
+  <head>
+    
+    <title>aopp_deconv_tool.plot_helper.base.Base</title>
+    <meta name="generator" content="pydoctor 24.3.3"> 
+        
+    </meta>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1 maximum-scale=1" />
+    <link rel="stylesheet" type="text/css" href="apidocs.css" />
+    <link rel="stylesheet" type="text/css" href="readthedocstheme.css" />
+    <link rel="stylesheet" type="text/css" href="extra.css" />
+</head>
+
+  <body>
+
+    
+
+    <nav class="navbar navbar-default mainnavbar">
+      
+  
+  <div class="container-fluid">
+
+
+    <div class="navbar-header">
+      
+      <div class="navlinks">
+        <span class="navbar-brand">
+          aopp_obs_toolchain::aopp_deconv_tool <a href="index.html">API Documentation</a>
+        </span>
+
+        <a href="moduleIndex.html">
+          Modules
+        </a>
+
+        <a href="classIndex.html">
+          Classes
+        </a>
+
+        <a href="nameIndex.html">
+          Names
+        </a>
+
+        <div id="search-box-container">
+          <div class="input-group">
+            <input id="search-box" type="search" name="search-query" placeholder="Search..." aria-label="Search" minlength="2" class="form-control" autocomplete="off" />
+            
+            <span class="input-group-btn">
+              <a style="display: none;" class="btn btn-default" id="search-clear-button" title="Clear" onclick="clearSearch()"><img src="fonts/x-circle.svg" alt="Clear" /></a>
+              <a class="btn btn-default" id="search-help-button" title="Help" onclick="toggleSearchHelpText()"><img src="fonts/info.svg" alt="Help" /></a>
+            </span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+    
+        <!-- Side navigation -->
+      <div class="sidebarcontainer">
+        <nav class="sidebar">
+  
+
+  <div>
+
+      <div class="thingTitle">
+        <span>Class</span>
+        <code class="thisobject"><a href="aopp_deconv_tool.plot_helper.base.Base.html" class="internal-link" title="This class"><wbr></wbr>Base</a></code> 
+      </div>
+      
+      <div>
+        
+
+        
+         
+
+        
+        
+
+        <div class="childrenKindTitle">Methods</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#attach" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.attach">attach</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#attach_ax" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.attach_ax">attach<wbr></wbr>_ax</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#attach_datasource" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.attach_datasource">attach<wbr></wbr>_datasource</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#detach" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.detach">detach</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#detach_ax" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.detach_ax">detach<wbr></wbr>_ax</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#detach_datasource" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.detach_datasource">detach<wbr></wbr>_datasource</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#get_axis_limits" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.get_axis_limits">get<wbr></wbr>_axis<wbr></wbr>_limits</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#get_axis_limits_str" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.get_axis_limits_str">get<wbr></wbr>_axis<wbr></wbr>_limits<wbr></wbr>_str</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#is_ax_attached" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.is_ax_attached">is<wbr></wbr>_ax<wbr></wbr>_attached</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#is_datasource_attached" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.is_datasource_attached">is<wbr></wbr>_datasource<wbr></wbr>_attached</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#iter_ax" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.iter_ax">iter<wbr></wbr>_ax</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#on_attach_ax" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.on_attach_ax">on<wbr></wbr>_attach<wbr></wbr>_ax</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#on_attach_datasource" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.on_attach_datasource">on<wbr></wbr>_attach<wbr></wbr>_datasource</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#set_ax_title" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.set_ax_title">set<wbr></wbr>_ax<wbr></wbr>_title</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#update" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.update">update</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#update_plot_data" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.update_plot_data">update<wbr></wbr>_plot<wbr></wbr>_data</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#update_plot_visual" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.update_plot_visual">update<wbr></wbr>_plot<wbr></wbr>_visual</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        
+         
+
+        <div class="childrenKindTitle">Attributes</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#ax_funcs" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.ax_funcs">ax<wbr></wbr>_funcs</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#axis_data_mappings" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.axis_data_mappings">axis<wbr></wbr>_data<wbr></wbr>_mappings</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#axis_labels" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.axis_labels">axis<wbr></wbr>_labels</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#datasource_name" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.datasource_name">datasource<wbr></wbr>_name</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#hdl" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.hdl">hdl</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#plt_kwargs" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.plt_kwargs">plt<wbr></wbr>_kwargs</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#show_limits_in_title" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.show_limits_in_title">show<wbr></wbr>_limits<wbr></wbr>_in<wbr></wbr>_title</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#static_frame" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.static_frame">static<wbr></wbr>_frame</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#title" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.title">title</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#ax" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.ax">ax</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#datasource" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.datasource">datasource</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#datasource_data_getter" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.datasource_data_getter">datasource<wbr></wbr>_data<wbr></wbr>_getter</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#n_updates" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.n_updates">n<wbr></wbr>_updates</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        
+         
+        
+      </div>
+  </div><div>
+
+      <div class="thingTitle">
+        <span>Module</span>
+        <code><a href="aopp_deconv_tool.plot_helper.base.html" class="internal-link" title="The parent of this class">base</a></code> 
+      </div>
+      
+      <div>
+        
+
+        
+         
+
+        <div class="childrenKindTitle">Classes</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+            <div class="itemName expandableItem">
+                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4854"> 
+                    
+                </input>
+
+                <label class="lbl-toggle" for="expandableItemId4854">
+                    
+                    
+                </label>
+
+                <code><a href="aopp_deconv_tool.plot_helper.base.AxisDataMapping.html" class="internal-link" title="aopp_deconv_tool.plot_helper.base.AxisDataMapping"><wbr></wbr>Axis<wbr></wbr>Data<wbr></wbr>Mapping</a></code>
+
+                <div class="expandableContent">
+                    <div>
+        
+
+        
+         
+
+        
+        
+
+        <div class="childrenKindTitle">Methods</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.plot_helper.base.AxisDataMapping.html#get_limits" class="internal-link" title="aopp_deconv_tool.plot_helper.base.AxisDataMapping.get_limits">get<wbr></wbr>_limits</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        
+         
+
+        <div class="childrenKindTitle">Attributes</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.plot_helper.base.AxisDataMapping.html#attribute" class="internal-link" title="aopp_deconv_tool.plot_helper.base.AxisDataMapping.attribute">attribute</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.plot_helper.base.AxisDataMapping.html#label" class="internal-link" title="aopp_deconv_tool.plot_helper.base.AxisDataMapping.label">label</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        
+         
+        
+      </div>
+                </div>
+            </div>
+            
+        
+
+        
+
+    </li><li class=" thisobject">
+        
+        
+        
+            <div class="itemName expandableItem">
+                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId4855"> 
+                    
+                </input>
+
+                <label class="lbl-toggle notExpandable" for="">
+                    
+                    
+                </label>
+
+                <code><a href="aopp_deconv_tool.plot_helper.base.Base.html" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base"><wbr></wbr>Base</a></code>
+
+                <div class="expandableContent">
+                    <div>
+        
+
+        
+         
+
+        
+        
+
+        <div class="childrenKindTitle">Methods</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#attach" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.attach">attach</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#attach_ax" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.attach_ax">attach<wbr></wbr>_ax</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#attach_datasource" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.attach_datasource">attach<wbr></wbr>_datasource</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#detach" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.detach">detach</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#detach_ax" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.detach_ax">detach<wbr></wbr>_ax</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#detach_datasource" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.detach_datasource">detach<wbr></wbr>_datasource</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#get_axis_limits" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.get_axis_limits">get<wbr></wbr>_axis<wbr></wbr>_limits</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#get_axis_limits_str" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.get_axis_limits_str">get<wbr></wbr>_axis<wbr></wbr>_limits<wbr></wbr>_str</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#is_ax_attached" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.is_ax_attached">is<wbr></wbr>_ax<wbr></wbr>_attached</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#is_datasource_attached" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.is_datasource_attached">is<wbr></wbr>_datasource<wbr></wbr>_attached</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#iter_ax" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.iter_ax">iter<wbr></wbr>_ax</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#on_attach_ax" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.on_attach_ax">on<wbr></wbr>_attach<wbr></wbr>_ax</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#on_attach_datasource" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.on_attach_datasource">on<wbr></wbr>_attach<wbr></wbr>_datasource</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#set_ax_title" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.set_ax_title">set<wbr></wbr>_ax<wbr></wbr>_title</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#update" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.update">update</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#update_plot_data" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.update_plot_data">update<wbr></wbr>_plot<wbr></wbr>_data</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#update_plot_visual" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.update_plot_visual">update<wbr></wbr>_plot<wbr></wbr>_visual</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        
+         
+
+        <div class="childrenKindTitle">Attributes</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#ax_funcs" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.ax_funcs">ax<wbr></wbr>_funcs</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#axis_data_mappings" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.axis_data_mappings">axis<wbr></wbr>_data<wbr></wbr>_mappings</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#axis_labels" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.axis_labels">axis<wbr></wbr>_labels</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#datasource_name" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.datasource_name">datasource<wbr></wbr>_name</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#hdl" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.hdl">hdl</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#plt_kwargs" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.plt_kwargs">plt<wbr></wbr>_kwargs</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#show_limits_in_title" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.show_limits_in_title">show<wbr></wbr>_limits<wbr></wbr>_in<wbr></wbr>_title</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#static_frame" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.static_frame">static<wbr></wbr>_frame</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#title" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.title">title</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#ax" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.ax">ax</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#datasource" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.datasource">datasource</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#datasource_data_getter" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.datasource_data_getter">datasource<wbr></wbr>_data<wbr></wbr>_getter</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#n_updates" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.n_updates">n<wbr></wbr>_updates</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        
+         
+        
+      </div>
+                </div>
+            </div>
+            
+        
+
+        
+
+    </li>
+</ul>
+
+        
+         
+
+        
+         
+
+        
+         
+
+        
+         
+        
+      </div>
+  </div>
+
+</nav>
+        <!-- No sidebar toggle for read the docs theme, the sidebar is always
+          visible when the screen is width enough.
+        -->
+      </div>
+
+    </nav>
+    
+    <div class="container-fluid">
+
+      <div id="main" class="">
+        
+
+        
+
+        <div id="search-results-container" style="display: none;">
+        
+          <div id="search-buttons">
+            <span class="label label-default" id="search-docstrings-button">
+            <label class="checkbox-inline">
+              <input type="checkbox" id="toggle-search-in-docstrings-checkbox" value="false" onclick="toggleSearchInDocstrings()">
+                search in docstrings
+              </input>
+            </label>
+            </span>
+            
+          </div>
+          
+          <noscript>
+              <h1>Cannot search: JavaScript is not supported/enabled in your browser.</h1>
+          </noscript>
+  
+          <div class="hint" id="search-help-box">
+            <p class="rst-last">
+        
+              Search bar offers the following options:
+              <ul>   
+                  <li>
+                    <strong>Term presence.</strong> The below example searches for documents that 
+                      must contain “foo”, might contain “bar” and must not contain “baz”: <code>+foo bar -baz</code>
+                  </li> 
+  
+                  <li>
+                    <strong>Wildcards.</strong> The below example searches for documents with words beginning with “foo”: <code>foo*</code>
+                  </li> 
+  
+                  <li>
+                    <strong>Search in specific fields.</strong> The following search matches all objects 
+                    in "twisted.mail" that matches “search”: <code>+qname:twisted.mail.* +search</code>
+  
+                    <p>
+                      Possible fields: 'name', 'qname' (fully qualified name), 'docstring', and 'kind'.
+                      Last two fields are only applicable if "search in docstrings" is enabled.
+                    </p>
+                  </li>
+  
+                  <li>
+                    <strong>Fuzzy matches.</strong> The following search matches all documents 
+                    that have a word within 1 edit distance of “foo”: <code>foo~1</code>
+                  </li>
+              </ul>
+  
+            </p>
+          </div>
+  
+          <div id="search-status"> </div>
+  
+          <div class="warning" id="search-warn-box" style="display: none;">
+            <p class="rst-last"><span id="search-warn"></span></p>
+          </div>
+  
+          <table id="search-results">
+            <!-- Filled dynamically by JS -->
+          </table>
+          
+          <div style="margin-top: 8px;">
+            <p>Results provided by <a href="https://lunrjs.com">Lunr.js</a></p>
+          </div>
+        </div>
+
+        <div class="page-header">
+          <h1 class="class"><code><code><a href="index.html" class="internal-link">aopp_deconv_tool</a></code><wbr></wbr>.<code><a href="aopp_deconv_tool.plot_helper.html" class="internal-link" title="aopp_deconv_tool.plot_helper">plot_helper</a></code><wbr></wbr>.<code><a href="aopp_deconv_tool.plot_helper.base.html" class="internal-link" title="aopp_deconv_tool.plot_helper.base">base</a></code><wbr></wbr>.<code><a href="aopp_deconv_tool.plot_helper.base.Base.html" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base">Base</a></code></code></h1>
+          <div id="showPrivate">
+            <button class="btn btn-link" onclick="togglePrivate()">Toggle Private API</button>
+          </div>
+        </div>
+
+        <div class="categoryHeader">
+          class documentation
+        </div>
+
+        <div class="extrasDocstring">
+          <p class="class-signature"><code><span class="py-keyword">class</span> <span class="py-defname">Base</span>:</code></p><p>Known subclasses: <code><a href="aopp_deconv_tool.plot_helper.plotters.Histogram.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.Histogram</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.HorizontalLine.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.HorizontalLine</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.Image.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.Image</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.IterativeLineGraph.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.IterativeLineGraph</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.VerticalLine.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.VerticalLine</a></code></p>
+          <p><a href="classIndex.html#aopp_deconv_tool.plot_helper.base.Base">View In Hierarchy</a></p>
+        </div>
+
+        <div class="moduleDocstring">
+          <div><p class="undocumented">Undocumented</p></div>
+        </div>
+
+        <div id="splitTables">
+          <table class="children sortable" id="id128">
+  
+  
+  <tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#attach" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.attach">attach</a></code></td>
+    <td>Attach a `datasource` (input) and an axes `ax` (output) to the plot.</td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#attach_ax" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.attach_ax">attach<wbr></wbr>_ax</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#attach_datasource" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.attach_datasource">attach<wbr></wbr>_datasource</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#detach" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.detach">detach</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#detach_ax" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.detach_ax">detach<wbr></wbr>_ax</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#detach_datasource" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.detach_datasource">detach<wbr></wbr>_datasource</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#get_axis_limits" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.get_axis_limits">get<wbr></wbr>_axis<wbr></wbr>_limits</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#get_axis_limits_str" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.get_axis_limits_str">get<wbr></wbr>_axis<wbr></wbr>_limits<wbr></wbr>_str</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#is_ax_attached" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.is_ax_attached">is<wbr></wbr>_ax<wbr></wbr>_attached</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#is_datasource_attached" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.is_datasource_attached">is<wbr></wbr>_datasource<wbr></wbr>_attached</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#iter_ax" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.iter_ax">iter<wbr></wbr>_ax</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#on_attach_ax" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.on_attach_ax">on<wbr></wbr>_attach<wbr></wbr>_ax</a></code></td>
+    <td>Performs any initial setup that is required when an axes is attached. Should be overwritten by subclass</td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#on_attach_datasource" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.on_attach_datasource">on<wbr></wbr>_attach<wbr></wbr>_datasource</a></code></td>
+    <td>Performs any initial setup that is required when a datasource is attached. Should be overwritten by subclass.</td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#set_ax_title" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.set_ax_title">set<wbr></wbr>_ax<wbr></wbr>_title</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#update" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.update">update</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#update_plot_data" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.update_plot_data">update<wbr></wbr>_plot<wbr></wbr>_data</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#update_plot_visual" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.update_plot_visual">update<wbr></wbr>_plot<wbr></wbr>_visual</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#ax_funcs" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.ax_funcs">ax<wbr></wbr>_funcs</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#axis_data_mappings" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.axis_data_mappings">axis<wbr></wbr>_data<wbr></wbr>_mappings</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#axis_labels" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.axis_labels">axis<wbr></wbr>_labels</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#datasource_name" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.datasource_name">datasource<wbr></wbr>_name</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#hdl" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.hdl">hdl</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#plt_kwargs" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.plt_kwargs">plt<wbr></wbr>_kwargs</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#show_limits_in_title" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.show_limits_in_title">show<wbr></wbr>_limits<wbr></wbr>_in<wbr></wbr>_title</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#static_frame" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.static_frame">static<wbr></wbr>_frame</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#title" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.title">title</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#ax" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.ax">ax</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#datasource" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.datasource">datasource</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#datasource_data_getter" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.datasource_data_getter">datasource<wbr></wbr>_data<wbr></wbr>_getter</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#n_updates" class="internal-link" title="aopp_deconv_tool.plot_helper.base.Base.n_updates">n<wbr></wbr>_updates</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr>
+</table>
+          
+
+            
+        </div>
+
+        <div id="childList">
+          <div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.attach">
+    
+  </a>
+  <a name="attach">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">attach</span><span class="function-signature">(self, ax: <code>mpl.axes.Axes</code>, datasource: <code>Any</code>, datasource_data_getter: <code>Callable[<wbr></wbr>[<wbr></wbr>Any], <wbr></wbr>tuple[<wbr></wbr>Any]]</code>)</span>:
+    
+    <a class="headerLink" href="#attach" title="aopp_deconv_tool.plot_helper.base.Base.attach">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="pre">Attach a `datasource` (input) and an axes `ax` (output) to the plot.</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.attach_ax">
+    
+  </a>
+  <a name="attach_ax">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">attach_ax</span><span class="function-signature">(self, ax)</span>:
+    
+    <a class="headerLink" href="#attach_ax" title="aopp_deconv_tool.plot_helper.base.Base.attach_ax">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.attach_datasource">
+    
+  </a>
+  <a name="attach_datasource">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">attach_datasource</span><span class="function-signature">(self, datasource, datasource_data_getter)</span>:
+    
+    <a class="headerLink" href="#attach_datasource" title="aopp_deconv_tool.plot_helper.base.Base.attach_datasource">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.detach">
+    
+  </a>
+  <a name="detach">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">detach</span><span class="function-signature">(self)</span>:
+    
+    <a class="headerLink" href="#detach" title="aopp_deconv_tool.plot_helper.base.Base.detach">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.detach_ax">
+    
+  </a>
+  <a name="detach_ax">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">detach_ax</span><span class="function-signature">(self)</span>:
+    
+    <a class="headerLink" href="#detach_ax" title="aopp_deconv_tool.plot_helper.base.Base.detach_ax">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.detach_datasource">
+    
+  </a>
+  <a name="detach_datasource">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">detach_datasource</span><span class="function-signature">(self)</span>:
+    
+    <a class="headerLink" href="#detach_datasource" title="aopp_deconv_tool.plot_helper.base.Base.detach_datasource">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.get_axis_limits">
+    
+  </a>
+  <a name="get_axis_limits">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">get_axis_limits</span><span class="function-signature">(self, ax_num)</span>:
+    
+    <a class="headerLink" href="#get_axis_limits" title="aopp_deconv_tool.plot_helper.base.Base.get_axis_limits">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.get_axis_limits_str">
+    
+  </a>
+  <a name="get_axis_limits_str">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">get_axis_limits_str</span><span class="function-signature">(self, ax_num)</span>:
+    
+    <a class="headerLink" href="#get_axis_limits_str" title="aopp_deconv_tool.plot_helper.base.Base.get_axis_limits_str">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.is_ax_attached">
+    
+  </a>
+  <a name="is_ax_attached">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">is_ax_attached</span><span class="function-signature">(self)</span>:
+    
+    <a class="headerLink" href="#is_ax_attached" title="aopp_deconv_tool.plot_helper.base.Base.is_ax_attached">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.is_datasource_attached">
+    
+  </a>
+  <a name="is_datasource_attached">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">is_datasource_attached</span><span class="function-signature">(self)</span>:
+    
+    <a class="headerLink" href="#is_datasource_attached" title="aopp_deconv_tool.plot_helper.base.Base.is_datasource_attached">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.iter_ax">
+    
+  </a>
+  <a name="iter_ax">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">iter_ax</span><span class="function-signature">(self, attrs)</span>:
+    
+    <a class="headerLink" href="#iter_ax" title="aopp_deconv_tool.plot_helper.base.Base.iter_ax">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.on_attach_ax">
+    
+  </a>
+  <a name="on_attach_ax">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">on_attach_ax</span><span class="function-signature">(self)</span>:
+    
+    <a class="headerLink" href="#on_attach_ax" title="aopp_deconv_tool.plot_helper.base.Base.on_attach_ax">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    <div class="interfaceinfo">overridden in <code><a href="aopp_deconv_tool.plot_helper.plotters.Histogram.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.Histogram</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.HorizontalLine.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.HorizontalLine</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.Image.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.Image</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.IterativeLineGraph.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.IterativeLineGraph</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.VerticalLine.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.VerticalLine</a></code></div>
+    <div><p class="pre">Performs any initial setup that is required when an axes is attached.
+Should be overwritten by subclass</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.on_attach_datasource">
+    
+  </a>
+  <a name="on_attach_datasource">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">on_attach_datasource</span><span class="function-signature">(self)</span>:
+    
+    <a class="headerLink" href="#on_attach_datasource" title="aopp_deconv_tool.plot_helper.base.Base.on_attach_datasource">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    <div class="interfaceinfo">overridden in <code><a href="aopp_deconv_tool.plot_helper.plotters.Histogram.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.Histogram</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.HorizontalLine.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.HorizontalLine</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.Image.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.Image</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.IterativeLineGraph.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.IterativeLineGraph</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.VerticalLine.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.VerticalLine</a></code></div>
+    <div><p class="pre">Performs any initial setup that is required when a datasource is attached.
+Should be overwritten by subclass.</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.set_ax_title">
+    
+  </a>
+  <a name="set_ax_title">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">set_ax_title</span><span class="function-signature">(self)</span>:
+    
+    <a class="headerLink" href="#set_ax_title" title="aopp_deconv_tool.plot_helper.base.Base.set_ax_title">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.update">
+    
+  </a>
+  <a name="update">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">update</span><span class="function-signature">(self)</span>:
+    
+    <a class="headerLink" href="#update" title="aopp_deconv_tool.plot_helper.base.Base.update">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.update_plot_data">
+    
+  </a>
+  <a name="update_plot_data">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">update_plot_data</span><span class="function-signature">(self, data)</span>:
+    
+    <a class="headerLink" href="#update_plot_data" title="aopp_deconv_tool.plot_helper.base.Base.update_plot_data">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    <div class="interfaceinfo">overridden in <code><a href="aopp_deconv_tool.plot_helper.plotters.Histogram.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.Histogram</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.HorizontalLine.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.HorizontalLine</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.Image.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.Image</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.IterativeLineGraph.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.IterativeLineGraph</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.VerticalLine.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.VerticalLine</a></code></div>
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.update_plot_visual">
+    
+  </a>
+  <a name="update_plot_visual">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">update_plot_visual</span><span class="function-signature">(self)</span>:
+    
+    <a class="headerLink" href="#update_plot_visual" title="aopp_deconv_tool.plot_helper.base.Base.update_plot_visual">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.ax_funcs">
+    
+  </a>
+  <a name="ax_funcs">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">ax_funcs</span>: <code>list</code> =
+    
+    <a class="headerLink" href="#ax_funcs" title="aopp_deconv_tool.plot_helper.base.Base.ax_funcs">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.axis_data_mappings">
+    
+  </a>
+  <a name="axis_data_mappings">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">axis_data_mappings</span>: <code>tuple[<wbr></wbr><a href="aopp_deconv_tool.plot_helper.base.AxisDataMapping.html" class="internal-link" title="aopp_deconv_tool.plot_helper.base.AxisDataMapping">AxisDataMapping</a>]</code> =
+    
+    <a class="headerLink" href="#axis_data_mappings" title="aopp_deconv_tool.plot_helper.base.Base.axis_data_mappings">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    <div class="interfaceinfo">overridden in <code><a href="aopp_deconv_tool.plot_helper.plotters.Histogram.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.Histogram</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.HorizontalLine.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.HorizontalLine</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.Image.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.Image</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.IterativeLineGraph.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.IterativeLineGraph</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.VerticalLine.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.VerticalLine</a></code></div>
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.axis_labels">
+    
+  </a>
+  <a name="axis_labels">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">axis_labels</span>: <code>tuple[<wbr></wbr>str, <wbr></wbr><span class="rst-variable-ellipsis">...</span>]</code> =
+    
+    <a class="headerLink" href="#axis_labels" title="aopp_deconv_tool.plot_helper.base.Base.axis_labels">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.datasource_name">
+    
+  </a>
+  <a name="datasource_name">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">datasource_name</span>: <code>str</code> =
+    
+    <a class="headerLink" href="#datasource_name" title="aopp_deconv_tool.plot_helper.base.Base.datasource_name">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    <div class="interfaceinfo">overridden in <code><a href="aopp_deconv_tool.plot_helper.plotters.Histogram.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.Histogram</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.HorizontalLine.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.HorizontalLine</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.Image.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.Image</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.IterativeLineGraph.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.IterativeLineGraph</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.VerticalLine.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.VerticalLine</a></code></div>
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.hdl">
+    
+  </a>
+  <a name="hdl">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">hdl</span>: <code>Any</code> =
+    
+    <a class="headerLink" href="#hdl" title="aopp_deconv_tool.plot_helper.base.Base.hdl">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    <div class="interfaceinfo">overridden in <code><a href="aopp_deconv_tool.plot_helper.plotters.Histogram.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.Histogram</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.HorizontalLine.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.HorizontalLine</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.Image.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.Image</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.IterativeLineGraph.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.IterativeLineGraph</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.VerticalLine.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.VerticalLine</a></code></div>
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.plt_kwargs">
+    
+  </a>
+  <a name="plt_kwargs">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">plt_kwargs</span>: <code>dict</code> =
+    
+    <a class="headerLink" href="#plt_kwargs" title="aopp_deconv_tool.plot_helper.base.Base.plt_kwargs">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.show_limits_in_title">
+    
+  </a>
+  <a name="show_limits_in_title">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">show_limits_in_title</span>: <code>dict</code> =
+    
+    <a class="headerLink" href="#show_limits_in_title" title="aopp_deconv_tool.plot_helper.base.Base.show_limits_in_title">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.static_frame">
+    
+  </a>
+  <a name="static_frame">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">static_frame</span>: <code>bool</code> =
+    
+    <a class="headerLink" href="#static_frame" title="aopp_deconv_tool.plot_helper.base.Base.static_frame">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.title">
+    
+  </a>
+  <a name="title">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">title</span>: <code>str</code> =
+    
+    <a class="headerLink" href="#title" title="aopp_deconv_tool.plot_helper.base.Base.title">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    <div class="interfaceinfo">overridden in <code><a href="aopp_deconv_tool.plot_helper.plotters.Histogram.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.Histogram</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.HorizontalLine.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.HorizontalLine</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.Image.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.Image</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.IterativeLineGraph.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.IterativeLineGraph</a></code>, <code><a href="aopp_deconv_tool.plot_helper.plotters.VerticalLine.html" class="internal-link">aopp_deconv_tool.plot_helper.plotters.VerticalLine</a></code></div>
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.ax">
+    
+  </a>
+  <a name="ax">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">ax</span>: <code>mpl.axes.Axes</code> =
+    
+    <a class="headerLink" href="#ax" title="aopp_deconv_tool.plot_helper.base.Base.ax">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.datasource">
+    
+  </a>
+  <a name="datasource">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">datasource</span>: <code>Any</code> =
+    
+    <a class="headerLink" href="#datasource" title="aopp_deconv_tool.plot_helper.base.Base.datasource">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.datasource_data_getter">
+    
+  </a>
+  <a name="datasource_data_getter">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">datasource_data_getter</span>: <code>Callable | None</code> =
+    
+    <a class="headerLink" href="#datasource_data_getter" title="aopp_deconv_tool.plot_helper.base.Base.datasource_data_getter">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.plot_helper.base.Base.n_updates">
+    
+  </a>
+  <a name="n_updates">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">n_updates</span>: <code>int</code> =
+    
+    <a class="headerLink" href="#n_updates" title="aopp_deconv_tool.plot_helper.base.Base.n_updates">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div>
+        </div>
+      
+      </div>
+    </div>
+
+    <footer class="navbar navbar-default">
+    <hr />
+    
+    
+    <div class="container">
+      <a href="index.html">API Documentation</a> for aopp_obs_toolchain::aopp_deconv_tool,
+    generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a>
+      24.3.3 at 2024-08-13 13:40:11.
+    </div>
+    
+    <script src="ajax.js" type="text/javascript"></script>
+    <script src="searchlib.js" type="text/javascript"></script>
+    <script src="search.js" type="text/javascript"></script>
+  
+  </footer>
+  
+    <script src="pydoctor.js" type="text/javascript"></script>
+
+  </body>
+</html>

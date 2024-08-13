@@ -6,7 +6,8 @@ and functions as specified in this file, the fitting functions should work.
 """
 
 
-from typing import TypeVar, TypeVarTuple, ParamSpec, Generic, Callable, Any, NewType, Protocol
+from typing import TypeVar, TypeVarTuple, ParamSpec, Generic, Callable, Any, NewType, Protocol, Literal
+from types import GenericAlias
 
 import numpy as np
 
@@ -24,7 +25,7 @@ type N = TypeVar('N',bound=int)
 type M = TypeVar('M',bound=int)
 
 # A length N tuple of integers
-type S[N] = GenericAlias(tuple, (int,)*N)
+type S[N] = GenericAlias(tuple[int], N)
 
 
 

@@ -1,7 +1,7 @@
 
 
 from __future__ import annotations
-from typing import TypeVar, TypeVarTuple, Type, Generic
+from typing import TypeVar, TypeVarTuple, Type, Generic, GenericAlias
 import numpy as np
 
 from aopp_deconv_tool.typedef import NumVar, ShapeVar
@@ -10,7 +10,7 @@ from aopp_deconv_tool.typedef import NumVar, ShapeVar
 IntVar = TypeVar('IntVar', bound=int)
 T = TypeVar('T')
 Ts = TypeVarTuple('Ts')
-S = Generic[IntVar]
+S = GenericAlias(tuple, (IntVar,))
 N = TypeVar('N',bound=int)
 
 

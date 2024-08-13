@@ -1,7 +1,7 @@
 """
 Helpers for array operations
 """
-from typing import TypeVar, NewVar
+from typing import TypeVar, NewType
 
 import numpy as np
 

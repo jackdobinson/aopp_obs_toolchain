@@ -1,0 +1,2847 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+          "DTD/xhtml1-strict.dtd">
+<html>
+  
+
+  <head>
+    
+    <title>aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified</title>
+    <meta name="generator" content="pydoctor 24.3.3"> 
+        
+    </meta>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1 maximum-scale=1" />
+    <link rel="stylesheet" type="text/css" href="apidocs.css" />
+    <link rel="stylesheet" type="text/css" href="readthedocstheme.css" />
+    <link rel="stylesheet" type="text/css" href="extra.css" />
+</head>
+
+  <body>
+
+    
+
+    <nav class="navbar navbar-default mainnavbar">
+      
+  
+  <div class="container-fluid">
+
+
+    <div class="navbar-header">
+      
+      <div class="navlinks">
+        <span class="navbar-brand">
+          aopp_obs_toolchain::aopp_deconv_tool <a href="index.html">API Documentation</a>
+        </span>
+
+        <a href="moduleIndex.html">
+          Modules
+        </a>
+
+        <a href="classIndex.html">
+          Classes
+        </a>
+
+        <a href="nameIndex.html">
+          Names
+        </a>
+
+        <div id="search-box-container">
+          <div class="input-group">
+            <input id="search-box" type="search" name="search-query" placeholder="Search..." aria-label="Search" minlength="2" class="form-control" autocomplete="off" />
+            
+            <span class="input-group-btn">
+              <a style="display: none;" class="btn btn-default" id="search-clear-button" title="Clear" onclick="clearSearch()"><img src="fonts/x-circle.svg" alt="Clear" /></a>
+              <a class="btn btn-default" id="search-help-button" title="Help" onclick="toggleSearchHelpText()"><img src="fonts/info.svg" alt="Help" /></a>
+            </span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+    
+        <!-- Side navigation -->
+      <div class="sidebarcontainer">
+        <nav class="sidebar">
+  
+
+  <div>
+
+      <div class="thingTitle">
+        <span>Class</span>
+        <code class="thisobject"><a href="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.html" class="internal-link" title="This class"><wbr></wbr>Clean<wbr></wbr>Modified</a></code> 
+      </div>
+      
+      <div>
+        
+
+        
+         
+
+        
+        
+
+        <div class="childrenKindTitle">Methods</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#choose_residual_extrema" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.choose_residual_extrema">choose<wbr></wbr>_residual<wbr></wbr>_extrema</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#get_components" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.get_components">get<wbr></wbr>_components</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#get_iters" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.get_iters">get<wbr></wbr>_iters</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#get_residual" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.get_residual">get<wbr></wbr>_residual</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_init_algorithm" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._init_algorithm">_init<wbr></wbr>_algorithm</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_iter" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._iter">_iter</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_stopping_criteria" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._stopping_criteria">_stopping<wbr></wbr>_criteria</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        <div class="childrenKindTitle">Inherited Methods</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#__call__" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.__call__">__call__</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#get_parameters" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.get_parameters">get<wbr></wbr>_parameters</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#set_parameters" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.set_parameters">set<wbr></wbr>_parameters</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#_set_last_parameters" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base._set_last_parameters">_set<wbr></wbr>_last<wbr></wbr>_parameters</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        <div class="childrenKindTitle">Attributes</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#clean_beam_sigma" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.clean_beam_sigma">clean<wbr></wbr>_beam<wbr></wbr>_sigma</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#fabs_frac_threshold" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.fabs_frac_threshold">fabs<wbr></wbr>_frac<wbr></wbr>_threshold</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#give_best_result" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.give_best_result">give<wbr></wbr>_best<wbr></wbr>_result</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#loop_gain" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.loop_gain">loop<wbr></wbr>_gain</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#max_stat_increase" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.max_stat_increase">max<wbr></wbr>_stat<wbr></wbr>_increase</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#min_frac_stat_delta" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.min_frac_stat_delta">min<wbr></wbr>_frac<wbr></wbr>_stat<wbr></wbr>_delta</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#n_iter" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.n_iter">n<wbr></wbr>_iter</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#n_positive_iter" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.n_positive_iter">n<wbr></wbr>_positive<wbr></wbr>_iter</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#noise_std" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.noise_std">noise<wbr></wbr>_std</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#rms_frac_threshold" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.rms_frac_threshold">rms<wbr></wbr>_frac<wbr></wbr>_threshold</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#threshold" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.threshold">threshold</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#progress_string" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.progress_string">progress<wbr></wbr>_string</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_accumulator" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._accumulator">_accumulator</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_choose_update_pixels" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._choose_update_pixels">_choose<wbr></wbr>_update<wbr></wbr>_pixels</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_components" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._components">_components</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_components_best" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._components_best">_components<wbr></wbr>_best</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_current_cleaned" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._current_cleaned">_current<wbr></wbr>_cleaned</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_current_convolved" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._current_convolved">_current<wbr></wbr>_convolved</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_fabs_threshold" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._fabs_threshold">_fabs<wbr></wbr>_threshold</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_flux_correction_factor" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._flux_correction_factor">_flux<wbr></wbr>_correction<wbr></wbr>_factor</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_get_pixel_threshold" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._get_pixel_threshold">_get<wbr></wbr>_pixel<wbr></wbr>_threshold</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_i_best" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._i_best">_i<wbr></wbr>_best</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_iter_stat_names" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._iter_stat_names">_iter<wbr></wbr>_stat<wbr></wbr>_names</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_iter_stat_record" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._iter_stat_record">_iter<wbr></wbr>_stat<wbr></wbr>_record</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_loop_gain_correction_factor" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._loop_gain_correction_factor">_loop<wbr></wbr>_gain<wbr></wbr>_correction<wbr></wbr>_factor</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_obs" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._obs">_obs</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_pixel_threshold" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._pixel_threshold">_pixel<wbr></wbr>_threshold</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_psf" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._psf">_psf</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_px_choice_img_ptr" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._px_choice_img_ptr">_px<wbr></wbr>_choice<wbr></wbr>_img<wbr></wbr>_ptr</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_residual" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._residual">_residual</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_residual_copy" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._residual_copy">_residual<wbr></wbr>_copy</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_rms_threshold" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._rms_threshold">_rms<wbr></wbr>_threshold</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_selected_map" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._selected_map">_selected<wbr></wbr>_map</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_selected_px" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._selected_px">_selected<wbr></wbr>_px</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_stats_best" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._stats_best">_stats<wbr></wbr>_best</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_stats_delta" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._stats_delta">_stats<wbr></wbr>_delta</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_tmp_r" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._tmp_r">_tmp<wbr></wbr>_r</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        <div class="childrenKindTitle">Inherited Attributes</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#final_hooks" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.final_hooks">final<wbr></wbr>_hooks</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#post_init_hooks" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.post_init_hooks">post<wbr></wbr>_init<wbr></wbr>_hooks</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#post_iter_hooks" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.post_iter_hooks">post<wbr></wbr>_iter<wbr></wbr>_hooks</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#pre_init_hooks" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.pre_init_hooks">pre<wbr></wbr>_init<wbr></wbr>_hooks</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#pre_iter_hooks" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.pre_iter_hooks">pre<wbr></wbr>_iter<wbr></wbr>_hooks</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#_i" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base._i">_i</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#_last_parameters" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base._last_parameters">_last<wbr></wbr>_parameters</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+        
+      </div>
+  </div><div>
+
+      <div class="thingTitle">
+        <span>Module</span>
+        <code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.html" class="internal-link" title="The parent of this class">clean<wbr></wbr>_modified</a></code> 
+      </div>
+      
+      <div>
+        
+
+        
+         
+
+        <div class="childrenKindTitle">Classes</div>
+        <ul>
+    
+    <li class=" thisobject">
+        
+        
+        
+            <div class="itemName expandableItem">
+                <input class="tocChildrenToggle" type="checkbox" id="expandableItemId120"> 
+                    
+                </input>
+
+                <label class="lbl-toggle notExpandable" for="">
+                    
+                    
+                </label>
+
+                <code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.html" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified"><wbr></wbr>Clean<wbr></wbr>Modified</a></code>
+
+                <div class="expandableContent">
+                    <div>
+        
+
+        
+         
+
+        
+        
+
+        <div class="childrenKindTitle">Methods</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#choose_residual_extrema" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.choose_residual_extrema">choose<wbr></wbr>_residual<wbr></wbr>_extrema</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#get_components" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.get_components">get<wbr></wbr>_components</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#get_iters" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.get_iters">get<wbr></wbr>_iters</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#get_residual" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.get_residual">get<wbr></wbr>_residual</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_init_algorithm" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._init_algorithm">_init<wbr></wbr>_algorithm</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_iter" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._iter">_iter</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_stopping_criteria" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._stopping_criteria">_stopping<wbr></wbr>_criteria</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        <div class="childrenKindTitle">Inherited Methods</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#__call__" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.__call__">__call__</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#get_parameters" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.get_parameters">get<wbr></wbr>_parameters</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#set_parameters" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.set_parameters">set<wbr></wbr>_parameters</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#_set_last_parameters" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base._set_last_parameters">_set<wbr></wbr>_last<wbr></wbr>_parameters</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        <div class="childrenKindTitle">Attributes</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#clean_beam_sigma" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.clean_beam_sigma">clean<wbr></wbr>_beam<wbr></wbr>_sigma</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#fabs_frac_threshold" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.fabs_frac_threshold">fabs<wbr></wbr>_frac<wbr></wbr>_threshold</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#give_best_result" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.give_best_result">give<wbr></wbr>_best<wbr></wbr>_result</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#loop_gain" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.loop_gain">loop<wbr></wbr>_gain</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#max_stat_increase" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.max_stat_increase">max<wbr></wbr>_stat<wbr></wbr>_increase</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#min_frac_stat_delta" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.min_frac_stat_delta">min<wbr></wbr>_frac<wbr></wbr>_stat<wbr></wbr>_delta</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#n_iter" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.n_iter">n<wbr></wbr>_iter</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#n_positive_iter" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.n_positive_iter">n<wbr></wbr>_positive<wbr></wbr>_iter</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#noise_std" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.noise_std">noise<wbr></wbr>_std</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#rms_frac_threshold" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.rms_frac_threshold">rms<wbr></wbr>_frac<wbr></wbr>_threshold</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#threshold" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.threshold">threshold</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#progress_string" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.progress_string">progress<wbr></wbr>_string</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_accumulator" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._accumulator">_accumulator</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_choose_update_pixels" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._choose_update_pixels">_choose<wbr></wbr>_update<wbr></wbr>_pixels</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_components" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._components">_components</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_components_best" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._components_best">_components<wbr></wbr>_best</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_current_cleaned" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._current_cleaned">_current<wbr></wbr>_cleaned</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_current_convolved" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._current_convolved">_current<wbr></wbr>_convolved</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_fabs_threshold" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._fabs_threshold">_fabs<wbr></wbr>_threshold</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_flux_correction_factor" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._flux_correction_factor">_flux<wbr></wbr>_correction<wbr></wbr>_factor</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_get_pixel_threshold" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._get_pixel_threshold">_get<wbr></wbr>_pixel<wbr></wbr>_threshold</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_i_best" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._i_best">_i<wbr></wbr>_best</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_iter_stat_names" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._iter_stat_names">_iter<wbr></wbr>_stat<wbr></wbr>_names</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_iter_stat_record" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._iter_stat_record">_iter<wbr></wbr>_stat<wbr></wbr>_record</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_loop_gain_correction_factor" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._loop_gain_correction_factor">_loop<wbr></wbr>_gain<wbr></wbr>_correction<wbr></wbr>_factor</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_obs" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._obs">_obs</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_pixel_threshold" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._pixel_threshold">_pixel<wbr></wbr>_threshold</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_psf" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._psf">_psf</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_px_choice_img_ptr" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._px_choice_img_ptr">_px<wbr></wbr>_choice<wbr></wbr>_img<wbr></wbr>_ptr</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_residual" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._residual">_residual</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_residual_copy" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._residual_copy">_residual<wbr></wbr>_copy</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_rms_threshold" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._rms_threshold">_rms<wbr></wbr>_threshold</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_selected_map" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._selected_map">_selected<wbr></wbr>_map</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_selected_px" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._selected_px">_selected<wbr></wbr>_px</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_stats_best" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._stats_best">_stats<wbr></wbr>_best</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_stats_delta" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._stats_delta">_stats<wbr></wbr>_delta</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_tmp_r" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._tmp_r">_tmp<wbr></wbr>_r</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        <div class="childrenKindTitle">Inherited Attributes</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#final_hooks" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.final_hooks">final<wbr></wbr>_hooks</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#post_init_hooks" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.post_init_hooks">post<wbr></wbr>_init<wbr></wbr>_hooks</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#post_iter_hooks" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.post_iter_hooks">post<wbr></wbr>_iter<wbr></wbr>_hooks</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#pre_init_hooks" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.pre_init_hooks">pre<wbr></wbr>_init<wbr></wbr>_hooks</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#pre_iter_hooks" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.pre_iter_hooks">pre<wbr></wbr>_iter<wbr></wbr>_hooks</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#_i" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base._i">_i</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#_last_parameters" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base._last_parameters">_last<wbr></wbr>_parameters</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+        
+      </div>
+                </div>
+            </div>
+            
+        
+
+        
+
+    </li>
+</ul>
+
+        
+         
+
+        
+         
+
+        <div class="childrenKindTitle">Variables</div>
+        <ul>
+    
+    <li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.html#_lgr" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified._lgr">_lgr</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        
+         
+        
+      </div>
+  </div>
+
+</nav>
+        <!-- No sidebar toggle for read the docs theme, the sidebar is always
+          visible when the screen is width enough.
+        -->
+      </div>
+
+    </nav>
+    
+    <div class="container-fluid">
+
+      <div id="main" class="">
+        
+
+        
+
+        <div id="search-results-container" style="display: none;">
+        
+          <div id="search-buttons">
+            <span class="label label-default" id="search-docstrings-button">
+            <label class="checkbox-inline">
+              <input type="checkbox" id="toggle-search-in-docstrings-checkbox" value="false" onclick="toggleSearchInDocstrings()">
+                search in docstrings
+              </input>
+            </label>
+            </span>
+            
+          </div>
+          
+          <noscript>
+              <h1>Cannot search: JavaScript is not supported/enabled in your browser.</h1>
+          </noscript>
+  
+          <div class="hint" id="search-help-box">
+            <p class="rst-last">
+        
+              Search bar offers the following options:
+              <ul>   
+                  <li>
+                    <strong>Term presence.</strong> The below example searches for documents that 
+                      must contain “foo”, might contain “bar” and must not contain “baz”: <code>+foo bar -baz</code>
+                  </li> 
+  
+                  <li>
+                    <strong>Wildcards.</strong> The below example searches for documents with words beginning with “foo”: <code>foo*</code>
+                  </li> 
+  
+                  <li>
+                    <strong>Search in specific fields.</strong> The following search matches all objects 
+                    in "twisted.mail" that matches “search”: <code>+qname:twisted.mail.* +search</code>
+  
+                    <p>
+                      Possible fields: 'name', 'qname' (fully qualified name), 'docstring', and 'kind'.
+                      Last two fields are only applicable if "search in docstrings" is enabled.
+                    </p>
+                  </li>
+  
+                  <li>
+                    <strong>Fuzzy matches.</strong> The following search matches all documents 
+                    that have a word within 1 edit distance of “foo”: <code>foo~1</code>
+                  </li>
+              </ul>
+  
+            </p>
+          </div>
+  
+          <div id="search-status"> </div>
+  
+          <div class="warning" id="search-warn-box" style="display: none;">
+            <p class="rst-last"><span id="search-warn"></span></p>
+          </div>
+  
+          <table id="search-results">
+            <!-- Filled dynamically by JS -->
+          </table>
+          
+          <div style="margin-top: 8px;">
+            <p>Results provided by <a href="https://lunrjs.com">Lunr.js</a></p>
+          </div>
+        </div>
+
+        <div class="page-header">
+          <h1 class="class"><code><code><a href="index.html" class="internal-link">aopp_deconv_tool</a></code><wbr></wbr>.<code><a href="aopp_deconv_tool.algorithm.html" class="internal-link" title="aopp_deconv_tool.algorithm">algorithm</a></code><wbr></wbr>.<code><a href="aopp_deconv_tool.algorithm.algorithm.html" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm">algorithm</a></code><wbr></wbr>.<code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.html" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv">deconv</a></code><wbr></wbr>.<code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.html" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified">clean_modified</a></code><wbr></wbr>.<code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.html" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified">CleanModified</a></code></code></h1>
+          <div id="showPrivate">
+            <button class="btn btn-link" onclick="togglePrivate()">Toggle Private API</button>
+          </div>
+        </div>
+
+        <div class="categoryHeader">
+          class documentation
+        </div>
+
+        <div class="extrasDocstring">
+          <p class="class-signature"><code><span class="py-keyword">class</span> <span class="py-defname">CleanModified</span>(<a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base">Base</a>):</code></p>
+          <p><a href="classIndex.html#aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified">View In Hierarchy</a></p>
+        </div>
+
+        <div class="moduleDocstring">
+          <div><p class="pre">A modified verison of the CLEAN algorithm, designed to account for extended emission.
+
+# ARGUMENTS #
+        n_iter : int = 1000
+                Number of iterations to perform
+        loop_gain : float = 0.02
+                Fraction of emission that could be accounted for by a PSF added to components with each iteration.
+                Higher values are faster but unstable
+        threshold : float = 0.3
+                Fraction of maximum brightness of residual above which pixels will be included in CLEAN step, if 
+                negative will use the "maximum fractional difference otsu threshold". 0.3 is a  good default value, 
+                if stippling becomes an issue, reduce or set to a negative value. Lower positive numbers will 
+                require more iterations, but give a more "accurate" result.
+        n_positive_iter : int = 0
+                Number of iterations to do that only "adds" emission, before switching to "adding and subtracting" 
+                emission.
+        noise_std : float = 1E-1
+                Estimate of the deviation of the noise present in the observation
+        rms_frac_threshold : float = 1E-3
+                Fraction of original RMS of residual at which iteration is stopped, lower values continue iteration 
+                for longer.
+        fabs_frac_threshold : float = 1E-3
+                Fraction of original Absolute Brightest Pixel of residual at which iteration is stopped, lower 
+                values continue iteration for longer.
+        max_stat_increase : float = np.inf
+                Maximum fractional increase of a statistic before terminating
+        min_frac_stat_delta : float = 1E-3
+                Minimum fractional standard deviation of statistics before assuming no progress is being made and 
+                terminating iteration.
+        give_best_result : bool = True
+                If True, will return the best (measured by statistics) result instead of final result.
+
+# RETURNS #
+        A "CleanModified" instance. Run the model using the __call__(...) method.
+        e.g.
+        ```
+        from aopp_deconv_tool.algorithm.deconv.clean_modified import CleanModified
+        
+        deconvolver = CleanModified()
+        ...
+        deconv_components, deconv_residual, deconv_iters = deconvolver(processed_obs, normed_psf)
+        
+        ```
+        See `aopp_deconv_tool.deconvolve` for a full example.</p></div>
+        </div>
+
+        <div id="splitTables">
+          <table class="children sortable" id="id12">
+  
+  
+  <tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#choose_residual_extrema" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.choose_residual_extrema">choose<wbr></wbr>_residual<wbr></wbr>_extrema</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#get_components" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.get_components">get<wbr></wbr>_components</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#get_iters" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.get_iters">get<wbr></wbr>_iters</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#get_residual" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.get_residual">get<wbr></wbr>_residual</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#clean_beam_sigma" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.clean_beam_sigma">clean<wbr></wbr>_beam<wbr></wbr>_sigma</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#fabs_frac_threshold" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.fabs_frac_threshold">fabs<wbr></wbr>_frac<wbr></wbr>_threshold</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#give_best_result" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.give_best_result">give<wbr></wbr>_best<wbr></wbr>_result</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#loop_gain" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.loop_gain">loop<wbr></wbr>_gain</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#max_stat_increase" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.max_stat_increase">max<wbr></wbr>_stat<wbr></wbr>_increase</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#min_frac_stat_delta" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.min_frac_stat_delta">min<wbr></wbr>_frac<wbr></wbr>_stat<wbr></wbr>_delta</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#n_iter" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.n_iter">n<wbr></wbr>_iter</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#n_positive_iter" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.n_positive_iter">n<wbr></wbr>_positive<wbr></wbr>_iter</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#noise_std" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.noise_std">noise<wbr></wbr>_std</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#rms_frac_threshold" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.rms_frac_threshold">rms<wbr></wbr>_frac<wbr></wbr>_threshold</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#threshold" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.threshold">threshold</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#progress_string" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.progress_string">progress<wbr></wbr>_string</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method private">
+    
+    <td>Method</td>
+    <td><code><a href="#_init_algorithm" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._init_algorithm">_init<wbr></wbr>_algorithm</a></code></td>
+    <td>Perform any initialisation that needs to be done before the algorithm runs.</td>
+  </tr><tr class="method private">
+    
+    <td>Method</td>
+    <td><code><a href="#_iter" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._iter">_iter</a></code></td>
+    <td>Perform a single iteration of the algorithm.</td>
+  </tr><tr class="method private">
+    
+    <td>Method</td>
+    <td><code><a href="#_stopping_criteria" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._stopping_criteria">_stopping<wbr></wbr>_criteria</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_accumulator" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._accumulator">_accumulator</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_choose_update_pixels" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._choose_update_pixels">_choose<wbr></wbr>_update<wbr></wbr>_pixels</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_components" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._components">_components</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_components_best" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._components_best">_components<wbr></wbr>_best</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_current_cleaned" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._current_cleaned">_current<wbr></wbr>_cleaned</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_current_convolved" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._current_convolved">_current<wbr></wbr>_convolved</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_fabs_threshold" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._fabs_threshold">_fabs<wbr></wbr>_threshold</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_flux_correction_factor" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._flux_correction_factor">_flux<wbr></wbr>_correction<wbr></wbr>_factor</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_get_pixel_threshold" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._get_pixel_threshold">_get<wbr></wbr>_pixel<wbr></wbr>_threshold</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_i_best" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._i_best">_i<wbr></wbr>_best</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_iter_stat_names" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._iter_stat_names">_iter<wbr></wbr>_stat<wbr></wbr>_names</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_iter_stat_record" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._iter_stat_record">_iter<wbr></wbr>_stat<wbr></wbr>_record</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_loop_gain_correction_factor" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._loop_gain_correction_factor">_loop<wbr></wbr>_gain<wbr></wbr>_correction<wbr></wbr>_factor</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_obs" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._obs">_obs</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_pixel_threshold" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._pixel_threshold">_pixel<wbr></wbr>_threshold</a></code></td>
+    <td>label_map, n_labels = sp.ndimage.label(self._selected_map) # order labels by number of pixels they contain                                  ordered_labels = list(range(1,n_labels+1)) # label 0 is background ordered_labels...</td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_psf" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._psf">_psf</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_px_choice_img_ptr" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._px_choice_img_ptr">_px<wbr></wbr>_choice<wbr></wbr>_img<wbr></wbr>_ptr</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_residual" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._residual">_residual</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_residual_copy" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._residual_copy">_residual<wbr></wbr>_copy</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_rms_threshold" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._rms_threshold">_rms<wbr></wbr>_threshold</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_selected_map" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._selected_map">_selected<wbr></wbr>_map</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_selected_px" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._selected_px">_selected<wbr></wbr>_px</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_stats_best" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._stats_best">_stats<wbr></wbr>_best</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_stats_delta" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._stats_delta">_stats<wbr></wbr>_delta</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_tmp_r" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._tmp_r">_tmp<wbr></wbr>_r</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr>
+</table>
+          
+            <p class="inheritedFrom">
+              Inherited from <code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base">Base</a></code>:
+            </p>
+            <table class="children sortable" id="id13">
+  
+  
+  <tr class="basemethod">
+    
+    <td>Method</td>
+    <td><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#__call__" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.__call__">__call__</a></code></td>
+    <td>Apply algorithm to `obs` and `psf`, parameters are set at instantiation, but can be overwritten for a single call by passing new values via `**kwargs`. Initialises and  iterates the algorithm. Subclasses should overload the `_init_algorithm` and `_iter` methods.</td>
+  </tr><tr class="basemethod">
+    
+    <td>Method</td>
+    <td><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#get_parameters" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.get_parameters">get<wbr></wbr>_parameters</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    <td>Method</td>
+    <td><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#set_parameters" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.set_parameters">set<wbr></wbr>_parameters</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="baseclassvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#final_hooks" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.final_hooks">final<wbr></wbr>_hooks</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="baseclassvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#post_init_hooks" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.post_init_hooks">post<wbr></wbr>_init<wbr></wbr>_hooks</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="baseclassvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#post_iter_hooks" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.post_iter_hooks">post<wbr></wbr>_iter<wbr></wbr>_hooks</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="baseclassvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#pre_init_hooks" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.pre_init_hooks">pre<wbr></wbr>_init<wbr></wbr>_hooks</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="baseclassvariable">
+    
+    <td>Class Variable</td>
+    <td><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#pre_iter_hooks" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.pre_iter_hooks">pre<wbr></wbr>_iter<wbr></wbr>_hooks</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod private">
+    
+    <td>Method</td>
+    <td><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#_set_last_parameters" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base._set_last_parameters">_set<wbr></wbr>_last<wbr></wbr>_parameters</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="baseinstancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#_i" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base._i">_i</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="baseinstancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#_last_parameters" class="internal-link" title="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base._last_parameters">_last<wbr></wbr>_parameters</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr>
+</table>
+            
+
+            
+        </div>
+
+        <div id="childList">
+          <div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.choose_residual_extrema">
+    
+  </a>
+  <a name="choose_residual_extrema">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">choose_residual_extrema</span><span class="function-signature">(self)</span>:
+    
+    <a class="headerLink" href="#choose_residual_extrema" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.choose_residual_extrema">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.get_components">
+    
+  </a>
+  <a name="get_components">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">get_components</span><span class="function-signature">(self) -&gt; <code>np.ndarray</code></span>:
+    
+    <a class="headerLink" href="#get_components" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.get_components">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.get_iters">
+    
+  </a>
+  <a name="get_iters">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">get_iters</span><span class="function-signature">(self)</span>:
+    
+    <a class="headerLink" href="#get_iters" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.get_iters">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="basemethod">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.get_residual">
+    
+  </a>
+  <a name="get_residual">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">get_residual</span><span class="function-signature">(self) -&gt; <code>np.ndarray</code></span>:
+    
+    <a class="headerLink" href="#get_residual" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.get_residual">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.clean_beam_sigma">
+    
+  </a>
+  <a name="clean_beam_sigma">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">clean_beam_sigma</span>: <code>float</code> =
+    
+    <a class="headerLink" href="#clean_beam_sigma" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.clean_beam_sigma">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.fabs_frac_threshold">
+    
+  </a>
+  <a name="fabs_frac_threshold">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">fabs_frac_threshold</span>: <code>float</code> =
+    
+    <a class="headerLink" href="#fabs_frac_threshold" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.fabs_frac_threshold">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.give_best_result">
+    
+  </a>
+  <a name="give_best_result">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">give_best_result</span>: <code>bool</code> =
+    
+    <a class="headerLink" href="#give_best_result" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.give_best_result">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.loop_gain">
+    
+  </a>
+  <a name="loop_gain">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">loop_gain</span>: <code>float</code> =
+    
+    <a class="headerLink" href="#loop_gain" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.loop_gain">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.max_stat_increase">
+    
+  </a>
+  <a name="max_stat_increase">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">max_stat_increase</span>: <code>float</code> =
+    
+    <a class="headerLink" href="#max_stat_increase" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.max_stat_increase">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.min_frac_stat_delta">
+    
+  </a>
+  <a name="min_frac_stat_delta">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">min_frac_stat_delta</span>: <code>float</code> =
+    
+    <a class="headerLink" href="#min_frac_stat_delta" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.min_frac_stat_delta">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.n_iter">
+    
+  </a>
+  <a name="n_iter">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">n_iter</span>: <code>int</code> =
+    
+    <a class="headerLink" href="#n_iter" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.n_iter">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    <div class="interfaceinfo">overrides <code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#n_iter" class="internal-link">aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.n_iter</a></code></div>
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.n_positive_iter">
+    
+  </a>
+  <a name="n_positive_iter">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">n_positive_iter</span>: <code>int</code> =
+    
+    <a class="headerLink" href="#n_positive_iter" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.n_positive_iter">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.noise_std">
+    
+  </a>
+  <a name="noise_std">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">noise_std</span>: <code>float</code> =
+    
+    <a class="headerLink" href="#noise_std" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.noise_std">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.rms_frac_threshold">
+    
+  </a>
+  <a name="rms_frac_threshold">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">rms_frac_threshold</span>: <code>float</code> =
+    
+    <a class="headerLink" href="#rms_frac_threshold" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.rms_frac_threshold">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.threshold">
+    
+  </a>
+  <a name="threshold">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">threshold</span>: <code>float</code> =
+    
+    <a class="headerLink" href="#threshold" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.threshold">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.progress_string">
+    
+  </a>
+  <a name="progress_string">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">progress_string</span> =
+    
+    <a class="headerLink" href="#progress_string" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified.progress_string">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    <div class="interfaceinfo">overrides <code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#progress_string" class="internal-link">aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.progress_string</a></code></div>
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="basemethod private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._init_algorithm">
+    
+  </a>
+  <a name="_init_algorithm">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">_init_algorithm</span><span class="function-signature">(self, obs, psf)</span>:
+    
+    <a class="headerLink" href="#_init_algorithm" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._init_algorithm">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    <div class="interfaceinfo">overrides <code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#_init_algorithm" class="internal-link">aopp_deconv_tool.algorithm.algorithm.deconv.base.Base._init_algorithm</a></code></div>
+    <div><p class="pre">Perform any initialisation that needs to be done before the algorithm runs.</p></div>
+  </div>
+</div><div class="basemethod private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._iter">
+    
+  </a>
+  <a name="_iter">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">_iter</span><span class="function-signature">(self, obs, psf) -&gt; <code>bool</code></span>:
+    
+    <a class="headerLink" href="#_iter" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._iter">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    <div class="interfaceinfo">overrides <code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#_iter" class="internal-link">aopp_deconv_tool.algorithm.algorithm.deconv.base.Base._iter</a></code></div>
+    <div><p class="pre">Perform a single iteration of the algorithm.</p></div>
+  </div>
+</div><div class="basemethod private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._stopping_criteria">
+    
+  </a>
+  <a name="_stopping_criteria">
+    
+  </a>
+  <div class="functionHeader">
+    
+    
+    <span class="py-keyword">def</span> <span class="py-defname">_stopping_criteria</span><span class="function-signature">(self)</span>:
+    
+    <a class="headerLink" href="#_stopping_criteria" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._stopping_criteria">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._accumulator">
+    
+  </a>
+  <a name="_accumulator">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_accumulator</span>: <code>np.ndarray</code> =
+    
+    <a class="headerLink" href="#_accumulator" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._accumulator">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._choose_update_pixels">
+    
+  </a>
+  <a name="_choose_update_pixels">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_choose_update_pixels</span>: <code>Any</code> =
+    
+    <a class="headerLink" href="#_choose_update_pixels" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._choose_update_pixels">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._components">
+    
+  </a>
+  <a name="_components">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_components</span> =
+    
+    <a class="headerLink" href="#_components" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._components">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    <div class="interfaceinfo">overrides <code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#_components" class="internal-link">aopp_deconv_tool.algorithm.algorithm.deconv.base.Base._components</a></code></div>
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._components_best">
+    
+  </a>
+  <a name="_components_best">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_components_best</span>: <code>np.ndarray</code> =
+    
+    <a class="headerLink" href="#_components_best" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._components_best">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._current_cleaned">
+    
+  </a>
+  <a name="_current_cleaned">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_current_cleaned</span>: <code>np.ndarray</code> =
+    
+    <a class="headerLink" href="#_current_cleaned" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._current_cleaned">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._current_convolved">
+    
+  </a>
+  <a name="_current_convolved">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_current_convolved</span>: <code>np.ndarray</code> =
+    
+    <a class="headerLink" href="#_current_convolved" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._current_convolved">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._fabs_threshold">
+    
+  </a>
+  <a name="_fabs_threshold">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_fabs_threshold</span>: <code>float</code> =
+    
+    <a class="headerLink" href="#_fabs_threshold" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._fabs_threshold">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._flux_correction_factor">
+    
+  </a>
+  <a name="_flux_correction_factor">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_flux_correction_factor</span>: <code>Any</code> =
+    
+    <a class="headerLink" href="#_flux_correction_factor" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._flux_correction_factor">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._get_pixel_threshold">
+    
+  </a>
+  <a name="_get_pixel_threshold">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_get_pixel_threshold</span>: <code>Any</code> =
+    
+    <a class="headerLink" href="#_get_pixel_threshold" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._get_pixel_threshold">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._i_best">
+    
+  </a>
+  <a name="_i_best">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_i_best</span>: <code>int</code> =
+    
+    <a class="headerLink" href="#_i_best" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._i_best">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._iter_stat_names">
+    
+  </a>
+  <a name="_iter_stat_names">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_iter_stat_names</span>: <code>tuple[<wbr></wbr>str, <wbr></wbr><span class="rst-variable-ellipsis">...</span>]</code> =
+    
+    <a class="headerLink" href="#_iter_stat_names" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._iter_stat_names">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._iter_stat_record">
+    
+  </a>
+  <a name="_iter_stat_record">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_iter_stat_record</span>: <code>Any</code> =
+    
+    <a class="headerLink" href="#_iter_stat_record" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._iter_stat_record">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._loop_gain_correction_factor">
+    
+  </a>
+  <a name="_loop_gain_correction_factor">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_loop_gain_correction_factor</span>: <code>Any</code> =
+    
+    <a class="headerLink" href="#_loop_gain_correction_factor" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._loop_gain_correction_factor">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._obs">
+    
+  </a>
+  <a name="_obs">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_obs</span>: <code>np.ndarray</code> =
+    
+    <a class="headerLink" href="#_obs" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._obs">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._pixel_threshold">
+    
+  </a>
+  <a name="_pixel_threshold">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_pixel_threshold</span>: <code>Any</code> =
+    
+    <a class="headerLink" href="#_pixel_threshold" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._pixel_threshold">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="pre">label_map, n_labels = sp.ndimage.label(self._selected_map)
+# order labels by number of pixels they contain
+                                
+ordered_labels = list(range(1,n_labels+1)) # label 0 is background
+ordered_labels.sort(key = lambda x: np.count_nonzero(label_map == x), reverse=True)
+
+self._selected_map *= False
+for i in range(n_labels):
+        if np.count_nonzero(label_map == ordered_labels[i]) &gt;= min_region_size:
+                self._selected_map |= (label_map == ordered_labels[i])</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._psf">
+    
+  </a>
+  <a name="_psf">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_psf</span>: <code>np.ndarray</code> =
+    
+    <a class="headerLink" href="#_psf" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._psf">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._px_choice_img_ptr">
+    
+  </a>
+  <a name="_px_choice_img_ptr">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_px_choice_img_ptr</span>: <code>Pointer</code> =
+    
+    <a class="headerLink" href="#_px_choice_img_ptr" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._px_choice_img_ptr">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._residual">
+    
+  </a>
+  <a name="_residual">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_residual</span> =
+    
+    <a class="headerLink" href="#_residual" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._residual">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    <div class="interfaceinfo">overrides <code><a href="aopp_deconv_tool.algorithm.algorithm.deconv.base.Base.html#_residual" class="internal-link">aopp_deconv_tool.algorithm.algorithm.deconv.base.Base._residual</a></code></div>
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._residual_copy">
+    
+  </a>
+  <a name="_residual_copy">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_residual_copy</span>: <code>np.ndarray</code> =
+    
+    <a class="headerLink" href="#_residual_copy" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._residual_copy">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._rms_threshold">
+    
+  </a>
+  <a name="_rms_threshold">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_rms_threshold</span>: <code>float</code> =
+    
+    <a class="headerLink" href="#_rms_threshold" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._rms_threshold">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._selected_map">
+    
+  </a>
+  <a name="_selected_map">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_selected_map</span>: <code>np.ndarray</code> =
+    
+    <a class="headerLink" href="#_selected_map" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._selected_map">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._selected_px">
+    
+  </a>
+  <a name="_selected_px">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_selected_px</span>: <code>np.ndarray</code> =
+    
+    <a class="headerLink" href="#_selected_px" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._selected_px">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._stats_best">
+    
+  </a>
+  <a name="_stats_best">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_stats_best</span>: <code>np.ndarray</code> =
+    
+    <a class="headerLink" href="#_stats_best" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._stats_best">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._stats_delta">
+    
+  </a>
+  <a name="_stats_delta">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_stats_delta</span>: <code>np.ndarray</code> =
+    
+    <a class="headerLink" href="#_stats_delta" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._stats_delta">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._tmp_r">
+    
+  </a>
+  <a name="_tmp_r">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_tmp_r</span>: <code>np.ndarray</code> =
+    
+    <a class="headerLink" href="#_tmp_r" title="aopp_deconv_tool.algorithm.algorithm.deconv.clean_modified.CleanModified._tmp_r">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div>
+        </div>
+      
+      </div>
+    </div>
+
+    <footer class="navbar navbar-default">
+    <hr />
+    
+    
+    <div class="container">
+      <a href="index.html">API Documentation</a> for aopp_obs_toolchain::aopp_deconv_tool,
+    generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a>
+      24.3.3 at 2024-08-13 12:42:28.
+    </div>
+    
+    <script src="ajax.js" type="text/javascript"></script>
+    <script src="searchlib.js" type="text/javascript"></script>
+    <script src="search.js" type="text/javascript"></script>
+  
+  </footer>
+  
+    <script src="pydoctor.js" type="text/javascript"></script>
+
+  </body>
+</html>

@@ -1,11 +1,15 @@
 
 
-from typing import Callable
+from typing import Callable, TypeVar
 
 import numpy as np
 import scipy as sp
 
 import matplotlib.pyplot as plt
+
+type N = TypeVar('N',bound=int)
+type N_plus_one = TypeVar('N',bound=int)
+
 
 def difference_of_scale_filters(
 		data : np.ndarray, 
@@ -29,7 +33,7 @@ def wavelet_decomposition(
 		delta_function_scale = 1,
 		ensure_sizes_are_odd=True,
 		**kwargs
-	) -> np.ndarray['N+1']:
+	) -> np.ndarray['N_plus_one']:
 	
 	hi_scale = min(int(np.floor(np.log2(s))) for s in data.shape) if hi_scale is None else hi_scale
 	wavelet_planes = np.zeros((hi_scale - lo_scale+2, *data.shape), dtype=data.dtype)
