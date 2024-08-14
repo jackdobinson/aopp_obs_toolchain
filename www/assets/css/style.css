@@ -40,6 +40,16 @@ pre {
 	border-color: var(--secondary-bg-color);
 	width: auto;
 	overflow: scroll;
+	
+	code {
+		background-color: inherit;
+	}
+}
+code {
+	padding-top: 0.8ex;
+	padding-left: 0.5ex;
+	padding-right: 0.5ex;
+	background-color: #F7F7F7;
 }
 
 
