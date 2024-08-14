@@ -241,7 +241,12 @@ END_OF_FILE
 
 ## Running Tests ##
 
-NOTE: Tests are currently being reorganised to better test blocks of functionality across the project. Currently the tests are not acting as the "Canary in the coal mine" like they should be. At the moment, passing the tests does not mean the program will complete sucessfully, or at all. Therefore, run [the examples]({{site.baseurl}}/examples/#examples) alongside the tests for now.
+{%
+	include message.html
+	level="note"
+	message='Tests are currently being reorganised to better test blocks of functionality across the project. Currently the tests are not acting as the "Canary in the coal mine" like they should be. At the moment, passing the tests does not mean the program will complete sucessfully, or at all. Therefore, run <a href="{{site.baseurl}}/examples/#examples">the examples</a> alongside the tests for now.'
+%}
+NOTE: 
 
 The tests are in the directory `<REPO_DIR>/tests`, there is a package `<REPO_DIR>/scientest` which is a testing tool. The module `<REPO_DIR>/scientest/run.py` will search for tests and run them one by one. It tries to ensure that tests do not have side-effects. 
 
