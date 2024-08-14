@@ -1,41 +1,48 @@
 details.message {
+	margin: 1em;
+	padding: 0.5em;
 	border-style: solid;
-	border-width: 2px;
-	font-size: small;
+	border-width: 0.5em;
+	font-size: normal;
 	font-weight: normal;
+	border-radius: 0.5em;
 	
 	> summary {
+		font-size: large;
 		font-weight: bold;
+		text-transform: uppercase;
+		
 	}
 		
-	.note {
-		border-color: green;
+	&.note {
+		border-color: #33CC33;
 		background-color: white;
 		color: black;
 	}
 	
-	.info, .information {
-		border-color: black;
+	&.info, &.information {
+		border-color: #3333CC;
 		background-color: white;
 		color: black;
 	}
 	
-	.warn, .warning {
-		border-color: yellow;
+	&.warn, &.warning {
+		border-color: #CCCC33;
 		background-color: white;
 		color: black;
 	}
 	
-	.err, .error {
-		border-color: red;
+	&.err, &.error {
+		border-color: #CC3333;
 		background-color: white;
 		color: black;
 	}
 	
-	.crit, .critical {
-		border-color: purple;
-		background-color: #FFAAAA;
+	&.crit, &.critical {
+		border-color: #CC33CC;
+		background-color: #FFCCCC;
 		color: black;
+		font-weight: bold;
 	}
 	
 
