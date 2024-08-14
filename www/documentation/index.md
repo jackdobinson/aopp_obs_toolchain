@@ -1,12 +1,10 @@
 # Documentation #
 
-In addition to this overview of the command-line scripts, there is [Doxygen documentation](./doxygen/html/index.html) and [pydoctor](./pydoc/index.html) documentation. These go into detail on the functions, classes, members, and methods in the package.
+In addition to this overview of the command-line scripts, there is [Doxygen documentation](./doxygen/html/index.html) and [pydoctor](./pydoctor/index.html) documentation. These go into detail on the functions, classes, members, and methods in the package.
 
 ## Command-line Scripts <a id="command-line-scripts"></a> ##
 
 When running command-line scripts, use the `-h` option to see the help message. The appendix has a [overview of help message syntax]({{site.baseurl}}/resources#command-line-script-help-message-syntax).
-
-The examples in this section use [example data stored on an external site](TODO: ADD LINK TO EXAMPLE DATA).
 
 See the appendix for a [bash script that performs all steps on a given dataset]({{site.baseurl}}/resources#full-deconvolution-process)
 
