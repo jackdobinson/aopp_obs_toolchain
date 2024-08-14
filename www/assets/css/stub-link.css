@@ -1,0 +1,21 @@
+.stub-link{
+	position: relative;
+	color: #CC3333;
+	text-decoration: underline;
+	
+	.stub-link-hover{
+		visibility: hidden;
+		position:absolute;
+		z-index: 1;
+		background-color: white;
+		color: black;
+		text-decoration: none;
+		border: 0.2em;
+		padding: 0.2em;
+		font-size: smaller;
+	}
+	
+	.stub-link-hover:hover{
+		visibility: visible;
+	}
+}
