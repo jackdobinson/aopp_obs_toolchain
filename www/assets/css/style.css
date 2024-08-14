@@ -54,6 +54,7 @@ pre, code {
 	font-family: courier, monospace;
 	tab-size: 4;
 	font-size: normal;
+	font-weight: normal;
 }
 pre {
 	background-color: var(--code-bg-color);
