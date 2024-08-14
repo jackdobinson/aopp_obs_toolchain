@@ -7,6 +7,9 @@
 
 /* define constants for background colours etc. here */
 :root {
+	--site-bg-color: #FFFFFF;
+	--oob-bg-color: #F7F7FF;
+	
 	--main-fg-color: #FFFFFF;
 	--main-bg-color: #333333;
 	--main-selected-bg-color: #555555;
@@ -19,6 +22,11 @@
 	--subheading-font-size: large;
 	
 	--table-of-contents-bg-color: #FFFFFFEE;
+	--code-bg-color: #F7F7F7;
+}
+/* Styling defaults for everything */
+* {
+	max-width: 60rem;
 }
 
 /* Defaults for html */
@@ -26,9 +34,11 @@ html {
 	position:relative;
 	left: 50%;
     transform: translate(-50%);
+	background-color: var(--oob-bg-color)
 }
 /* Defaults for body */
 body {
+	background-color: var(--site-bg-color);
 	margin: 0px;
 	padding: 4px;
 	
@@ -36,16 +46,8 @@ body {
 	font-family: Didcot;
 	
 	min-height: calc(100vh - 8px);
-	
-	border-left-style: solid;
-	border-right-style: solid;
-	border-width: 1px;
-	border-color: var(--secondary-bg-color);
 }
-/* Styling defaults for everything */
-* {
-	max-width: 60rem;
-}
+
 
 /* Styling defaults for preformatted-text and code */
 pre, code {
@@ -54,8 +56,10 @@ pre, code {
 	font-size: normal;
 }
 pre {
-	padding: 1em;
-	border: solid;
+	background-color: var(--code-bg-color);
+	margin-inline: 1em;
+	padding-block: 2ex;
+	border-left: solid;
 	border-width: 2px;
 	border-color: var(--secondary-bg-color);
 	width: auto;
@@ -69,8 +73,21 @@ code {
 	padding-top: 0.8ex;
 	padding-left: 0.5ex;
 	padding-right: 0.5ex;
-	background-color: #F7F7F7;
+	background-color: var(--code-bg-color);
 }
+p:not(ul p, dl p, ol p, table p) {
+	margin-inline: 1em;
+}
+
+/* padding of lists, pad first level differently to nested lists*/
+ul, ol, dl {
+	padding-left: 1em;
+}
+ul:not(ul ul), ol:not(ol ol), dl:not(dl dl) {
+	padding-left: 2em;
+}
+
+
 
 
 /* Footer default styling */
@@ -178,7 +195,6 @@ nav.breadcrumb {
 		margin: 0 0 0 auto;
 		width: 18em;
 		height:5ex;
-		padding: 0em 0.5em 0em 0em;
 		border-style: solid;
 		border-width: 1px;
 		border-color: var(--secondary-bg-color);
@@ -189,6 +205,7 @@ nav.breadcrumb {
 		}
 		.table-of-contents-heading:after {
 			content: "  \25C1";
+			padding-right: 0.3em;
 		}
 	}
 	
@@ -332,10 +349,8 @@ nav.breadcrumb {
 	h2 {
 		background-color: var(--secondary-bg-color);
 	}
-	h3:after {
-		content: "";
-		display:block;
-		border:2px solid var(--secondary-bg-color);
+	h3 {
+		border-bottom:0.4ex solid var(--secondary-bg-color);
 	}
 	h4 {
 		font-weight: bold;
