@@ -1,11 +1,15 @@
 dl {
 	dt {
-		font-weight: bold;
+		font-weight: normal;
 		margin-top: 0.5em;
+		margin-left: 0px;
 	}
 	dd {
 		font-weight: normal;
-		margin-left: 1em;
+		margin-left: 0.5em;
+		padding-left: 0.5em;
 		margin-bottom: 0.5em;
+		border-left: solid;
+		border-color: #CCCCCC;
 	}
 }
