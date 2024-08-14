@@ -1,6 +1,7 @@
 
 /* imports */
 @import "syntax-highlighting.css";
+@import "message-style.css";
 
 /* define constants for background colours etc. here */
 :root {

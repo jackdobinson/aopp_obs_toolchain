@@ -1,0 +1,42 @@
+details.message {
+	border-style: solid;
+	border-width: 2px;
+	font-size: small;
+	font-weight: normal;
+	
+	> summary {
+		font-weight: bold;
+	}
+		
+	.note {
+		border-color: green;
+		background-color: white;
+		color: black;
+	}
+	
+	.info, .information {
+		border-color: black;
+		background-color: white;
+		color: black;
+	}
+	
+	.warn, .warning {
+		border-color: yellow;
+		background-color: white;
+		color: black;
+	}
+	
+	.err, .error {
+		border-color: red;
+		background-color: white;
+		color: black;
+	}
+	
+	.crit, .critical {
+		border-color: purple;
+		background-color: #FFAAAA;
+		color: black;
+	}
+	
+
+}
