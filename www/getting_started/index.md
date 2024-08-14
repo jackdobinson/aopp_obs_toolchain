@@ -173,16 +173,20 @@ When operating on a FITS file there are often multiple extensions, the axes orde
 ```
 path_to_fits_file{ext}[slice0,slice1,...,sliceM]{axes_type_1:(ax11,ax12,...,ax1L),...,axes_type_N:(axN1,axN2,...,axNL)}
 ```
-* `path_to_fits_file` : str
-  - (required) A string that represents  the path to the FITS file on the file system
-* `ext` : str \| int
-  - (optional) A string or integer that specifies the extension of the FITS file to operate upon
-* `sliceM` : slice
-  - (optional) A slice (in python slice syntax) that chooses a sub-set of the of the data in the FITS file extension.
-* `axes_type_N` : str
-  - (optional) A string that tells a script how the axes in the FITS file correspond to physical quantities. These can often be automatically found.
-* `(axN1, ..., axNL)` : (int, ..., int)
-  - (optional) A tuple (in python tuple syntax) of integers that denotes the axes (in C ordering, **not** FORTRAN ordering) that correspond to the physical quantities described by `axes_type_N`. These can often be found automatically, and even when not can be specified without the corresponding `axes_type_N` much of the time).
+`path_to_fits_file` : str
+: (required) A string that represents  the path to the FITS file on the file system
+
+`ext` : str \| int
+: (optional) A string or integer that specifies the extension of the FITS file to operate upon
+
+`sliceM` : slice
+: (optional) A slice (in python slice syntax) that chooses a sub-set of the of the data in the FITS file extension.
+
+`axes_type_N` : str
+: (optional) A string that tells a script how the axes in the FITS file correspond to physical quantities. These can often be automatically found.
+
+`(axN1, ..., axNL)` : (int, ..., int)
+: (optional) A tuple (in python tuple syntax) of integers that denotes the axes (in C ordering, **not** FORTRAN ordering) that correspond to the physical quantities described by `axes_type_N`. These can often be found automatically, and even when not can be specified without the corresponding `axes_type_N` much of the time).
 
 In words, a *fits specifier* consists of: a string that describes which FITS file to load; the extension (i.e., backplane) name or number to use enclosed in curly brackets; the slices (i.e., sub-regions) that should be operated upon in [python slice syntax]({{site.baseurl}}/resources#python-slice-syntax); and the data axes to operate on as a [tuple]({{site.baseurl}}/resources#python-tuple-syntax) or as a [python dictionary](https://docs.python.org/3/tutorial/datastructures.html#dictionaries) with strings as keys and [tuples]({{site.baseurl}}/resources#python-tuple-syntax) as values.
 
