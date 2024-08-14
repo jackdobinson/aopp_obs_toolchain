@@ -3,6 +3,7 @@
 @import "syntax-highlighting.css";
 @import "message-style.css";
 @import "stub-link.css";
+@import "definition-list.css";
 
 /* define constants for background colours etc. here */
 :root {

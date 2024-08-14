@@ -4,18 +4,29 @@
 	text-decoration: underline;
 	
 	.stub-link-hover{
-		visibility: hidden;
 		position:absolute;
 		z-index: 1;
 		background-color: white;
+		
+		padding: 4px;
+		top: -2em;
+		
+		border-style: solid;
+		border-width: 2px;
+		border-color: #CC3333;
+		border-style: solid;
+				
 		color: black;
 		text-decoration: none;
-		border: 0.2em;
-		padding: 0.2em;
-		font-size: smaller;
+		font-size: 75%;
+		white-space: nowrap;
+		
+		visibility: hidden;
 	}
-	
-	.stub-link-hover:hover{
+}
+
+.stub-link:hover{
+	.stub-link-hover{
 		visibility: visible;
 	}
 }

@@ -1,0 +1,9 @@
+dl {
+	dt {
+		font-weight: bold;
+	}
+	dd {
+		font-weight: normal;
+		margin-left: 0px;
+	}
+}
