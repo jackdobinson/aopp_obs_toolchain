@@ -244,7 +244,7 @@ END_OF_FILE
 {%
 	include message.html
 	level="note"
-	message='Tests are currently being reorganised to better test blocks of functionality across the project. Currently the tests are not acting as the "Canary in the coal mine" like they should be. At the moment, passing the tests does not mean the program will complete sucessfully, or at all. Therefore, run <a href="{{site.baseurl}}/examples/#examples">the examples</a> alongside the tests for now.'
+	message="Tests are currently being reorganised to better test blocks of functionality across the project. Currently the tests are not acting as the \"Canary in the coal mine\" like they should be. At the moment, passing the tests does not mean the program will complete sucessfully, or at all. Therefore, run <a href=\"{{site.baseurl}}/examples/#examples\">the examples</a> alongside the tests for now."
 %}
 NOTE: 
 
