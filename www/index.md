@@ -15,9 +15,9 @@ The toolchain is hosted on [github](https://github.com/jackdobinson/aopp_obs_too
 
 ## Toolchain Structure ##
 
-* AOPP Obs Toolchain
-  : Top level collection of tools and packages.
+AOPP Obs Toolchain
+: Top level collection of tools and packages.
   
-  - AOPP Deconv Tool
-    : Apply the Modified CLEAN algorithm to observations in the FITS file format
+  AOPP Deconv Tool
+  : Apply the Modified CLEAN algorithm to observations in the FITS file format
 

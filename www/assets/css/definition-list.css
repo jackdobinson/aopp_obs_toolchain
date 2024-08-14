@@ -4,6 +4,7 @@ dl {
 	}
 	dd {
 		font-weight: normal;
-		margin-left: 0px;
+		margin-left: 2em;
+		margin-bottom: 1em;
 	}
 }
