@@ -52,7 +52,7 @@ body {
 
 /* Styling defaults for preformatted-text and code */
 pre, code {
-	font-family: courier, monospace;
+	font-family: courier-new, monospace;
 	tab-size: 4;
 	font-size: normal;
 	font-weight: normal;
@@ -71,12 +71,15 @@ pre {
 		background-color: inherit;
 	}
 }
+
 code {
-	padding-top: 0.8ex;
-	padding-left: 0.5ex;
-	padding-right: 0.5ex;
+	position: static;
+	display: inline;
+	margin: 0px;
+	padding-inline: 0.5ex;
 	background-color: var(--code-bg-color);
 }
+
 p:not(ul p, dl p, ol p, table p) {
 	margin-inline: 1em;
 }
