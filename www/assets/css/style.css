@@ -21,10 +21,30 @@
 	--table-of-contents-bg-color: #FFFFFFEE;
 }
 
+/* Defaults for html */
+html {
+	position:relative;
+	left: 50%;
+    transform: translate(-50%);
+}
+/* Defaults for body */
+body {
+	margin: 0px;
+	padding: 4px;
+	
+	font-size: normal;
+	font-family: Didcot;
+	
+	min-height: calc(100vh - 8px);
+	
+	border-left-style: solid;
+	border-right-style: solid;
+	border-width: 1px;
+	border-color: var(--secondary-bg-color);
+}
 /* Styling defaults for everything */
 * {
-	font-family: Didcot;
-	/*font-family: helvetica, sans-serif;*/
+	max-width: 60rem;
 }
 
 /* Styling defaults for preformatted-text and code */
