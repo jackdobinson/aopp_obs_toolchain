@@ -23,6 +23,7 @@
 	
 	--table-of-contents-bg-color: #FFFFFFEE;
 	--code-bg-color: #F7F7F7;
+	--code-border-color: #EEEEEE;
 }
 /* Styling defaults for everything */
 * {
@@ -61,8 +62,8 @@ pre {
 	margin-inline: 1em;
 	padding-block: 2ex;
 	border-left: solid;
-	border-width: 2px;
-	border-color: var(--secondary-bg-color);
+	border-width: 1em;
+	border-color: var(--code-border-color);
 	width: auto;
 	overflow: scroll;
 	
