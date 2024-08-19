@@ -281,6 +281,9 @@ def run(
 		hdu_residual
 	])
 	hdul_output.writeto(output_path, overwrite=True)
+	
+	_lgr.info(f'Deconvolution completed, output written to "{output_path}"')
+	
 
 def parse_args(argv):
 	import os
@@ -289,9 +292,15 @@ def parse_args(argv):
 	
 	DEFAULT_OUTPUT_TAG = '_deconv'
 	DESIRED_FITS_AXES = ['CELESTIAL']
+	OUTPUT_COLUMNS=80
+	try:
+		OUTPUT_COLUMNS = os.get_terminal_size().columns - 30
+	except Exception:
+		pass
+	
 	FITS_SPECIFIER_HELP = aopp_deconv_tool.text.wrap(
 		aph.fits.specifier.get_help(DESIRED_FITS_AXES).replace('\t', '    '),
-		os.get_terminal_size().columns - 30
+		OUTPUT_COLUMNS
 	)
 	DECONV_METHOD_DEFAULT='clean_modified'
 	

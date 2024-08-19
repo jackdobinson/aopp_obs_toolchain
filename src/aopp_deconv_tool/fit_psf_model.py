@@ -329,9 +329,15 @@ def parse_args(argv):
 	
 	DEFAULT_OUTPUT_TAG = '_modelled'
 	DESIRED_FITS_AXES = ['CELESTIAL']
+	OUTPUT_COLUMNS=80
+	try:
+		OUTPUT_COLUMNS = os.get_terminal_size().columns - 30
+	except Exception:
+		pass
+	
 	FITS_SPECIFIER_HELP = aopp_deconv_tool.text.wrap(
 		aph.fits.specifier.get_help(DESIRED_FITS_AXES).replace('\t', '    '),
-		os.get_terminal_size().columns - 30
+		OUTPUT_COLUMNS
 	)
 	
 	class ArgFormatter (argparse.RawTextHelpFormatter, argparse.ArgumentDefaultsHelpFormatter, argparse.MetavarTypeHelpFormatter):

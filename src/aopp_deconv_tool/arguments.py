@@ -52,7 +52,11 @@ def parse_args_of_dataclass(
 	
 	parser.error = on_parser_error
 	
-	max_string_length = os.get_terminal_size().columns - 30
+	max_string_length = 50
+	try:
+		max_string_length = os.get_terminal_size().columns - 30
+	except Exception:
+		pass
 	
 	# always want a 'defaut' value, but will get it from the field, but add it here so
 	# padding is correct

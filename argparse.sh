@@ -99,12 +99,11 @@ function print_usage() {
 		USAGE_STR+=("$SHORT_STR")
 	
 		DESCRIPTION_STR+=("$INFO_STR")
-		DESCRIPTION_STR+=("    ${!ARG_INFO_ARRAY_DESCRIPTION}")
+		DESCRIPTION_STR+=("    ${!ARG_INFO_ARRAY_DESCRIPTION}\n")
 	
 	done
 	
 	DESCRIPTION_STR+=(
-		" "
 		" "
 		'Keyword Arguments:'
 		" "
@@ -174,7 +173,7 @@ function print_usage() {
 		USAGE_STR+=("${SHORT_STR}]")
 		
 		DESCRIPTION_STR+=("$INFO_STR")
-		DESCRIPTION_STR+=("    ${!ARG_INFO_ARRAY_DESCRIPTION}")
+		DESCRIPTION_STR+=("    ${!ARG_INFO_ARRAY_DESCRIPTION}\n")
 	
 	done
 	
@@ -296,7 +295,7 @@ function argparse() {
 				
 				case "${!ARG_INFO_ARRAY_TYPE}" in
 					"flag")
-						VALUE=""
+						VALUE="$_ARG"
 						if [ -n "${!ARG_INFO_ARRAY_ACTION}" ]; then
 							${!ARG_INFO_ARRAY_ACTION}
 						fi
@@ -325,6 +324,10 @@ function argparse() {
 		fi
 		
 		#echo "MUST BE POS ARG ${_N_POS_ARGS_FOUND}"
+		echo "_ARG = ${_ARG}"
+		echo "_N_POS_ARGS_FOUND = ${_N_POS_ARGS_FOUND}"
+		echo "POS_ARGS[${_N_POS_ARGS_FOUND}] = ${POS_ARGS[${_N_POS_ARGS_FOUND}]}"
+		
 		ARGS["${POS_ARGS[${_N_POS_ARGS_FOUND}]}"]=${_ARG}
 		_N_POS_ARGS_FOUND=$(($_N_POS_ARGS_FOUND+1))
 			

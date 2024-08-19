@@ -227,8 +227,12 @@ class CleanModified(Base):
 		# Check thresholds
 		_lgr.debug(f'{self._rms_threshold=:0.3g} rms = {self._iter_stat_record[self._i,1]:0.3g}')
 		_lgr.debug(f'{self._fabs_threshold=:0.3g} fabs = {self._iter_stat_record[self._i,0]:0.3g}')
-		if (self._iter_stat_record[self._i,1] < self._rms_threshold)  or (self._iter_stat_record[self._i,0] < self._fabs_threshold):
-			self.progress_string = f"Ended at {self._i} iterations: Absolute brightest pixel, or root mean squared statistic have dropped below set threshold."
+		if (self._iter_stat_record[self._i,1] < self._rms_threshold):
+			self.progress_string = f"Ended at {self._i} iterations: Root mean squared statistic of residual has dropped below set threshold defined in `rms_frac_threshold` parameter."
+			return(False)
+			
+		if (self._iter_stat_record[self._i,0] < self._fabs_threshold):
+			self.progress_string = f"Ended at {self._i} iterations: Absolute brightest pixel value of residual has dropped below set threshold defined in `fabs_frac_threshold` parameter."
 			return(False)
 	
 	
@@ -238,7 +242,7 @@ class CleanModified(Base):
 			if name != 'UNUSED':
 				_lgr.debug(f'{new_best=} {this_stat=} {best_stat=}')
 				new_best &= this_stat <= best_stat
-		# If saved statistics are better, save the current state. 
+		# If all current statistics are better, save the current state. 
 		# Else, work out the maximum fractional increase . If it's 
 		# larger than a threshold terminate iteration and return the best saved result
 		if new_best:
@@ -246,10 +250,11 @@ class CleanModified(Base):
 			self._i_best = self._i
 			self._stats_best = self._iter_stat_record[self._i]
 		else:
-			max_increase_frac = np.nanmax((self._iter_stat_record[self._i] - self._stats_best)/self._stats_best)
-			_lgr.debug(f'{max_increase_frac=}')
-			if max_increase_frac >= self.max_stat_increase:
-				self.progress_string = f"Ended at {self._i} iterations: A statistic has increased from the best seen statistic beyond set threshold."
+			increase_frac = (self._iter_stat_record[self._i] - self._stats_best)/self._stats_best
+			increase_frac_idxs_above_threshold = np.argwhere(increase_frac > self.max_stat_increase)
+			_lgr.debug(f'{increase_frac=}')
+			if increase_frac_idxs_above_threshold.size > 0:
+				self.progress_string = f"Ended at {self._i} iterations: Statistics {self._iter_stat_names[increase_frac_idxs_above_threshold]} have increased from the best seen statistic beyond set threshold defined by `max_stat_increase` parameter."
 				return False
 		
 		
@@ -263,7 +268,7 @@ class CleanModified(Base):
 					_lgr.debug(f'{name} fractional standard deviation {self._stats_delta[j]}')
 			_lgr.debug(f'{self.min_frac_stat_delta=}')
 			if all([_std < self.min_frac_stat_delta for j, _std in enumerate(self._stats_delta) if self._iter_stat_names[j] != 'UNUSED']):
-				self.progress_string = f"Ended at {self._i} iterations: Standard deviation of statistics in last {n_lookback} steps are all below minimum fraction."
+				self.progress_string = f"Ended at {self._i} iterations: Standard deviation of statistics in last {n_lookback} steps are all below minimum fraction as defined in `min_frac_stat_delta` parameter."
 				return False
 				
 		return True

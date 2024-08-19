@@ -273,6 +273,10 @@ def parse(specifier : str, axes_types : list[str]):
 		else:
 			if slices is None:
 				slices = tuple(slice(None) for _ in range(hdr['NAXIS']))
+			else:
+				#slices = tuple(slices[i] if (i < len(slices)) else slice(None) for i in range(hdr['NAXIS']))
+				pass
+				
 			if axes is None:
 				axes = {}
 				for ax_name in axes_types:
@@ -281,5 +285,5 @@ def parse(specifier : str, axes_types : list[str]):
 	for k,v in axes.items():
 		if len(v) == 0:
 			raise RuntimeError(f'Could not work out axes "{k}" automatically, please specify axes explicitly')
-			
+	
 	return FitsSpecifier(path, ext, slices, axes)

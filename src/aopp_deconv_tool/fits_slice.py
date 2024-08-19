@@ -24,14 +24,16 @@ _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 def run(
 		fits_spec : FitsSpecifier,
-		output_path : Path|str
+		output_path : Path|str,
+		#squeeze : bool = False
 	):
 	
 	with fits.open(Path(fits_spec.path)) as hdul:
 		hdu = hdul[fits_spec.ext]
 		original_data_type = hdu.data.dtype
+		original_data_shape = hdu.data.shape
 		data = hdu.data[fits_spec.slices]
-		
+		assert data.size > 0, f"Slice selects no data elements: slice={fits_spec.slices}; data_shape={original_data_shape}"
 		_lgr.debug(f'{data.shape=}')
 		hdr = hdu.header
 		hdr.update(aph.fits.header.DictReader(
@@ -46,11 +48,14 @@ def run(
 		ax = AxesOrdering(axis, hdr['NAXIS'], 'numpy')
 		if ax.numpy >= len(fits_spec.slices):
 			continue
+		
 		aph.fits.header.set_axes_transform(
 			hdr,
 			axis = ax.fits,
 			reference_pixel = int(hdr[f'CRPIX{ax.fits}']) - fits_spec.slices[ax.numpy].start
 		)
+		
+		
 	
 	
 	hdu_sliced = fits.PrimaryHDU(
@@ -92,6 +97,12 @@ def parse_args(argv):
 		type=str,
 		metavar='FITS Specifier',
 	)
+	
+	#parser.add_argument(
+	#	'--squeeze',
+	#	help="If present, will remove any axes that end up with only 1 entry",
+	#	action='store_true',
+	#)
 	
 	parser.add_argument(
 		'-o', 
@@ -137,4 +148,5 @@ if __name__ == '__main__':
 	run(
 		args.fits_spec, 
 		args.output_path, 
+		#squeeze = args.squeeze
 	)
