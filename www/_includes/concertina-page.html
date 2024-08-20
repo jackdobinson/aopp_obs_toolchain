@@ -4,10 +4,10 @@
 	<div>
 		<ul class="tab-bar">
 			{% for tab in include.tabs %}
-				<li onclick="this.parentNode.nextSibling.setAttribute('src', '{{tab.url}}')">{{tab.name}}</li>
+				<li onclick="this.parentNode.nextSibling.setAttribute('src', '{{site.baseurl}}/{{tab.url}}')">{{tab.name}}</li>
 			{% endfor %}
 		</ul>
-		<iframe src="{% include.tabs[0].url %}"></iframe>
+		<iframe src="{{site.baseurl}}/{% include.tabs[0].url %}"></iframe>
 	</div>
 	
 </details>
