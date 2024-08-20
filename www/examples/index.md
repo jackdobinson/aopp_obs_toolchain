@@ -13,4 +13,5 @@ examples_to_embed:
 
 The data for examples in this section are hosted on {% include stub-link.html text="zenodo" %}.
 
-{% include concertina-page.html heading="<h2>{{site.baseurl}}/{{examples_to_embed[0].name}}</h2>" tabs=examples_to_embed[0].versions %}
+{% assign example_1_versions = examples_to_embed[0].versions %}
+{% include concertina-page.html heading="<h2>{{site.baseurl}}/{{examples_to_embed[0].name}}</h2>" tabs=example_1_versions %}
