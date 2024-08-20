@@ -124,8 +124,6 @@ $(head -10 ./figures/std-file-header.txt)
 
 The above shows that the standard star observation does not meet the PSF requirements. The image shows that a single pixel has a value larger than one, and the \`NAXIS1\` and \`NAXIS2\` keys in the header information show that at least one of the dimensions is not odd.
 
-## Normalising the PSF ##
-
 Thankfully, there is a script included in the package that will normalise a PSF so it obeys the constraints we require. The script is the \`aopp_deconv_tool.psf_normalise module\`. We can invoke it on the command-line, we will redirect the output into a log file to avoid cluttering the terminal.
 ---MD
 
