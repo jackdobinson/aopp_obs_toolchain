@@ -1,6 +1,13 @@
 <details class="concertina-page {{include.class | default ''}}" ontoggle="this.scrollIntoView()">
 	<summary>{{include.heading}}</summary>
 	
-	<iframe src="{{include.url}}"></iframe>
+	<div>
+		<ul class="tab-bar">
+			{% for tab in include.tabs %}
+				<li onclick="this.parentNode.nextSibling.setAttribute('src', '{{tab.url}}')">{{tab.name}}</li>
+			{% endfor %}
+		</ul>
+		<iframe src="{% include.tabs[0].url %}"></iframe>
+	</div>
 	
 </details>

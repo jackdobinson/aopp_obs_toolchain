@@ -1,8 +1,16 @@
+---
+examples_to_embed:
+  - name: Deconvolution of a single wavelength
+    versions:
+      - name: Python
+        url: /examples/jupyter/example_1.html
+      - name: Bash
+        url: /examples/jupyter/example_1_bash.html
+---
+
+
 # Examples #
 
 The data for examples in this section are hosted on {% include stub-link.html text="zenodo" %}.
 
-{% capture embed_url %}
-{{site.baseurl}}/examples/jupyter/example_1.html
-{% endcapture %}
-{% include concertina-page.html heading="<h2>Deconvolution of a singe wavelength FITS file</h2>" url=embed_url %}
+{% include concertina-page.html heading="<h2>{{site.baseurl}}/{{examples_to_embed[0].name}}</h2>" tabs=examples_to_embed[0].versions %}

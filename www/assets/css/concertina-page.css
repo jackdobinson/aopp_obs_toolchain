@@ -2,11 +2,28 @@ details.concertina-page{
 	height:auto;
 	width:auto;
 	margin-right: 8px;
+	
+	summary {
+    	list-style-type: "\25B7\00A0";
+	}	
+	> h1,h2,h3,h4,h5,h6{
+		display: inline-block;
+	}
+	summary:hover{
+		list-style-type: "\25B6\00A0";
+	}
 }
 details.concertina-page[open]{
 	position:relative;
 	height:90vh;
 	width:auto;
+	
+	summary {
+    	list-style-type: "\25BD\00A0";
+	}
+	summary:hover{
+		list-style-type: "\25BC\00A0";
+	}
 }
 details iframe{
 	position:static;
