@@ -20,10 +20,9 @@ sed -E \
 	-e '1 i\set -o errexit -o pipefail' \
 	-e '/^#:begin\{HIDE\}/,/^#:end\{HIDE\}/d' \
 	-e '/^#:HIDE/,+1d' \
-	-e 's/^: << ---MD/: << ---MD\n/' \
 	-e 's/^---MD/\n---MD/' \
 	-e 's/^#:begin\{CELL\}/: << "---CELL"\n\`\`\`bash/' \
-	-e 's/^#:end\{CELL\}/\`\`\`\n---CELL/' \
+	-e 's/^#:end\{CELL\}/\`\`\`\n\n---CELL/' \
 	-e "s/^: (<<.*$)/cat \1/" \
 	${SCRIPT_TO_BUILD} | bash | cat > ${SCRIPT_AS_MD}
 #-e "s/^: (<<.*\n)/cat \1 | ${SCRIPT_AS_MD}/" \

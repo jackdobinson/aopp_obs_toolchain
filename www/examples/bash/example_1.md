@@ -1,4 +1,3 @@
-
 ---
 layout: bare
 ---
@@ -100,3 +99,4 @@ Thankfully, there is a script included in the package that will normalise a PSF 
 ```bash
 python -m aopp_deconv_tool.psf_normalise ${STD_FILE} -o ${STD_FILE_NORM} &> ./logs/psf_normalise_log.txt
 ```
+
