@@ -8,7 +8,7 @@
 	<div>
 		<ul class="tab-bar">
 			{% for tab in include.tabs %}
-				<li onclick="document.getElementById('tab-contents-{{random_number}}').setAttribute('src', '{{site.baseurl}}/{{tab.url}}')">{{tab.name}}</li>
+				<li onclick="document.getElementById('tab-contents-{{random_number}}').setAttribute('src', '{{site.baseurl}}/{{tab.url}}');for(const child of this.parentNode.children){child.setAttribute('active','false');};this.setAttribute('active','true');">{{tab.name}}</li>
 			{% endfor %}
 		</ul>
 		{% assign first_tab = include.tabs | first %}

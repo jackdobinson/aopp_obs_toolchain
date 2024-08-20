@@ -5,30 +5,60 @@ details.concertina-page{
 	
 	summary {
     	list-style-type: "\25B7\00A0";
-	}	
-	> h1,h2,h3,h4,h5,h6{
-		display: inline-block;
+		
+		> h1,h2,h3,h4,h5,h6 {
+			display: inline-block;
+		}
 	}
 	summary:hover{
 		list-style-type: "\25B6\00A0";
 	}
+	
+	iframe{
+		position:static;
+		width: 100%;
+		height: 100%;
+		border: solid;
+		border-color:#EEEEEE;
+		margin: 0px;
+		padding: 0px;
+	}
+	
+	> div{
+		height:100%;
+	
+		> ul {
+			display:flex;
+			margin:0px;
+			padding: 0px;
+			li {
+				display:inline-flex;
+				background-color: #CCCCCC;
+				margin: 0px;
+				padding:0em 2em 0em 0em;
+			}
+			li:hover {
+				background-color: #EEEEEE;
+			}
+			li[active="true"]{
+				background-color: #EEEEEE;
+			}
+
+		}
+	}
+	
+	
+
 }
 details.concertina-page[open]{
 	position:relative;
-	height:90vh;
+	height:85vh;
 	width:auto;
 	
 	summary {
-    	list-style-type: "\25BD\00A0";
+		list-style-type: "\25BD\00A0";
 	}
 	summary:hover{
 		list-style-type: "\25BC\00A0";
 	}
-}
-details iframe{
-	position:static;
-	width: 100%;
-	height: 100%;
-	border: solid;
-	border-color:#EEEEEE
 }
