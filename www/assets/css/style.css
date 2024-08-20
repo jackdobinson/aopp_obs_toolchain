@@ -295,7 +295,7 @@ nav.breadcrumb {
 
 
 /* Section numbers for headings in content like "2.1.3.5" */
-#content{
+#content.number-headings{
 	section {
 		counter-reset: h1c;
 	}
