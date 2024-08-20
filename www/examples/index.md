@@ -3,7 +3,7 @@
 The data for examples in this section are hosted on {% include stub-link.html text="zenodo" %}.
 
 {% capture includeContent %}
-{% include_relative ./jupyter/example_1.html %}
+{% include_relative jupyter/example_1.html %}
 {% endcapture %}
 {% include concertina.html heading="Deconvolution of a singe wavelength FITS file" content=includeContent %}
 
