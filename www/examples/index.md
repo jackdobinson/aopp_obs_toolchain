@@ -2,10 +2,21 @@
 
 The data for examples in this section are hosted on {% include stub-link.html text="zenodo" %}.
 
+<!--
 {% capture example_content %}
 {% include_relative jupyter/example_1.html %}
 {% endcapture %}
 {% include concertina.html heading="Deconvolution of a singe wavelength FITS file" content=example_content %}
+-->
+
+<details>
+	<summary>
+		Deconvolution of a single wavelength FITS file
+	</summary>
+
+<iframe src="jupyter/example_1.html"></iframe>
+
+</details>
 
 
 <!--
