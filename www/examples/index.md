@@ -16,5 +16,8 @@ The data for examples in this section are hosted on {% include stub-link.html te
 {% for example in page.examples_to_embed %}
 	{{example.name}}
 	{{example.versions}}
-	{% include concertina-page.html heading="<h2>{{example.name}}</h2>" tabs=example.versions %}
+	{% capture example_name %}
+		<h2>{{example.name}}</h2>
+	{% endcapture %}
+	{% include concertina-page.html heading=example_name tabs=example.versions %}
 {% endfor %}
