@@ -1,5 +1,8 @@
 
 : << ---MD
+---
+layout: bare
+---
 
 # Deconvolution of a single wavelength #
 
