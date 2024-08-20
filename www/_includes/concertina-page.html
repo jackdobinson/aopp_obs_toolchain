@@ -7,7 +7,8 @@
 				<li onclick="this.parentNode.nextSibling.setAttribute('src', '{{site.baseurl}}/{{tab.url}}')">{{tab.name}}</li>
 			{% endfor %}
 		</ul>
-		<iframe src="{{site.baseurl}}/{% include.tabs[0].url %}"></iframe>
+		{% assign first_tab = include.tabs | first %}
+		<iframe src="{{site.baseurl}}/{% first_tab.url %}"></iframe>
 	</div>
 	
 </details>
