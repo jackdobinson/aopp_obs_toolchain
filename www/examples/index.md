@@ -5,4 +5,4 @@ The data for examples in this section are hosted on {% include stub-link.html te
 {% capture embed_url %}
 {{site.baseurl}}/examples/jupyter/example_1.html
 {% endcapture %}
-{% include concertina-page.html heading="Deconvolution of a singe wavelength FITS file" url=embed_url %}
+{% include concertina-page.html heading="<h2>Deconvolution of a singe wavelength FITS file</h2>" url=embed_url %}
