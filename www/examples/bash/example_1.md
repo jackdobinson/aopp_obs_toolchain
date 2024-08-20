@@ -1,3 +1,4 @@
+
 ---
 layout: bare
 ---
@@ -31,6 +32,7 @@ SCI_INTERP_FILE="${SCI_FILE%.*}_interp.fits"
 DECONV_FILE="${SCI_FILE%.*}_deconv.fits"
 
 ```
+
 With that out of the way, we can move on to something more interesting.
 
 ## Looking at the data ##
@@ -45,9 +47,10 @@ QFitsView ${SCI_FILE}[PRIMARY] &
 QFitsView ${STD_FILE}[PRIMARY] &
 
 ```
-| science observation                 | standard star observation           |
-|-------------------------------------|-------------------------------------|
-| ![sci-file](./figures/sci-file.png) | ![std-file](./figures/std-file.png) |
+
+|science observation                 | standard star observation           |
+|------------------------------------|-------------------------------------|
+|![sci-file](./figures/sci-file.png) | ![std-file](./figures/std-file.png) |
 
 The above images show that we at least have the correct input files. That's a good start. The deconvolution script `aopp_deconv_tool.deconvolve` requires a science observation and a file for the *point spread function* (PSF) of the observation. We are going to  use the standard star as our PSF. This is not optimal, but good enough for demonstration purposes. However, we must first get the standard star observation into the correct format.
 
@@ -70,6 +73,7 @@ ds9 ${STD_FILE} -scale log -crosshair 200 200 physical &
 
 
 ```
+
 Pixel value of standard star observation
 ![std-file-pixel](./figures/std-file-pixel.png)
 
