@@ -7,7 +7,7 @@ The data for examples in this section are hosted on {% include stub-link.html te
 {% endcapture %}
 {% include concertina.html heading="Deconvolution of a singe wavelength FITS file" content=example_content %}
 
-{{ example_content }}
+<!--{{ example_content }}-->
 
 
 <!--
