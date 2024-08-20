@@ -82,8 +82,9 @@ sleep 2; screenshot_process ./figures/std-file.png; kill $!
 #:end{CELL}
 
 : << ---MD
-science observation                 | standard star observation
-![sci-file](./figures/sci-file.png) | ![std-file](./figures/std-file.png)
+|science observation                 | standard star observation           |
+|------------------------------------|-------------------------------------|
+|![sci-file](./figures/sci-file.png) | ![std-file](./figures/std-file.png) |
 
 The above images show that we at least have the correct input files. That's a good start. The deconvolution script \`aopp_deconv_tool.deconvolve\` requires a science observation and a file for the *point spread function* (PSF) of the observation. We are going to  use the standard star as our PSF. This is not optimal, but good enough for demonstration purposes. However, we must first get the standard star observation into the correct format.
 
