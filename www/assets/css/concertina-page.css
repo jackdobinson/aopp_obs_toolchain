@@ -1,0 +1,6 @@
+details.concertina-page{
+	height:auto;
+}
+details.concertina-page[open]{
+	height:90vh;
+}

@@ -4,6 +4,7 @@
 @import "message-style.css";
 @import "stub-link.css";
 @import "definition-list.css";
+@import "concertina-page.css";
 
 /* define constants for background colours etc. here */
 :root {
