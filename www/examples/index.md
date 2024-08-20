@@ -5,7 +5,7 @@ examples_to_embed:
       - name: Python
         url: /examples/jupyter/example_1.html
       - name: Bash
-        url: /examples/jupyter/example_1_bash.html
+        url: /examples/bash/example_1.html
 ---
 
 
