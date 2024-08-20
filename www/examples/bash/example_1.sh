@@ -19,15 +19,12 @@ The first thing to do in define some constants for later use. We will also enabl
 set -o errexit -o nounset -o pipefail
 IFS=$'\n\t'
 
-SCRIPT_DIR=${0%/*}
-#EXAMPLE_DIR="${SCRIPT_DIR}/../../../example_data/ifu_observation_datasets/"
-EXAMPLE_DIR=${1}
+SCRIPT="$(readlink -f ${0})"
+SCRIPT_DIR=${SCRIPT%/*}
+EXAMPLE_DIR="${SCRIPT_DIR}/../../../example_data/ifu_observation_datasets/"
 
 SCI_FILE="${EXAMPLE_DIR}/single_wavelength_example_sci.fits"
 STD_FILE="${EXAMPLE_DIR}/single_wavelength_example_std.fits"
-
-echo "SCI_FILE=$SCI_FILE"
-echo "STD_FILE=$STD_FILE"
 
 STD_FILE_NORM="${STD_FILE%.*}_normalised.fits"
 SCI_ARTEFACT_FILE="${SCI_FILE%.*}_artefactmap.fits"
@@ -59,6 +56,7 @@ screenshot_process(){
 }
 
 mkdir -p ./figures
+mkdir -p ./logs
 
 #:end{HIDE}
 
@@ -107,7 +105,7 @@ We can see from the header data that the standard star observation does not meet
 ds9 ${STD_FILE} -scale log -crosshair 200 200 physical &
 
 #:HIDE
-sleep 2; screenshot_process ./figures/std-file-pixel.png "SAOImage"; kill $!
+T_PID="$!"; sleep 10; screenshot_process ./figures/std-file-pixel.png "SAOImage"; kill $T_PID
 
 #:HIDE
 ds9 -fits ${STD_FILE} -header save ./figures/std-file-header.txt -exit
@@ -131,5 +129,5 @@ Thankfully, there is a script included in the package that will normalise a PSF 
 ---MD
 
 #:begin{CELL}
-python -m aopp_deconv_tool.psf_normalise ${STD_FILE} -o ${STD_FILE_NORM} &> ./log.txt
+python -m aopp_deconv_tool.psf_normalise ${STD_FILE} -o ${STD_FILE_NORM} &> ./logs/psf_normalise_log.txt
 #:end{CELL}

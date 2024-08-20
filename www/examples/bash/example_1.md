@@ -1,3 +1,6 @@
+---
+layout: bare
+---
 
 # Deconvolution of a single wavelength #
 
@@ -7,21 +10,19 @@ This example uses BASH scripting to invoke *aopp_deconv_tool*. To show graphical
 
 The first thing to do in define some constants for later use. We will also enable "strict mode" to make it easier to debug. However, if you are following along in an interactive session, it is suggested to **not** enable "strict mode".
 
+
 ```bash
 
 # Use strict mode
 set -o errexit -o nounset -o pipefail
 IFS=$'\n\t'
 
-SCRIPT_DIR=${0%/*}
-#EXAMPLE_DIR="${SCRIPT_DIR}/../../../example_data/ifu_observation_datasets/"
-EXAMPLE_DIR=${1}
+SCRIPT="$(readlink -f ${0})"
+SCRIPT_DIR=${SCRIPT%/*}
+EXAMPLE_DIR="${SCRIPT_DIR}/../../../example_data/ifu_observation_datasets/"
 
 SCI_FILE="${EXAMPLE_DIR}/single_wavelength_example_sci.fits"
 STD_FILE="${EXAMPLE_DIR}/single_wavelength_example_std.fits"
-
-echo "SCI_FILE=$SCI_FILE"
-echo "STD_FILE=$STD_FILE"
 
 STD_FILE_NORM="${STD_FILE%.*}_normalised.fits"
 SCI_ARTEFACT_FILE="${SCI_FILE%.*}_artefactmap.fits"
@@ -37,6 +38,7 @@ With that out of the way, we can move on to something more interesting.
 To ensure that everything is set up correctly. Lets open the FITS files and ensure that they are what we expect.
 
 NOTE: FITS files can have multiple extensions, if `QFitsView` is passed a file with multiple extensions it will ask you to select the one you want. To select the extension from the command-line, append `[<int>]` or `[<str>]` to the path. The first version uses the extension number, the second uses the extension name. Generally we will use the extension name. The first extension in a FITS file is always called PRIMARY.
+
 ```bash
 QFitsView ${SCI_FILE}[PRIMARY] &
 
@@ -58,6 +60,7 @@ The deconvolution script requires the PSF meets some basic requirements:
 
 We know that (2) is not met from the figures we created above. Using DS9 to grab the information we want
 We can see from the header data that the standard star observation does not meet criteria (1), 
+
 
 
 ```bash
@@ -88,6 +91,7 @@ The above shows that the standard star observation does not meet the PSF require
 ## Normalising the PSF ##
 
 Thankfully, there is a script included in the package that will normalise a PSF so it obeys the constraints we require. The script is the `aopp_deconv_tool.psf_normalise module`. We can invoke it on the command-line, we will redirect the output into a log file to avoid cluttering the terminal.
+
 ```bash
-python -m aopp_deconv_tool.psf_normalise ${STD_FILE} -o ${STD_FILE_NORM} &> ./log.txt
+python -m aopp_deconv_tool.psf_normalise ${STD_FILE} -o ${STD_FILE_NORM} &> ./logs/psf_normalise_log.txt
 ```
