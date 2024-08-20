@@ -1,14 +1,18 @@
+
+
+{% assign random_number = "now" | date: "%N" | modulo: 1000 | plus: 0 %}
+
 <details class="concertina-page {{include.class | default ''}}" ontoggle="this.scrollIntoView()">
 	<summary>{{include.heading}}</summary>
 	
 	<div>
 		<ul class="tab-bar">
 			{% for tab in include.tabs %}
-				<li onclick="this.parentNode.nextSibling.setAttribute('src', '{{site.baseurl}}/{{tab.url}}')">{{tab.name}}</li>
+				<li onclick="document.getElementById('tab-contents-{{random_number}}').setAttribute('src', '{{site.baseurl}}/{{tab.url}}')">{{tab.name}}</li>
 			{% endfor %}
 		</ul>
 		{% assign first_tab = include.tabs | first %}
-		<iframe src="{{site.baseurl}}/{{first_tab.url}}"></iframe>
+		<iframe id="tab-contents-{{random_number}}" src="{{site.baseurl}}/{{first_tab.url}}"></iframe>
 	</div>
 	
 </details>
