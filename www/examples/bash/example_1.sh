@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 : << ---MD
 ---
@@ -19,7 +20,7 @@ The first thing to do in define some constants for later use. We will also enabl
 set -o errexit -o nounset -o pipefail
 IFS=$'\n\t'
 
-SCRIPT="$(readlink -f ${0})"
+SCRIPT="$(realpath -e ${0})"
 SCRIPT_DIR=${SCRIPT%/*}
 EXAMPLE_DIR="${SCRIPT_DIR}/../../../example_data/ifu_observation_datasets/"
 
@@ -105,16 +106,28 @@ We can see from the header data that the standard star observation does not meet
 #:begin{CELL}
 ds9 ${STD_FILE} -scale log -crosshair 200 200 physical &
 
-#:HIDE
-T_PID="$!"; sleep 10; screenshot_process ./figures/std-file-pixel.png "SAOImage"; kill $T_PID
+#:begin{HIDE}
 
-#:HIDE
-ds9 -fits ${STD_FILE} -header save ./figures/std-file-header.txt -exit
+#T_PID="$!"; sleep 30; screenshot_process ./figures/std-file-pixel.png "SAOImage"; kill $T_PID
+set +o errexit 
+xpaget xpans
+while [[ "$?" != "0" ]]; do
+	sleep 5
+	xpaget xpans
+done
+set -o errexit 
+screenshot_process ./figures/std-file-pixel.png "SAOImage"
+xpaset -p ds9 header save ./figures/std-file-header.txt
+xpaset -p ds9 exit
+
+#ds9 -fits ${STD_FILE} -header save ./figures/std-file-header.txt -exit
+#:end{HIDE}
 
 #:end{CELL}
 
 : << ---MD
 Pixel value of standard star observation
+
 ![std-file-pixel](./figures/std-file-pixel.png)
 
 Standard star observation header data excerpt

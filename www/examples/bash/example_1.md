@@ -17,7 +17,7 @@ The first thing to do in define some constants for later use. We will also enabl
 set -o errexit -o nounset -o pipefail
 IFS=$'\n\t'
 
-SCRIPT="$(readlink -f ${0})"
+SCRIPT="$(realpath -e ${0})"
 SCRIPT_DIR=${SCRIPT%/*}
 EXAMPLE_DIR="${SCRIPT_DIR}/../../../example_data/ifu_observation_datasets/"
 
@@ -70,10 +70,10 @@ We can see from the header data that the standard star observation does not meet
 ds9 ${STD_FILE} -scale log -crosshair 200 200 physical &
 
 
-
 ```
 
 Pixel value of standard star observation
+
 ![std-file-pixel](./figures/std-file-pixel.png)
 
 Standard star observation header data excerpt
