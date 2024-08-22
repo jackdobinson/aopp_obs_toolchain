@@ -102,6 +102,7 @@ function run_at_stack_level {
 		done
 	fi
 }
+# Need this to remove log level when returning from a function
 function trap_return_at_stack_level {
 	# trap_return_at_stack_level <level> <code>
 	trap_return_cmd_stack_add
@@ -115,6 +116,8 @@ function set_log_level {
 	LOG_LEVEL+=("$1")
 }
 
+
+#### EXAMPLE OF USE ####
 set_log_level 'DEBUG'
 
 declare -A TFILES=()

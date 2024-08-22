@@ -34,6 +34,8 @@ SCI_INTERP_FILE="${SCI_FILE%.*}_interp.fits"
 DECONV_FILE="${SCI_FILE%.*}_deconv.fits"
 
 #:end{CELL}
+: << ---RESULT
+---RESULT
 
 #:begin{HIDE}
 {
@@ -94,6 +96,8 @@ ds9 ${STD_FILE} &
 { xpaset -p ds9 fits ${STD_FILE}; xpaset -p ds9 export png ./figures/std-file.png;} &> /dev/null
 
 #:end{CELL}
+: << ---RESULT
+---RESULT
 
 : << ---MD
 |science observation                 | standard star observation           |
@@ -131,6 +135,8 @@ ds9 ${STD_FILE} -scale log -crosshair 200 200 physical &
 #:end{HIDE}
 
 #:end{CELL}
+: << ---RESULT
+---RESULT
 
 : << ---MD
 Pixel value of standard star observation
@@ -164,6 +170,8 @@ ds9 ${STD_FILE_NORM} -scale log -crosshair 200 200 physical &
 #:end{HIDE}
 
 #:end{CELL}
+: << ---RESULT
+---RESULT
 
 : << ---MD
 Looking at the result, we can see that the standard star observation is not normalised and can be used as a PSF.
@@ -194,6 +202,8 @@ As we have a normalised PSF, we now have everything we need to deconvolve the im
 #:begin{CELL}
 python -m aopp_deconv_tool.deconvolve ${SCI_FILE} ${STD_FILE_NORM} -o ${DECONV_FILE} &> ./logs/deconv-1-log.txt
 #:end{CELL}
+: << ---RESULT
+---RESULT
 
 : << ---MD
 ## Comparing the result with the original ##
@@ -227,6 +237,8 @@ ds9 ${SCI_FILE} ${DECONV_FILE} ${DECONV_FILE}[RESIDUAL]
 #:end{HIDE}
 
 #:end{CELL}
+: << ---RESULT
+---RESULT
 
 : << ---MD
 
@@ -254,6 +266,23 @@ FITS headers can hold key-value pairs in pairs of (PKEYn, PVALn), where n is a n
 ds9 ${DECONV_FILE}[RESIDUAL] -header save ./figures/deconv-file-header-1.txt -exit
 grep 'deconv' ./figures/deconv-file-header-1.txt
 #:end{CELL}
+: << ---RESULT
+PKEY6   = 'deconv.obs_file'                                                     
+PKEY7   = 'deconv.psf_file'                                                     
+PKEY8   = 'deconv.parameters_recorded_at_timestamp'                             
+PKEY9   = 'deconv.n_iter'                                                       
+PKEY10  = 'deconv.progress_string'                                              
+PKEY11  = 'deconv.loop_gain'                                                    
+PKEY12  = 'deconv.threshold'                                                    
+PKEY13  = 'deconv.n_positive_iter'                                              
+PKEY14  = 'deconv.noise_std'                                                    
+PKEY15  = 'deconv.rms_frac_threshold'                                           
+PKEY16  = 'deconv.fabs_frac_threshold'                                          
+PKEY17  = 'deconv.max_stat_increase'                                            
+PKEY18  = 'deconv.min_frac_stat_delta'                                          
+PKEY19  = 'deconv.give_best_result'                                             
+PKEY20  = 'deconv.clean_beam_sigma'                                             
+---RESULT
 
 
 

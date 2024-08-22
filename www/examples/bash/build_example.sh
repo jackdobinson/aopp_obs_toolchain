@@ -68,9 +68,9 @@ SCRIPT_TO_BUILD=$(realpath $1)
 SCRIPT_AS_MD="${1%.*}.md"
 
 declare -A TFILES=()
-TFILES['STRIP_MARKDOWN']=$(mktemp --suffix "tmp_bash_example_strip_markdown")
-TFILES['CELL_OUTPUTS']=$(mktemp --suffix "tmp_bash_example_cell_outputs")
-TFILES['SCRIPT_WITH_OUTPUT']=$(mktemp --suffix "tmp_bash_example_script_with_output")
+TFILES['STRIP_MARKDOWN']=$(mktemp "tmp_bash_example_strip_markdown.XXXXXX")
+TFILES['CELL_OUTPUTS']=$(mktemp "tmp_bash_example_cell_outputs.XXXXXX")
+TFILES['SCRIPT_WITH_OUTPUT']=$(mktemp "tmp_bash_example_script_with_output.XXXXXX")
 
 function cleanup {
 	for TFILE in ${TFILES[@]}; do
@@ -96,6 +96,11 @@ sed -E -n \
 }
 
 #######
+# Remove any commands marked as DUMMY commands
+#######
+/#:DUMMY/,+1d
+
+#######
 # Print everything between explanatory text sections
 #######
 /^---MD/,/^: << ---MD/{
@@ -105,6 +110,7 @@ sed -E -n \
 ' ${SCRIPT_TO_BUILD} > ${TFILES['STRIP_MARKDOWN']}
 
 echo "Markdown Stripped"
+
 
 #
 # NOTE: COMMANDS ARE EXECUTED HERE
@@ -140,11 +146,6 @@ s#\\$\{?0\}?#${SCRIPT_TO_BUILD}#g
 " -e '
 
 #######
-# Remove any commands marked as DUMMY commands
-#######
-/#:DUMMY/,+1d
-
-#######
 # Print each line of the command-only script
 #######
 p
@@ -176,17 +177,19 @@ ${
 	a )
 	a echo "#:DELIMITER_CELL_OUTPUT_END"
 }
-' ${TFILES['STRIP_MARKDOWN']}) > ${TFILES['CELL_OUTPUTS']}
+' ${TFILES['STRIP_MARKDOWN']}) | cat > ${TFILES['CELL_OUTPUTS']}
 
 echo "Commands executed and outputs recorded"
 
+# DEBUGGING
+#cp ${TFILES['CELL_OUTPUTS']} cell_output.txt
 
 # Assemble the combined text (commands + command results + explanatory text)
 # into a single file using the results we created by running the commands
 # in the above step.
 cat <(
 I=0
-while IFS= read -r LINE; do
+while IFS= read -r LINE || [[ -n "$LINE" ]]; do
 	echo "$LINE"
 	
 	# When we are at the end of a cell,
@@ -234,6 +237,8 @@ done < ${SCRIPT_TO_BUILD}
 
 echo "Combined (commands + results + markdown) file assembled"
 
+# DEBUGGING
+#cp ${TFILES['SCRIPT_WITH_OUTPUT']} script_with_output.txt
 
 # Go through the combined (commands + command results + explanatory text) file.
 # Change cell begin/end commands to verbatim HEREDOCs, remove empty RESULT
@@ -243,7 +248,8 @@ echo "Combined (commands + results + markdown) file assembled"
 #
 # The output of the SED command is run in a bash shell and the output
 # is a markdown file that documents the originally passed script.
-sed -E -n \
+cat ${TFILES['SCRIPT_WITH_OUTPUT']} \
+| sed -E -n \
 -e '
 #######
 # Turn on "safe mode" for assembling the markdown output
@@ -255,25 +261,92 @@ sed -E -n \
 #######
 /^#:begin\{HIDE\}/,/^#:end\{HIDE\}/d
 /^#:HIDE/,+1d
+/^#:DUMMY/d
 
 #######
 # If we are between result tags, stuff them  into the hold space
 #######
 /: << ---RESULT/,/^---RESULT/{
-	x
-	z
-	x
+	# If we are at the start of result tag nuke hold space
+	/^: << ---RESULT/{
+		x
+		z
+		x
+	}
+	# append pattern to hold space
 	H
+	# If we are at the end of the result tag
+	/^---RESULT$/{
+		# pull stored pattern out of hold space
+		x
+		#l
+		# If we only have the start and end tags, remove it and restart cycle
+		/^\n: << ---RESULT\n---RESULT$/{
+			d
+		}
+		# otherwise print the tag and restart cycle
+		p
+		b
+	}
+	# if we are not at the end, restart the cycle
 	b
 }
-
+#######
+# If we are in a cell, remove leading and trailing whitespace, condence repeated newlines into one newline
+#######
+/^#:begin\{CELL\}/,/^#:end\{CELL\}/{
+	# At the start of a cell, push cell into holdspace
+	/^#:begin\{CELL\}/{
+		h
+		b
+	}
+	
+	# If the pattern is an empty line
+	/^[[:space:]]*$/{
+		# delete pattern
+		z
+		# If the last thing stored in hold space is a newline, do nothing
+		x
+		/\n$/{x;b}
+		x
+		# otherwise, append pattern to hold space
+		H
+		# move to next line
+		b
+	}
+	# otherwise, append to holdspace
+	H
+	# If we are at the end of a cell
+	/^#:end\{CELL\}/{
+		# If the last thing in holdspace is whitespace followed by a newline, replace it with a single newline
+		x
+		s/[[:space:]]*\n#:end\{CELL\}$/\n#:end\{CELL\}/
+		x
+		# print holdspace
+		x
+		p
+		# reset holdspace
+		z
+		x
+		# move to next line
+		b
+	}
+	# otherwise move to next line
+	b
+}
+p
+' \
+| sed -E -n \
+-e '
 #######
 # If there is nothing between the results tags in the hold space,
 # delete the hold space, do not bother showing empty results.
 #######
-x
-/^\n: << ---RESULT\n---RESULT$/d
-x
+#x
+#/^\n: << ---RESULT\n---RESULT$/d
+#x
+
+: PROCESS_HEREDOCS
 
 #######
 # Substitute tags so the markdown output makes sense when
@@ -286,6 +359,6 @@ s/^: << ---RESULT/: << "---RESULT"\n\`\`\`bash/
 s/^---RESULT/\`\`\`\n---RESULT/
 s/^: (<<.*$)/cat \1/
 p
-' ${TFILES['SCRIPT_WITH_OUTPUT']} | bash | cat > ${SCRIPT_AS_MD}
+' | bash | cat > ${SCRIPT_AS_MD}
 
 echo "Markdown documentation of script written to \"${SCRIPT_AS_MD}\""

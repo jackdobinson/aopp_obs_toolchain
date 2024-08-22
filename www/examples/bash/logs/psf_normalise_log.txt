@@ -1,59 +1,59 @@
-2024-08-22T13:29:34 +0100 specifier.py:210 "parse" DEBUG: axes=None
-2024-08-22T13:29:34 +0100 psf_normalise.py:49 "run" DEBUG: fits_spec.path='/home/dobinsonl/Documents/repos/aopp_obs_toolchain/www/examples/bash/../../../example_data/ifu_observation_datasets//single_wavelength_example_std.fits' fits_spec.ext='DATA' fits_spec.slices=(slice(None, None, None), slice(None, None, None), slice(None, None, None)) fits_spec.axes={'CELESTIAL': (1, 2)}
-2024-08-22T13:29:34 +0100 psf_normalise.py:57 "run" INFO: Remove NANs and INFs
-2024-08-22T13:29:34 +0100 psf_normalise.py:60 "run" INFO: Ensure data is of odd shape
-2024-08-22T13:29:34 +0100 psf_normalise.py:65 "run" INFO: Remove any outliers
-2024-08-22T13:29:34 +0100 psf_normalise.py:71 "run" INFO: Remove background offset
-2024-08-22T13:29:34 +0100 psf_data_ops.py:140 "remove_offset" DEBUG: is_bad.shape=(1, 305, 317)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:162 "remove_offset" INFO: i=0
-2024-08-22T13:29:35 +0100 psf_data_ops.py:163 "remove_offset" DEBUG: gdata[idx].shape=(305, 317)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:164 "remove_offset" DEBUG: mask[idx].shape=(305, 317)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:166 "remove_offset" DEBUG: good_data.shape=(92626,)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:177 "remove_offset" DEBUG: v.shape=(92626,) cdf.shape=(92626,)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:181 "remove_offset" DEBUG: param_names=['beta', 'loc', 'scale'] params=(1.3641530929676937, 1.877947998669796, 5.97982991293342)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:183 "remove_offset" DEBUG: noise_model_parameters[-1]={'beta': 1.3641530929676937, 'loc': 1.877947998669796, 'scale': 5.97982991293342}
-2024-08-22T13:29:35 +0100 psf_data_ops.py:197 "remove_offset" INFO: i=0
-2024-08-22T13:29:35 +0100 psf_normalise.py:79 "run" INFO: Get offsets to centre around centre of mass
-2024-08-22T13:29:35 +0100 psf_normalise.py:84 "run" INFO: Recentre everything for easy comparison
-2024-08-22T13:29:35 +0100 psf_data_ops.py:411 "apply_offsets" DEBUG: data.shape=(1, 305, 317)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:412 "apply_offsets" DEBUG: axes=(1, 2)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:413 "apply_offsets" DEBUG: offsets.shape=(1, 2)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:416 "apply_offsets" DEBUG: _i=0
-2024-08-22T13:29:35 +0100 psf_data_ops.py:417 "apply_offsets" DEBUG: idx=(0,)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:418 "apply_offsets" DEBUG: gdata[idx].shape=(305, 317)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:425 "apply_offsets" DEBUG: idx=(0,) offsets[idx]=array([169.58856083, 205.52713021]) centre_to_com_offset=array([-17.58856083, -47.52713021])
-2024-08-22T13:29:35 +0100 psf_data_ops.py:439 "apply_offsets" DEBUG: [s.size for s in new_points]=[305, 317]
-2024-08-22T13:29:35 +0100 psf_data_ops.py:441 "apply_offsets" DEBUG: [s.size for s in old_points]=[305, 317] gdata[idx].shape=(305, 317) new_points.shape=(305, 317, 2)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:411 "apply_offsets" DEBUG: data.shape=(1, 305, 317)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:412 "apply_offsets" DEBUG: axes=(1, 2)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:413 "apply_offsets" DEBUG: offsets.shape=(1, 2)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:416 "apply_offsets" DEBUG: _i=0
-2024-08-22T13:29:35 +0100 psf_data_ops.py:417 "apply_offsets" DEBUG: idx=(0,)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:418 "apply_offsets" DEBUG: gdata[idx].shape=(305, 317)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:425 "apply_offsets" DEBUG: idx=(0,) offsets[idx]=array([169.58856083, 205.52713021]) centre_to_com_offset=array([-17.58856083, -47.52713021])
-2024-08-22T13:29:35 +0100 psf_data_ops.py:439 "apply_offsets" DEBUG: [s.size for s in new_points]=[305, 317]
-2024-08-22T13:29:35 +0100 psf_data_ops.py:441 "apply_offsets" DEBUG: [s.size for s in old_points]=[305, 317] gdata[idx].shape=(305, 317) new_points.shape=(305, 317, 2)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:411 "apply_offsets" DEBUG: data.shape=(1, 305, 317)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:412 "apply_offsets" DEBUG: axes=(1, 2)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:413 "apply_offsets" DEBUG: offsets.shape=(1, 2)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:416 "apply_offsets" DEBUG: _i=0
-2024-08-22T13:29:35 +0100 psf_data_ops.py:417 "apply_offsets" DEBUG: idx=(0,)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:418 "apply_offsets" DEBUG: gdata[idx].shape=(305, 317)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:425 "apply_offsets" DEBUG: idx=(0,) offsets[idx]=array([169.58856083, 205.52713021]) centre_to_com_offset=array([-17.58856083, -47.52713021])
-2024-08-22T13:29:35 +0100 psf_data_ops.py:439 "apply_offsets" DEBUG: [s.size for s in new_points]=[305, 317]
-2024-08-22T13:29:35 +0100 psf_data_ops.py:441 "apply_offsets" DEBUG: [s.size for s in old_points]=[305, 317] gdata[idx].shape=(305, 317) new_points.shape=(305, 317, 2)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:411 "apply_offsets" DEBUG: data.shape=(1, 305, 317)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:412 "apply_offsets" DEBUG: axes=(1, 2)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:413 "apply_offsets" DEBUG: offsets.shape=(1, 2)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:416 "apply_offsets" DEBUG: _i=0
-2024-08-22T13:29:35 +0100 psf_data_ops.py:417 "apply_offsets" DEBUG: idx=(0,)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:418 "apply_offsets" DEBUG: gdata[idx].shape=(305, 317)
-2024-08-22T13:29:35 +0100 psf_data_ops.py:425 "apply_offsets" DEBUG: idx=(0,) offsets[idx]=array([169.58856083, 205.52713021]) centre_to_com_offset=array([-17.58856083, -47.52713021])
-2024-08-22T13:29:35 +0100 psf_data_ops.py:439 "apply_offsets" DEBUG: [s.size for s in new_points]=[305, 317]
-2024-08-22T13:29:35 +0100 psf_data_ops.py:441 "apply_offsets" DEBUG: [s.size for s in old_points]=[305, 317] gdata[idx].shape=(305, 317) new_points.shape=(305, 317, 2)
-2024-08-22T13:29:35 +0100 psf_normalise.py:109 "run" INFO: Normalise to unit sum
-2024-08-22T13:29:35 +0100 header.py:54 "__init__" DEBUG: self.prefix='psf_normalise'
-2024-08-22T13:29:35 +0100 header.py:55 "__init__" DEBUG: self.adict={'original_file': 'single_wavelength_example_std.fits', 'roi_mask.threshold': 0.01, 'roi_mask.n_largest_regions': 1, 'background_mask.threshold': 0.001, 'outlier_mask.n_sigma': 5, 'trim_to_shape': None}
-2024-08-22T13:29:35 +0100 header.py:56 "__init__" DEBUG: self.mode='standard'
-2024-08-22T13:29:35 +0100 header.py:57 "__init__" DEBUG: self._key_count_start=6
-2024-08-22T13:29:35 +0100 psf_normalise.py:132 "run" INFO: save the products to a FITS file
+2024-08-22T18:10:15 +0100 specifier.py:210 "parse" DEBUG: axes=None
+2024-08-22T18:10:15 +0100 psf_normalise.py:49 "run" DEBUG: fits_spec.path='/home/dobinsonl/Documents/repos/aopp_obs_toolchain/www/examples/bash/../../../example_data/ifu_observation_datasets//single_wavelength_example_std.fits' fits_spec.ext='DATA' fits_spec.slices=(slice(None, None, None), slice(None, None, None), slice(None, None, None)) fits_spec.axes={'CELESTIAL': (1, 2)}
+2024-08-22T18:10:15 +0100 psf_normalise.py:57 "run" INFO: Remove NANs and INFs
+2024-08-22T18:10:15 +0100 psf_normalise.py:60 "run" INFO: Ensure data is of odd shape
+2024-08-22T18:10:15 +0100 psf_normalise.py:65 "run" INFO: Remove any outliers
+2024-08-22T18:10:15 +0100 psf_normalise.py:71 "run" INFO: Remove background offset
+2024-08-22T18:10:15 +0100 psf_data_ops.py:140 "remove_offset" DEBUG: is_bad.shape=(1, 305, 317)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:162 "remove_offset" INFO: i=0
+2024-08-22T18:10:16 +0100 psf_data_ops.py:163 "remove_offset" DEBUG: gdata[idx].shape=(305, 317)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:164 "remove_offset" DEBUG: mask[idx].shape=(305, 317)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:166 "remove_offset" DEBUG: good_data.shape=(92626,)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:177 "remove_offset" DEBUG: v.shape=(92626,) cdf.shape=(92626,)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:181 "remove_offset" DEBUG: param_names=['beta', 'loc', 'scale'] params=(1.3641530929676937, 1.877947998669796, 5.97982991293342)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:183 "remove_offset" DEBUG: noise_model_parameters[-1]={'beta': 1.3641530929676937, 'loc': 1.877947998669796, 'scale': 5.97982991293342}
+2024-08-22T18:10:16 +0100 psf_data_ops.py:197 "remove_offset" INFO: i=0
+2024-08-22T18:10:16 +0100 psf_normalise.py:79 "run" INFO: Get offsets to centre around centre of mass
+2024-08-22T18:10:16 +0100 psf_normalise.py:84 "run" INFO: Recentre everything for easy comparison
+2024-08-22T18:10:16 +0100 psf_data_ops.py:411 "apply_offsets" DEBUG: data.shape=(1, 305, 317)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:412 "apply_offsets" DEBUG: axes=(1, 2)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:413 "apply_offsets" DEBUG: offsets.shape=(1, 2)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:416 "apply_offsets" DEBUG: _i=0
+2024-08-22T18:10:16 +0100 psf_data_ops.py:417 "apply_offsets" DEBUG: idx=(0,)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:418 "apply_offsets" DEBUG: gdata[idx].shape=(305, 317)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:425 "apply_offsets" DEBUG: idx=(0,) offsets[idx]=array([169.58856083, 205.52713021]) centre_to_com_offset=array([-17.58856083, -47.52713021])
+2024-08-22T18:10:16 +0100 psf_data_ops.py:439 "apply_offsets" DEBUG: [s.size for s in new_points]=[305, 317]
+2024-08-22T18:10:16 +0100 psf_data_ops.py:441 "apply_offsets" DEBUG: [s.size for s in old_points]=[305, 317] gdata[idx].shape=(305, 317) new_points.shape=(305, 317, 2)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:411 "apply_offsets" DEBUG: data.shape=(1, 305, 317)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:412 "apply_offsets" DEBUG: axes=(1, 2)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:413 "apply_offsets" DEBUG: offsets.shape=(1, 2)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:416 "apply_offsets" DEBUG: _i=0
+2024-08-22T18:10:16 +0100 psf_data_ops.py:417 "apply_offsets" DEBUG: idx=(0,)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:418 "apply_offsets" DEBUG: gdata[idx].shape=(305, 317)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:425 "apply_offsets" DEBUG: idx=(0,) offsets[idx]=array([169.58856083, 205.52713021]) centre_to_com_offset=array([-17.58856083, -47.52713021])
+2024-08-22T18:10:16 +0100 psf_data_ops.py:439 "apply_offsets" DEBUG: [s.size for s in new_points]=[305, 317]
+2024-08-22T18:10:16 +0100 psf_data_ops.py:441 "apply_offsets" DEBUG: [s.size for s in old_points]=[305, 317] gdata[idx].shape=(305, 317) new_points.shape=(305, 317, 2)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:411 "apply_offsets" DEBUG: data.shape=(1, 305, 317)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:412 "apply_offsets" DEBUG: axes=(1, 2)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:413 "apply_offsets" DEBUG: offsets.shape=(1, 2)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:416 "apply_offsets" DEBUG: _i=0
+2024-08-22T18:10:16 +0100 psf_data_ops.py:417 "apply_offsets" DEBUG: idx=(0,)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:418 "apply_offsets" DEBUG: gdata[idx].shape=(305, 317)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:425 "apply_offsets" DEBUG: idx=(0,) offsets[idx]=array([169.58856083, 205.52713021]) centre_to_com_offset=array([-17.58856083, -47.52713021])
+2024-08-22T18:10:16 +0100 psf_data_ops.py:439 "apply_offsets" DEBUG: [s.size for s in new_points]=[305, 317]
+2024-08-22T18:10:16 +0100 psf_data_ops.py:441 "apply_offsets" DEBUG: [s.size for s in old_points]=[305, 317] gdata[idx].shape=(305, 317) new_points.shape=(305, 317, 2)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:411 "apply_offsets" DEBUG: data.shape=(1, 305, 317)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:412 "apply_offsets" DEBUG: axes=(1, 2)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:413 "apply_offsets" DEBUG: offsets.shape=(1, 2)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:416 "apply_offsets" DEBUG: _i=0
+2024-08-22T18:10:16 +0100 psf_data_ops.py:417 "apply_offsets" DEBUG: idx=(0,)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:418 "apply_offsets" DEBUG: gdata[idx].shape=(305, 317)
+2024-08-22T18:10:16 +0100 psf_data_ops.py:425 "apply_offsets" DEBUG: idx=(0,) offsets[idx]=array([169.58856083, 205.52713021]) centre_to_com_offset=array([-17.58856083, -47.52713021])
+2024-08-22T18:10:16 +0100 psf_data_ops.py:439 "apply_offsets" DEBUG: [s.size for s in new_points]=[305, 317]
+2024-08-22T18:10:16 +0100 psf_data_ops.py:441 "apply_offsets" DEBUG: [s.size for s in old_points]=[305, 317] gdata[idx].shape=(305, 317) new_points.shape=(305, 317, 2)
+2024-08-22T18:10:16 +0100 psf_normalise.py:109 "run" INFO: Normalise to unit sum
+2024-08-22T18:10:16 +0100 header.py:54 "__init__" DEBUG: self.prefix='psf_normalise'
+2024-08-22T18:10:16 +0100 header.py:55 "__init__" DEBUG: self.adict={'original_file': 'single_wavelength_example_std.fits', 'roi_mask.threshold': 0.01, 'roi_mask.n_largest_regions': 1, 'background_mask.threshold': 0.001, 'outlier_mask.n_sigma': 5, 'trim_to_shape': None}
+2024-08-22T18:10:16 +0100 header.py:56 "__init__" DEBUG: self.mode='standard'
+2024-08-22T18:10:16 +0100 header.py:57 "__init__" DEBUG: self._key_count_start=6
+2024-08-22T18:10:16 +0100 psf_normalise.py:132 "run" INFO: save the products to a FITS file

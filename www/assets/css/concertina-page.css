@@ -39,7 +39,7 @@ details.concertina-page{
 				padding:0em 2em 0em 0em;
 			}
 			li:hover {
-				background-color: #EEEEEE;
+				background-color: #DDDDDD;
 			}
 			li[active="true"]{
 				background-color: #EEEEEE;

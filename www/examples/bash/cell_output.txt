@@ -1,0 +1,23 @@
+#:DELIMITER_CELL_OUTPUT_END
+#:DELIMITER_CELL_OUTPUT_END
+#:DELIMITER_CELL_OUTPUT_END
+#:DELIMITER_CELL_OUTPUT_END
+#:DELIMITER_CELL_OUTPUT_END
+#:DELIMITER_CELL_OUTPUT_END
+PKEY6   = 'deconv.obs_file'                                                     
+PKEY7   = 'deconv.psf_file'                                                     
+PKEY8   = 'deconv.parameters_recorded_at_timestamp'                             
+PKEY9   = 'deconv.n_iter'                                                       
+PKEY10  = 'deconv.progress_string'                                              
+PKEY11  = 'deconv.loop_gain'                                                    
+PKEY12  = 'deconv.threshold'                                                    
+PKEY13  = 'deconv.n_positive_iter'                                              
+PKEY14  = 'deconv.noise_std'                                                    
+PKEY15  = 'deconv.rms_frac_threshold'                                           
+PKEY16  = 'deconv.fabs_frac_threshold'                                          
+PKEY17  = 'deconv.max_stat_increase'                                            
+PKEY18  = 'deconv.min_frac_stat_delta'                                          
+PKEY19  = 'deconv.give_best_result'                                             
+PKEY20  = 'deconv.clean_beam_sigma'                                             
+#:DELIMITER_CELL_OUTPUT_END
+#:DELIMITER_CELL_OUTPUT_END
