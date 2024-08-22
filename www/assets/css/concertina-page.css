@@ -2,6 +2,7 @@ details.concertina-page{
 	height:auto;
 	width:auto;
 	margin-right: 8px;
+	cursor: default;
 	
 	summary {
     	list-style-type: "\25B7\00A0";

@@ -67,79 +67,187 @@ SCRIPT_DIR=${SCRIPT%/*}
 SCRIPT_TO_BUILD=$(realpath $1)
 SCRIPT_AS_MD="${1%.*}.md"
 
+declare -A TFILES=()
+TFILES['STRIP_MARKDOWN']=$(mktemp --suffix "tmp_bash_example_strip_markdown")
+TFILES['CELL_OUTPUTS']=$(mktemp --suffix "tmp_bash_example_cell_outputs")
+TFILES['SCRIPT_WITH_OUTPUT']=$(mktemp --suffix "tmp_bash_example_script_with_output")
 
-
-# Strip all explanatory text out of the script
-sed -E -n \
-	-e '0,/^: << ---MD/{/^: << ---MD/d;p}' \
-	-e '/^---MD/,/^: << ---MD/{/^: << ---MD|^---MD/d;p}' \
-	${SCRIPT_TO_BUILD} > test_markdown_stripped.sh
-
-
-
-
-# Run each section of the script individually and store the results
-# in a file.
-bash <(sed -E -n \
--e "
-1{
-	i source <(cat << \"---CELL\"
-	
+function cleanup {
+	for TFILE in ${TFILES[@]}; do
+		if [ -f ${TFILE} ]; then
+			echo "Removing temp file: $TFILE"
+			rm -f ${TFILE}
+		fi
+	done
 }
+
+trap "cleanup" EXIT
+
+# Only keep things that are not the explanatory text
+sed -E -n \
+-e '
+#######
+# Print everything until the start of the first
+# explanatory text section.
+#######
+0,/^: << ---MD/{
+	/^: << ---MD/d
+	p
+}
+
+#######
+# Print everything between explanatory text sections
+#######
+/^---MD/,/^: << ---MD/{
+	/^: << ---MD|^---MD/d
+	p
+}
+' ${SCRIPT_TO_BUILD} > ${TFILES['STRIP_MARKDOWN']}
+
+echo "Markdown Stripped"
+
+#
+# NOTE: COMMANDS ARE EXECUTED HERE
+#
+# Run each section of the script individually and store the results
+# in a file. Use `source` command to execute each code cell in the same
+# bash shell, and use HEREDOCs combine with process substitution to 
+# execute commands in discrete chunks.
+bash <(sed -E -n \
+-e '
+#######
+# Execute all the code from the top, start
+# process substitution and HEREDOC.
+#######
+1{
+	i source <(cat << "---CELL"
+}
+
+#######
+# Because the bash shell we are redirecting
+# the output to will not have any arguments,
+# or a file to populate ${BASH SOURCE} with,
+# replace the $0 argument and ${BASH_SOURCE}
+# with the path to the script we are
+# building, as if it was being executed
+# normally.
+#######
+' -e "
 s#^\s*SCRIPT=.*#SCRIPT=\"${SCRIPT_TO_BUILD}\"#g
 s#\\$\{?BASH_SOURCE\}?#${SCRIPT_TO_BUILD}#g
 s#\\$\{?0\}?#${SCRIPT_TO_BUILD}#g
 
+" -e '
+
+#######
+# Remove any commands marked as DUMMY commands
+#######
 /#:DUMMY/,+1d
 
+#######
+# Print each line of the command-only script
+#######
 p
 
+#######
+# When we get to the end of a cell, close the
+# HEREDOC and process substitution, print a
+# line to tell us where the output of the
+# current code cell ends, and start a new
+# code cell by starting process substitution
+# and a HEREDOC.
+#######
 /#:end\{CELL\}/{
 	a ---CELL
 	a )
-	a echo '\#:DELIMITER_CELL_OUTPUT_END'
-	a source <(cat << \"---CELL\"
+	a echo "#:DELIMITER_CELL_OUTPUT_END"
+	a source <(cat << "---CELL"
 	z
 }
 
-\${
+#######
+# At the end of the bash command input, close
+# the HEREDOC and process substitution, print
+# a line to tell us where the output of the
+# last code cell ends.
+#######
+${
 	a ---CELL
 	a )
-	a echo '\#:DELIMITER_CELL_OUTPUT_END'
+	a echo "#:DELIMITER_CELL_OUTPUT_END"
 }
-" test_markdown_stripped.sh) > test_output.sh
+' ${TFILES['STRIP_MARKDOWN']}) > ${TFILES['CELL_OUTPUTS']}
+
+echo "Commands executed and outputs recorded"
 
 
-
+# Assemble the combined text (commands + command results + explanatory text)
+# into a single file using the results we created by running the commands
+# in the above step.
 cat <(
 I=0
 while IFS= read -r LINE; do
 	echo "$LINE"
+	
+	# When we are at the end of a cell,
+	# copy the results from the output file
 	if [[ "$LINE" == "#:end{CELL}" ]]; then
+		# Keep track of which cell we have just
+		# passed. We want to insert the results
+		# for the correct cell.
 		I=$((I+1))
+		
+		# Start the result HEREDOC
 		echo ': << ---RESULT'
 		
+		# Read through the output of the command cells
+		# The first group of outputs is the result of the
+		# first command cell
 		J=1
 		while read -r RESULT; do
+			# When we get to the end of a cell output
 			if [[ "$RESULT" == "#:DELIMITER_CELL_OUTPUT_END" ]]; then
+				# Incrememnt the cell output counter
 				J=$((J+1))
+				
+				# If the group of outputs we just exited
+				# are the outputs of the current cell
+				# end the result HEREDOC
 				if [[ $I == $((J-1)) ]]; then
+					# end the result HEREDOC
 					echo '---RESULT'
 				fi
+				# Do not print the cell output end delimiter
 				continue
 			fi
+			
+			# If we are in the results group for the
+			# current cell, print each line of the results.
 			if [[ $I == $J ]]; then
 				echo "$RESULT"
 			fi
-		done < test_output.sh
+		done < ${TFILES['CELL_OUTPUTS']}
 	fi
 	
 done < ${SCRIPT_TO_BUILD}
-) > test_run.sh
+) > ${TFILES['SCRIPT_WITH_OUTPUT']}
+
+echo "Combined (commands + results + markdown) file assembled"
 
 
+# Go through the combined (commands + command results + explanatory text) file.
+# Change cell begin/end commands to verbatim HEREDOCs, remove empty RESULT
+# HEREDOCs, make RESULT HEREDOCs verbatim, and wrap RESULT block contents 
+# in markdown code fences.
+# Also ensure enough new lines between CODE, MARKDOWN, RESULT sections.
+#
+# The output of the SED command is run in a bash shell and the output
+# is a markdown file that documents the originally passed script.
 sed -E -n \
 -e '
+#######
+# Turn on "safe mode" for assembling the markdown output
+#######
 1 i set -o errexit -o pipefail
 
 #######
@@ -161,7 +269,7 @@ sed -E -n \
 
 #######
 # If there is nothing between the results tags in the hold space,
-# delete the hold space, don not bother showing empty results
+# delete the hold space, do not bother showing empty results.
 #######
 x
 /^\n: << ---RESULT\n---RESULT$/d
@@ -174,14 +282,10 @@ x
 s/^---MD/\n---MD/
 s/^#:begin\{CELL\}/: << "---CELL"\n\`\`\`bash/
 s/^#:end\{CELL\}/\`\`\`\n\n---CELL/
-s/^: << ---RESULT/: << ---RESULT\n\`\`\`bash/
+s/^: << ---RESULT/: << "---RESULT"\n\`\`\`bash/
 s/^---RESULT/\`\`\`\n---RESULT/
 s/^: (<<.*$)/cat \1/
 p
-' test_run.sh | bash | cat > ${SCRIPT_AS_MD}
+' ${TFILES['SCRIPT_WITH_OUTPUT']} | bash | cat > ${SCRIPT_AS_MD}
 
-
-# Remove temporary files
-rm test_run.sh
-rm test_output.sh
-rm test_markdown_stripped.sh
+echo "Markdown documentation of script written to \"${SCRIPT_AS_MD}\""
