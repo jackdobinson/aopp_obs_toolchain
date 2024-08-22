@@ -37,7 +37,8 @@ html {
 	position:relative;
 	left: 50%;
     transform: translate(-50%);
-	background-color: var(--oob-bg-color)
+	background-color: var(--oob-bg-color);
+	font-size: 12pt;
 }
 /* Defaults for body */
 body {
@@ -45,8 +46,8 @@ body {
 	margin: 0px;
 	padding: 4px;
 	
-	font-size: normal;
-	font-family: Didcot;
+	font-size: inherit;
+	font-family: serif;
 	
 	min-height: calc(100vh - 8px);
 }
