@@ -182,7 +182,7 @@ $(head -10 ./figures/std-norm-file-header.txt)
 </pre>
 </td>
 </tr>
-<\table>
+</table>
 
 
 ## Deconvolving the image ##
