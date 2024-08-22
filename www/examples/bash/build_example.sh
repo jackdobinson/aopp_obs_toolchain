@@ -114,6 +114,9 @@ sed -E -n \
 
 echo "Markdown Stripped"
 
+#DEBUGGING
+cp ${TFILES['STRIP_MARKDOWN']} script_without_markdown.sh
+
 
 #
 # NOTE: COMMANDS ARE EXECUTED HERE
@@ -185,7 +188,8 @@ ${
 echo "Commands executed and outputs recorded"
 
 # DEBUGGING
-#cp ${TFILES['CELL_OUTPUTS']} cell_output.txt
+cp ${TFILES['CELL_OUTPUTS']} cell_output.txt
+
 
 # Assemble the combined text (commands + command results + explanatory text)
 # into a single file using the results we created by running the commands
@@ -241,7 +245,7 @@ done < ${SCRIPT_TO_BUILD}
 echo "Combined (commands + results + markdown) file assembled"
 
 # DEBUGGING
-#cp ${TFILES['SCRIPT_WITH_OUTPUT']} script_with_output.txt
+cp ${TFILES['SCRIPT_WITH_OUTPUT']} script_with_output.txt
 
 # Go through the combined (commands + command results + explanatory text) file.
 # Change cell begin/end commands to verbatim HEREDOCs, remove empty RESULT

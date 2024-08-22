@@ -165,23 +165,60 @@ FITS headers can hold key-value pairs in pairs of (PKEYn, PVALn), where n is a n
 
 ```bash
 ds9 ${DECONV_FILE}[RESIDUAL] -header save ./figures/deconv-file-header-1.txt -exit
-grep 'deconv' ./figures/deconv-file-header-1.txt
+
+grep -E 'PKEY*|PVAL*' ./figures/deconv-file-header-1.txt
 ```
 
 ```bash
+PKEY0   = 'spectral_rebin.original_file'                                        
+PVAL0   = 'ADP.2021-10-25T05:14:56.504_NFM-AO-N_OBJ.fits'                       
+PKEY1   = 'spectral_rebin.bin_axis'                                             
+PVAL1   = '3       '                                                            
+PKEY2   = 'spectral_rebin.bin_step'                                             
+PVAL2   = '1e-09   '                                                            
+PKEY3   = 'spectral_rebin.bin_width'                                            
+PVAL3   = '2e-09   '                                                            
+PKEY4   = 'spectral_rebin.bin_operation'                                        
+PVAL4   = 'mean    '                                                            
+PKEY5   = 'slice.original_file'                                                 
+PVAL5   = './example_data/ifu_observation_datasets/ADP.2021-10-25T05:14:56.504&'
 PKEY6   = 'deconv.obs_file'                                                     
+PVAL6   = '/home/dobinsonl/Documents/repos/aopp_obs_toolchain/www/examples/bas&'
 PKEY7   = 'deconv.psf_file'                                                     
+PVAL7   = '/home/dobinsonl/Documents/repos/aopp_obs_toolchain/www/examples/bas&'
 PKEY8   = 'deconv.parameters_recorded_at_timestamp'                             
+PVAL8   = '2024-08-22T17:56:47.727032+0000'                                     
 PKEY9   = 'deconv.n_iter'                                                       
+PVAL9   = '1000    '                                                            
 PKEY10  = 'deconv.progress_string'                                              
+PVAL10  = 'Ended at 192 iterations: Standard deviation of statistics in last &' 
 PKEY11  = 'deconv.loop_gain'                                                    
+PVAL11  = '0.02    '                                                            
 PKEY12  = 'deconv.threshold'                                                    
+PVAL12  = '0.3     '                                                            
 PKEY13  = 'deconv.n_positive_iter'                                              
+PVAL13  = '0       '                                                            
 PKEY14  = 'deconv.noise_std'                                                    
+PVAL14  = '0.1     '                                                            
 PKEY15  = 'deconv.rms_frac_threshold'                                           
+PVAL15  = '0.01    '                                                            
 PKEY16  = 'deconv.fabs_frac_threshold'                                          
+PVAL16  = '0.01    '                                                            
 PKEY17  = 'deconv.max_stat_increase'                                            
+PVAL17  = 'inf     '                                                            
 PKEY18  = 'deconv.min_frac_stat_delta'                                          
+PVAL18  = '0.001   '                                                            
 PKEY19  = 'deconv.give_best_result'                                             
+PVAL19  = 'True    '                                                            
 PKEY20  = 'deconv.clean_beam_sigma'                                             
+PVAL20  = '0       '                                                            
 ```
+The "deconv.progress_string" key holds a message that tells us why the deconvolution ended, and after how many iterations. The "deconv.n_iter" key tells us the maximum number of iterations.
+
+Therefore,
+```
+deconv.progress_string:
+	Ended at 220 iterations: Standard deviation of statistics in last 10 steps are all below minimum fraction.
+```
+tells us that we stopped at 220 iterations out of a possible 1000 because one of the stopping criteria of the algorithm was tripped. I know that the stopping criteria that was tripped is min_frac_stat_delta. It stops the iteration if the standard deviation of the brightest pixel of the residual and the RMS of the residual is lower than its value in the last 10 iterations.
+

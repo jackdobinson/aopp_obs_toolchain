@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#:HIDE
+BUILD_LOG_FILE="./build_log.txt"; echo "" > ${BUILD_LOG_FILE}
 
 : << ---MD
 ---
@@ -36,26 +38,26 @@ DECONV_FILE="${SCI_FILE%.*}_deconv.fits"
 #:end{CELL}
 
 #:begin{HIDE}
-{
-	screenshot_process(){
-		# NOTE: Can use a window title instead of a PID as we are just using `grep` to find the window id.
-		set +o nounset
-		if [ -z "$2" ]; then
-			local PID="$!"
-		else
-			local PID=$2
-		fi
-		set -o nounset
-		#V=$(wmctrl -l -p | grep "${PID}")
-		#echo "V=$V"
-		local TMP_LAST_PID_WINDOW_ID=$(wmctrl -l -p | grep "${PID}" | sed 's/ .*//')
-		if [ -z "${TMP_LAST_PID_WINDOW_ID}" ]; then
-			echo "ERROR: Cannot find window associated with process ${PID}."
-			return 1
-		fi
-		import -window ${TMP_LAST_PID_WINDOW_ID} $1
-	}
 
+screenshot_process(){
+	# NOTE: Can use a window title instead of a PID as we are just using `grep` to find the window id.
+	set +o nounset
+	if [ -z "$2" ]; then
+		local PID="$!"
+	else
+		local PID=$2
+	fi
+	set -o nounset
+	#V=$(wmctrl -l -p | grep "${PID}")
+	#echo "V=$V"
+	local TMP_LAST_PID_WINDOW_ID=$(wmctrl -l -p | grep "${PID}" | sed 's/ .*//')
+	if [ -z "${TMP_LAST_PID_WINDOW_ID}" ]; then
+		echo "ERROR: Cannot find window associated with process ${PID}."
+		return 1
+	fi
+	import -window ${TMP_LAST_PID_WINDOW_ID} $1
+}
+{
 	mkdir -p ./figures
 	mkdir -p ./logs
 
@@ -68,8 +70,8 @@ DECONV_FILE="${SCI_FILE%.*}_deconv.fits"
 		sleep 5
 		xpaget xpans
 	done
-	set -o errexit 
-} &> /dev/null
+set -o errexit 
+} &>> ${BUILD_LOG_FILE}
 #:end{HIDE}
 
 : << ---MD
@@ -89,11 +91,12 @@ ds9 ${SCI_FILE} &
 ds9 ${STD_FILE} &
 
 #:HIDE
-{ xpaset -p ds9 fits ${SCI_FILE}; xpaset -p ds9 export png ./figures/sci-file.png;} &> /dev/null
+{ xpaset -p ds9 fits ${SCI_FILE}; xpaset -p ds9 export png ./figures/sci-file.png;} &>> ${BUILD_LOG_FILE}
 #:HIDE
-{ xpaset -p ds9 fits ${STD_FILE}; xpaset -p ds9 export png ./figures/std-file.png;} &> /dev/null
+{ xpaset -p ds9 fits ${STD_FILE}; xpaset -p ds9 export png ./figures/std-file.png;} &>> ${BUILD_LOG_FILE}
 
 #:end{CELL}
+
 
 : << ---MD
 |science observation                 | standard star observation           |
@@ -127,7 +130,7 @@ ds9 ${STD_FILE} -scale log -crosshair 200 200 physical &
 	xpaset -p ds9 crosshair 200 200 physical
 	screenshot_process ./figures/std-file-pixel.png "SAOImage"
 	xpaset -p ds9 header save ./figures/std-file-header.txt 
-}&> /dev/null
+}&>> ${BUILD_LOG_FILE}
 #:end{HIDE}
 
 #:end{CELL}
@@ -160,7 +163,7 @@ ds9 ${STD_FILE_NORM} -scale log -crosshair 200 200 physical &
 	xpaset -p ds9 crosshair 200 200 physical
 	screenshot_process ./figures/std-norm-file-pixel.png "SAOImage"
 	xpaset -p ds9 header save ./figures/std-norm-file-header.txt 
-} &> /dev/null
+} &>> ${BUILD_LOG_FILE}
 #:end{HIDE}
 
 #:end{CELL}
@@ -190,6 +193,7 @@ $(head -10 ./figures/std-norm-file-header.txt)
 As we have a normalised PSF, we now have everything we need to deconvolve the image. We use the command-line python script \`aopp_deconv_tool.deconvolve\`.
 
 ---MD
+
 
 #:begin{CELL}
 python -m aopp_deconv_tool.deconvolve ${SCI_FILE} ${STD_FILE_NORM} -o ${DECONV_FILE} &> ./logs/deconv-1-log.txt
@@ -222,7 +226,7 @@ ds9 ${SCI_FILE} ${DECONV_FILE} ${DECONV_FILE}[RESIDUAL]
 	xpaset -p ds9 scale linear 
 	xpaset -p ds9 scale mode minmax
 	xpaset -p ds9 export png ./figures/deconv-residual-1.png
-} &> /dev/null
+} &>> ${BUILD_LOG_FILE}
 
 #:end{HIDE}
 
@@ -251,11 +255,25 @@ FITS headers can hold key-value pairs in pairs of (PKEYn, PVALn), where n is a n
 ---MD
 
 #:begin{CELL}
+#:DUMMY
 ds9 ${DECONV_FILE}[RESIDUAL] -header save ./figures/deconv-file-header-1.txt -exit
-grep 'deconv' ./figures/deconv-file-header-1.txt
-#:end{CELL}
-
-
 
 #:HIDE
-xpaset -p ds9 exit &> /dev/null
+{ xpaset -p ds9 fits ${DECONV_FILE}[RESIDUAL]; xpaset -p ds9 header save ./figures/deconv-file-header-1.txt; } &>> ${BUILD_LOG_FILE}
+
+grep -E 'PKEY*|PVAL*' ./figures/deconv-file-header-1.txt
+#:end{CELL}
+
+: << ---MD
+The "deconv.progress_string" key holds a message that tells us why the deconvolution ended, and after how many iterations. The "deconv.n_iter" key tells us the maximum number of iterations.
+
+Therefore,
+\`\`\`
+deconv.progress_string:
+	Ended at 220 iterations: Standard deviation of statistics in last 10 steps are all below minimum fraction.
+\`\`\`
+tells us that we stopped at 220 iterations out of a possible 1000 because one of the stopping criteria of the algorithm was tripped. I know that the stopping criteria that was tripped is min_frac_stat_delta. It stops the iteration if the standard deviation of the brightest pixel of the residual and the RMS of the residual is lower than its value in the last 10 iterations.
+---MD
+
+#:HIDE
+xpaset -p ds9 exit &>> ${BUILD_LOG_FILE}
