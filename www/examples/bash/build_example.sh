@@ -51,6 +51,9 @@
 #   whether the string was quoted or not.
 #
 #
+# `#:DUMMY`
+# : Display, but do not run, the next line of commands
+#
 # # PARSING #
 #
 # 
