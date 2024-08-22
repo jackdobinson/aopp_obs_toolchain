@@ -120,7 +120,7 @@ HDUDOC  = 'DICD    '           / document with class description
 </pre>
 </td>
 </tr>
-<\table>
+</table>
 
 
 ## Deconvolving the image ##
