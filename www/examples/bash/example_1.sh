@@ -261,7 +261,7 @@ ds9 ${DECONV_FILE}[RESIDUAL] -header save ./figures/deconv-file-header-1.txt -ex
 #:HIDE
 { xpaset -p ds9 fits ${DECONV_FILE}[RESIDUAL]; xpaset -p ds9 header save ./figures/deconv-file-header-1.txt; } &>> ${BUILD_LOG_FILE}
 
-grep -E 'PKEY*|PVAL*' ./figures/deconv-file-header-1.txt
+grep -E 'PKEY*|PVAL*|CONTINUE' ./figures/deconv-file-header-1.txt
 #:end{CELL}
 
 : << ---MD

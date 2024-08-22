@@ -166,7 +166,7 @@ FITS headers can hold key-value pairs in pairs of (PKEYn, PVALn), where n is a n
 ```bash
 ds9 ${DECONV_FILE}[RESIDUAL] -header save ./figures/deconv-file-header-1.txt -exit
 
-grep -E 'PKEY*|PVAL*' ./figures/deconv-file-header-1.txt
+grep -E 'PKEY*|PVAL*|CONTINUE' ./figures/deconv-file-header-1.txt
 ```
 
 ```bash
@@ -182,16 +182,23 @@ PKEY4   = 'spectral_rebin.bin_operation'
 PVAL4   = 'mean    '                                                            
 PKEY5   = 'slice.original_file'                                                 
 PVAL5   = './example_data/ifu_observation_datasets/ADP.2021-10-25T05:14:56.504&'
+CONTINUE  '_NFM-AO-N_OBJ_rebin.fits'                                            
 PKEY6   = 'deconv.obs_file'                                                     
 PVAL6   = '/home/dobinsonl/Documents/repos/aopp_obs_toolchain/www/examples/bas&'
+CONTINUE  'h/../../../example_data/ifu_observation_datasets//single_wavelength&'
+CONTINUE  '_example_sci.fits'                                                   
 PKEY7   = 'deconv.psf_file'                                                     
 PVAL7   = '/home/dobinsonl/Documents/repos/aopp_obs_toolchain/www/examples/bas&'
+CONTINUE  'h/../../../example_data/ifu_observation_datasets//single_wavelength&'
+CONTINUE  '_example_std_normalised.fits'                                        
 PKEY8   = 'deconv.parameters_recorded_at_timestamp'                             
-PVAL8   = '2024-08-22T18:00:40.260033+0000'                                     
+PVAL8   = '2024-08-22T18:01:57.672620+0000'                                     
 PKEY9   = 'deconv.n_iter'                                                       
 PVAL9   = '1000    '                                                            
 PKEY10  = 'deconv.progress_string'                                              
 PVAL10  = 'Ended at 192 iterations: Standard deviation of statistics in last &' 
+CONTINUE  '10 steps are all below minimum fraction as defined in &'             
+CONTINUE  '`min_frac_stat_delta` parameter.'                                    
 PKEY11  = 'deconv.loop_gain'                                                    
 PVAL11  = '0.02    '                                                            
 PKEY12  = 'deconv.threshold'                                                    

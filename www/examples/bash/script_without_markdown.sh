@@ -138,7 +138,7 @@ python -m aopp_deconv_tool.deconvolve ${SCI_FILE} ${STD_FILE_NORM} -o ${DECONV_F
 #:HIDE
 { xpaset -p ds9 fits ${DECONV_FILE}[RESIDUAL]; xpaset -p ds9 header save ./figures/deconv-file-header-1.txt; } &>> ${BUILD_LOG_FILE}
 
-grep -E 'PKEY*|PVAL*' ./figures/deconv-file-header-1.txt
+grep -E 'PKEY*|PVAL*|CONTINUE' ./figures/deconv-file-header-1.txt
 #:end{CELL}
 
 
