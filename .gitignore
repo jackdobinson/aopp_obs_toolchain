@@ -12,3 +12,4 @@ plots/
 dist/
 *.fits
 zz_run_output/
+*log.txt

@@ -1,6 +1,13 @@
 # Takes a specially formatted bash script and creates a markdown file
 # that shows the commands run, the output, and explanatory text.
 #
+# # EXAMPLE #
+#
+# ```
+# $ bash build_example.sh example_1.sh
+# ```
+#
+#
 # # SYNTAX #
 #
 # A group of commands that are run together is called a 'cell', the start
@@ -115,7 +122,7 @@ sed -E -n \
 echo "Markdown Stripped"
 
 #DEBUGGING
-cp ${TFILES['STRIP_MARKDOWN']} script_without_markdown.sh
+#cp ${TFILES['STRIP_MARKDOWN']} script_without_markdown.sh
 
 
 #
@@ -188,7 +195,7 @@ ${
 echo "Commands executed and outputs recorded"
 
 # DEBUGGING
-cp ${TFILES['CELL_OUTPUTS']} cell_output.txt
+#cp ${TFILES['CELL_OUTPUTS']} cell_output.txt
 
 
 # Assemble the combined text (commands + command results + explanatory text)
@@ -245,7 +252,7 @@ done < ${SCRIPT_TO_BUILD}
 echo "Combined (commands + results + markdown) file assembled"
 
 # DEBUGGING
-cp ${TFILES['SCRIPT_WITH_OUTPUT']} script_with_output.txt
+#cp ${TFILES['SCRIPT_WITH_OUTPUT']} script_with_output.txt
 
 # Go through the combined (commands + command results + explanatory text) file.
 # Change cell begin/end commands to verbatim HEREDOCs, remove empty RESULT

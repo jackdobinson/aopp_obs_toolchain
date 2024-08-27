@@ -8696,7 +8696,7 @@ single_wavelength_example_sci_deconv.fits[RESIDUAL]:
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Construct the command we want the system to call.</span>
 <span class="c1"># NOTE: We need to put the numbers as a *string* because the command-line will be processing it.</span>
-<span class="n">command</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"python"</span><span class="p">,</span> <span class="s2">"-m"</span><span class="p">,</span> <span class="s2">"aopp_deconv_tool.create_bad_pixel_mask"</span><span class="p">,</span> 
+<span class="n">command</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"python"</span><span class="p">,</span> <span class="s2">"-m"</span><span class="p">,</span> <span class="s2">"aopp_deconv_tool.interpolate"</span><span class="p">,</span> 
            <span class="n">SCI_FILE</span><span class="p">,</span> <span class="n">SCI_ARTEFACT_MASK_FILE</span><span class="p">,</span>
            <span class="s1">'-o'</span><span class="p">,</span> <span class="n">SCI_INTERP_FILE</span>
 <span class="p">)</span>

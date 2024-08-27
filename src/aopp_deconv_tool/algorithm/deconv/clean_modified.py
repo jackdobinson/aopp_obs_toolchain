@@ -100,7 +100,7 @@ class CleanModified(Base):
 		'description':'Minimum fractional standard deviation of statistics before assuming no progress is being made and terminating iteration',
 		'domain' : (0,1),
 	})
-	give_best_result	: bool  = dc.field(default=True, 	metadata={
+	give_best_result	: bool  = dc.field(default=False, 	metadata={
 		'description':'If True, will return the best (measured by statistics) result instead of final result.',
 		'domain' : {False, True},
 	})
