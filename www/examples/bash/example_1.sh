@@ -429,7 +429,9 @@ echo "" # Empty line for formatting
 python -c 'import sys; import numpy as np; from astropy.io import fits; original=fits.getdata(sys.argv[1]); deconv=fits.getdata(sys.argv[2]); residual=fits.getdata(sys.argv[2],ext=1); print(f"signal fraction in deconvolved components {np.nansum(deconv)/np.nansum(original)}"); print(f"signal fraction in residual {np.nansum(residual)/np.nansum(original)}")' ${SCI_FILE} ${DECONV_FILE}
 #:end{CELL}
 
+
 : << ---MD
+
 | Original Image | Deconvolved Image | Residual |
 |----------------|-------------------|----------|
 |![original](./figures/sci-file-2.png) | ![deconv](./figures/deconv-primary-3.png) | ![original](./figures/deconv-residual-3.png) |

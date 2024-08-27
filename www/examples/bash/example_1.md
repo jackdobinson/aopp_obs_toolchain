@@ -200,7 +200,7 @@ PVAL7   = '/home/dobinsonl/Documents/repos/aopp_obs_toolchain/www/examples/bas&'
 CONTINUE  'h/../../../example_data/ifu_observation_datasets//single_wavelength&'
 CONTINUE  '_example_std_normalised.fits'                                        
 PKEY8   = 'deconv.parameters_recorded_at_timestamp'                             
-PVAL8   = '2024-08-27T12:37:37.265397+0000'                                     
+PVAL8   = '2024-08-27T12:48:01.364432+0000'                                     
 PKEY9   = 'deconv.n_iter'                                                       
 PVAL9   = '1000    '                                                            
 PKEY10  = 'deconv.progress_string'                                              
@@ -293,7 +293,7 @@ PVAL7   = '/home/dobinsonl/Documents/repos/aopp_obs_toolchain/www/examples/bas&'
 CONTINUE  'h/../../../example_data/ifu_observation_datasets//single_wavelength&'
 CONTINUE  '_example_std_normalised.fits'                                        
 PKEY8   = 'deconv.parameters_recorded_at_timestamp'                             
-PVAL8   = '2024-08-27T12:38:16.506367+0000'                                     
+PVAL8   = '2024-08-27T12:48:40.075219+0000'                                     
 PKEY9   = 'deconv.n_iter'                                                       
 PVAL9   = '1000    '                                                            
 PKEY10  = 'deconv.progress_string'                                              
@@ -393,6 +393,7 @@ python -c 'import sys; import numpy as np; from astropy.io import fits; original
 signal fraction in deconvolved components 1.0112316729923718
 signal fraction in residual -0.0017897240290958222
 ```
+
 | Original Image | Deconvolved Image | Residual |
 |----------------|-------------------|----------|
 |![original](./figures/sci-file-2.png) | ![deconv](./figures/deconv-primary-3.png) | ![original](./figures/deconv-residual-3.png) |
