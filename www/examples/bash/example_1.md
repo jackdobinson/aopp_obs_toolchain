@@ -426,7 +426,9 @@ There is another source of noise we have not discussed in this example. The PSF 
 We started with a science observation and a standard star observation. Normalising the standard star so it could be used as a PSF we deconvolved the science observation with default settings. Then we introduced different problems and solutions to those problems as they arised.
 
 1) The initial deconvolution stopped before the vast majority of the original observation was explained by the deconvolved image, this was fixed by altering some parameters so the deconvolution continued.
+
 2) Artefacts stopped the image deconvolving beyond a certain point, as they were smaller than the PSF the deconvolution process gets 'stuck' as it cannot account for such small features. We used the artefact reduction tools in aopp_deconv_tool to reduce the effect of the artefacts and let the deconvolution process continue.
+
 3) We removed speckling due to deconvolution proceeding close to the noise level of the observations. This can be corrected for in multiple ways (including reducing the --threshold parameter as the as deconvolution process continues), we chose to use the "smart threshold" (--threshold set to -1). This does effectively reduce the speckling, but cannot eliminate it entirely. However it is often good enough to get to the noise level of an image.
 
 Finally we examined the last deconvolved image, compared it to the original, pointed out features of the deconvolved image and the residual, and finally touched upon the topics of regularisation and PSF modelling.
