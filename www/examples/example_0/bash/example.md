@@ -1,3 +1,6 @@
+---
+layout: bare
+---
 
 ## Downloading Example Datasets ##
 
