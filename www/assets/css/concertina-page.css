@@ -1,8 +1,14 @@
+
+
 details.concertina-page{
+	position: relative;
+	z-index: 0;
 	height:auto;
 	width:auto;
 	margin-right: 8px;
 	cursor: default;
+	
+	
 	
 	summary {
     	list-style-type: "\25B7\00A0";
@@ -53,8 +59,13 @@ details.concertina-page{
 }
 details.concertina-page[open]{
 	position:relative;
-	height:85vh;
+	z-index: 0;
+	height: 85vh;
 	width:auto;
+	
+	~ details.concertina-page{
+		margin-top:8rem;
+	}
 	
 	summary {
 		list-style-type: "\25BD\00A0";
