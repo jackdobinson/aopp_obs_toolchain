@@ -1,6 +1,6 @@
 
 
-{% assign random_number = "now" | date: "%H%M%S%L" | plus: 0 %}
+{% assign random_number = "now" | date: "%N" | modulo: 1000 | plus: 0 %}
 
 <details class="concertina-page {{include.class | default ''}}" ontoggle="this.scrollIntoView()">
 	<summary>{{include.heading}}</summary>
