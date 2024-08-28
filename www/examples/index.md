@@ -1,5 +1,9 @@
 ---
 examples_to_embed:
+  - name: Downloading Example Datasets
+    versions:
+      - name: Bash
+        url: examples/example_0/example.html
   - name: Deconvolution of a single wavelength
     versions:
       - name: Python
