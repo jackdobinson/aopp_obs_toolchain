@@ -3,9 +3,9 @@ examples_to_embed:
   - name: Deconvolution of a single wavelength
     versions:
       - name: Python
-        url: examples/jupyter/example_1.html
+        url: examples/example_1/jupyter/example.html
       - name: Bash
-        url: examples/bash/example_1.html
+        url: examples/example_1/bash/example.html
 ---
 
 

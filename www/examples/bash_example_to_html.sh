@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+#
 # Takes a specially formatted bash script and creates a markdown file
 # that shows the commands run, the output, and explanatory text.
 #
@@ -74,8 +76,15 @@ IFS=$'\n\t'
 SCRIPT="$(readlink -f ${0})"
 SCRIPT_DIR=${SCRIPT%/*}
 
+LOG_DIR="${SCRIPT_DIR}/logs/bash_example_to_html"
+mkdir -p ${LOG_DIR}
+
 SCRIPT_TO_BUILD=$(realpath $1)
-SCRIPT_AS_MD="${1%.*}.md"
+SCRIPT_AS_MD="${SCRIPT_TO_BUILD%.*}.md"
+
+# Ensure we load up the correct virtual environment
+REPO_DIR="${HOME}/Documents/repos/aopp_obs_toolchain"
+source ${REPO_DIR}/.venv_3.12.2/bin/activate
 
 declare -A TFILES=()
 TFILES['STRIP_MARKDOWN']=$(mktemp "tmp_bash_example_strip_markdown.XXXXXX")
@@ -122,7 +131,7 @@ sed -E -n \
 echo "Markdown Stripped"
 
 #DEBUGGING
-#cp ${TFILES['STRIP_MARKDOWN']} script_without_markdown.sh
+cp ${TFILES['STRIP_MARKDOWN']} ${LOG_DIR}/script_without_markdown.sh
 
 
 #
@@ -195,7 +204,7 @@ ${
 echo "Commands executed and outputs recorded"
 
 # DEBUGGING
-#cp ${TFILES['CELL_OUTPUTS']} cell_output.txt
+cp ${TFILES['CELL_OUTPUTS']} ${LOG_DIR}/cell_output.txt
 
 
 # Assemble the combined text (commands + command results + explanatory text)
@@ -252,7 +261,7 @@ done < ${SCRIPT_TO_BUILD}
 echo "Combined (commands + results + markdown) file assembled"
 
 # DEBUGGING
-#cp ${TFILES['SCRIPT_WITH_OUTPUT']} script_with_output.txt
+cp ${TFILES['SCRIPT_WITH_OUTPUT']} ${LOG_DIR}/script_with_output.txt
 
 # Go through the combined (commands + command results + explanatory text) file.
 # Change cell begin/end commands to verbatim HEREDOCs, remove empty RESULT

@@ -1,12 +1,11 @@
-XTENSION= 'IMAGE   '           / Image extension                                
+SIMPLE  =                    T / conforms to FITS standard                      
 BITPIX  =                  -64 / array data type                                
 NAXIS   =                    3 / number of array dimensions                     
 NAXIS1  =                  430                                                  
 NAXIS2  =                  427                                                  
 NAXIS3  =                    1                                                  
-PCOUNT  =                    0 / number of parameters                           
-GCOUNT  =                    1 / number of groups                               
-EXTNAME = 'RESIDUAL'           / This extension contains data values            
+EXTEND  =                    T                                                  
+EXTNAME = 'DATA    '           / This extension contains data values            
 HDUCLASS= 'ESO     '           / class name (ESO format)                        
 HDUDOC  = 'DICD    '           / document with class description                
 HDUVERS = 'DICD version 6'     / version number (according to spec v2.5.1)      
@@ -56,19 +55,19 @@ PKEY5   = 'slice.original_file'
 PVAL5   = './example_data/ifu_observation_datasets/ADP.2021-10-25T05:14:56.504&'
 CONTINUE  '_NFM-AO-N_OBJ_rebin.fits'                                            
 PKEY6   = 'deconv.obs_file'                                                     
-PVAL6   = '/home/dobinsonl/Documents/repos/aopp_obs_toolchain/www/examples/bas&'
-CONTINUE  'h/../../../example_data/ifu_observation_datasets//single_wavelength&'
-CONTINUE  '_example_sci.fits'                                                   
+PVAL6   = '/home/dobinsonl/Documents/repos/aopp_obs_toolchain/example_data/ifu&'
+CONTINUE  '_observation_datasets/single_wavelength_example_sci.fits'            
 PKEY7   = 'deconv.psf_file'                                                     
-PVAL7   = '/home/dobinsonl/Documents/repos/aopp_obs_toolchain/www/examples/bas&'
-CONTINUE  'h/../../../example_data/ifu_observation_datasets//single_wavelength&'
-CONTINUE  '_example_std_normalised.fits'                                        
+PVAL7   = '/home/dobinsonl/Documents/repos/aopp_obs_toolchain/example_data/ifu&'
+CONTINUE  '_observation_datasets/single_wavelength_example_std_normalised.fits' 
 PKEY8   = 'deconv.parameters_recorded_at_timestamp'                             
-PVAL8   = '2024-08-27T12:48:40.075219+0000'                                     
+PVAL8   = '2024-08-28T15:04:21.648950+0000'                                     
 PKEY9   = 'deconv.n_iter'                                                       
 PVAL9   = '1000    '                                                            
 PKEY10  = 'deconv.progress_string'                                              
-PVAL10  = 'Ended at 1000 iterations: Maximum number of iterations reached.'     
+PVAL10  = 'Ended at 192 iterations: Standard deviation of statistics in last &' 
+CONTINUE  '10 steps are all below minimum fraction as defined in &'             
+CONTINUE  '`min_frac_stat_delta` parameter.'                                    
 PKEY11  = 'deconv.loop_gain'                                                    
 PVAL11  = '0.02    '                                                            
 PKEY12  = 'deconv.threshold'                                                    
@@ -84,7 +83,7 @@ PVAL16  = '0.01    '
 PKEY17  = 'deconv.max_stat_increase'                                            
 PVAL17  = 'inf     '                                                            
 PKEY18  = 'deconv.min_frac_stat_delta'                                          
-PVAL18  = '1e-05   '                                                            
+PVAL18  = '0.001   '                                                            
 PKEY19  = 'deconv.give_best_result'                                             
 PVAL19  = 'False   '                                                            
 PKEY20  = 'deconv.clean_beam_sigma'                                             
