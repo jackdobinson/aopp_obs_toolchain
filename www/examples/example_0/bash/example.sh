@@ -1,6 +1,9 @@
 # Zenodo download example
 
 : << ---MD
+---
+layout: bare
+---
 
 ## Downloading Example Datasets ##
 

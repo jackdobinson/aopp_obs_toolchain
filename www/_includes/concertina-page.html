@@ -2,7 +2,7 @@
 
 {% assign random_number = "now" | date: "%N" | modulo: 1000 | plus: 0 %}
 
-<details class="concertina-page {{include.class | default ''}}" ontoggle="this.scrollIntoView()">
+<details class="concertina-page {{include.class | default ''}}" ontoggle="for (const item of document.getElementsByClassName('concertina-page')){if (item !== this){item.removeAttribute('open')}}; if (this.hasAttribute('open')) {this.scrollIntoView()}">
 	<summary>{{include.heading}}</summary>
 	
 	<div>
