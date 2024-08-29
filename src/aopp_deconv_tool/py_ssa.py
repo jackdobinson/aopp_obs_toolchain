@@ -20,7 +20,7 @@ import aopp_deconv_tool.py_svd as py_svd
 import aopp_deconv_tool.estimate_noise as estimate_noise
 
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
 
 
 # Hopefully creating these will be useful in making easy-to-read type hints

@@ -23,7 +23,7 @@ from aopp_deconv_tool.py_ssa import SSA
 from aopp_deconv_tool.plot_helper import fig_draw_bbox_of_artist
 
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
 
 
 default_scalar_formatter = mpl.ticker.ScalarFormatter().format_data

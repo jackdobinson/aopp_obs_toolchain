@@ -7,7 +7,7 @@ import numpy as np
 from aopp_deconv_tool.optics.function import PhasePowerSpectralDensity
 
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
 
 
 """

@@ -20,11 +20,12 @@ from aopp_deconv_tool.fpath import FPath
 import aopp_deconv_tool.astropy_helper as aph
 import aopp_deconv_tool.astropy_helper.fits.specifier
 import aopp_deconv_tool.astropy_helper.fits.header
+import aopp_deconv_tool.arguments
 
 import aopp_deconv_tool.numpy_helper as nph
 
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
 
 
 
@@ -181,10 +182,26 @@ def parse_args(argv):
 
 
 
-if __name__=='__main__':
+def go(
+		fits_spec,
+		output_path=None,
+		rebin_step=None
+	):
+	"""
+	Thin wrapper around `run()` to accept string inputs.
+	As long as the names of the arguments to this function 
+	are the same as the names expected from the command line
+	we can do this programatically
+	"""
+	# This must be first so we only grab the arguments to the function
+	fargs = dict(locals().items())
+	arglist = aopp_deconv_tool.arguments.construct_arglist_from_locals(fargs, n_positional_args=1)
 	
-	
-	args = parse_args(sys.argv[1:])
+	exec_with_args(arglist)
+	return
+
+def exec_with_args(argv):
+	args = parse_args(argv)
 	
 	
 	run(
@@ -192,3 +209,8 @@ if __name__=='__main__':
 		args.output_path,
 		args.rebin_step,	
 	)
+
+if __name__=='__main__':
+	exec_with_args(sys.argv[1:])
+	
+	

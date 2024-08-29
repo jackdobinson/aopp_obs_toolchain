@@ -7,7 +7,7 @@ import itertools as it
 import numpy as np
 
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
 
 
 def corners_standard_deviation(a : np.ndarray, corner_frac : float = 1/10) -> float:

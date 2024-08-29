@@ -11,7 +11,7 @@ from astropy.wcs import WCS
 from aopp_deconv_tool.numpy_helper.axes import AxesOrdering
 
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
 
 
 class DictReader:

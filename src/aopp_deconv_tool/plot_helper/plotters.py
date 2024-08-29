@@ -10,7 +10,8 @@ import dataclasses as dc
 
 import numpy as np
 import matplotlib as mpl
-mpl.use('TKAgg')
+# NOTE: If failing, try turing this back on
+#mpl.use('TKAgg')
 import matplotlib.pyplot as plt
 
 import aopp_deconv_tool.plot_helper as plot_helper

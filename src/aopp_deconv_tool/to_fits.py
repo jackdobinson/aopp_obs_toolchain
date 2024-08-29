@@ -23,9 +23,10 @@ import numpy as np
 import aopp_deconv_tool.astropy_helper as aph
 import aopp_deconv_tool.astropy_helper.fits.header
 from aopp_deconv_tool.fpath import FPath
+import aopp_deconv_tool.arguments
 
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
 
 
 DataBundle = namedtuple('DataBundle', ('data', 'header'))
@@ -155,9 +156,30 @@ def parse_args(argv):
 	return args
 
 
-if __name__=='__main__':
-	args = parse_args(sys.argv[1:])
+
+def go(
+		image_path,
+		output_path=None
+	):
+	"""
+	Thin wrapper around `run()` to accept string inputs.
+	As long as the names of the arguments to this function 
+	are the same as the names expected from the command line
+	we can do this programatically
+	"""
+	# This must be first so we only grab the arguments to the function
+	fargs = dict(locals().items())
+	arglist = aopp_deconv_tool.arguments.construct_arglist_from_locals(fargs, n_positional_args=1)
+	
+	exec_with_args(arglist)
+	return
+
+def exec_with_args(argv):
+	args = parse_args(argv)
 	
 	
 	data_bundle = read_image_into_numpy_array(args.image_path)
 	save_as_fits(args.output_path, data_bundle)
+
+if __name__=='__main__':
+	exec_with_args(sys.argv[1:])

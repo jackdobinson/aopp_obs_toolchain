@@ -17,7 +17,7 @@ import aopp_deconv_tool.plot_helper as plot_helper
 
 
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
 
 
 def ssa2d_deviations(

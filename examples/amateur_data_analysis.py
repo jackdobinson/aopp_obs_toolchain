@@ -34,7 +34,7 @@ import aopp_deconv_tool.psf_data_ops as psf_data_ops
 from aopp_deconv_tool.psf_model_dependency_injector import RadialPSFModelDependencyInjector, GaussianPSFModelDependencyInjector, TurbulencePSFModelDependencyInjector
 
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
 
 
 T = TypeVar('T')

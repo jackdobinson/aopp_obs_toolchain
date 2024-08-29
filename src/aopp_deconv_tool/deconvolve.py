@@ -20,6 +20,7 @@ import aopp_deconv_tool.numpy_helper.axes
 import aopp_deconv_tool.numpy_helper.slice
 import aopp_deconv_tool.psf_data_ops as psf_data_ops
 from aopp_deconv_tool.fpath import FPath
+import aopp_deconv_tool.arguments as arguments
 
 
 from aopp_deconv_tool.algorithm.deconv.clean_modified import CleanModified
@@ -33,7 +34,7 @@ from aopp_deconv_tool.plot_helper.base import AxisDataMapping
 from aopp_deconv_tool.plot_helper.plotters import PlotSet, Histogram, VerticalLine, Image, IterativeLineGraph, HorizontalLine
 
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
 
 
 deconv_methods = {
@@ -410,16 +411,34 @@ def parse_args(argv):
 	return args, deconv_args
 
 
-if __name__ == '__main__':
-	import aopp_deconv_tool.arguments as arguments
+def go(
+		obs_fits_spec,
+		psf_fits_spec,
+		output_path=None, 
+		plot=None, 
+		deconv_method=None, 
+		deconv_method_help_FLAG=None, 
+		**kwargs
+	):
+	"""
+	Thin wrapper around `run()` to accept string inputs.
+	As long as the names of the arguments to this function 
+	are the same as the names expected from the command line
+	we can do this programatically
+	"""
+	# This must be first so we only grab the arguments to the function
+	fargs = dict(locals().items())
+	arglist = aopp_deconv_tool.arguments.construct_arglist_from_locals(fargs, n_positional_args=2)
+	
+	exec_with_args(arglist)
+	return
 
-	argv = sys.argv[1:]
-
-	args, deconv_args = parse_args(sys.argv[1:])
-	_lgr.info('#### ARGUMENTS ####')
+def exec_with_args(argv):
+	args, deconv_args = parse_args(argv)
+	_lgr.debug('#### ARGUMENTS ####')
 	for k,v in vars(args).items():
-		_lgr.info(f'\t{k} : {v}')
-	_lgr.info('#### END ARGUMENTS ####')
+		_lgr.debug(f'\t{k} : {v}')
+	_lgr.debug('#### END ARGUMENTS ####')
 	
 		
 	deconv_class = deconv_methods[args.deconv_method]
@@ -429,9 +448,6 @@ if __name__ == '__main__':
 		prog=f'deconvolve.py --deconv_method {args.deconv_method}',
 		show_help=args.deconv_method_help
 	)
-	
-	
-	
 	
 	_lgr.debug(f'{deconv_params=}')
 	deconvolver = deconv_class(**deconv_params)
@@ -443,4 +459,10 @@ if __name__ == '__main__':
 		output_path = args.output_path, 
 		plot = args.plot,
 	)
+	
+	return
+	
+if __name__ == '__main__':
+	argv = sys.argv[1:]
+	exec_with_args(argv)
 	

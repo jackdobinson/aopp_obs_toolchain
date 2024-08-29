@@ -7,6 +7,8 @@ from typing import Any, Type
 import argparse
 
 import aopp_deconv_tool
+import aopp_deconv_tool.cfg.logs
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
 
 re_empty_line = re.compile(r'^\s*$\s*', flags=re.MULTILINE)
 
@@ -115,7 +117,7 @@ def parse_args_of_dataclass(
 				#metavar=str(field.type)[8:-2]
 			)
 		else:
-			print(f'{field.name=} {field.type=}')
+			_lgr.debug(f'{field.name=} {field.type=}')
 			parser.add_argument(
 				'--'+field.name, 
 				type=TypeConverterFactory(field.type), 
@@ -137,3 +139,39 @@ def parse_args_of_dataclass(
 		del args[k]
 	
 	return args
+
+
+def construct_arglist_from_locals(
+		dict_of_locals : dict[str, Any],
+		n_positional_args : int = 0
+	):
+	"""
+	Given a key-value dictionary, construct something we can pass to an argparse parser.
+	Entries with `None` as their value will NOT be constructed into the list.
+	"""
+	dict_of_locals.update(dict_of_locals.get('kwargs',{}))
+	if 'kwargs' in dict_of_locals:
+		del dict_of_locals['kwargs']
+	
+	arglist = []
+	
+	for i,(k,v) in enumerate(dict_of_locals.items()):
+		# Positional arguments get stuffed in without names
+		if i < n_positional_args:
+			arglist.append(str(v))
+			continue
+		# `None` means that we didn't pass anything, so don't send to the argument parser.
+		if v is not None:
+			# if the key ends in "_FLAG" we don't send a value, and remove the suffix
+			if k.endswith('_FLAG'):
+				arglist.append(f'--{k[:-5]}')
+			else:
+				arglist.append(f'--{k}')
+				if type(v) in (list, tuple):
+					arglist.extend([str(x) for x in v])
+				else:
+					arglist.append(str(v))
+	
+	_lgr.debug(f'{arglist=}')
+	return arglist
+

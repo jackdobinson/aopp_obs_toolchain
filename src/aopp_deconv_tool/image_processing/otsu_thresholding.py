@@ -4,7 +4,7 @@ Implements Otsu's method for thresholding images
 """
 
 import aopp_deconv_tool.cfg
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
 
 import sys, os
 import numpy as np

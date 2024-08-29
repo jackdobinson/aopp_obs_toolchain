@@ -11,7 +11,7 @@ import aopp_deconv_tool.estimate_noise as estimate_noise
 import common_metrics as common_metrics
 
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
 
 @scientest.decorators.pass_args(1E-9)
 def test_ssa_residuals_are_within_limits(frac_residual_limit):

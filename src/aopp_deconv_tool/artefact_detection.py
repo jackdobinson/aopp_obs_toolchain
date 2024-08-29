@@ -25,6 +25,7 @@ from aopp_deconv_tool.fpath import FPath
 import aopp_deconv_tool.numpy_helper as nph
 import aopp_deconv_tool.numpy_helper.axes
 import aopp_deconv_tool.numpy_helper.slice
+import aopp_deconv_tool.arguments
 
 from aopp_deconv_tool.algorithm.bad_pixels.ssa_sum_prob import ssa2d_sum_prob_map, ssa2d_deviations
 
@@ -35,7 +36,7 @@ from aopp_deconv_tool import algorithm
 import aopp_deconv_tool.algorithm.interpolate
 
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
 
 
 # First one of these is the default
@@ -376,8 +377,38 @@ def parse_args(argv):
 	return args
 
 
+def go(
+		fits_spec,
+		output_path=None,
+		strategy=None,
+		**kwargs
+	):
+	"""
+	Thin wrapper around `run()` to accept string inputs.
+	As long as the names of the arguments to this function 
+	are the same as the names expected from the command line
+	we can do this programatically
+	"""
+	# Add stuff to kwargs here if needed
+	kwargs['ssa.w_shape'] = None
+	kwargs['ssa.start'] = None
+	kwargs['ssa.stop'] = None
+	
+	# This must be first so we only grab the arguments to the function
+	fargs = dict(locals().items())
+	arglist = aopp_deconv_tool.arguments.construct_arglist_from_locals(fargs, n_positional_args=1)
+
+	exec_with_args(arglist)
+
+def exec_with_args(argv):
+	args = parse_args(argv)
+	
+	run(
+		args.fits_spec, 
+		output_path=args.output_path, 
+		strategy=args.strategy, 
+		**args.strategy_args
+	)
+
 if __name__ == '__main__':
-	args = parse_args(sys.argv[1:])
-	
-	run(args.fits_spec, output_path=args.output_path, strategy=args.strategy, **args.strategy_args)
-	
+	exec_with_args(sys.argv[1:])

@@ -24,6 +24,7 @@ import aopp_deconv_tool.numpy_helper.axes
 import aopp_deconv_tool.numpy_helper.slice
 from aopp_deconv_tool.fpath import FPath
 import aopp_deconv_tool.numpy_helper.array.grid
+import aopp_deconv_tool.arguments
 
 import aopp_deconv_tool.scipy_helper as sph
 import aopp_deconv_tool.scipy_helper.interp
@@ -37,7 +38,7 @@ from aopp_deconv_tool.py_ssa import SSA
 import matplotlib.pyplot as plt
 
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
 
 
 type NM = NewType('NM', int)
@@ -243,9 +244,27 @@ def parse_args(argv):
 	
 	return args
 
+def go(
+		data_fits_spec,
+		bpmask_fits_spec, 
+		output_path=None,
+		interp_method=None
+	):
+	"""
+	Thin wrapper around `run()` to accept string inputs.
+	As long as the names of the arguments to this function 
+	are the same as the names expected from the command line
+	we can do this programatically
+	"""
+	# Add stuff to kwargs here if needed
+	
+	# This must be first so we only grab the arguments to the function
+	fargs = dict(locals().items())
+	arglist = aopp_deconv_tool.arguments.construct_arglist_from_locals(fargs, n_positional_args=2)
+	exec_with_args(arglist)
 
-if __name__ == '__main__':
-	args = parse_args(sys.argv[1:])
+def exec_with_args(argv):
+	args = parse_args(argv)
 	
 	run(
 		args.data_fits_spec, 
@@ -253,4 +272,8 @@ if __name__ == '__main__':
 		output_path=args.output_path,
 		interp_method=args.interp_method, 
 	)
+
+
+if __name__ == '__main__':
+	exec_with_args(sys.argv[1:])
 	

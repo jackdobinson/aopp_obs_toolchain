@@ -1,6 +1,6 @@
 # Documentation #
 
-In addition to this overview of the command-line scripts, there is [Doxygen documentation](./doxygen/html/index.html) and [pydoctor](./pydoctor/index.html) documentation. These go into detail on the functions, classes, members, and methods in the package.
+In addition to this overview of the command-line scripts, there is [Doxygen documentation](./doxygen/html/index.html) and [pydoc](./pydoc/index.html) documentation. These go into detail on the functions, classes, members, and methods in the package.
 
 ## Command-line Scripts <a id="command-line-scripts"></a> ##
 

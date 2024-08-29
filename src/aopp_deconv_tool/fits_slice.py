@@ -16,9 +16,10 @@ from aopp_deconv_tool.astropy_helper.fits.specifier import FitsSpecifier
 
 from aopp_deconv_tool.fpath import FPath
 from aopp_deconv_tool.numpy_helper.axes import AxesOrdering
+import aopp_deconv_tool.arguments
 
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
 
 
 
@@ -135,11 +136,25 @@ def parse_args(argv):
 	
 	return args
 
+def go(
+		fits_spec,
+		output_path=None
+	):
+	"""
+	Thin wrapper around `run()` to accept string inputs.
+	As long as the names of the arguments to this function 
+	are the same as the names expected from the command line
+	we can do this programatically
+	"""
+	# Add stuff to kwargs here if needed
+	
+	# This must be first so we only grab the arguments to the function
+	fargs = dict(locals().items())
+	arglist = aopp_deconv_tool.arguments.construct_arglist_from_locals(fargs, n_positional_args=1)
+	exec_with_args(arglist)
 
-if __name__ == '__main__':
-	argv = sys.argv[1:]
-
-	args = parse_args(sys.argv[1:])
+def exec_with_args(argv):
+	args = parse_args(argv)
 	_lgr.info('#### ARGUMENTS ####')
 	for k,v in vars(args).items():
 		_lgr.info(f'\t{k} : {v}')
@@ -150,3 +165,8 @@ if __name__ == '__main__':
 		args.output_path, 
 		#squeeze = args.squeeze
 	)
+	
+if __name__ == '__main__':
+	exec_with_args(sys.argv[1:])
+
+	

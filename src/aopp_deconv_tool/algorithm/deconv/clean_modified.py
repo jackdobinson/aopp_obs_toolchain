@@ -13,7 +13,7 @@ import aopp_deconv_tool.image_processing.otsu_thresholding
 import aopp_deconv_tool.mfunc as mfunc
 
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
 
 
 @dc.dataclass(slots=True,repr=False)

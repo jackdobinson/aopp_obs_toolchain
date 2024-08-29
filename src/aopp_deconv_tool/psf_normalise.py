@@ -18,6 +18,7 @@ import aopp_deconv_tool.astropy_helper.fits.header
 import aopp_deconv_tool.numpy_helper as nph
 import aopp_deconv_tool.numpy_helper.axes
 import aopp_deconv_tool.numpy_helper.slice
+import aopp_deconv_tool.arguments
 
 import aopp_deconv_tool.psf_data_ops as psf_data_ops
 from aopp_deconv_tool.fpath import FPath
@@ -25,12 +26,12 @@ from aopp_deconv_tool.fpath import FPath
 import matplotlib.pyplot as plt
 
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
 
 
 def run(
-		fits_spec,
-		output_path,
+		fits_spec : aph.fits.specifier.FitsSpecifier,
+		output_path : Path,
 		threshold : float = 1E-2,
 		n_largest_regions : None | int = 1,
 		background_threshold : float = 1E-3,
@@ -280,9 +281,31 @@ def parse_args(argv):
 	
 	return args
 
+def go(
+		fits_spec, 
+		output_path=None, 
+		threshold=None, 
+		n_largest_regions=None, 
+		background_threshold=None, 
+		background_noise_model=None, 
+		n_sigma=None, 
+		trim_to_shape=None
+	):
+	"""
+	Thin wrapper around `run()` to accept string inputs.
+	As long as the names of the arguments to this function 
+	are the same as the names expected from the command line
+	we can do this programatically
+	"""
+	# This must be first so we only grab the arguments to the function
+	fargs = dict(locals().items())
+	arglist = aopp_deconv_tool.arguments.construct_arglist_from_locals(fargs, n_positional_args=1)
+	
+	exec_with_args(arglist)
+	return
 
-if __name__ == '__main__':
-	args = parse_args(sys.argv[1:])
+def exec_with_args(argv):
+	args = parse_args(argv)
 	
 	run(
 		args.fits_spec, 
@@ -294,4 +317,7 @@ if __name__ == '__main__':
 		n_sigma = args.n_sigma,
 		trim_to_shape = args.trim_to_shape,
 	)
+	return
 	
+if __name__ == '__main__':
+	exec_with_args(sys.argv[1:])

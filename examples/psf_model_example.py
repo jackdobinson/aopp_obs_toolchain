@@ -37,7 +37,7 @@ from aopp_deconv_tool.optimise_compat.ultranest_compat import UltranestResultSet
 from aopp_deconv_tool.psf_model_dependency_injector import MUSEAdaptiveOpticsPSFModelDependencyInjector
 
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
 
 
 import example_data_loader

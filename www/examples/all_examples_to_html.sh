@@ -45,5 +45,9 @@ for FILE in "${EXAMPLE_FILE_SET[@]}"; do
 	
 	cd ${DIR}
 	${CMD[@]}
+	
+	# newlines to separate output
+	echo "" 
+	echo ""
 
 done
