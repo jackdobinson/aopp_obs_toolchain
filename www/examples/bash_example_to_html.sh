@@ -83,13 +83,18 @@ SCRIPT_TO_BUILD=$(realpath $1)
 SCRIPT_AS_MD="${SCRIPT_TO_BUILD%.*}.md"
 
 
-echo "Processing ${SCRIPT_TO_BUILD} will produce ${SCRIPT_AS_MD}."
+echo "Processing: ${SCRIPT_TO_BUILD}"
+echo "Producing: ${SCRIPT_AS_MD}."
 if [ ${SCRIPT_TO_BUILD} -nt ${SCRIPT_AS_MD} ]; then
-	echo "${SCRIPT_TO_BUILD} is newer than ${SCRIPT_AS_MD}. Rebuilding dependent file..."
-else 
-	echo "${SCRIPT_TO_BUILD} is older than ${SCRIPT_AS_MD}. Dependent file should be newest version, no rebuilding will be performed."
+	echo "Process file is newer than product file."
+else
+	echo "Process file is older than product file."
+	echo "Not rebuilding product."
+	echo "Exiting..."
 	exit 0
 fi
+
+echo "Rebuilding product..."
 
 # Ensure we load up the correct virtual environment
 REPO_DIR="${HOME}/Documents/repos/aopp_obs_toolchain"

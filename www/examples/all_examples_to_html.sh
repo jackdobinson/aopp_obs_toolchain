@@ -8,31 +8,33 @@ shopt -s nullglob
 THIS_DIR=$(readlink -f $(dirname $0))
 CWD=${PWD}
 
-echo "THIS_DIR=${THIS_DIR}"
-echo "CWD=${CWD}"
-
-
 EXAMPLE_FILE_SET=(
 	${THIS_DIR}/example_*/bash/example.sh
 	${THIS_DIR}/example_*/jupyter/example.ipynb
 )
 
+
+echo "Looping over fileset..."
 for FILE in "${EXAMPLE_FILE_SET[@]}"; do
-	cd ${CWD}
-	
+	echo "--------------------------------------------------------"
 	echo "FILE=${FILE}"
+	
+	# Make sure we always start from the same directory
+	cd ${CWD}
 	
 	DIR=${FILE%/*}
 	NAME=${FILE##*/}
 
 	case "${FILE}" in
 		*.sh)
+			echo "FILE detected as BASH file."
 			CMD=(
 				${THIS_DIR}/bash_example_to_html.sh 
 				${FILE}
 			)
 			;;
 		*.ipynb)
+			echo "FILE detected as JYPYTER-NOTEBOOK file."
 			CMD=(
 				${THIS_DIR}/ipynb_to_html.sh
 				${FILE}
@@ -40,14 +42,15 @@ for FILE in "${EXAMPLE_FILE_SET[@]}"; do
 			;;
 		*)
 			echo "ERROR: File '${FILE}' has unknown file type '${FILE##*.}', cannot convert to HTML"
+			continue
 			;;
 	esac
 	
+	# Change to the same directory as the file.
 	cd ${DIR}
+	# Run the command
 	${CMD[@]}
-	
-	# newlines to separate output
-	echo "" 
-	echo ""
 
 done
+echo "--------------------------------------------------------"
+echo "fileset loop complete."
