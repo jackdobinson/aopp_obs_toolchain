@@ -193,4 +193,6 @@ In words, a *fits specifier* consists of: a string that describes which FITS fil
 See the resources page for a [quick introduction to the FITS format]({{site.baseurl}}/resources#fits-file-format-information) for a description of why this information is needed, and why [axis numbers are different between FITS and Python]({{site.baseurl}}/resources#fits-data-order).
 
 
-## Running the First Example ##
+## Next Steps ##
+
+We've gone though installing python, creating and activating a virtual environment, and explained a few quirks of the tool. The next step is to have a go at the [examples]({{site.baseurl}}/examples/index.html).
