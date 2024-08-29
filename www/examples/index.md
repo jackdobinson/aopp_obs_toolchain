@@ -17,7 +17,7 @@ examples_to_embed:
 
 # Examples #
 
-The data for examples in this section are hosted on {% include stub-link.html text="zenodo" %}.
+The data for examples in this section are hosted on [Zenodo](https://zenodo.org/records/13384454).
 
 {% for example in page.examples_to_embed %}
 {% capture example_summary %}
