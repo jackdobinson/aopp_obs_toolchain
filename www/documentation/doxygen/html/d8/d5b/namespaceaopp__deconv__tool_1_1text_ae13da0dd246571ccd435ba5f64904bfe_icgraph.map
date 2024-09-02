@@ -1,14 +1,34 @@
 <map id="aopp_deconv_tool.text.wrap" name="aopp_deconv_tool.text.wrap">
-<area shape="rect" id="node1" title=" " alt="" coords="348,326,555,353"/>
-<area shape="rect" id="node2" href="$dd/d4d/namespaceaopp__deconv__tool_1_1artefact__detection.html#a4d46d8ae518ad501b8786cd6dd8a50dd" title=" " alt="" coords="55,5,250,47"/>
-<area shape="rect" id="node3" href="$d1/d07/namespaceaopp__deconv__tool_1_1create__bad__pixel__mask.html#a2b16b8c45b14df83d552a22fb639b9f9" title=" " alt="" coords="47,71,258,112"/>
-<area shape="rect" id="node4" href="$d6/de2/namespaceaopp__deconv__tool_1_1deconvolve.html#afb9fb6db643cda6e6d7af7ca2c1c4940" title=" " alt="" coords="5,137,300,163"/>
-<area shape="rect" id="node5" href="$dc/dc5/namespaceaopp__deconv__tool_1_1fit__psf__model.html#a2ff26f2f657884f9deaa3e1e84e508b6" title=" " alt="" coords="67,188,239,229"/>
-<area shape="rect" id="node6" href="$d4/d1f/namespaceaopp__deconv__tool_1_1fits__copy__wcs.html#a919079e5f742632cf582ee2a7c9ff7a2" title=" " alt="" coords="69,253,236,295"/>
-<area shape="rect" id="node7" href="$d6/d01/namespaceaopp__deconv__tool_1_1fits__slice.html#a33fccd58fdb9c6f28d970787b141ca4a" title=" " alt="" coords="70,319,235,360"/>
-<area shape="rect" id="node8" href="$d5/ddb/namespaceaopp__deconv__tool_1_1interpolate.html#abf004ff77536f8a4c52a86709a9ae800" title=" " alt="" coords="7,385,298,411"/>
-<area shape="rect" id="node9" href="$da/de2/namespaceaopp__deconv__tool_1_1psf__normalise.html#a3acaf8174cc008c8bf7029fce9df7be0" title=" " alt="" coords="68,436,237,477"/>
-<area shape="rect" id="node10" href="$d5/d6e/namespaceaopp__deconv__tool_1_1spatial__rebin.html#a9ddf23f8c9b02acf470d16465d650281" title=" " alt="" coords="59,501,247,543"/>
-<area shape="rect" id="node11" href="$d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#af5488a9645335a937fcbea8b0efe6e91" title=" " alt="" coords="55,567,251,608"/>
-<area shape="rect" id="node12" href="$da/d5f/namespaceaopp__deconv__tool_1_1arguments.html#a1c98fc7e3d7869bf74b61831b4f15f4a" title=" " alt="" coords="25,632,280,673"/>
+<area shape="rect" id="node1" title=" " alt="" coords="937,339,1144,366"/>
+<area shape="rect" id="node2" href="$dd/d4d/namespaceaopp__deconv__tool_1_1artefact__detection.html#a4d46d8ae518ad501b8786cd6dd8a50dd" title=" " alt="" coords="645,8,839,49"/>
+<area shape="rect" id="node5" href="$d1/d07/namespaceaopp__deconv__tool_1_1create__bad__pixel__mask.html#a2b16b8c45b14df83d552a22fb639b9f9" title=" " alt="" coords="637,76,847,117"/>
+<area shape="rect" id="node8" href="$d6/de2/namespaceaopp__deconv__tool_1_1deconvolve.html#afb9fb6db643cda6e6d7af7ca2c1c4940" title=" " alt="" coords="595,147,889,174"/>
+<area shape="rect" id="node11" href="$dc/dc5/namespaceaopp__deconv__tool_1_1fit__psf__model.html#a2ff26f2f657884f9deaa3e1e84e508b6" title=" " alt="" coords="656,201,828,243"/>
+<area shape="rect" id="node14" href="$d4/d1f/namespaceaopp__deconv__tool_1_1fits__copy__wcs.html#a919079e5f742632cf582ee2a7c9ff7a2" title=" " alt="" coords="659,267,825,308"/>
+<area shape="rect" id="node17" href="$d6/d01/namespaceaopp__deconv__tool_1_1fits__slice.html#a33fccd58fdb9c6f28d970787b141ca4a" title=" " alt="" coords="659,332,825,373"/>
+<area shape="rect" id="node20" href="$d5/ddb/namespaceaopp__deconv__tool_1_1interpolate.html#abf004ff77536f8a4c52a86709a9ae800" title=" " alt="" coords="597,398,887,425"/>
+<area shape="rect" id="node23" href="$da/de2/namespaceaopp__deconv__tool_1_1psf__normalise.html#a3acaf8174cc008c8bf7029fce9df7be0" title=" " alt="" coords="657,449,827,491"/>
+<area shape="rect" id="node26" href="$d5/d6e/namespaceaopp__deconv__tool_1_1spatial__rebin.html#a9ddf23f8c9b02acf470d16465d650281" title=" " alt="" coords="648,515,836,556"/>
+<area shape="rect" id="node29" href="$d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#af5488a9645335a937fcbea8b0efe6e91" title=" " alt="" coords="644,580,840,621"/>
+<area shape="rect" id="node32" href="$da/d5f/namespaceaopp__deconv__tool_1_1arguments.html#a1c98fc7e3d7869bf74b61831b4f15f4a" title=" " alt="" coords="615,645,869,687"/>
+<area shape="rect" id="node3" href="$dd/d4d/namespaceaopp__deconv__tool_1_1artefact__detection.html#a948e1922d2a8e9057315178c05637934" title=" " alt="" coords="322,5,517,47"/>
+<area shape="rect" id="node4" href="$dd/d4d/namespaceaopp__deconv__tool_1_1artefact__detection.html#aaa1d90cc56b5fc1c1e8ce8b043465d95" title=" " alt="" coords="27,5,222,47"/>
+<area shape="rect" id="node6" href="$d1/d07/namespaceaopp__deconv__tool_1_1create__bad__pixel__mask.html#a656853bce6dbc18e632700c0daaca43e" title=" " alt="" coords="299,71,539,112"/>
+<area shape="rect" id="node7" href="$d1/d07/namespaceaopp__deconv__tool_1_1create__bad__pixel__mask.html#a8dd3e186d7fb2632f6636b4697448f7e" title=" " alt="" coords="32,71,217,112"/>
+<area shape="rect" id="node9" href="$d6/de2/namespaceaopp__deconv__tool_1_1deconvolve.html#aac9167e2fdab893a6897a6bed78f442b" title=" " alt="" coords="292,136,547,177"/>
+<area shape="rect" id="node10" href="$d6/de2/namespaceaopp__deconv__tool_1_1deconvolve.html#af6bd8fd6e2c673853b1544085c2bf222" title=" " alt="" coords="5,143,244,170"/>
+<area shape="rect" id="node12" href="$dc/dc5/namespaceaopp__deconv__tool_1_1fit__psf__model.html#a628509727f69f8b5e5d81e2ae1a11110" title=" " alt="" coords="318,201,521,243"/>
+<area shape="rect" id="node13" href="$dc/dc5/namespaceaopp__deconv__tool_1_1fit__psf__model.html#a88a4d3ec1a38814c98721c5144c3ecdd" title=" " alt="" coords="45,201,204,243"/>
+<area shape="rect" id="node15" href="$d4/d1f/namespaceaopp__deconv__tool_1_1fits__copy__wcs.html#af265f7c9b1d134b4e608c6a2909fb002" title=" " alt="" coords="321,267,518,308"/>
+<area shape="rect" id="node16" href="$d4/d1f/namespaceaopp__deconv__tool_1_1fits__copy__wcs.html#a82034ade942267b34d143e6a96450416" title=" " alt="" coords="42,267,207,308"/>
+<area shape="rect" id="node18" href="$d6/d01/namespaceaopp__deconv__tool_1_1fits__slice.html#ad46012d4708f54f0a6bbde678d5f6b6b" title=" " alt="" coords="337,332,502,373"/>
+<area shape="rect" id="node19" href="$d6/d01/namespaceaopp__deconv__tool_1_1fits__slice.html#a887d4865850a9f67f37d1ac7c3ffd052" title=" " alt="" coords="42,332,207,373"/>
+<area shape="rect" id="node21" href="$d5/ddb/namespaceaopp__deconv__tool_1_1interpolate.html#a48796d07587b5987c22e7e035354fab4" title=" " alt="" coords="294,397,545,439"/>
+<area shape="rect" id="node22" href="$d5/ddb/namespaceaopp__deconv__tool_1_1interpolate.html#a90751da03483cf837084f4aa70cdb1d4" title=" " alt="" coords="7,405,242,431"/>
+<area shape="rect" id="node24" href="$da/de2/namespaceaopp__deconv__tool_1_1psf__normalise.html#a7e1eaea902a3d4a70555a4a6bc3d9bea" title=" " alt="" coords="320,463,519,504"/>
+<area shape="rect" id="node25" href="$da/de2/namespaceaopp__deconv__tool_1_1psf__normalise.html#a97a76320cb70504d32f75a398f4635a0" title=" " alt="" coords="43,463,207,504"/>
+<area shape="rect" id="node27" href="$d5/d6e/namespaceaopp__deconv__tool_1_1spatial__rebin.html#a0ec3a82ccfcd0b851529424b83c7c6fb" title=" " alt="" coords="325,528,513,569"/>
+<area shape="rect" id="node28" href="$d5/d6e/namespaceaopp__deconv__tool_1_1spatial__rebin.html#aab7cb0364ede9bd5a9ee5fe3eb6d534c" title=" " alt="" coords="31,528,219,569"/>
+<area shape="rect" id="node30" href="$d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a16e0912cc6435aef773275c035b89969" title=" " alt="" coords="321,593,517,635"/>
+<area shape="rect" id="node31" href="$d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a805c759d8363bb2c9ffdec21bf5d19f7" title=" " alt="" coords="27,593,223,635"/>
 </map>

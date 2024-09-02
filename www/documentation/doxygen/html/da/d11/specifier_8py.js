@@ -1,14 +1,14 @@
 var specifier_8py =
 [
-    [ "FitsInfo", "d3/db3/classspecifier_1_1FitsInfo.html", "d3/db3/classspecifier_1_1FitsInfo" ],
-    [ "get_help", "da/d11/specifier_8py.html#ab9105ce40462520d5c00b6aeb9db7fab", null ],
-    [ "HDUIdentifiers_from", "da/d11/specifier_8py.html#a265cc4b19d3100ee9f41c24d9ab64bcd", null ],
-    [ "parse", "da/d11/specifier_8py.html#ad7b93edfe6773262c52971802589981b", null ],
-    [ "parse_axes_type_list", "da/d11/specifier_8py.html#a249cecd3b7eadcc36e685f12887a527d", null ],
-    [ "_lgr", "da/d11/specifier_8py.html#ab6975e7254d647f8f6680125fec2ef84", null ],
-    [ "axes_type_info", "da/d11/specifier_8py.html#aa78b934627041e6805b290b722984842", null ],
-    [ "AxesInfo", "da/d11/specifier_8py.html#abbe9460513102d839ba71c37de6db69f", null ],
-    [ "FitsSpecifier", "da/d11/specifier_8py.html#a5b2f1a45ae6928c3229f0f5723caba7a", null ],
-    [ "HDUIdentifier", "da/d11/specifier_8py.html#ac483ea587f4a2dcb574c0ed8c5cd8064", null ],
-    [ "help_fmt", "da/d11/specifier_8py.html#a946b429b5cd93fac7ba5170f1fae7875", null ]
+    [ "FitsInfo", "d5/d00/classaopp__deconv__tool_1_1astropy__helper_1_1fits_1_1specifier_1_1FitsInfo.html", "d5/d00/classaopp__deconv__tool_1_1astropy__helper_1_1fits_1_1specifier_1_1FitsInfo" ],
+    [ "get_help", "da/d11/specifier_8py.html#a64791b7d45d13009000960c9a16e71d5", null ],
+    [ "HDUIdentifiers_from", "da/d11/specifier_8py.html#a0412035e9f8a9029796dcb90181dc73a", null ],
+    [ "parse", "da/d11/specifier_8py.html#a2ba662a24361993f4fdd920bee971fc0", null ],
+    [ "parse_axes_type_list", "da/d11/specifier_8py.html#ad45a86b4ae339050a4133ed88f219179", null ],
+    [ "_lgr", "da/d11/specifier_8py.html#a2b1452844df560dd8428be4ec14d7d70", null ],
+    [ "axes_type_info", "da/d11/specifier_8py.html#afaf7d7b652f952f7d7b4adf1b634e4a0", null ],
+    [ "AxesInfo", "da/d11/specifier_8py.html#a6f8d9548acf4a97210493400427fe1f8", null ],
+    [ "FitsSpecifier", "da/d11/specifier_8py.html#a152bed12ed95a48831893f04a26d4f21", null ],
+    [ "HDUIdentifier", "da/d11/specifier_8py.html#a364d2ac1e6620bc4702bf9bd7a5e3a90", null ],
+    [ "help_fmt", "da/d11/specifier_8py.html#ad333f25ecc926b4a6e05a473280defc8", null ]
 ];

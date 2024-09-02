@@ -4,6 +4,8 @@ var namespaceaopp__deconv__tool_1_1spectral__rebin =
     [ "SquareResponseFunction", "d2/dd2/classaopp__deconv__tool_1_1spectral__rebin_1_1SquareResponseFunction.html", "d2/dd2/classaopp__deconv__tool_1_1spectral__rebin_1_1SquareResponseFunction" ],
     [ "TriangularResponseFunction", "d2/d98/classaopp__deconv__tool_1_1spectral__rebin_1_1TriangularResponseFunction.html", "d2/d98/classaopp__deconv__tool_1_1spectral__rebin_1_1TriangularResponseFunction" ],
     [ "array_const_boundary", "d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#ad2d029f9bded4dbfcf3df6fd649dc198", null ],
+    [ "exec_with_args", "d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a16e0912cc6435aef773275c035b89969", null ],
+    [ "go", "d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a805c759d8363bb2c9ffdec21bf5d19f7", null ],
     [ "indices_const_boundary", "d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a23c60b2215405487c73ccdd8f4e6d083", null ],
     [ "lin_interp", "d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a4e174b0f84cf2d54a37155ffc8f15c40", null ],
     [ "overlap_add_convolve", "d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a75f176aa453b954c58427a9ccb24ab9b", null ],
@@ -12,14 +14,6 @@ var namespaceaopp__deconv__tool_1_1spectral__rebin =
     [ "rebin_hdu_over_axis_with_response_function", "d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a462c8ccf7c78154d2321174ad4174cd2", null ],
     [ "run", "d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#ac95d1740ef0a7b916f187d8f74000edd", null ],
     [ "_lgr", "d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#aeace37ea8f612cc8b0bd51619f985e6c", null ],
-    [ "args", "d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#adef27047238832ea631f57b48681dd30", null ],
-    [ "bin_step", "d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#ad870d36b1e27c282f5a0eb27ab9cd2e7", null ],
-    [ "bin_width", "d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#af94b7ec0c2bf59bb9b2f9a500e8ed180", null ],
     [ "DEBUG_PIXEL", "d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a5273486cb7059ea1309b25a8f6fd5b7a", null ],
-    [ "named_spectral_binning_parameters", "d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a677657dafb799a4e65f6160763c0721e", null ],
-    [ "operation", "d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#ada34376fd5ddbb395030d3cf242b6ecf", null ],
-    [ "output_path", "d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#ac098ade0fd94269a6d3c77ef293956f2", null ],
-    [ "output_unit", "d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#aa4026816395c5a3f1beb16f2a3515330", null ],
-    [ "response_function_class", "d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#aeacbbb6819864d3e354a3e174c09a401", null ],
-    [ "spectral_unit_in_meters", "d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#abcd60ee9ec4c6db2570bc1b9d51594c8", null ]
+    [ "named_spectral_binning_parameters", "d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a677657dafb799a4e65f6160763c0721e", null ]
 ];

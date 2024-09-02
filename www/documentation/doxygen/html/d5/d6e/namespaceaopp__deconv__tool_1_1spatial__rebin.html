@@ -91,6 +91,10 @@ $(document).ready(function(){initNavTree('d5/d6e/namespaceaopp__deconv__tool_1_1
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a0ec3a82ccfcd0b851529424b83c7c6fb"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d6e/namespaceaopp__deconv__tool_1_1spatial__rebin.html#a0ec3a82ccfcd0b851529424b83c7c6fb">exec_with_args</a> (argv)</td></tr>
+<tr class="separator:a0ec3a82ccfcd0b851529424b83c7c6fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab7cb0364ede9bd5a9ee5fe3eb6d534c"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d6e/namespaceaopp__deconv__tool_1_1spatial__rebin.html#aab7cb0364ede9bd5a9ee5fe3eb6d534c">go</a> (fits_spec, output_path=None, rebin_step=None)</td></tr>
+<tr class="separator:aab7cb0364ede9bd5a9ee5fe3eb6d534c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ddf23f8c9b02acf470d16465d650281"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d6e/namespaceaopp__deconv__tool_1_1spatial__rebin.html#a9ddf23f8c9b02acf470d16465d650281">parse_args</a> (argv)</td></tr>
 <tr class="separator:a9ddf23f8c9b02acf470d16465d650281"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb974c01f59eb85e0109749dae253285"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d6e/namespaceaopp__deconv__tool_1_1spatial__rebin.html#adb974c01f59eb85e0109749dae253285">run</a> (aph.fits.specifier.FitsSpecifier fits_spec, str|Path output_path, tuple[float, float] steps)</td></tr>
@@ -98,15 +102,92 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:ade220deb97845416a367bc0bf89e107b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d6e/namespaceaopp__deconv__tool_1_1spatial__rebin.html#ade220deb97845416a367bc0bf89e107b">_lgr</a> = <a class="el" href="../../d8/df7/namespaceaopp__deconv__tool_1_1cfg_1_1logs.html#a858779f4bf60872f01cc77b643fedc79">aopp_deconv_tool.cfg.logs.get_logger_at_level</a>(__name__, 'DEBUG')</td></tr>
+<tr class="memitem:ade220deb97845416a367bc0bf89e107b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d6e/namespaceaopp__deconv__tool_1_1spatial__rebin.html#ade220deb97845416a367bc0bf89e107b">_lgr</a> = <a class="el" href="../../d8/df7/namespaceaopp__deconv__tool_1_1cfg_1_1logs.html#a858779f4bf60872f01cc77b643fedc79">aopp_deconv_tool.cfg.logs.get_logger_at_level</a>(__name__, 'WARN')</td></tr>
 <tr class="separator:ade220deb97845416a367bc0bf89e107b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a19f1bfb1bcc1c03d1ff5d3e0771f6b16"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d6e/namespaceaopp__deconv__tool_1_1spatial__rebin.html#a19f1bfb1bcc1c03d1ff5d3e0771f6b16">args</a> = <a class="el" href="../../d5/d6e/namespaceaopp__deconv__tool_1_1spatial__rebin.html#a9ddf23f8c9b02acf470d16465d650281">parse_args</a>(sys.argv[1:])</td></tr>
-<tr class="separator:a19f1bfb1bcc1c03d1ff5d3e0771f6b16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><pre class="fragment">Quick tool for spatially rebinning a FITS file, useful for reducing data volume when testing.
 
 Linearly interpolates at a new grid starting at the same location as the old one, but with a different step size. Uses the same units the fits file is in.</pre> </div><h2 class="groupheader">Function Documentation</h2>
+<a id="a0ec3a82ccfcd0b851529424b83c7c6fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ec3a82ccfcd0b851529424b83c7c6fb">&#9670;&nbsp;</a></span>exec_with_args()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def aopp_deconv_tool.spatial_rebin.exec_with_args </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>argv</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div id="dynsection-0" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-0-trigger" src="../../closed.png" alt="+"/> Here is the call graph for this function:</div>
+<div id="dynsection-0-summary" class="dynsummary" style="display:block;">
+</div>
+<div id="dynsection-0-content" class="dyncontent" style="display:none;">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d5/d6e/namespaceaopp__deconv__tool_1_1spatial__rebin_a0ec3a82ccfcd0b851529424b83c7c6fb_cgraph.svg" width="100%" height="388"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+<div id="dynsection-1" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-1-trigger" src="../../closed.png" alt="+"/> Here is the caller graph for this function:</div>
+<div id="dynsection-1-summary" class="dynsummary" style="display:block;">
+</div>
+<div id="dynsection-1-content" class="dyncontent" style="display:none;">
+<div class="center"><iframe scrolling="no" frameborder="0" src="../../d5/d6e/namespaceaopp__deconv__tool_1_1spatial__rebin_a0ec3a82ccfcd0b851529424b83c7c6fb_icgraph.svg" width="435" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="aab7cb0364ede9bd5a9ee5fe3eb6d534c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab7cb0364ede9bd5a9ee5fe3eb6d534c">&#9670;&nbsp;</a></span>go()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def aopp_deconv_tool.spatial_rebin.go </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>fits_spec</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>output_path</em> = <code>None</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>rebin_step</em> = <code>None</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">    Thin wrapper around `run()` to accept string inputs.
+    As long as the names of the arguments to this function 
+    are the same as the names expected from the command line
+    we can do this programatically</pre> <div id="dynsection-2" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-2-trigger" src="../../closed.png" alt="+"/> Here is the call graph for this function:</div>
+<div id="dynsection-2-summary" class="dynsummary" style="display:block;">
+</div>
+<div id="dynsection-2-content" class="dyncontent" style="display:none;">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d5/d6e/namespaceaopp__deconv__tool_1_1spatial__rebin_aab7cb0364ede9bd5a9ee5fe3eb6d534c_cgraph.svg" width="100%" height="412"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
 <a id="a9ddf23f8c9b02acf470d16465d650281"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9ddf23f8c9b02acf470d16465d650281">&#9670;&nbsp;</a></span>parse_args()</h2>
 
@@ -122,12 +203,19 @@ Linearly interpolates at a new grid starting at the same location as the old one
         </tr>
       </table>
 </div><div class="memdoc">
-<div id="dynsection-0" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
-  <img id="dynsection-0-trigger" src="../../closed.png" alt="+"/> Here is the call graph for this function:</div>
-<div id="dynsection-0-summary" class="dynsummary" style="display:block;">
+<div id="dynsection-3" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-3-trigger" src="../../closed.png" alt="+"/> Here is the call graph for this function:</div>
+<div id="dynsection-3-summary" class="dynsummary" style="display:block;">
 </div>
-<div id="dynsection-0-content" class="dyncontent" style="display:none;">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d5/d6e/namespaceaopp__deconv__tool_1_1spatial__rebin_a9ddf23f8c9b02acf470d16465d650281_cgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div id="dynsection-3-content" class="dyncontent" style="display:none;">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d5/d6e/namespaceaopp__deconv__tool_1_1spatial__rebin_a9ddf23f8c9b02acf470d16465d650281_cgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+<div id="dynsection-4" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-4-trigger" src="../../closed.png" alt="+"/> Here is the caller graph for this function:</div>
+<div id="dynsection-4-summary" class="dynsummary" style="display:block;">
+</div>
+<div id="dynsection-4-content" class="dyncontent" style="display:none;">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d5/d6e/namespaceaopp__deconv__tool_1_1spatial__rebin_a9ddf23f8c9b02acf470d16465d650281_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -164,6 +252,14 @@ Linearly interpolates at a new grid starting at the same location as the old one
         </tr>
       </table>
 </div><div class="memdoc">
+<div id="dynsection-5" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-5-trigger" src="../../closed.png" alt="+"/> Here is the caller graph for this function:</div>
+<div id="dynsection-5-summary" class="dynsummary" style="display:block;">
+</div>
+<div id="dynsection-5-content" class="dyncontent" style="display:none;">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d5/d6e/namespaceaopp__deconv__tool_1_1spatial__rebin_adb974c01f59eb85e0109749dae253285_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
 
 </div>
 </div>
@@ -178,7 +274,7 @@ Linearly interpolates at a new grid starting at the same location as the old one
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">aopp_deconv_tool.spatial_rebin._lgr = <a class="el" href="../../d8/df7/namespaceaopp__deconv__tool_1_1cfg_1_1logs.html#a858779f4bf60872f01cc77b643fedc79">aopp_deconv_tool.cfg.logs.get_logger_at_level</a>(__name__, 'DEBUG')</td>
+          <td class="memname">aopp_deconv_tool.spatial_rebin._lgr = <a class="el" href="../../d8/df7/namespaceaopp__deconv__tool_1_1cfg_1_1logs.html#a858779f4bf60872f01cc77b643fedc79">aopp_deconv_tool.cfg.logs.get_logger_at_level</a>(__name__, 'WARN')</td>
         </tr>
       </table>
   </td>
@@ -186,20 +282,6 @@ Linearly interpolates at a new grid starting at the same location as the old one
 <span class="mlabels"><span class="mlabel">private</span></span>  </td>
   </tr>
 </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a19f1bfb1bcc1c03d1ff5d3e0771f6b16"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a19f1bfb1bcc1c03d1ff5d3e0771f6b16">&#9670;&nbsp;</a></span>args</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">def aopp_deconv_tool.spatial_rebin.args = <a class="el" href="../../d5/d6e/namespaceaopp__deconv__tool_1_1spatial__rebin.html#a9ddf23f8c9b02acf470d16465d650281">parse_args</a>(sys.argv[1:])</td>
-        </tr>
-      </table>
 </div><div class="memdoc">
 
 </div>

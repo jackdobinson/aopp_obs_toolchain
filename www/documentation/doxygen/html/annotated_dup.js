@@ -18,6 +18,16 @@ var annotated_dup =
         [ "DataclassArgFormatter", "d3/d3e/classaopp__deconv__tool_1_1arguments_1_1DataclassArgFormatter.html", "d3/d3e/classaopp__deconv__tool_1_1arguments_1_1DataclassArgFormatter" ],
         [ "TypeConverterFactory", "db/d33/classaopp__deconv__tool_1_1arguments_1_1TypeConverterFactory.html", "db/d33/classaopp__deconv__tool_1_1arguments_1_1TypeConverterFactory" ]
       ] ],
+      [ "astropy_helper", "db/d9f/namespaceaopp__deconv__tool_1_1astropy__helper.html", [
+        [ "fits", "d8/dff/namespaceaopp__deconv__tool_1_1astropy__helper_1_1fits.html", [
+          [ "header", "d0/d30/namespaceaopp__deconv__tool_1_1astropy__helper_1_1fits_1_1header.html", [
+            [ "DictReader", "dd/dbd/classaopp__deconv__tool_1_1astropy__helper_1_1fits_1_1header_1_1DictReader.html", "dd/dbd/classaopp__deconv__tool_1_1astropy__helper_1_1fits_1_1header_1_1DictReader" ]
+          ] ],
+          [ "specifier", "d0/d1c/namespaceaopp__deconv__tool_1_1astropy__helper_1_1fits_1_1specifier.html", [
+            [ "FitsInfo", "d5/d00/classaopp__deconv__tool_1_1astropy__helper_1_1fits_1_1specifier_1_1FitsInfo.html", "d5/d00/classaopp__deconv__tool_1_1astropy__helper_1_1fits_1_1specifier_1_1FitsInfo" ]
+          ] ]
+        ] ]
+      ] ],
       [ "cast", "dc/df7/namespaceaopp__deconv__tool_1_1cast.html", [
         [ "CastException", "db/da2/classaopp__deconv__tool_1_1cast_1_1CastException.html", null ]
       ] ],
@@ -186,9 +196,6 @@ var annotated_dup =
       [ "PointSpreadFunction", "d1/dd8/classfunction_1_1PointSpreadFunction.html", "d1/dd8/classfunction_1_1PointSpreadFunction" ],
       [ "PupilFunction", "d0/dca/classfunction_1_1PupilFunction.html", "d0/dca/classfunction_1_1PupilFunction" ]
     ] ],
-    [ "header", "d8/dbd/namespaceheader.html", [
-      [ "DictReader", "d5/dcd/classheader_1_1DictReader.html", "d5/dcd/classheader_1_1DictReader" ]
-    ] ],
     [ "instrument_base", "d0/d23/namespaceinstrument__base.html", [
       [ "InstrumentBase", "db/d74/classinstrument__base_1_1InstrumentBase.html", "db/d74/classinstrument__base_1_1InstrumentBase" ]
     ] ],
@@ -202,9 +209,6 @@ var annotated_dup =
       [ "OpticalComponent", "d5/dc2/classoptical__component_1_1OpticalComponent.html", "d5/dc2/classoptical__component_1_1OpticalComponent" ],
       [ "OpticalComponentSet", "d0/dda/classoptical__component_1_1OpticalComponentSet.html", "d0/dda/classoptical__component_1_1OpticalComponentSet" ],
       [ "Refractor", "db/db5/classoptical__component_1_1Refractor.html", "db/db5/classoptical__component_1_1Refractor" ]
-    ] ],
-    [ "specifier", "df/d33/namespacespecifier.html", [
-      [ "FitsInfo", "d3/db3/classspecifier_1_1FitsInfo.html", "d3/db3/classspecifier_1_1FitsInfo" ]
     ] ],
     [ "vlt", "d2/d6e/namespacevlt.html", [
       [ "VLT", "dd/d57/classvlt_1_1VLT.html", "dd/d57/classvlt_1_1VLT" ]

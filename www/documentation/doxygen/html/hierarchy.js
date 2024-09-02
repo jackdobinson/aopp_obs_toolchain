@@ -5,6 +5,8 @@ var hierarchy =
       [ "aopp_deconv_tool.algorithm.deconv.lucy_richardson.LucyRichardson", "d8/dc0/classaopp__deconv__tool_1_1algorithm_1_1deconv_1_1lucy__richardson_1_1LucyRichardson.html", null ]
     ] ],
     [ "aopp_deconv_tool.arguments.TypeConverterFactory", "db/d33/classaopp__deconv__tool_1_1arguments_1_1TypeConverterFactory.html", null ],
+    [ "aopp_deconv_tool.astropy_helper.fits.header.DictReader", "dd/dbd/classaopp__deconv__tool_1_1astropy__helper_1_1fits_1_1header_1_1DictReader.html", null ],
+    [ "aopp_deconv_tool.astropy_helper.fits.specifier.FitsInfo", "d5/d00/classaopp__deconv__tool_1_1astropy__helper_1_1fits_1_1specifier_1_1FitsInfo.html", null ],
     [ "aopp_deconv_tool.context.alias.Alias", "dd/db5/classaopp__deconv__tool_1_1context_1_1alias_1_1Alias.html", null ],
     [ "aopp_deconv_tool.context.next.Next", "df/dbe/classaopp__deconv__tool_1_1context_1_1next_1_1Next.html", null ],
     [ "aopp_deconv_tool.context.temp.NotPresent", "dc/dca/classaopp__deconv__tool_1_1context_1_1temp_1_1NotPresent.html", null ],
@@ -101,7 +103,6 @@ var hierarchy =
       [ "aopp_deconv_tool.cast.CastException", "db/da2/classaopp__deconv__tool_1_1cast_1_1CastException.html", null ],
       [ "aopp_deconv_tool.graphical_frontends.ssa_filtering.LineRegionPanel.RemoveRegionException", "de/de7/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1LineRegionPanel_1_1RemoveRegionException.html", null ]
     ] ],
-    [ "header.DictReader", "d5/dcd/classheader_1_1DictReader.html", null ],
     [ "instrument_base.InstrumentBase", "db/d74/classinstrument__base_1_1InstrumentBase.html", null ],
     [ "IntVar", "dd/d52/classIntVar.html", [
       [ "aopp_deconv_tool.psf_data_ops.S", "d5/d03/classaopp__deconv__tool_1_1psf__data__ops_1_1S.html", null ],
@@ -119,7 +120,6 @@ var hierarchy =
       [ "optical_component.Refractor", "db/db5/classoptical__component_1_1Refractor.html", null ]
     ] ],
     [ "optical_component.OpticalComponentSet", "d0/dda/classoptical__component_1_1OpticalComponentSet.html", null ],
-    [ "specifier.FitsInfo", "d3/db3/classspecifier_1_1FitsInfo.html", null ],
     [ "T", "d1/def/classT.html", [
       [ "aopp_deconv_tool.geometry.bounding_box.BoundingBox", "d4/d16/classaopp__deconv__tool_1_1geometry_1_1bounding__box_1_1BoundingBox.html", null ]
     ] ],

@@ -4,6 +4,7 @@ var psf__data__ops_8py =
     [ "S1", "d6/db6/classaopp__deconv__tool_1_1psf__data__ops_1_1S1.html", null ],
     [ "apply_offsets", "df/dd7/psf__data__ops_8py.html#a2969163168d8875a18ecbc78c38594c1", null ],
     [ "fit_to_data", "df/dd7/psf__data__ops_8py.html#a1748b457fcbf82cab1d62a64a5a10c77", null ],
+    [ "get_brightest_pixel_offsets", "df/dd7/psf__data__ops_8py.html#ad0159e0def5034ba31d23873df05508e", null ],
     [ "get_centre_of_mass_offsets", "df/dd7/psf__data__ops_8py.html#ac30bec0821b8bcd98b14fc6981d4bfc5", null ],
     [ "get_outlier_mask", "df/dd7/psf__data__ops_8py.html#ad87a713d2e959d66d3d4ba4ccf24b360", null ],
     [ "get_roi_mask", "df/dd7/psf__data__ops_8py.html#af048123fcb4f52be1a5e745f6722107e", null ],

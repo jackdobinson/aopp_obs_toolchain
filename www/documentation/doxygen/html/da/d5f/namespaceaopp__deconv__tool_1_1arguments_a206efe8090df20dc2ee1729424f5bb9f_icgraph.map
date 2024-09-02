@@ -1,0 +1,14 @@
+<map id="aopp_deconv_tool.arguments.construct_arglist_from_locals" name="aopp_deconv_tool.arguments.construct_arglist_from_locals">
+<area shape="rect" id="node1" title=" " alt="" coords="292,318,571,359"/>
+<area shape="rect" id="node2" href="$d5/ddb/namespaceaopp__deconv__tool_1_1interpolate.html#a90751da03483cf837084f4aa70cdb1d4" title=" " alt="" coords="7,5,242,32"/>
+<area shape="rect" id="node3" href="$d4/d1f/namespaceaopp__deconv__tool_1_1fits__copy__wcs.html#a82034ade942267b34d143e6a96450416" title=" " alt="" coords="42,57,207,98"/>
+<area shape="rect" id="node4" href="$d6/d01/namespaceaopp__deconv__tool_1_1fits__slice.html#a887d4865850a9f67f37d1ac7c3ffd052" title=" " alt="" coords="42,122,207,163"/>
+<area shape="rect" id="node5" href="$dc/dc5/namespaceaopp__deconv__tool_1_1fit__psf__model.html#a88a4d3ec1a38814c98721c5144c3ecdd" title=" " alt="" coords="45,187,204,229"/>
+<area shape="rect" id="node6" href="$d5/d6e/namespaceaopp__deconv__tool_1_1spatial__rebin.html#aab7cb0364ede9bd5a9ee5fe3eb6d534c" title=" " alt="" coords="31,253,219,294"/>
+<area shape="rect" id="node7" href="$d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a805c759d8363bb2c9ffdec21bf5d19f7" title=" " alt="" coords="27,318,223,359"/>
+<area shape="rect" id="node8" href="$dd/d4d/namespaceaopp__deconv__tool_1_1artefact__detection.html#aaa1d90cc56b5fc1c1e8ce8b043465d95" title=" " alt="" coords="27,383,222,425"/>
+<area shape="rect" id="node9" href="$da/de2/namespaceaopp__deconv__tool_1_1psf__normalise.html#a97a76320cb70504d32f75a398f4635a0" title=" " alt="" coords="43,449,207,490"/>
+<area shape="rect" id="node10" href="$d1/d07/namespaceaopp__deconv__tool_1_1create__bad__pixel__mask.html#a8dd3e186d7fb2632f6636b4697448f7e" title=" " alt="" coords="32,514,217,555"/>
+<area shape="rect" id="node11" href="$d9/d77/namespaceaopp__deconv__tool_1_1to__fits.html#a87097fceba8f90adb787bc73b37ef743" title=" " alt="" coords="46,579,203,621"/>
+<area shape="rect" id="node12" href="$d6/de2/namespaceaopp__deconv__tool_1_1deconvolve.html#af6bd8fd6e2c673853b1544085c2bf222" title=" " alt="" coords="5,645,244,672"/>
+</map>

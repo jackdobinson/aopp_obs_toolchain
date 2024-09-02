@@ -393,9 +393,53 @@ to delete the contents of the output directories before running so you can see t
 
 # Documentaion #
 
+## DOXYGEN Documentation ##
+
 To generate the DOXYGEN documentation:
 
 * Ensure [`doxygen` is installed](https://www.doxygen.nl/manual/install.html)
 * Use `cd <REPO>` to get to the repository directory
 * Run the `doxygen` command at the terminal
-* View the documentation by opening `<REPO>/doc/html/index.html` in your browser.
+* View the documentation by opening `<REPO>/www/documentation/doxygen/html/index.html` in your browser.
+
+
+## Pydoctor Documentation ##
+
+The [pydoctor](https://pydoctor.readthedocs.io/en/latest/quickstart.html) package is part of the build requirements for this package, so you should already have it available in your python development environment for this package.
+
+To build the documentation, run the following command in the `<REPO>` directory:
+
+```
+python -m pydoctor ./src/aopp_deconv_tool --project-name aopp_obs_toolchain::aopp_deconv_tool --project-base-dir ./src/aopp_deconv_tool --make-html --docformat google --html-output ./www/documentation/pydoc --sidebar-expand-depth 5 --theme readthedocs
+```
+
+View the documentation by opening `<REPO>/www/documentation/pydoc/index.html` in your browser.
+
+Command argument explanation:
+
+`./src/aopp_deconv_tool`
+: The folder of the package to create documentation for.
+
+`--project-name aopp_obs_toolchain::aopp_deconv_tool`
+: Defines the name of the project, `aopp_deconv_tool` is part of the `aopp_obs_toolchain` package.
+
+`--project-base-dir ./src/aopp_deconv_tool`
+: All paths in the documentation are relative to this path.
+
+`--make-html`
+: Output HTML so we can display the documentation as a web page.
+
+`--docformat google`
+: Documentation formatting follows google's guidelines (mostly)
+
+`--html-output ./www/documentation/pydoc`
+: Folder to store HTML output in, in this case somewhere we can point the user towards on the github pages site.
+
+`--sidebar-expand-depth 5`
+: Depth to which the sidebar will expand when navigating nested packages etc.
+
+`--theme readthedocs`
+: Formatting and styling theme to use, "readthedocs" is pretty good.
+
+
+

@@ -55,6 +55,5 @@ var classaopp__deconv__tool_1_1algorithm_1_1deconv_1_1clean__modified_1_1CleanMo
     [ "Pointer", "dd/d03/classaopp__deconv__tool_1_1algorithm_1_1deconv_1_1clean__modified_1_1CleanModified.html#adf4d27490af661ea4ba030b8372af91f", null ],
     [ "progress_string", "dd/d03/classaopp__deconv__tool_1_1algorithm_1_1deconv_1_1clean__modified_1_1CleanModified.html#a904bf87db77c85e3d9a1e8364a38b48f", null ],
     [ "repr", "dd/d03/classaopp__deconv__tool_1_1algorithm_1_1deconv_1_1clean__modified_1_1CleanModified.html#ace10c7d8392d54a517408ecae28ac684", null ],
-    [ "str", "dd/d03/classaopp__deconv__tool_1_1algorithm_1_1deconv_1_1clean__modified_1_1CleanModified.html#ac9123b03057d19916db5916b045c42fe", null ],
-    [ "True", "dd/d03/classaopp__deconv__tool_1_1algorithm_1_1deconv_1_1clean__modified_1_1CleanModified.html#a4093e23637d5c277af39e26add296a6b", null ]
+    [ "str", "dd/d03/classaopp__deconv__tool_1_1algorithm_1_1deconv_1_1clean__modified_1_1CleanModified.html#ac9123b03057d19916db5916b045c42fe", null ]
 ];

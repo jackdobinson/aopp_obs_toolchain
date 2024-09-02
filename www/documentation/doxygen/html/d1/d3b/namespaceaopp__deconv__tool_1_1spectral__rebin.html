@@ -103,6 +103,10 @@ Classes</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:ad2d029f9bded4dbfcf3df6fd649dc198"><td class="memItemLeft" align="right" valign="top">np.ndarray&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#ad2d029f9bded4dbfcf3df6fd649dc198">array_const_boundary</a> (np.ndarray a, tuple[Sequence[int]] indices)</td></tr>
 <tr class="separator:ad2d029f9bded4dbfcf3df6fd649dc198"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16e0912cc6435aef773275c035b89969"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a16e0912cc6435aef773275c035b89969">exec_with_args</a> (argv)</td></tr>
+<tr class="separator:a16e0912cc6435aef773275c035b89969"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a805c759d8363bb2c9ffdec21bf5d19f7"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a805c759d8363bb2c9ffdec21bf5d19f7">go</a> (fits_spec, output_path=None, spectral_unit_in_meters=None, rebin_operation=None, output_unit=None, rebin_preset=None, rebin_params=None)</td></tr>
+<tr class="separator:a805c759d8363bb2c9ffdec21bf5d19f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a23c60b2215405487c73ccdd8f4e6d083"><td class="memItemLeft" align="right" valign="top">tuple[int]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a23c60b2215405487c73ccdd8f4e6d083">indices_const_boundary</a> (tuple[Sequence[int]] indices, tuple[int] shape)</td></tr>
 <tr class="separator:a23c60b2215405487c73ccdd8f4e6d083"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e174b0f84cf2d54a37155ffc8f15c40"><td class="memItemLeft" align="right" valign="top">np.ndarray&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a4e174b0f84cf2d54a37155ffc8f15c40">lin_interp</a> (np.ndarray[['N']] new_points, np.ndarray[['M']] old_points, np.ndarray[[..., 'M',...]] data, int axis, Literal['constant']|Literal['reflect']|Literal['periodic']|Literal['extrapolate'] boundary_conditions='constant')</td></tr>
@@ -111,37 +115,21 @@ Functions</h2></td></tr>
 <tr class="separator:a75f176aa453b954c58427a9ccb24ab9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af5488a9645335a937fcbea8b0efe6e91"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#af5488a9645335a937fcbea8b0efe6e91">parse_args</a> (argv)</td></tr>
 <tr class="separator:af5488a9645335a937fcbea8b0efe6e91"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a22a287aa9d55cf8a29bdf4cbe79371d4"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a22a287aa9d55cf8a29bdf4cbe79371d4">plot_rebin_response_function</a> (data_hdu, axis, <a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#abcd60ee9ec4c6db2570bc1b9d51594c8">spectral_unit_in_meters</a>, new_spec_ax, new_data)</td></tr>
+<tr class="memitem:a22a287aa9d55cf8a29bdf4cbe79371d4"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a22a287aa9d55cf8a29bdf4cbe79371d4">plot_rebin_response_function</a> (data_hdu, axis, spectral_unit_in_meters, new_spec_ax, new_data)</td></tr>
 <tr class="separator:a22a287aa9d55cf8a29bdf4cbe79371d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a462c8ccf7c78154d2321174ad4174cd2"><td class="memItemLeft" align="right" valign="top">tuple[np.ndarray, np.ndarray]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a462c8ccf7c78154d2321174ad4174cd2">rebin_hdu_over_axis_with_response_function</a> (data_hdu, axis, <a class="el" href="../../d8/d61/classaopp__deconv__tool_1_1spectral__rebin_1_1ResponseFunction.html">ResponseFunction</a> response_function, float|None bin_start=None, float <a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#ad870d36b1e27c282f5a0eb27ab9cd2e7">bin_step</a>=1E-9, tuple[float,...] axis_unit_conversion_factors=(1,), bool plot=True)</td></tr>
+<tr class="memitem:a462c8ccf7c78154d2321174ad4174cd2"><td class="memItemLeft" align="right" valign="top">tuple[np.ndarray, np.ndarray]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a462c8ccf7c78154d2321174ad4174cd2">rebin_hdu_over_axis_with_response_function</a> (data_hdu, axis, <a class="el" href="../../d8/d61/classaopp__deconv__tool_1_1spectral__rebin_1_1ResponseFunction.html">ResponseFunction</a> response_function, float|None bin_start=None, float bin_step=1E-9, tuple[float,...] axis_unit_conversion_factors=(1,), bool plot=True)</td></tr>
 <tr class="separator:a462c8ccf7c78154d2321174ad4174cd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac95d1740ef0a7b916f187d8f74000edd"><td class="memItemLeft" align="right" valign="top">tuple[np.ndarray, np.ndarray]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#ac95d1740ef0a7b916f187d8f74000edd">run</a> (aph.fits.specifier.FitsSpecifier fits_spec, Path|str <a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#ac098ade0fd94269a6d3c77ef293956f2">output_path</a>, float <a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#ad870d36b1e27c282f5a0eb27ab9cd2e7">bin_step</a>=1E-9, float <a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#af94b7ec0c2bf59bb9b2f9a500e8ed180">bin_width</a>=2E-9, Literal['sum']|Literal['mean']|Literal['mean_err'] <a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#ada34376fd5ddbb395030d3cf242b6ecf">operation</a>='mean', float <a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#abcd60ee9ec4c6db2570bc1b9d51594c8">spectral_unit_in_meters</a>=1, Literal[<a class="el" href="../../d2/dd2/classaopp__deconv__tool_1_1spectral__rebin_1_1SquareResponseFunction.html">SquareResponseFunction</a>]|Literal[<a class="el" href="../../d2/d98/classaopp__deconv__tool_1_1spectral__rebin_1_1TriangularResponseFunction.html">TriangularResponseFunction</a>] <a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#aeacbbb6819864d3e354a3e174c09a401">response_function_class</a>=<a class="el" href="../../d2/d98/classaopp__deconv__tool_1_1spectral__rebin_1_1TriangularResponseFunction.html">TriangularResponseFunction</a>, u.Unit|None <a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#aa4026816395c5a3f1beb16f2a3515330">output_unit</a>=None, bool plot=False)</td></tr>
+<tr class="memitem:ac95d1740ef0a7b916f187d8f74000edd"><td class="memItemLeft" align="right" valign="top">tuple[np.ndarray, np.ndarray]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#ac95d1740ef0a7b916f187d8f74000edd">run</a> (aph.fits.specifier.FitsSpecifier fits_spec, Path|str output_path, float bin_step=1E-9, float bin_width=2E-9, Literal['sum']|Literal['mean']|Literal['mean_err'] operation='mean', float spectral_unit_in_meters=1, Literal[<a class="el" href="../../d2/dd2/classaopp__deconv__tool_1_1spectral__rebin_1_1SquareResponseFunction.html">SquareResponseFunction</a>]|Literal[<a class="el" href="../../d2/d98/classaopp__deconv__tool_1_1spectral__rebin_1_1TriangularResponseFunction.html">TriangularResponseFunction</a>] response_function_class=<a class="el" href="../../d2/d98/classaopp__deconv__tool_1_1spectral__rebin_1_1TriangularResponseFunction.html">TriangularResponseFunction</a>, u.Unit|None output_unit=None, bool plot=False)</td></tr>
 <tr class="separator:ac95d1740ef0a7b916f187d8f74000edd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:aeace37ea8f612cc8b0bd51619f985e6c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#aeace37ea8f612cc8b0bd51619f985e6c">_lgr</a> = <a class="el" href="../../d8/df7/namespaceaopp__deconv__tool_1_1cfg_1_1logs.html#a858779f4bf60872f01cc77b643fedc79">aopp_deconv_tool.cfg.logs.get_logger_at_level</a>(__name__, 'DEBUG')</td></tr>
+<tr class="memitem:aeace37ea8f612cc8b0bd51619f985e6c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#aeace37ea8f612cc8b0bd51619f985e6c">_lgr</a> = <a class="el" href="../../d8/df7/namespaceaopp__deconv__tool_1_1cfg_1_1logs.html#a858779f4bf60872f01cc77b643fedc79">aopp_deconv_tool.cfg.logs.get_logger_at_level</a>(__name__, 'WARN')</td></tr>
 <tr class="separator:aeace37ea8f612cc8b0bd51619f985e6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adef27047238832ea631f57b48681dd30"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#adef27047238832ea631f57b48681dd30">args</a> = <a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#af5488a9645335a937fcbea8b0efe6e91">parse_args</a>(sys.argv[1:])</td></tr>
-<tr class="separator:adef27047238832ea631f57b48681dd30"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad870d36b1e27c282f5a0eb27ab9cd2e7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#ad870d36b1e27c282f5a0eb27ab9cd2e7">bin_step</a></td></tr>
-<tr class="separator:ad870d36b1e27c282f5a0eb27ab9cd2e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af94b7ec0c2bf59bb9b2f9a500e8ed180"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#af94b7ec0c2bf59bb9b2f9a500e8ed180">bin_width</a></td></tr>
-<tr class="separator:af94b7ec0c2bf59bb9b2f9a500e8ed180"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5273486cb7059ea1309b25a8f6fd5b7a"><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a5273486cb7059ea1309b25a8f6fd5b7a">DEBUG_PIXEL</a> = (161,168)</td></tr>
 <tr class="separator:a5273486cb7059ea1309b25a8f6fd5b7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a677657dafb799a4e65f6160763c0721e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a677657dafb799a4e65f6160763c0721e">named_spectral_binning_parameters</a></td></tr>
 <tr class="separator:a677657dafb799a4e65f6160763c0721e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ada34376fd5ddbb395030d3cf242b6ecf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#ada34376fd5ddbb395030d3cf242b6ecf">operation</a></td></tr>
-<tr class="separator:ada34376fd5ddbb395030d3cf242b6ecf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac098ade0fd94269a6d3c77ef293956f2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#ac098ade0fd94269a6d3c77ef293956f2">output_path</a></td></tr>
-<tr class="separator:ac098ade0fd94269a6d3c77ef293956f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa4026816395c5a3f1beb16f2a3515330"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#aa4026816395c5a3f1beb16f2a3515330">output_unit</a></td></tr>
-<tr class="separator:aa4026816395c5a3f1beb16f2a3515330"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeacbbb6819864d3e354a3e174c09a401"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#aeacbbb6819864d3e354a3e174c09a401">response_function_class</a></td></tr>
-<tr class="separator:aeacbbb6819864d3e354a3e174c09a401"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abcd60ee9ec4c6db2570bc1b9d51594c8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#abcd60ee9ec4c6db2570bc1b9d51594c8">spectral_unit_in_meters</a></td></tr>
-<tr class="separator:abcd60ee9ec4c6db2570bc1b9d51594c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><pre class="fragment">Quick tool for spectrally rebinning a FITS file, convolves a triangular 
@@ -183,8 +171,7 @@ interpolation is required.
 <div id="dynsection-0-summary" class="dynsummary" style="display:block;">
 </div>
 <div id="dynsection-0-content" class="dyncontent" style="display:none;">
-<div class="center"><iframe scrolling="no" frameborder="0" src="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin_ad2d029f9bded4dbfcf3df6fd649dc198_cgraph.svg" width="492" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
-</div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin_ad2d029f9bded4dbfcf3df6fd649dc198_cgraph.svg" width="492" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 <div id="dynsection-1" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
   <img id="dynsection-1-trigger" src="../../closed.png" alt="+"/> Here is the caller graph for this function:</div>
@@ -192,6 +179,109 @@ interpolation is required.
 </div>
 <div id="dynsection-1-content" class="dyncontent" style="display:none;">
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin_ad2d029f9bded4dbfcf3df6fd649dc198_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a16e0912cc6435aef773275c035b89969"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16e0912cc6435aef773275c035b89969">&#9670;&nbsp;</a></span>exec_with_args()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def aopp_deconv_tool.spectral_rebin.exec_with_args </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>argv</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div id="dynsection-2" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-2-trigger" src="../../closed.png" alt="+"/> Here is the call graph for this function:</div>
+<div id="dynsection-2-summary" class="dynsummary" style="display:block;">
+</div>
+<div id="dynsection-2-content" class="dyncontent" style="display:none;">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin_a16e0912cc6435aef773275c035b89969_cgraph.svg" width="100%" height="498"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+<div id="dynsection-3" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-3-trigger" src="../../closed.png" alt="+"/> Here is the caller graph for this function:</div>
+<div id="dynsection-3-summary" class="dynsummary" style="display:block;">
+</div>
+<div id="dynsection-3-content" class="dyncontent" style="display:none;">
+<div class="center"><iframe scrolling="no" frameborder="0" src="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin_a16e0912cc6435aef773275c035b89969_icgraph.svg" width="451" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a805c759d8363bb2c9ffdec21bf5d19f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a805c759d8363bb2c9ffdec21bf5d19f7">&#9670;&nbsp;</a></span>go()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def aopp_deconv_tool.spectral_rebin.go </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>fits_spec</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>output_path</em> = <code>None</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>spectral_unit_in_meters</em> = <code>None</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>rebin_operation</em> = <code>None</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>output_unit</em> = <code>None</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>rebin_preset</em> = <code>None</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>rebin_params</em> = <code>None</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">    Thin wrapper around `run()` to accept string inputs.
+    As long as the names of the arguments to this function 
+    are the same as the names expected from the command line
+    we can do this programatically</pre> <div id="dynsection-4" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-4-trigger" src="../../closed.png" alt="+"/> Here is the call graph for this function:</div>
+<div id="dynsection-4-summary" class="dynsummary" style="display:block;">
+</div>
+<div id="dynsection-4-content" class="dyncontent" style="display:none;">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin_a805c759d8363bb2c9ffdec21bf5d19f7_cgraph.svg" width="100%" height="498"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -227,11 +317,11 @@ interpolation is required.
     which is like (s_0, s_1, ..., s_N), and M_0, M_1, ..., M_N are the number of indices present for each axis.
     
     Alter the indices so if i_nm &lt; 0, i_nm=0. And if i_nm &gt;= s_n, i_nm=s_n-1. I.e., indices "to the left" are set to the first entry in the axis, and
-    indices "to the right" are set to the last entry in the axis.</pre> <div id="dynsection-2" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
-  <img id="dynsection-2-trigger" src="../../closed.png" alt="+"/> Here is the caller graph for this function:</div>
-<div id="dynsection-2-summary" class="dynsummary" style="display:block;">
+    indices "to the right" are set to the last entry in the axis.</pre> <div id="dynsection-5" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-5-trigger" src="../../closed.png" alt="+"/> Here is the caller graph for this function:</div>
+<div id="dynsection-5-summary" class="dynsummary" style="display:block;">
 </div>
-<div id="dynsection-2-content" class="dyncontent" style="display:none;">
+<div id="dynsection-5-content" class="dyncontent" style="display:none;">
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin_a23c60b2215405487c73ccdd8f4e6d083_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
@@ -282,11 +372,11 @@ interpolation is required.
       </table>
 </div><div class="memdoc">
 <pre class="fragment">    Given `data` defined at `old_points` along `axis`, linearly interpolate at `new_points` subject to `boundary_conditions`.
-    Works on N-dimensional arrays, but only over one axis at a time.</pre> <div id="dynsection-3" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
-  <img id="dynsection-3-trigger" src="../../closed.png" alt="+"/> Here is the caller graph for this function:</div>
-<div id="dynsection-3-summary" class="dynsummary" style="display:block;">
+    Works on N-dimensional arrays, but only over one axis at a time.</pre> <div id="dynsection-6" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-6-trigger" src="../../closed.png" alt="+"/> Here is the caller graph for this function:</div>
+<div id="dynsection-6-summary" class="dynsummary" style="display:block;">
 </div>
-<div id="dynsection-3-content" class="dyncontent" style="display:none;">
+<div id="dynsection-6-content" class="dyncontent" style="display:none;">
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin_a4e174b0f84cf2d54a37155ffc8f15c40_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
@@ -337,19 +427,18 @@ interpolation is required.
     --------|-----------------
     'same'  | [...,'M',...]
     'full'  | [...,'M+2N',...]
-    'valid' | [...,'M-2N',...]</pre> <div id="dynsection-4" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
-  <img id="dynsection-4-trigger" src="../../closed.png" alt="+"/> Here is the call graph for this function:</div>
-<div id="dynsection-4-summary" class="dynsummary" style="display:block;">
+    'valid' | [...,'M-2N',...]</pre> <div id="dynsection-7" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-7-trigger" src="../../closed.png" alt="+"/> Here is the call graph for this function:</div>
+<div id="dynsection-7-summary" class="dynsummary" style="display:block;">
 </div>
-<div id="dynsection-4-content" class="dyncontent" style="display:none;">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin_a75f176aa453b954c58427a9ccb24ab9b_cgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div id="dynsection-7-content" class="dyncontent" style="display:none;">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin_a75f176aa453b954c58427a9ccb24ab9b_cgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
+<div id="dynsection-8" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-8-trigger" src="../../closed.png" alt="+"/> Here is the caller graph for this function:</div>
+<div id="dynsection-8-summary" class="dynsummary" style="display:block;">
 </div>
-<div id="dynsection-5" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
-  <img id="dynsection-5-trigger" src="../../closed.png" alt="+"/> Here is the caller graph for this function:</div>
-<div id="dynsection-5-summary" class="dynsummary" style="display:block;">
-</div>
-<div id="dynsection-5-content" class="dyncontent" style="display:none;">
+<div id="dynsection-8-content" class="dyncontent" style="display:none;">
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin_a75f176aa453b954c58427a9ccb24ab9b_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
@@ -371,12 +460,19 @@ interpolation is required.
         </tr>
       </table>
 </div><div class="memdoc">
-<div id="dynsection-6" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
-  <img id="dynsection-6-trigger" src="../../closed.png" alt="+"/> Here is the call graph for this function:</div>
-<div id="dynsection-6-summary" class="dynsummary" style="display:block;">
+<div id="dynsection-9" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-9-trigger" src="../../closed.png" alt="+"/> Here is the call graph for this function:</div>
+<div id="dynsection-9-summary" class="dynsummary" style="display:block;">
 </div>
-<div id="dynsection-6-content" class="dyncontent" style="display:none;">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin_af5488a9645335a937fcbea8b0efe6e91_cgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div id="dynsection-9-content" class="dyncontent" style="display:none;">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin_af5488a9645335a937fcbea8b0efe6e91_cgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+<div id="dynsection-10" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-10-trigger" src="../../closed.png" alt="+"/> Here is the caller graph for this function:</div>
+<div id="dynsection-10-summary" class="dynsummary" style="display:block;">
+</div>
+<div id="dynsection-10-content" class="dyncontent" style="display:none;">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin_af5488a9645335a937fcbea8b0efe6e91_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -425,11 +521,11 @@ interpolation is required.
         </tr>
       </table>
 </div><div class="memdoc">
-<div id="dynsection-7" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
-  <img id="dynsection-7-trigger" src="../../closed.png" alt="+"/> Here is the caller graph for this function:</div>
-<div id="dynsection-7-summary" class="dynsummary" style="display:block;">
+<div id="dynsection-11" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-11-trigger" src="../../closed.png" alt="+"/> Here is the caller graph for this function:</div>
+<div id="dynsection-11-summary" class="dynsummary" style="display:block;">
 </div>
-<div id="dynsection-7-content" class="dyncontent" style="display:none;">
+<div id="dynsection-11-content" class="dyncontent" style="display:none;">
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin_a22a287aa9d55cf8a29bdf4cbe79371d4_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
@@ -491,20 +587,19 @@ interpolation is required.
         </tr>
       </table>
 </div><div class="memdoc">
-<div id="dynsection-8" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
-  <img id="dynsection-8-trigger" src="../../closed.png" alt="+"/> Here is the call graph for this function:</div>
-<div id="dynsection-8-summary" class="dynsummary" style="display:block;">
+<div id="dynsection-12" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-12-trigger" src="../../closed.png" alt="+"/> Here is the call graph for this function:</div>
+<div id="dynsection-12-summary" class="dynsummary" style="display:block;">
 </div>
-<div id="dynsection-8-content" class="dyncontent" style="display:none;">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin_a462c8ccf7c78154d2321174ad4174cd2_cgraph.svg" width="100%" height="449"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div id="dynsection-12-content" class="dyncontent" style="display:none;">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin_a462c8ccf7c78154d2321174ad4174cd2_cgraph.svg" width="100%" height="449"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
+<div id="dynsection-13" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-13-trigger" src="../../closed.png" alt="+"/> Here is the caller graph for this function:</div>
+<div id="dynsection-13-summary" class="dynsummary" style="display:block;">
 </div>
-<div id="dynsection-9" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
-  <img id="dynsection-9-trigger" src="../../closed.png" alt="+"/> Here is the caller graph for this function:</div>
-<div id="dynsection-9-summary" class="dynsummary" style="display:block;">
-</div>
-<div id="dynsection-9-content" class="dyncontent" style="display:none;">
-<div class="center"><iframe scrolling="no" frameborder="0" src="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin_a462c8ccf7c78154d2321174ad4174cd2_icgraph.svg" width="455" height="67"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div id="dynsection-13-content" class="dyncontent" style="display:none;">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin_a462c8ccf7c78154d2321174ad4174cd2_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -577,12 +672,19 @@ interpolation is required.
         </tr>
       </table>
 </div><div class="memdoc">
-<div id="dynsection-10" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
-  <img id="dynsection-10-trigger" src="../../closed.png" alt="+"/> Here is the call graph for this function:</div>
-<div id="dynsection-10-summary" class="dynsummary" style="display:block;">
+<div id="dynsection-14" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-14-trigger" src="../../closed.png" alt="+"/> Here is the call graph for this function:</div>
+<div id="dynsection-14-summary" class="dynsummary" style="display:block;">
 </div>
-<div id="dynsection-10-content" class="dyncontent" style="display:none;">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin_ac95d1740ef0a7b916f187d8f74000edd_cgraph.svg" width="100%" height="449"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div id="dynsection-14-content" class="dyncontent" style="display:none;">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin_ac95d1740ef0a7b916f187d8f74000edd_cgraph.svg" width="100%" height="449"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+<div id="dynsection-15" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-15-trigger" src="../../closed.png" alt="+"/> Here is the caller graph for this function:</div>
+<div id="dynsection-15-summary" class="dynsummary" style="display:block;">
+</div>
+<div id="dynsection-15-content" class="dyncontent" style="display:none;">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin_ac95d1740ef0a7b916f187d8f74000edd_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -599,7 +701,7 @@ interpolation is required.
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">aopp_deconv_tool.spectral_rebin._lgr = <a class="el" href="../../d8/df7/namespaceaopp__deconv__tool_1_1cfg_1_1logs.html#a858779f4bf60872f01cc77b643fedc79">aopp_deconv_tool.cfg.logs.get_logger_at_level</a>(__name__, 'DEBUG')</td>
+          <td class="memname">aopp_deconv_tool.spectral_rebin._lgr = <a class="el" href="../../d8/df7/namespaceaopp__deconv__tool_1_1cfg_1_1logs.html#a858779f4bf60872f01cc77b643fedc79">aopp_deconv_tool.cfg.logs.get_logger_at_level</a>(__name__, 'WARN')</td>
         </tr>
       </table>
   </td>
@@ -607,48 +709,6 @@ interpolation is required.
 <span class="mlabels"><span class="mlabel">private</span></span>  </td>
   </tr>
 </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="adef27047238832ea631f57b48681dd30"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adef27047238832ea631f57b48681dd30">&#9670;&nbsp;</a></span>args</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">def aopp_deconv_tool.spectral_rebin.args = <a class="el" href="../../d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#af5488a9645335a937fcbea8b0efe6e91">parse_args</a>(sys.argv[1:])</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ad870d36b1e27c282f5a0eb27ab9cd2e7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad870d36b1e27c282f5a0eb27ab9cd2e7">&#9670;&nbsp;</a></span>bin_step</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">aopp_deconv_tool.spectral_rebin.bin_step</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="af94b7ec0c2bf59bb9b2f9a500e8ed180"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af94b7ec0c2bf59bb9b2f9a500e8ed180">&#9670;&nbsp;</a></span>bin_width</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">aopp_deconv_tool.spectral_rebin.bin_width</td>
-        </tr>
-      </table>
 </div><div class="memdoc">
 
 </div>
@@ -686,76 +746,6 @@ interpolation is required.
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;    )</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;)</div>
 </div><!-- fragment -->
-</div>
-</div>
-<a id="ada34376fd5ddbb395030d3cf242b6ecf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ada34376fd5ddbb395030d3cf242b6ecf">&#9670;&nbsp;</a></span>operation</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">aopp_deconv_tool.spectral_rebin.operation</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ac098ade0fd94269a6d3c77ef293956f2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac098ade0fd94269a6d3c77ef293956f2">&#9670;&nbsp;</a></span>output_path</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">aopp_deconv_tool.spectral_rebin.output_path</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa4026816395c5a3f1beb16f2a3515330"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa4026816395c5a3f1beb16f2a3515330">&#9670;&nbsp;</a></span>output_unit</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">aopp_deconv_tool.spectral_rebin.output_unit</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aeacbbb6819864d3e354a3e174c09a401"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeacbbb6819864d3e354a3e174c09a401">&#9670;&nbsp;</a></span>response_function_class</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">aopp_deconv_tool.spectral_rebin.response_function_class</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="abcd60ee9ec4c6db2570bc1b9d51594c8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abcd60ee9ec4c6db2570bc1b9d51594c8">&#9670;&nbsp;</a></span>spectral_unit_in_meters</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">aopp_deconv_tool.spectral_rebin.spectral_unit_in_meters</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
 </div>
 </div>
 </div><!-- contents -->

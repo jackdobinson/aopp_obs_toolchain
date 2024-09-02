@@ -99,15 +99,56 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a206efe8090df20dc2ee1729424f5bb9f"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d5f/namespaceaopp__deconv__tool_1_1arguments.html#a206efe8090df20dc2ee1729424f5bb9f">construct_arglist_from_locals</a> (dict[str, Any] dict_of_locals, int n_positional_args=0)</td></tr>
+<tr class="separator:a206efe8090df20dc2ee1729424f5bb9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c98fc7e3d7869bf74b61831b4f15f4a"><td class="memItemLeft" align="right" valign="top">dict[str, Any]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d5f/namespaceaopp__deconv__tool_1_1arguments.html#a1c98fc7e3d7869bf74b61831b4f15f4a">parse_args_of_dataclass</a> (Type dataclass, list[str]|tuple[str] argv, bool show_help=False, str prog=None, str description=None, str arg_prefix='', list[str] metadata_keys=None)</td></tr>
 <tr class="separator:a1c98fc7e3d7869bf74b61831b4f15f4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
+<tr class="memitem:a30a345e6df3d36e963184428dfc09e87"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d5f/namespaceaopp__deconv__tool_1_1arguments.html#a30a345e6df3d36e963184428dfc09e87">_lgr</a> = <a class="el" href="../../d8/df7/namespaceaopp__deconv__tool_1_1cfg_1_1logs.html#a858779f4bf60872f01cc77b643fedc79">aopp_deconv_tool.cfg.logs.get_logger_at_level</a>(__name__, 'WARN')</td></tr>
+<tr class="separator:a30a345e6df3d36e963184428dfc09e87"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a574257dcbbf1d0a85d2abad8d1884b76"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d5f/namespaceaopp__deconv__tool_1_1arguments.html#a574257dcbbf1d0a85d2abad8d1884b76">re_empty_line</a> = re.compile(r'^\s*$\s*', flags=re.MULTILINE)</td></tr>
 <tr class="separator:a574257dcbbf1d0a85d2abad8d1884b76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a206efe8090df20dc2ee1729424f5bb9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a206efe8090df20dc2ee1729424f5bb9f">&#9670;&nbsp;</a></span>construct_arglist_from_locals()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def aopp_deconv_tool.arguments.construct_arglist_from_locals </td>
+          <td>(</td>
+          <td class="paramtype">dict[str, Any]&#160;</td>
+          <td class="paramname"><em>dict_of_locals</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int &#160;</td>
+          <td class="paramname"><em>n_positional_args</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">    Given a key-value dictionary, construct something we can pass to an argparse parser.
+    Entries with `None` as their value will NOT be constructed into the list.</pre> <div id="dynsection-0" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-0-trigger" src="../../closed.png" alt="+"/> Here is the caller graph for this function:</div>
+<div id="dynsection-0-summary" class="dynsummary" style="display:block;">
+</div>
+<div id="dynsection-0-content" class="dyncontent" style="display:none;">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../da/d5f/namespaceaopp__deconv__tool_1_1arguments_a206efe8090df20dc2ee1729424f5bb9f_icgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
 <a id="a1c98fc7e3d7869bf74b61831b4f15f4a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1c98fc7e3d7869bf74b61831b4f15f4a">&#9670;&nbsp;</a></span>parse_args_of_dataclass()</h2>
 
@@ -163,18 +204,39 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<div id="dynsection-0" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
-  <img id="dynsection-0-trigger" src="../../closed.png" alt="+"/> Here is the call graph for this function:</div>
-<div id="dynsection-0-summary" class="dynsummary" style="display:block;">
+<div id="dynsection-1" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-1-trigger" src="../../closed.png" alt="+"/> Here is the call graph for this function:</div>
+<div id="dynsection-1-summary" class="dynsummary" style="display:block;">
 </div>
-<div id="dynsection-0-content" class="dyncontent" style="display:none;">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../da/d5f/namespaceaopp__deconv__tool_1_1arguments_a1c98fc7e3d7869bf74b61831b4f15f4a_cgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
+<div id="dynsection-1-content" class="dyncontent" style="display:none;">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../da/d5f/namespaceaopp__deconv__tool_1_1arguments_a1c98fc7e3d7869bf74b61831b4f15f4a_cgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
+<a id="a30a345e6df3d36e963184428dfc09e87"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30a345e6df3d36e963184428dfc09e87">&#9670;&nbsp;</a></span>_lgr</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">aopp_deconv_tool.arguments._lgr = <a class="el" href="../../d8/df7/namespaceaopp__deconv__tool_1_1cfg_1_1logs.html#a858779f4bf60872f01cc77b643fedc79">aopp_deconv_tool.cfg.logs.get_logger_at_level</a>(__name__, 'WARN')</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a574257dcbbf1d0a85d2abad8d1884b76"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a574257dcbbf1d0a85d2abad8d1884b76">&#9670;&nbsp;</a></span>re_empty_line</h2>
 

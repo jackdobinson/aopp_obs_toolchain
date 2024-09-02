@@ -30,7 +30,7 @@ var NAVTREE =
       [ "Namespace Members", "namespacemembers.html", [
         [ "All", "namespacemembers.html", "namespacemembers_dup" ],
         [ "Functions", "namespacemembers_func.html", "namespacemembers_func" ],
-        [ "Variables", "namespacemembers_vars.html", "namespacemembers_vars" ]
+        [ "Variables", "namespacemembers_vars.html", null ]
       ] ]
     ] ],
     [ "Classes", "annotated.html", [
@@ -52,16 +52,15 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"d1/d9c/classaopp__deconv__tool_1_1psf__model_1_1dependency__injector_1_1adaptive__optics__psf__model__d294521e194e6a71ff5836ee8df9e3bea.html#a87612ef083f1c59fda90b43048dda539",
-"d3/db3/ssa__interp_8py.html#a94939d963ef5769810ef45a98272491a",
-"d5/d35/text_2____init_____8py.html",
+"d1/d8b/namespaceaopp__deconv__tool_1_1psf__model_1_1dependency__injector_1_1params__and__psf__model__di.html#a19512a70a4eec007b9a022f9147f2904",
+"d3/db3/ssa__interp_8py.html#a5108b780cb3062375d2907681d81973b",
+"d5/d00/classaopp__deconv__tool_1_1astropy__helper_1_1fits_1_1specifier_1_1FitsInfo.html#aafdd098d8c2ac0c71809bcabdf829030",
 "d6/da1/classaopp__deconv__tool_1_1task__strat_1_1TaskStratSet.html#a16bcd4d5e98aa809db0c219b6b0aff51",
-"d8/dc0/classaopp__deconv__tool_1_1algorithm_1_1deconv_1_1lucy__richardson_1_1LucyRichardson.html#aea2c469251a56b986a1d31b6522ab45c",
-"da/d4f/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1BasePanel.html",
-"dc/d97/namespaceaopp__deconv__tool_1_1geometry_1_1bounding__box.html#a3fa44270668232d1e50c1c806aeda100",
-"dd/d4d/namespaceaopp__deconv__tool_1_1artefact__detection.html#abebe7fc6df431543ad3c8a073c0b5c47",
-"df/da6/classaopp__deconv__tool_1_1psf__model_1_1turbulence__psf__model_1_1CCDSensor.html#a5cf9b4e801a3c597c31f2590e2a819db",
-"namespacemembers_vars_o.html"
+"d8/dd5/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1ImageAggregator.html#aabc7bf93dc036036b3a02a126bca6a36",
+"da/d64/header_8py.html",
+"dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA.html#aaf78e2b1d1fb71913401f810ac5833d9",
+"dd/d76/artefact__detection_8py.html#abebe7fc6df431543ad3c8a073c0b5c47",
+"df/de7/classaopp__deconv__tool_1_1plot__helper_1_1base_1_1AxisDataMapping.html#ae3269b4162fc2661e6420316afa7d878"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
