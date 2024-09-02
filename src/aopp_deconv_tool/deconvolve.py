@@ -43,6 +43,9 @@ deconv_methods = {
 }
 
 def create_plot_set(deconvolver, cadence = 1):
+	"""
+	Creates a set of plots that are updated every `cadence` steps. Useful to see exactly what a deconvolver is doing.
+	"""
 	fig, axes = plot_helper.figure_n_subplots(8)
 	axes_iter = iter(axes)
 	a7_2 = axes[7].twinx()

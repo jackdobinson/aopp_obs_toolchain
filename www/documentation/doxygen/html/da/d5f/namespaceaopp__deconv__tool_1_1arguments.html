@@ -111,7 +111,9 @@ Variables</h2></td></tr>
 <tr class="memitem:a574257dcbbf1d0a85d2abad8d1884b76"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d5f/namespaceaopp__deconv__tool_1_1arguments.html#a574257dcbbf1d0a85d2abad8d1884b76">re_empty_line</a> = re.compile(r'^\s*$\s*', flags=re.MULTILINE)</td></tr>
 <tr class="separator:a574257dcbbf1d0a85d2abad8d1884b76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><pre class="fragment">Classes and functions for working with command-line arguments alongside the `argparse` module.
+</pre> </div><h2 class="groupheader">Function Documentation</h2>
 <a id="a206efe8090df20dc2ee1729424f5bb9f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a206efe8090df20dc2ee1729424f5bb9f">&#9670;&nbsp;</a></span>construct_arglist_from_locals()</h2>
 
@@ -143,8 +145,7 @@ Variables</h2></td></tr>
 <div id="dynsection-0-summary" class="dynsummary" style="display:block;">
 </div>
 <div id="dynsection-0-content" class="dyncontent" style="display:none;">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../da/d5f/namespaceaopp__deconv__tool_1_1arguments_a206efe8090df20dc2ee1729424f5bb9f_icgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../da/d5f/namespaceaopp__deconv__tool_1_1arguments_a206efe8090df20dc2ee1729424f5bb9f_icgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -204,7 +205,10 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<div id="dynsection-1" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+<pre class="fragment">    Use the `argparse` package to read the fields of a DataClass. Fields that are "init" fields will be
+    used as command-line arguments. A "description" entry will be looked for in a field's `metadata` dict,
+    and used if it is found. Type conversion is handled by converting command-line argument string to the
+    field's type as specified in the `field.type` attribute. The type conversion uses `TypeConverterFactory`.</pre> <div id="dynsection-1" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
   <img id="dynsection-1-trigger" src="../../closed.png" alt="+"/> Here is the call graph for this function:</div>
 <div id="dynsection-1-summary" class="dynsummary" style="display:block;">
 </div>

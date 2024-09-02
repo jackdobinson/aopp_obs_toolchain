@@ -1,3 +1,6 @@
+"""
+Classes and functions for working with command-line arguments alongside the `argparse` module.
+"""
 
 import sys, os
 import dataclasses as dc
@@ -13,16 +16,28 @@ _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
 re_empty_line = re.compile(r'^\s*$\s*', flags=re.MULTILINE)
 
 class DataclassArgFormatter (argparse.RawTextHelpFormatter):#, argparse.MetavarTypeHelpFormatter):
+	"""
+	Formatter for command-line arguments found from a dataclass.
+	"""
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
 class TypeConverterFactory:
+	"""
+	When instantiated with a type, returns a callable that converts a passed string to that type.
+	"""
 	def __init__(self, type : Type):
+		"""
+		Register which type the converter will convert strings to.
+		"""
 		self.type = type
 		self.meta_type = typing.get_origin(type)
 		self.types = typing.get_args(type)
 	
 	def __call__(self, astring : str):
+		"""
+		Convert `astring` to the type specified on object creation.
+		"""
 		if self.meta_type is None:
 			return self.type(astring)
 		else:
@@ -39,6 +54,12 @@ def parse_args_of_dataclass(
 		arg_prefix    : str                    = '', 
 		metadata_keys : list[str]              = None,
 	) -> dict[str,Any]:
+	"""
+	Use the `argparse` package to read the fields of a DataClass. Fields that are "init" fields will be
+	used as command-line arguments. A "description" entry will be looked for in a field's `metadata` dict,
+	and used if it is found. Type conversion is handled by converting command-line argument string to the
+	field's type as specified in the `field.type` attribute. The type conversion uses `TypeConverterFactory`.
+	"""
 	
 	parser = argparse.ArgumentParser(
 		prog=prog,

@@ -26,6 +26,9 @@ class TaskStratSet:
 	_name_idx_map : dict[str,int] = dc.field(default_factory=dict, init=False, repr=True, hash=False, compare=False)
 
 	def _get_item(self, key : int | str) -> TaskStratInfo:
+		"""
+		Return the strategy specified by `key`
+		"""
 		if type(key) is int:
 			return self._items[key]
 		else:
@@ -33,9 +36,15 @@ class TaskStratSet:
 		raise RuntimeError('This should never happen as key should be an int or a string in the self._name_idx_map dict')
 	
 	def __getitem__(self, key : int | str) -> TaskStratInfo:
+		"""
+		Return the strategy specified by `key`
+		"""
 		return self._get_item(key)
 	
 	def _set_item(self, value : TaskStratInfo) -> Self:
+		"""
+		Set save the passed strategy under the key `value.name`
+		"""
 		key : str = value.name
 		idx = self._name_idx_map.get(key, len(self._items))
 		self._name_idx_map[key] = idx
@@ -43,6 +52,9 @@ class TaskStratSet:
 		return self
 	
 	def _del_item(self, key : int | str) -> Self:
+		"""
+		Delete the strategy specified by `key`
+		"""
 		if type(key) is int:
 			del self._items[key]
 			
@@ -65,6 +77,9 @@ class TaskStratSet:
 		return self
 	
 	def add(self, *args : list[TaskStratInfo,...]) -> Self:
+		"""
+		Add a list of strategies to the set.
+		"""
 		for value in args:
 			if value.name not in self._name_idx_map:
 				self._set_item(value)
@@ -73,33 +88,57 @@ class TaskStratSet:
 		return self
 	
 	def remove(self, key) -> Self:
+		"""
+		Remove a strategy specified by `key`
+		"""
 		if key in self._name_idx_map:
 			self._del_item(key)
 		# ignore key that is not present
 		return self
 	
 	def get_callable(self, key : int | str) -> Callable[[...],Any]:
+		"""
+		Return the callable of the strategy specified by `key`
+		"""
 		return self.__getitem__(key).callable
 	
 	def get_description(self, key : int | str) -> Callable[[...],Any]:
+		"""
+		Return the description of the strategy specified by `key`
+		"""
 		return self.__getitem__(key).description
 	
 	def get_name(self, key : int | str) -> Callable[[...],Any]:
+		"""
+		Return the name of the strategy specified by `key`
+		"""
 		return self.__getitem__(key).name
 	
 	@property
 	def names(self) -> tuple[str]:
+		"""
+		Return a tuple of the names of all the strategies in this set
+		"""
 		return tuple(item.name for item in self._items)
 	
 	@property
 	def descriptions(self) -> tuple[str]:
+		"""
+		Return a tuple of the descriptions of all the strategies in this set
+		"""
 		return tuple(item.description for item in self._items)
 	
 	@property
 	def callables(self) -> tuple[Callable[[...],Any]]:
+		"""
+		Return a tuple of the callables of all the strategies in this set
+		"""
 		return tuple(item.callable for item in self._items)
 	
 	def format_description(self, indent_level : int = 0, indent : str = '\t', with_default=True):
+		"""
+		Return a formatted string of the names and descriptions of the strategies in this set.
+		"""
 		lines = [indent*indent_level+self.description+f' (default : {self._items[0].name})' if with_default else '']
 		for item in self._items:
 			lines.append(indent*(indent_level+1)+item.name)

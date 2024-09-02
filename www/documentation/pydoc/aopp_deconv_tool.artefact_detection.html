@@ -22475,17 +22475,17 @@
     
     <td>Function</td>
     <td><code><a href="#exec_with_args" class="internal-link" title="aopp_deconv_tool.artefact_detection.exec_with_args">exec<wbr></wbr>_with<wbr></wbr>_args</a></code></td>
-    <td><span class="undocumented">Undocumented</span></td>
+    <td>Read arguments and run the module</td>
   </tr><tr class="function">
     
     <td>Function</td>
     <td><code><a href="#generate_masks_from_thresholds" class="internal-link" title="aopp_deconv_tool.artefact_detection.generate_masks_from_thresholds">generate<wbr></wbr>_masks<wbr></wbr>_from<wbr></wbr>_thresholds</a></code></td>
-    <td><span class="undocumented">Undocumented</span></td>
+    <td>Generator that returns multiple masks when passed an iterable of numbers that can be used as thresholds. The first mask will be everything &lt;= the first threshold; the last mask will be everything &gt; the last threshold; intermediate masks will be everything in between neighbouring threshold values.</td>
   </tr><tr class="function">
     
     <td>Function</td>
     <td><code><a href="#get_ski_filter" class="internal-link" title="aopp_deconv_tool.artefact_detection.get_ski_filter">get<wbr></wbr>_ski<wbr></wbr>_filter</a></code></td>
-    <td><span class="undocumented">Undocumented</span></td>
+    <td>When given a scikit image filter, return a new function that will implement that filter on some data in a generic format, not just the one the scikit image filter wants.</td>
   </tr><tr class="function">
     
     <td>Function</td>
@@ -22495,32 +22495,32 @@
     
     <td>Function</td>
     <td><code><a href="#parse_args" class="internal-link" title="aopp_deconv_tool.artefact_detection.parse_args">parse<wbr></wbr>_args</a></code></td>
-    <td><span class="undocumented">Undocumented</span></td>
+    <td>Read command-line arguments when this module is called as a script.</td>
   </tr><tr class="function">
     
     <td>Function</td>
     <td><code><a href="#run" class="internal-link" title="aopp_deconv_tool.artefact_detection.run">run</a></code></td>
-    <td><span class="undocumented">Undocumented</span></td>
+    <td>Perform the operation associated with this module.</td>
   </tr><tr class="function">
     
     <td>Function</td>
     <td><code><a href="#to_dtype_range" class="internal-link" title="aopp_deconv_tool.artefact_detection.to_dtype_range">to<wbr></wbr>_dtype<wbr></wbr>_range</a></code></td>
-    <td><span class="undocumented">Undocumented</span></td>
+    <td>Rescale data so it fits into the range of the specified <code>dtype</code>, default is <code>dtype=uint16</code>.</td>
   </tr><tr class="function">
     
     <td>Function</td>
     <td><code><a href="#to_unit_range" class="internal-link" title="aopp_deconv_tool.artefact_detection.to_unit_range">to<wbr></wbr>_unit<wbr></wbr>_range</a></code></td>
-    <td><span class="undocumented">Undocumented</span></td>
+    <td>Convert <code>data</code> to a unit range, will return the <code>converted_data</code>, <code>offset</code>, and <code>range</code> used in the conversion.</td>
   </tr><tr class="function">
     
     <td>Function</td>
     <td><code><a href="#undo_range" class="internal-link" title="aopp_deconv_tool.artefact_detection.undo_range">undo<wbr></wbr>_range</a></code></td>
-    <td><span class="undocumented">Undocumented</span></td>
+    <td>Undo the coversion from one range of data to another.</td>
   </tr><tr class="function">
     
     <td>Function</td>
     <td><code><a href="#undo_unit_range" class="internal-link" title="aopp_deconv_tool.artefact_detection.undo_unit_range">undo<wbr></wbr>_unit<wbr></wbr>_range</a></code></td>
-    <td><span class="undocumented">Undocumented</span></td>
+    <td>Given some <code>data</code> (between 0,1), an <code>offset</code> (from zero) and a <code>range</code> (max-min). Will undo a conversion to unit range.</td>
   </tr><tr class="variable">
     
     <td>Variable</td>
@@ -22571,7 +22571,7 @@
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="undocumented">Undocumented</p></div>
+    <div><p>Read arguments and run the module</p></div>
   </div>
 </div><div class="basefunction">
   
@@ -22595,7 +22595,10 @@
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="undocumented">Undocumented</p></div>
+    <div><p>Generator that returns multiple masks when passed an iterable of numbers
+that can be used as thresholds. The first mask will be everything &lt;= the first
+threshold; the last mask will be everything &gt; the last threshold; intermediate
+masks will be everything in between neighbouring threshold values.</p></div>
   </div>
 </div><div class="basefunction">
   
@@ -22619,7 +22622,9 @@
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="undocumented">Undocumented</p></div>
+    <div><p>When given a scikit image filter, return a new function that will implement
+that filter on some data in a generic format, not just the one the scikit image
+filter wants.</p></div>
   </div>
 </div><div class="basefunction">
   
@@ -22670,7 +22675,7 @@ we can do this programatically</p></div>
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="undocumented">Undocumented</p></div>
+    <div><p>Read command-line arguments when this module is called as a script.</p></div>
   </div>
 </div><div class="basefunction">
   
@@ -22694,7 +22699,7 @@ we can do this programatically</p></div>
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="undocumented">Undocumented</p></div>
+    <div><p>Perform the operation associated with this module.</p></div>
   </div>
 </div><div class="basefunction">
   
@@ -22718,7 +22723,7 @@ we can do this programatically</p></div>
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="undocumented">Undocumented</p></div>
+    <div><p>Rescale data so it fits into the range of the specified <code>dtype</code>, default is <code>dtype=uint16</code>.</p></div>
   </div>
 </div><div class="basefunction">
   
@@ -22742,7 +22747,7 @@ we can do this programatically</p></div>
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="undocumented">Undocumented</p></div>
+    <div><p>Convert <code>data</code> to a unit range, will return the <code>converted_data</code>, <code>offset</code>, and <code>range</code> used in the conversion.</p></div>
   </div>
 </div><div class="basefunction">
   
@@ -22766,7 +22771,7 @@ we can do this programatically</p></div>
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="undocumented">Undocumented</p></div>
+    <div><p>Undo the coversion from one range of data to another.</p></div>
   </div>
 </div><div class="basefunction">
   
@@ -22790,7 +22795,7 @@ we can do this programatically</p></div>
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="undocumented">Undocumented</p></div>
+    <div><p>Given some <code>data</code> (between 0,1), an <code>offset</code> (from zero) and a <code>range</code> (max-min). Will undo a conversion to unit range.</p></div>
   </div>
 </div><div class="basevariable">
   
@@ -22901,7 +22906,7 @@ we can do this programatically</p></div>
     <div class="container">
       <a href="index.html">API Documentation</a> for aopp_obs_toolchain::aopp_deconv_tool,
     generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a>
-      24.3.3 at 2024-09-02 14:38:12.
+      24.3.3 at 2024-09-02 16:24:51.
     </div>
     
     <script src="ajax.js" type="text/javascript"></script>

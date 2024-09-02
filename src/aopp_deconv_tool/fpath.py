@@ -1,3 +1,7 @@
+"""
+Field-aware path class, can use format fields to create new paths based upon a template path.
+"""
+
 from pathlib import PurePath, Path
 import re
 
@@ -35,17 +39,29 @@ class FPath(PurePath):
 	
 	@property
 	def fields(self):
+		"""
+		Return the template fields of the FPath
+		"""
 		return self._fields
 	
 	@property
 	def defaults(self):
+		"""
+		Return the default values of the FPath's template fields
+		"""
 		return self._defaults
 	
 	@defaults.setter
 	def defaults(self, **kwargs):
+		"""
+		Set the default values of the FPath's template fields
+		"""
 		self._defaults = dict((field, kwargs[field]) for field in self.fields)
 	
 	def with_fields(self, **kwargs):
+		"""
+		Return a new Path object created by substituting the values in `**kwargs` for the FPath's template fields. Any template fields not in `**kwargs` will take their default values.
+		"""
 		temp_dict = {}
 		temp_dict.update(self._defaults)
 		temp_dict.update(kwargs)
@@ -56,4 +72,7 @@ class FPath(PurePath):
 			raise e
 	
 	def __fspath__(self):
+		"""
+		Return the "filesystem-path" of the current FPath object, all fields will take their default values.
+		"""
 		return self.with_fields().__fspath__()

@@ -57,6 +57,12 @@ artefact_detection_strategy_choices_help_str = '\n\t'+'\n\t'.join(f'{k}\n\t\t{v[
 
 
 def generate_masks_from_thresholds(data, thresholds):
+	"""
+	Generator that returns multiple masks when passed an iterable of numbers
+	that can be used as thresholds. The first mask will be everything <= the first
+	threshold; the last mask will be everything > the last threshold; intermediate
+	masks will be everything in between neighbouring threshold values.
+	"""
 	thresholds = np.sort(thresholds)
 	_lgr.debug(f'{thresholds=}')
 	for i in range(0,len(thresholds)+1):
@@ -69,23 +75,40 @@ def generate_masks_from_thresholds(data, thresholds):
 		yield mask
 
 def to_unit_range(data):
+	"""
+	Convert `data` to a unit range, will return the `converted_data`, `offset`, and `range` used in the conversion.
+	"""
 	offset = np.min(data)
 	range = np.max(data) - offset
 	return (data-offset)/range, offset, range
 
 def undo_unit_range(data, offset, range):
+	"""
+	Given some `data` (between 0,1), an `offset` (from zero) and a `range` (max-min). Will undo a conversion to unit range.
+	"""
 	return (data * range) + offset
 
 def to_dtype_range(data, dtype=np.uint16):
+	"""
+	Rescale data so it fits into the range of the specified `dtype`, default is `dtype=uint16`.
+	"""
 	final_range = np.iinfo(dtype).max
 	offset = np.min(data)
 	range = np.max(data) - offset
 	return ((data-offset)*(final_range/range)).astype(np.uint16), offset, range, final_range
 
 def undo_range(data, offset, range, final_range):
+	"""
+	Undo the coversion from one range of data to another.
+	"""
 	return (data.astype(float)/final_range)*range + offset
 
 def get_ski_filter(ski_filter, undo_scaling=True, dtype=np.uint16):
+	"""
+	When given a scikit image filter, return a new function that will implement
+	that filter on some data in a generic format, not just the one the scikit image
+	filter wants.
+	"""
 	def new_filter(data, scale, *args, **kwargs):
 		if scale == 0:
 			return data
@@ -108,6 +131,9 @@ def run(
 		strategy : str,
 		**kwargs : dict[str : Any]
 	) -> None:
+	"""
+	Perform the operation associated with this module.
+	"""
 	
 	_lgr.debug(f'{kwargs=}')
 	
@@ -300,6 +326,10 @@ def run(
 
 
 def parse_args(argv):
+	"""
+	Read command-line arguments when this module is called as a script.
+	"""
+	
 	import aopp_deconv_tool.text
 	import argparse
 	
@@ -401,6 +431,9 @@ def go(
 	exec_with_args(arglist)
 
 def exec_with_args(argv):
+	"""
+	Read arguments and run the module
+	"""
 	args = parse_args(argv)
 	
 	run(

@@ -135,7 +135,9 @@ def normalise(
 
 
 def remove_offset(data, axes, mask, model_name='norm'):
-	
+	"""
+	Remove the offsets of `data` over the specified `axes`, ignore any `mask`ed pixels.
+	"""
 	is_bad = np.isnan(data) | np.isinf(data)
 	_lgr.debug(f'{is_bad.shape=}')
 	
@@ -217,6 +219,8 @@ def trim_around_centre(
 		output_shape : tuple[int,...]
 	) -> np.ndarray:
 	"""
+	Truncate a numpy array about it's center.
+	
 	# ARGUMENTS #
 	
 	data : np.ndarray
@@ -264,6 +268,8 @@ def get_outlier_mask(
 		n_sigma : float = 5,
 	) -> np.ndarray:
 	"""
+	Get a boolean map of outliers in a numpy array. Assumes a normal distribution.
+	
 	# ARGUMENTS #
 	
 	data : np.ndarray
@@ -304,6 +310,10 @@ def get_roi_mask(
 		n_largest_regions : None | int = 1,
 	) -> np.ndarray:
 	"""
+	Find regions of interest in a numpy array by thresholding the array.
+	
+	## ARGUMENTS ##
+	
 	data : np.ndarray
 		Array to get region of interest of
 	axes : tuple[int,...]
@@ -311,7 +321,7 @@ def get_roi_mask(
 	threshold : float = 1E-2
 		When finding region of interest, only values larger than this fraction of the maximum value are included.
 	n_largest_regions : None | int = 1
-		When finding region of interest, if using a threshold will only the n_largest_regions in the calculation.
+		When finding region of interest, if using a threshold will only use the n_largest_regions in the calculation.
 		A region is defined as a contiguous area where value >= `threshold` along `axes`. I.e., in a 3D cube, if
 		we recentre about the COM on the sky (CELESTIAL) axes the regions will be calculated on the sky, not in
 		the spectral axis (for example).
@@ -343,6 +353,9 @@ def get_centre_of_mass_offsets(
 	) -> np.ndarray:
 	"""
 	Gets the location of the center of mass along `axes` (not an offset from the `data` center)
+	
+	## ARGUMENTS ##
+	
 	data : np.ndarray
 		Array to recentre
 	axes : tuple[int,...]
@@ -363,6 +376,8 @@ def get_brightest_pixel_offsets(
 	) -> np.ndarray:
 	"""
 	Gets the location of the brightest pixel (not an offset from the center)
+	
+	## ARGUMENTS ##
 	
 	data : np.ndarray
 		Array to recentre

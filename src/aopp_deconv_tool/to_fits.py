@@ -28,13 +28,16 @@ import aopp_deconv_tool.arguments
 import aopp_deconv_tool.cfg.logs
 _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
 
-
+# DataBundle is a grouping of related data and header information
 DataBundle = namedtuple('DataBundle', ('data', 'header'))
 
 re_dashed_line = re.compile(r'\n-+\n') # lines just consisting of "-" characters
 re_comma_space = re.compile(r',\s') # comma then a space
 
 def get_supported_formats():
+	"""
+	Return a list of supported file extensions that can be successfully converted to FITS format
+	"""
 	ss = io.StringIO()
 	PIL.features.pilinfo(out = ss, supported_formats=True)
 	
@@ -58,6 +61,9 @@ def get_supported_formats():
 
 
 def read_exif(image, header={}, exif_tag_reader=lambda k, v: (str(k), v)):
+	"""
+	Read the EXIF tags of an image
+	"""
 	exif = image.getexif()
 	_lgr.debug(f'{exif=}')
 	for k,v in exif.items():
@@ -68,6 +74,9 @@ def read_exif(image, header={}, exif_tag_reader=lambda k, v: (str(k), v)):
 	return header
 
 def read_image_into_numpy_array(fpath : Path) -> DataBundle:
+	"""
+	Read an image at `fpath` into a numpy array. Store EXIF tags in the header field of a DataBundle, and the image data in "data" field of a DataBundle.
+	"""
 	match fpath.suffix:
 		case '.tif' | '.tiff':
 			exif_tag_reader = lambda k, v: (PIL.TiffTags.lookup(k).name, v)
@@ -86,7 +95,9 @@ def read_image_into_numpy_array(fpath : Path) -> DataBundle:
 
 
 def save_as_fits(output_path : str | Path, primary_data_bundle : DataBundle, **kwargs : dict[str, DataBundle]):
-
+	"""
+	Save a `primary_data_bundle` and a list of other data bundles to a specified path
+	"""
 	hdr = fits.Header()
 	hdr.update(aph.fits.header.DictReader(primary_data_bundle.header))
 	hdu_primary = fits.PrimaryHDU(

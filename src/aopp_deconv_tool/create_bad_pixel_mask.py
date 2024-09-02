@@ -43,12 +43,19 @@ _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
 
 
 def load_const_regions(const_regions : list[str]) -> list[regions.Regions]:
+	"""
+	Read a list of regions from multiple region files, concatenate them all into one list and return that list.
+	"""
 	region_list = []
 	for fpath in const_regions:
 		region_list.extend(regions.Regions.read(fpath))
 	return region_list
 
 def load_dynamic_regions(dynamic_regions : list[tuple[int,str]]) -> dict[int|str, list[tuple[int,regions.Regions]]]:
+	"""
+	Read a list of index,region-file pairs. Assume all regions exist in each file. Create a list of index,regions-parameters for each regions, return a dictionary
+	mapping the region name/number to the index,region-parameter list for each region.
+	"""
 	region_dict = {}
 	for index, fpath in sorted(dynamic_regions, key=lambda x:x[0]):
 		
@@ -68,11 +75,18 @@ def load_dynamic_regions(dynamic_regions : list[tuple[int,str]]) -> dict[int|str
 
 @dc.dataclass
 class Attr:
+	"""
+	Class that simulates an attribute of some `type` that has a value that changes based on an index.
+	"""
 	type : Type
 	values : np.ndarray
 
 
 class DynamicRegionInterpolator:
+	"""
+	Class that takes a list of index,region-parameter pairs and interpolates a region between the defined indices.
+	"""
+
 	def __init__(self, index_region_list : list[tuple[int, regions.Region]]):
 		self.indices = np.array([x[0] for x in index_region_list])
 		self.region_example = index_region_list[0][1] if len(index_region_list) > 0 else None
@@ -158,6 +172,9 @@ def run(
 		const_regions : list[str] = [],
 		dynamic_regions : list[tuple[int,str]] = []
 	):
+	"""
+	Perform the operation associated with this module.
+	"""
 	
 	if index_cut_values is None:
 		index_cut_values = [[0,4.5]]

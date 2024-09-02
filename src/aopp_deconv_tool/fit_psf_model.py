@@ -39,7 +39,9 @@ import aopp_deconv_tool.cfg.logs
 _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
 
 
-
+# Library of PSF model dependency injector classes.
+# See the psf_model.dependency_injector.params_and_psf_model_di.py file for the
+# base class of all dependency injectors.
 psf_models = {
 	'radial' : RadialPSFModelDependencyInjector,
 	'gaussian' : GaussianPSFModelDependencyInjector,
@@ -53,6 +55,9 @@ PSF_MODEL_DI_CLASS = None
 PSF_MODEL_DI = None
 
 def set_psf_model_dependency_injector(name, fits_spec):
+	"""
+	Module-wide method. Sets the dependency injector class and initialises the dependency injector instance.
+	"""
 	global PSF_MODEL_DI_CLASS
 	global PSF_MODEL_DI
 	PSF_MODEL_DI_CLASS = psf_models[name]
@@ -62,9 +67,15 @@ def set_psf_model_dependency_injector(name, fits_spec):
 	return
 
 def get_psf_model_dependency_injector():
+	"""
+	Gets the dependecy injector instance
+	"""
 	return PSF_MODEL_DI
 
 def get_new_psf_model_dependency_injector(data):
+	"""
+	Creates a new instance of the dependency injector based upon the module-wide dependency injector class. Copies the module-wide dependency injector parameters.
+	"""
 	di = PSF_MODEL_DI_CLASS(data)
 	di._params = PriorParamSet(*PSF_MODEL_DI._params.prior_params)
 	return di
@@ -72,6 +83,9 @@ def get_new_psf_model_dependency_injector(data):
 
 
 def set_psf_model_dependency_injector_params(variables=[], **kwargs):
+	"""
+	Sets the parameters of the module-wide dependency injector
+	"""
 	global PSF_MODEL_DI
 	new_params = []
 	_lgr.debug(f'{variables=}')
@@ -88,6 +102,9 @@ def set_psf_model_dependency_injector_params(variables=[], **kwargs):
 
 	
 def plot_result(result, psf_data, suptitle=None, show=True):
+	"""
+	Plot the result of fitting a model to a PSF
+	"""
 	if not show: return
 
 	residual = psf_data-result

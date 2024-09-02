@@ -1,5 +1,5 @@
 """
-Quick tool for interpolating data in a FITS file
+Tool for interpolating data in a FITS file, pixels to be interpolated are specified via a boolean map.
 """
 
 
@@ -53,9 +53,16 @@ def array_ssa_interpolate_at_mask(a : np.ndarray, mask : np.ndarray, **kwargs):
 
 @dc.dataclass
 class InterpolationStratInfo (TaskStratInfo):
+	"""
+	Holds information (name, description) about a callable that is used to interpolate a numpy array at it's first argument, at pixels specified by a numpy array as it's second argument, and return the resulting numpy array.
+	"""
 	callable : Callable[[np.ndarray['NM',float], np.ndarray['NM',bool]], np.ndarray['NM',float]]
 
-interpolation_strategies = TaskStratSet('Performs interpolation upon an array at positions provided by a mask').add(
+
+# A list of strategies that can be used to perform the "interpolation" task.
+interpolation_strategies = TaskStratSet(
+'Performs interpolation upon an array at positions provided by a mask'
+).add(
 	InterpolationStratInfo(
 		'scipy',
 		'Uses scipy routies to interpolate over the masked regions, edge effects are minimised by convolving with a 3x3 square before interpolation',
@@ -72,11 +79,6 @@ interpolation_strategies = TaskStratSet('Performs interpolation upon an array at
 		functools.partial(array_ssa_deviations_interpolate_at_mask, w_shape=10, grouping = {'mode':'elementary'}),
 	)
 )
-
-
-
-
-	
 
 
 

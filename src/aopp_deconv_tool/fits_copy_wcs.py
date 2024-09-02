@@ -26,6 +26,9 @@ _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
 
 
 def get_fits_file_type(hdr):
+	"""
+	Return the type of a fits file, or `None` if type is not recognised.
+	"""
 	if hdr.get('HDUCLASS', None) == 'ESO':
 		return 'ESO'
 	return None
