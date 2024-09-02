@@ -1,6 +1,6 @@
 # aopp_obs_toolchain #
 
-A set of tools for dealing with observational data from CCD and IFU instruments.
+A set of tools for dealing with observational data from CCD and IFU instruments. See the [github pages site](https://jackdobinson.github.io/aopp_obs_toolchain/) for documentation on how to use the tool.
 
 ## aopp_deconv_tool ##
 
