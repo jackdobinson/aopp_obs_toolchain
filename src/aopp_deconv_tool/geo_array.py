@@ -17,12 +17,12 @@ class GeoArray:
 	# ATTRIBUTES #
 		self.data : np.ndarray
 			The data the array holds
-		self.axes : np.array
+		self.axes : np.ndarray
 			The 'points in space' where `self.data` is defined. These are what changes when the GeoArray undergoes a geometric transform
 	"""
 	def __init__(self,
 			data : np.ndarray,
-			axes : np.ndarray | None,
+			axes : tuple[np.ndarray,...] | None,
 		):
 		self.data = data
 		if axes is None:
@@ -34,7 +34,7 @@ class GeoArray:
 	@staticmethod
 	def scale_to_axes(scale : tuple[float,...], shape : tuple[int,...], centre : float = 0) -> np.ndarray:
 		"""
-		Applies a `scale` to a `shape` such that the result is centreed around `centre`
+		Applies a `scale` to a `shape` such that the result is centred around `centre`
 		"""
 		return tuple(
 			np.linspace(centre-scale/2,centre+scale/2,s) for scale, s in zip(scale,shape)
@@ -44,7 +44,7 @@ class GeoArray:
 		"""
 		Copy the GeoArray
 		"""
-		return GeoArray(np.array(self.data), np.array(self.axes))
+		return GeoArray(np.array(self.data), tuple(np.array(a) for a in self.axes))
 	
 	def __array__(self):
 		"""
