@@ -12,7 +12,7 @@ Small Dataset
 Use the `curl` and `tar` commands to download and extract the dataset.
 
 ```bash
-EXAMPLE_DATA_DIR="./example_data"
+EXAMPLE_DATA_DIR="../example_data"
 URL="https://zenodo.org/records/13384454/files/aopp_deconv_tool_example_datasets_small.tar?download=1"
 
 # Create a folder for the dataset
@@ -36,16 +36,4 @@ ls ${EXAMPLE_DATA_DIR}
 
 ```bash
 Example dataset:
-2024-01-11-1917_1-Jupiter_750nm.tif
-2024-01-11-1925_9-Jupiter_727nm.tif
-2024-01-11-1932_7-Jupiter_890nm.tif
-2024-01-11-1951_9-Jupiter_890nm.tif
-2024-01-11-1957_2-Jupiter_750nm.tif
-datasets.json
-reduced_data_volume_1_sci.fits
-reduced_data_volume_1_std.fits
-single_wavelength_example_sci.fits
-single_wavelength_example_std.fits
-SMALL_DATACUBE_0001_1_sci.fits
-SMALL_DATACUBE_0001_1_std.fits
 ```

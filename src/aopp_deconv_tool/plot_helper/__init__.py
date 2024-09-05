@@ -12,6 +12,17 @@ import matplotlib as mpl
 import matplotlib.figure
 import matplotlib.pyplot as plt
 
+
+def ensure_fig_and_ax(fig=None, ax=None, fig_kwargs=None, subplot_spec=(1,1)):
+	fig_kwargs = {} if fig_kwargs is None else fig_kwargs
+	
+	if fig is None:
+		fig = plt.figure(**fig_kwargs)	
+	if ax is None:
+		ax = fig.subplots(*subplot_spec)
+	ax = ax.flatten()
+	return fig, ax
+
 def output(
 		show : bool | float = False, # Should we show the figure? If a number, then display figure for this number of seconds before moving onwards
 		fname : str | Path | None = None, # If not None, save the figure to this file

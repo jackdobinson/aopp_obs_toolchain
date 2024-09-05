@@ -16,7 +16,7 @@ Use the \`curl\` and \`tar\` commands to download and extract the dataset.
 ---MD
 
 #:begin{CELL}
-EXAMPLE_DATA_DIR="./example_data"
+EXAMPLE_DATA_DIR="../example_data"
 URL="https://zenodo.org/records/13384454/files/aopp_deconv_tool_example_datasets_small.tar?download=1"
 
 # Create a folder for the dataset

@@ -24,6 +24,11 @@ for FILE in "${EXAMPLE_FILE_SET[@]}"; do
 	
 	DIR=${FILE%/*}
 	NAME=${FILE##*/}
+	
+	EXAMPLE_DATA_DIR=${DIR}/../example_data
+	if [ ! -e "${EXAMPLE_DATA_DIR}" ]; then
+		ln -s ${THIS_DIR}/../../example_data/aopp_deconv_tool_example_datasets_small_extracted ${EXAMPLE_DATA_DIR}
+	fi;
 
 	case "${FILE}" in
 		*.sh)
@@ -50,6 +55,12 @@ for FILE in "${EXAMPLE_FILE_SET[@]}"; do
 	cd ${DIR}
 	# Run the command
 	${CMD[@]}
+	
+	# Remove any output files that are present
+	if [ -d "${DIR}/output" ]; then 
+		echo "Removing output directory: '${DIR}/output'"
+		rm -r "${DIR}/output";
+	fi
 
 done
 echo "--------------------------------------------------------"

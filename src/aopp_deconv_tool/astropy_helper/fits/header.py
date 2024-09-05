@@ -140,6 +140,8 @@ def get_celestial_axes(hdr : ap.io.fits.Header, wcsaxes_label=''):
 	placeholders = ('x','y')
 	fits_celestial_codes = ['RA--', 'DEC-', 'xLON','xLAT', 'xyLN', 'xyLT']
 	iraf_celestial_codes = ['axtype=xi', 'axtype=eta']
+	fallback_celestial_codes = ['SKY__PIX'] # Used to denote an axis varies over the sky, but projection is not known.
+	
 
 	celestial_idxs = []
 	for i in AxesOrdering.range(hdr['NAXIS']):
@@ -147,6 +149,7 @@ def get_celestial_axes(hdr : ap.io.fits.Header, wcsaxes_label=''):
 						for fits_code in fits_celestial_codes) \
 				or any(iraf_code in hdr.get(f'WAT{i.fits}_{"001" if wcsaxes_label=="" else wcsaxes_label}', '') 
 						for iraf_code in iraf_celestial_codes) \
+				or hdr.get(f'CTYPE{i.fits}{wcsaxes_label}', '') in fallback_celestial_codes \
 				:
 			celestial_idxs.append(i.numpy)
 	return(tuple(celestial_idxs))
@@ -155,6 +158,7 @@ def get_celestial_axes(hdr : ap.io.fits.Header, wcsaxes_label=''):
 def get_spectral_axes(hdr, wcsaxes_label=''):
 	fits_spectral_codes = ['FREQ', 'ENER','WAVN','VRAD','WAVE','VOPT','ZOPT','AWAV','VELO','BETA']
 	iraf_spectral_codes = ['axtype=wave']
+	fallback_spectral_codes = ['SPEC_PIX'] # Used to denote an axis varies over spectral direction, but projection is not known.
 	
 	spectral_idxs = []
 	for i in AxesOrdering.range(hdr['NAXIS']):
@@ -162,6 +166,8 @@ def get_spectral_axes(hdr, wcsaxes_label=''):
 		if any(fits_code==hdr.get(f'CTYPE{i.fits}{wcsaxes_label}', '')[:len(fits_code)] for fits_code in fits_spectral_codes):
 			spectral_idxs.append(i.numpy)
 		elif any(iraf_code in hdr.get(f'WAT{i.fits}_{"001" if wcsaxes_label=="" else wcsaxes_label}', '') for iraf_code in iraf_spectral_codes):
+			spectral_idxs.append(i.numpy)
+		elif hdr.get(f'CTYPE{i.fits}{wcsaxes_label}', '') in fallback_spectral_codes:
 			spectral_idxs.append(i.numpy)
 	return(tuple(spectral_idxs))
 
@@ -249,7 +255,8 @@ def get_world_coords_of_axis(hdr, ax_idx, wcsaxes_label='', squeeze=True, wcs_un
 	world_axis_array *= wcs_unit_to_return_value_conversion_factor
 	_lgr.debug(f'{world_axis_array[::100]=}')
 	
-	return(np.squeeze(world_axis_array))
+	#return(np.squeeze(world_axis_array))
+	return(world_axis_array[0])
 
 def is_CDi_j_present(header, wcsaxes_label=''):
 	# matches "CDi_ja" where i,j are digits of indeterminate length, and a is an optional uppercase letter in wcsaxes_label

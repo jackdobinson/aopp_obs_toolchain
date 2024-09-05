@@ -19,7 +19,7 @@ IFS=$'\n\t'
 
 SCRIPT="$(realpath -e ${0})"
 SCRIPT_DIR=${SCRIPT%/*}
-EXAMPLE_DIR=$(realpath -e "${SCRIPT_DIR}/../../../../example_data/ifu_observation_datasets/")
+EXAMPLE_DIR=$(realpath -e "${SCRIPT_DIR}/../example_data")
 
 echo "EXAMPLE_DIR=${EXAMPLE_DIR}"
 
@@ -34,7 +34,7 @@ DECONV_FILE="${SCI_FILE%.*}_deconv.fits"
 ```
 
 ```bash
-EXAMPLE_DIR=/home/dobinsonl/Documents/repos/aopp_obs_toolchain/example_data/ifu_observation_datasets
+EXAMPLE_DIR=/home/dobinsonl/Documents/repos/aopp_obs_toolchain/example_data/aopp_deconv_tool_example_datasets_small_extracted
 ```
 With that out of the way, we can move on to something more interesting.
 
@@ -153,8 +153,8 @@ python -c 'import sys; import numpy as np; from astropy.io import fits; original
 ```
 
 ```bash
-signal fraction in deconvolved components 0.9087367156917293
-signal fraction in residual 0.09213959948055786
+signal fraction in deconvolved components 0.935910665206345
+signal fraction in residual 0.0654808568254599
 ```
 
 | Original Image | Deconvolved Image | Residual |
@@ -197,17 +197,19 @@ PKEY5   = 'slice.original_file'
 PVAL5   = './example_data/ifu_observation_datasets/ADP.2021-10-25T05:14:56.504&'
 CONTINUE  '_NFM-AO-N_OBJ_rebin.fits'                                            
 PKEY6   = 'deconv.obs_file'                                                     
-PVAL6   = '/home/dobinsonl/Documents/repos/aopp_obs_toolchain/example_data/ifu&'
-CONTINUE  '_observation_datasets/single_wavelength_example_sci.fits'            
+PVAL6   = '/home/dobinsonl/Documents/repos/aopp_obs_toolchain/example_data/aop&'
+CONTINUE  'p_deconv_tool_example_datasets_small_extracted/single_wavelength_ex&'
+CONTINUE  'ample_sci.fits'                                                      
 PKEY7   = 'deconv.psf_file'                                                     
-PVAL7   = '/home/dobinsonl/Documents/repos/aopp_obs_toolchain/example_data/ifu&'
-CONTINUE  '_observation_datasets/single_wavelength_example_std_normalised.fits' 
+PVAL7   = '/home/dobinsonl/Documents/repos/aopp_obs_toolchain/example_data/aop&'
+CONTINUE  'p_deconv_tool_example_datasets_small_extracted/single_wavelength_ex&'
+CONTINUE  'ample_std_normalised.fits'                                           
 PKEY8   = 'deconv.parameters_recorded_at_timestamp'                             
-PVAL8   = '2024-08-28T15:25:05.230038+0000'                                     
+PVAL8   = '2024-09-05T17:39:52.227850+0000'                                     
 PKEY9   = 'deconv.n_iter'                                                       
 PVAL9   = '1000    '                                                            
 PKEY10  = 'deconv.progress_string'                                              
-PVAL10  = 'Ended at 192 iterations: Standard deviation of statistics in last &' 
+PVAL10  = 'Ended at 218 iterations: Standard deviation of statistics in last &' 
 CONTINUE  '10 steps are all below minimum fraction as defined in &'             
 CONTINUE  '`min_frac_stat_delta` parameter.'                                    
 PKEY11  = 'deconv.loop_gain'                                                    
@@ -288,13 +290,15 @@ PKEY5   = 'slice.original_file'
 PVAL5   = './example_data/ifu_observation_datasets/ADP.2021-10-25T05:14:56.504&'
 CONTINUE  '_NFM-AO-N_OBJ_rebin.fits'                                            
 PKEY6   = 'deconv.obs_file'                                                     
-PVAL6   = '/home/dobinsonl/Documents/repos/aopp_obs_toolchain/example_data/ifu&'
-CONTINUE  '_observation_datasets/single_wavelength_example_sci.fits'            
+PVAL6   = '/home/dobinsonl/Documents/repos/aopp_obs_toolchain/example_data/aop&'
+CONTINUE  'p_deconv_tool_example_datasets_small_extracted/single_wavelength_ex&'
+CONTINUE  'ample_sci.fits'                                                      
 PKEY7   = 'deconv.psf_file'                                                     
-PVAL7   = '/home/dobinsonl/Documents/repos/aopp_obs_toolchain/example_data/ifu&'
-CONTINUE  '_observation_datasets/single_wavelength_example_std_normalised.fits' 
+PVAL7   = '/home/dobinsonl/Documents/repos/aopp_obs_toolchain/example_data/aop&'
+CONTINUE  'p_deconv_tool_example_datasets_small_extracted/single_wavelength_ex&'
+CONTINUE  'ample_std_normalised.fits'                                           
 PKEY8   = 'deconv.parameters_recorded_at_timestamp'                             
-PVAL8   = '2024-08-28T15:25:45.937189+0000'                                     
+PVAL8   = '2024-09-05T17:40:27.978735+0000'                                     
 PKEY9   = 'deconv.n_iter'                                                       
 PVAL9   = '1000    '                                                            
 PKEY10  = 'deconv.progress_string'                                              
@@ -320,8 +324,8 @@ PVAL19  = 'False   '
 PKEY20  = 'deconv.clean_beam_sigma'                                             
 PVAL20  = '0       '                                                            
 
-signal fraction in deconvolved components 0.9129842876022587
-signal fraction in residual 0.08789997435775711
+signal fraction in deconvolved components 0.9619020162736083
+signal fraction in residual 0.03955912724435216
 ```
 
 | Original Image | Deconvolved Image | Residual |

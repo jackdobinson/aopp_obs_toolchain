@@ -159,6 +159,7 @@ def run(
 		deconvolver : Literal[CleanModified] | Literal[LucyRichardson],
 		output_path : str | Path = './deconv.fits',
 		plot : bool = True,
+		progress : int = 0,
 	):
 	"""
 	Given a FitsSpecifier for an observation and a PSF, an output path, and a class that performs deconvolution,
@@ -241,6 +242,48 @@ def run(
 				deconvolver.post_iter_hooks = []
 				deconvolver.post_iter_hooks.append(lambda *a, **k: plot_set.update())
 				plot_set.show()
+			
+			if progress > 0:
+				class IterationTracker:
+					def __init__(self, n_iter, print_interval):
+						self.i_iter = 0
+						self.n_iter = n_iter
+						self.print_interval = print_interval
+						
+					def print(self):
+						if self.i_iter % self.print_interval == 0:
+							self.clear()
+							print(f'Iteration {self.i_iter}/{self.n_iter} [{100*self.i_iter/self.n_iter}%]', end='')
+							
+					def in_notebook(self):
+						try:
+							from IPython import get_ipython
+							if 'IPKernelApp' not in get_ipython().config:  # pragma: no cover
+								return False
+						except ImportError:
+							return False
+						except AttributeError:
+							return False
+						return True
+						
+					def clear(self):
+						if self.in_notebook():
+							from IPython.display import clear_output
+							clear_output(True)
+						else:
+							print('\r', end='')
+					
+					def update(self, *args, **kwargs):
+						self.print()
+						self.i_iter += 1
+					
+					def complete(self, *args, **kwargs):
+						self.clear()
+						print(f'Iteration {self.i_iter}/{self.n_iter} [{100*self.i_iter/self.n_iter}%]', end='\n')
+					
+				iteration_tracker = IterationTracker(deconvolver.n_iter, progress)
+				deconvolver.post_iter_hooks.append(iteration_tracker.update)
+				deconvolver.final_hooks.append(iteration_tracker.complete)
 			
 			# Ensure that we actually have data in this part of the cube
 			if np.all(np.isnan(obs_data[obs_idx])) or np.all(np.isnan(psf_data[psf_idx])):
@@ -377,6 +420,12 @@ def parse_args(argv):
 		default=False, 
 		help='Show help for the selected deconvolution method'
 	)
+	parser.add_argument(
+		'--progress',
+		type=int,
+		default=0,
+		help='Show progression of deconvolution on each `progress` step, 0 does not display progress'
+	)
 	
 	parser.successful = True
 	parser.error_message = None
@@ -461,6 +510,7 @@ def exec_with_args(argv):
 		deconvolver = deconvolver,
 		output_path = args.output_path, 
 		plot = args.plot,
+		progress = args.progress,
 	)
 	
 	return

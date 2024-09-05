@@ -8,9 +8,10 @@ BUILD_LOG_FILE="./build_log.txt"; echo "" > ${BUILD_LOG_FILE}
 set -o errexit -o nounset -o pipefail
 IFS=$'\n\t'
 
+
 SCRIPT="$(realpath -e ${0})"
 SCRIPT_DIR=${SCRIPT%/*}
-EXAMPLE_DIR=$(realpath -e "${SCRIPT_DIR}/../../../../example_data/ifu_observation_datasets/")
+EXAMPLE_DIR=$(realpath -e "${SCRIPT_DIR}/../example_data")
 
 echo "EXAMPLE_DIR=${EXAMPLE_DIR}"
 

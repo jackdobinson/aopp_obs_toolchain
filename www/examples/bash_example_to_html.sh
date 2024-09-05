@@ -73,6 +73,9 @@
 set -o errexit -o nounset -o pipefail
 IFS=$'\n\t'
 
+# DEBUG
+#set -x
+
 SCRIPT="$(readlink -f ${0})"
 SCRIPT_DIR=${SCRIPT%/*}
 

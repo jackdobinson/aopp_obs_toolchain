@@ -162,6 +162,7 @@ def run(
 		output_path,
 		fit_result_dir : str | None = None,
 		method : str = 'ultranest',
+		error_factor = 1E-3,
 	):
 	
 	original_data_type=None
@@ -182,9 +183,16 @@ def run(
 		hdr = data_hdu.header
 		original_data_type = data_hdu.data.dtype
 		axes = fits_spec.axes['CELESTIAL']
-		spectral_axes = aph.fits.header.get_spectral_axes(hdr)
-		if len(spectral_axes) != 1:
-			raise RuntimeError('Data must have one spectral axis')
+		
+		# Currently only works with a single spectral axis
+		# Assume if we only have a single dimension left over, the left over axis
+		# is the spectral one, otherwise try and find it from the header.
+		if data.ndim == (len(axes) + 1):
+			spectral_axes = tuple(i for i in range(data.ndim) if i not in axes)
+		else:
+			spectral_axes = aph.fits.header.get_spectral_axes(hdr)
+			if len(spectral_axes) != 1:
+				raise RuntimeError('Data must have exactly one spectral axis')
 		
 		
 		spectral_axes_slices = tuple(slice(None) if x in spectral_axes else 0 for x in range(data.ndim))
@@ -217,7 +225,8 @@ def run(
 			_lgr.debug(f'{i=} {j=}')
 			
 			psf_data = data[idx] #np.nan_to_num(data[idx])
-			psf_err = 1E-2*psf_data + 1E-3*np.nanmax(psf_data)
+			#psf_err = 1E-2*psf_data + 1E-3*abs(np.nanmax(psf_data))
+			psf_err = error_factor*psf_data
 			di = get_new_psf_model_dependency_injector(psf_data)
 			
 			if 'wavelength' in di._params.all_params:
@@ -338,6 +347,7 @@ def run(
 	
 	hdul_output = fits.HDUList(hdus)
 	hdul_output.writeto(output_path, overwrite=True)
+	_lgr.info(f'Written fitted psf to {output_path.relative_to(Path(),walk_up=True)}')
 
 
 def parse_args(argv):
@@ -402,6 +412,8 @@ def parse_args(argv):
 
 	parser.add_argument('--method', type=str, default='scipy.minimize', choices=FITTING_METHODS, help='What method should we use to perform the fitting')
 
+	parser.add_argument('--error_factor', type=float, default=1E-3, help='What factor of the PSF value is error')
+
 	parser.add_argument('--model_help', action='store_true', default=False, help='Show the help message for the selected model')
 
 	args, psf_model_args = parser.parse_known_args(argv)
@@ -462,7 +474,9 @@ def go(
 		fit_result_dir=None,
 		model=None,
 		method=None,
-		model_help=None
+		model_help=None,
+		error_factor=None,
+		**kwargs
 	):
 	"""
 	Thin wrapper around `run()` to accept string inputs.
@@ -485,6 +499,7 @@ def exec_with_args(argv):
 		args.output_path,
 		args.fit_result_dir,
 		args.method,
+		args.error_factor,
 	)
 
 

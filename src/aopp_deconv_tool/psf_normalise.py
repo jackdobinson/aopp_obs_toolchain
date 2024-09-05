@@ -79,8 +79,8 @@ def run(
 		
 		_lgr.info('Get offsets to centre around centre of mass')
 		roi_mask = psf_data_ops.get_roi_mask(data, axes, threshold, n_largest_regions)
-		center_offsets = psf_data_ops.get_centre_of_mass_offsets(data, axes, roi_mask)
-		#center_offsets = psf_data_ops.get_brightest_pixel_offsets(data, axes, roi_mask)
+		#center_offsets = psf_data_ops.get_centre_of_mass_offsets(data, axes, roi_mask)
+		center_offsets = psf_data_ops.get_brightest_pixel_offsets(data, axes, roi_mask)
 	
 		_lgr.info('Recentre everything for easy comparison')
 		normalised_data = psf_data_ops.apply_offsets(data, axes, center_offsets)		
@@ -111,6 +111,9 @@ def run(
 		original_sum = np.nansum(normalised_data, axis=axes)
 		with nph.axes.to_start(normalised_data, axes) as (gdata, gaxes):
 			gdata /= original_sum
+		
+		if normalised_data.ndim == len(axes):
+			original_sum = np.array([original_sum])
 		
 		
 		param_dict = {
@@ -193,6 +196,7 @@ def run(
 	
 	hdul_output = fits.HDUList(hdus)
 	hdul_output.writeto(output_path, overwrite=True)
+	_lgr.info(f'Written normalised psf to {output_path.relative_to(Path().absolute(),walk_up=True)}')
 
 
 def parse_args(argv):
