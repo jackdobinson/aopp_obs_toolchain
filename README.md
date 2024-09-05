@@ -1,11 +1,4 @@
-# aopp_obs_toolchain #
-
-A set of tools for dealing with observational data from CCD and IFU instruments. See the [github pages site](https://jackdobinson.github.io/aopp_obs_toolchain/) for documentation on how to use the tool.
-
-## aopp_deconv_tool ##
-
-Deconvolution algorithms, PSF fitting, image (and psf) filtering, and other data operations to support deconvolution.
-
+# Development #
 
 ## Development Environment Setup ##
 
@@ -30,7 +23,7 @@ Placeholders:
 * Created using python 3.12.2, I'll refer to the version number as `<X.Y.Z>` in code, where X is the major release, Y is the minor release, and Z is the build number.
 
   - NOTE: Sometimes only some of the version numbers are used e.g., `<X.Y>` for just the major and minor number, or `<XYZ>` when the numbers are concatenated together 
-    without the dots inbetween them (i.e., `3122` instead of `3.12.2`).
+	without the dots inbetween them (i.e., `3122` instead of `3.12.2`).
 
   - I.e., the python executable for some version would be `python<X.Y.Z>`
 
@@ -103,21 +96,21 @@ curl ${DOWNLOAD_URL:?} --output ${PYTHON_VERSION_DOWNLOAD_FILE:?} && \
 echo "Python source downloaded." && \
 echo "Installing dependencies..." && \
 sudo apt-get install -y \
-    curl \
-    gcc \
-    libbz2-dev \
-    libev-dev \
-    libffi-dev \
-    libgdbm-dev \
-    liblzma-dev \
-    libncurses-dev \
-    libreadline-dev \
-    libsqlite3-dev \
-    libssl-dev \
-    make \
-    tk-dev \
-    wget \
-    zlib1g-dev && \
+	curl \
+	gcc \
+	libbz2-dev \
+	libev-dev \
+	libffi-dev \
+	libgdbm-dev \
+	liblzma-dev \
+	libncurses-dev \
+	libreadline-dev \
+	libsqlite3-dev \
+	libssl-dev \
+	make \
+	tk-dev \
+	wget \
+	zlib1g-dev && \
 echo "Dependencies installed." && \
 echo "Extracting source file ${PYTHON_VERSION_DOWNLOAD_FILE:?}" && \
 tar -xvzf ${PYTHON_VERSION_DOWNLOAD_FILE:?} -C ${PYTHON_VERSION_INSTALL_DIR:?} && \
@@ -126,10 +119,10 @@ echo "Moving into source-code directory. ${PYTHON_VERSION_SOURCE_DIR:?}..." && \
 cd ${PYTHON_VERSION_SOURCE_DIR:?} && \
 echo "Configuring python installation..." && \
 ./configure \
-    --prefix=${PYTHON_VERSION_INSTALL_DIR:?} \
+	--prefix=${PYTHON_VERSION_INSTALL_DIR:?} \
 	--enable-optimizations \
 	--enable-ipv6 \
-     && \
+	 && \
 echo "Configuration done." && \
 echo "Running makefile..." && \
 make && \
@@ -181,12 +174,12 @@ echo "Required packages installed"
 
   - Add the command to your `~/.bashrc` file (or equivalent) so you don't have to do it every time via,
 
-    + **IF** using WSL 1: `echo 'export DISPLAY=${DISPLAY:-localhost:0.0}' >> ~/.bashrc`
+	+ **IF** using WSL 1: `echo 'export DISPLAY=${DISPLAY:-localhost:0.0}' >> ~/.bashrc`
 
-    + **IF** using WSL 2: `echo 'export DISPLAY=${DISPLAY:-$(grep -oP "(?<=nameserver ).+" /etc/resolv.conf):0.0}' >> ~/.bashrc`
+	+ **IF** using WSL 2: `echo 'export DISPLAY=${DISPLAY:-$(grep -oP "(?<=nameserver ).+" /etc/resolv.conf):0.0}' >> ~/.bashrc`
 
   NOTE:
-    The `${DISPLAY:-<WORD>}` construct is called "Parameter Expansion", it returns the expansion of `<WORD>` ONLY IF `$DISPLAY` is unset or null. See [this page on parameter expansion](https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html) for more information.
+	The `${DISPLAY:-<WORD>}` construct is called "Parameter Expansion", it returns the expansion of `<WORD>` ONLY IF `$DISPLAY` is unset or null. See [this page on parameter expansion](https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html) for more information.
 
 * Test the setup using the command `python3 -c 'import matplotlib.pyplot as plt; plt.plot([i for i in range(-50,51)],[i**2 for i in range(-50,51)]); plt.show()'`, if a plot shows up then everything worked and plotting commands should work nicely in WSL.
 
@@ -204,9 +197,9 @@ Often the way VSCode activates virtual environments is not the "normal" way, so 
 * In VSCode, go to settings > terminal > integrated > env : linux (easiest to search for "terminal integrated env:linux" in settings). Click "Edit in settings.json". Add the line `"VSCODE_WORKSPACE_DIR" : "${workspaceFolder}"` to the `"terminal.integrated.env.linux"` entry so it looks like the following:
 
 ```
-    "terminal.integrated.env.linux": {
-        "VSCODE_WORKSPACE_DIR" : "${workspaceFolder}"
-    }
+	"terminal.integrated.env.linux": {
+		"VSCODE_WORKSPACE_DIR" : "${workspaceFolder}"
+	}
 ```
 
   This adds the environment variable "VSCODE_WORKSPACE_DIR" to every terminal that VSCode opens, and sets it to the current **workspace** (i.e., top level) folder.
@@ -216,30 +209,30 @@ Often the way VSCode activates virtual environments is not the "normal" way, so 
 cat >> ~/.bashrc <<- "END_OF_FILE"
 # Only executed when VSCode has opened the terminal
 if [ "${TERM_PROGRAM}" == "vscode" ]; then
-    
-    # Check to make sure we have a workspace directory
-    if [ "${VSCODE_WORKSPACE_DIR:-'UNSET_OR_NULL'}" == 'UNSET_OR_NULL' ]; then
-        echo "ERROR: $$TERM_PROGRAM == \"vscode\", but $$VSCODE_WORKSPACE_DIR is unset or null"
-    else
-        # Count the number of python virtual environments
-        shopt -s nullglob 
-        VENV_DIRS=(.venv*)
-        shopt -u nullglob
-    
-        # If we only have one virtual environment, activate it, otherwise print out activation commands
-        if [ ${#VENV_DIRS[@]} == 1 ]; then
-            source ${VENV_DIRS[0]}/bin/activate
-        elif [ ${#VENV_DIRS[@]} -ge 2 ]; then
-            echo "Multiple python virtual environments found in \"${VSCODE_WORKSPACE_DIR}\""
-            echo "activate one of them with:"
-            
-            for VENV_DIR in ${VENV_DIRS[@]}; do
-                echo -e "\tsource ${VENV_DIR}/bin/activate"
-            done
-        else
-          echo "ERROR: No virtual environments (matching glob with \".venv*\") found in \"${VSCODE_WORKSPACE_DIR}\""
-        fi
-    fi
+	
+	# Check to make sure we have a workspace directory
+	if [ "${VSCODE_WORKSPACE_DIR:-'UNSET_OR_NULL'}" == 'UNSET_OR_NULL' ]; then
+		echo "ERROR: $$TERM_PROGRAM == \"vscode\", but $$VSCODE_WORKSPACE_DIR is unset or null"
+	else
+		# Count the number of python virtual environments
+		shopt -s nullglob 
+		VENV_DIRS=(.venv*)
+		shopt -u nullglob
+	
+		# If we only have one virtual environment, activate it, otherwise print out activation commands
+		if [ ${#VENV_DIRS[@]} == 1 ]; then
+			source ${VENV_DIRS[0]}/bin/activate
+		elif [ ${#VENV_DIRS[@]} -ge 2 ]; then
+			echo "Multiple python virtual environments found in \"${VSCODE_WORKSPACE_DIR}\""
+			echo "activate one of them with:"
+			
+			for VENV_DIR in ${VENV_DIRS[@]}; do
+				echo -e "\tsource ${VENV_DIR}/bin/activate"
+			done
+		else
+		  echo "ERROR: No virtual environments (matching glob with \".venv*\") found in \"${VSCODE_WORKSPACE_DIR}\""
+		fi
+	fi
 fi
 END_OF_FILE
 ```
@@ -287,33 +280,33 @@ Files are searched if:
   - The summary starts with a line that looks like "================== Discovery Summary ======================"
   
   - Following entries have a module on one line, then the tests found in that module on subsequent lines with a hanging indent e.g.
-    ```
-    module "lucy_richardson_test" contains tests:
-        test_call_altered_instantiated_parameters
-        test_on_example_data
-        test_on_example_data_with_plotting_hooks
-        test_runs_for_basic_data
-    module "clean_modified_test" contains tests:
-        test_clean_modified_call_altered_instantiated_parameters
-        test_clean_modified_on_example_data
-        test_clean_modified_on_example_data_with_plotting_hooks
-    ```
-    
+	```
+	module "lucy_richardson_test" contains tests:
+		test_call_altered_instantiated_parameters
+		test_on_example_data
+		test_on_example_data_with_plotting_hooks
+		test_runs_for_basic_data
+	module "clean_modified_test" contains tests:
+		test_clean_modified_call_altered_instantiated_parameters
+		test_clean_modified_on_example_data
+		test_clean_modified_on_example_data_with_plotting_hooks
+	```
+	
 * Next there is the "Running Tests" section, it's default is to output the results live, so it may take a while to complete. 
   The format is:
 
   - Starts with a line that looks like "====================== Running Tests ========================="
   
   - Each line details the test module and the test function on the LHS in the format "module::function", the staus 
-    (Passed, Failed, Skipped, etc.) on the RHS, if a test is skipped the following line contains some right-justified text 
-    explaining why the test was skipped. Tests should all pass or be skipped with a reason. E.g.
-    ```
-    lucy_richardson_test::test_call_altered_instantiated_parameters -------------------------------------------------- Passed
-    lucy_richardson_test::test_on_example_data ----------------------------------------------------------------------- Passed
-    lucy_richardson_test::test_on_example_data_with_plotting_hooks -------------------------------------------------- Skipped
-                         broken: displays animated plots that are incompatible with intercepting matplotlib's "show" function
-    lucy_richardson_test::test_runs_for_basic_data ------------------------------------------------------------------- Passed
-    ```
+	(Passed, Failed, Skipped, etc.) on the RHS, if a test is skipped the following line contains some right-justified text 
+	explaining why the test was skipped. Tests should all pass or be skipped with a reason. E.g.
+	```
+	lucy_richardson_test::test_call_altered_instantiated_parameters -------------------------------------------------- Passed
+	lucy_richardson_test::test_on_example_data ----------------------------------------------------------------------- Passed
+	lucy_richardson_test::test_on_example_data_with_plotting_hooks -------------------------------------------------- Skipped
+						 broken: displays animated plots that are incompatible with intercepting matplotlib's "show" function
+	lucy_richardson_test::test_runs_for_basic_data ------------------------------------------------------------------- Passed
+	```
 
 ## Building the Package ##
 

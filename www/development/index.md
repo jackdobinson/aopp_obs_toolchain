@@ -1,6 +1,5 @@
 # Development #
 
-
 ## Development Environment Setup ##
 
 This section details how to set up a development environment for this project.
@@ -241,17 +240,6 @@ END_OF_FILE
 
 ## Running Tests ##
 
-{% capture test_message %}
-Tests are currently being reorganised to better test blocks of functionality across the project. Currently the tests are not acting as the "Canary in the coal mine" like they should be. At the moment, passing the tests does not mean the program will complete sucessfully, or at all. Therefore, run <a href="{{site.baseurl}}/examples/#examples">the examples</a> alongside the tests for now.
-{% endcapture %}
-
-{%
-	include message.html
-	level="note"
-	message=test_message
-%}
-NOTE: 
-
 The tests are in the directory `<REPO_DIR>/tests`, there is a package `<REPO_DIR>/scientest` which is a testing tool. The module `<REPO_DIR>/scientest/run.py` will search for tests and run them one by one. It tries to ensure that tests do not have side-effects. 
 
 Folders are searched if:
@@ -398,7 +386,7 @@ to delete the contents of the output directories before running so you can see t
 
 # Documentaion #
 
-## Doxygen ##
+## DOXYGEN Documentation ##
 
 To generate the DOXYGEN documentation:
 
@@ -407,11 +395,44 @@ To generate the DOXYGEN documentation:
 * Run the `doxygen` command at the terminal
 * View the documentation by opening `<REPO>/www/documentation/doxygen/html/index.html` in your browser.
 
-## Pydoctor ##
 
-To generate the `pydoctor` documentation:
+## Pydoctor Documentation ##
 
-* Ensure [`pydoctor` is installed](https://pydoctor.readthedocs.io/en/latest/quickstart.html)
-* Use `cd <REPO>` to get the repository directory
-* Run the command `python -m pydoctor ./src/aopp_deconv_tool --project-name aopp_obs_toolchain::aopp_deconv_tool --project-base-dir ./src/aopp_deconv_tool --make-html --docformat google --html-output ./www/documentation/pydoc --sidebar-expand-depth 5 --theme readthedocs`
-* view the file `<REPO>/www/documentation/pydoc/index.html` in your browser.
+The [pydoctor](https://pydoctor.readthedocs.io/en/latest/quickstart.html) package is part of the build requirements for this package, so you should already have it available in your python development environment for this package.
+
+To build the documentation, run the following command in the `<REPO>` directory:
+
+```
+python -m pydoctor ./src/aopp_deconv_tool --project-name aopp_obs_toolchain::aopp_deconv_tool --project-base-dir ./src/aopp_deconv_tool --make-html --docformat google --html-output ./www/documentation/pydoc --sidebar-expand-depth 5 --theme readthedocs
+```
+
+View the documentation by opening `<REPO>/www/documentation/pydoc/index.html` in your browser.
+
+Command argument explanation:
+
+`./src/aopp_deconv_tool`
+: The folder of the package to create documentation for.
+
+`--project-name aopp_obs_toolchain::aopp_deconv_tool`
+: Defines the name of the project, `aopp_deconv_tool` is part of the `aopp_obs_toolchain` package.
+
+`--project-base-dir ./src/aopp_deconv_tool`
+: All paths in the documentation are relative to this path.
+
+`--make-html`
+: Output HTML so we can display the documentation as a web page.
+
+`--docformat google`
+: Documentation formatting follows google's guidelines (mostly)
+
+`--html-output ./www/documentation/pydoc`
+: Folder to store HTML output in, in this case somewhere we can point the user towards on the github pages site.
+
+`--sidebar-expand-depth 5`
+: Depth to which the sidebar will expand when navigating nested packages etc.
+
+`--theme readthedocs`
+: Formatting and styling theme to use, "readthedocs" is pretty good.
+
+
+

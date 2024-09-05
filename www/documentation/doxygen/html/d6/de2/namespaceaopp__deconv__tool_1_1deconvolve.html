@@ -99,8 +99,8 @@ Functions</h2></td></tr>
 <tr class="separator:af6bd8fd6e2c673853b1544085c2bf222"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb9fb6db643cda6e6d7af7ca2c1c4940"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d6/de2/namespaceaopp__deconv__tool_1_1deconvolve.html#afb9fb6db643cda6e6d7af7ca2c1c4940">parse_args</a> (<a class="el" href="../../d6/de2/namespaceaopp__deconv__tool_1_1deconvolve.html#aa73f23d5189f3eed51b9741badb760ff">argv</a>)</td></tr>
 <tr class="separator:afb9fb6db643cda6e6d7af7ca2c1c4940"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9857f565a79f5d84be232c9b79eee861"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d6/de2/namespaceaopp__deconv__tool_1_1deconvolve.html#a9857f565a79f5d84be232c9b79eee861">run</a> (aph.fits.specifier.FitsSpecifier obs_fits_spec, aph.fits.specifier.FitsSpecifier psf_fits_spec, Literal[<a class="el" href="../../dd/d03/classaopp__deconv__tool_1_1algorithm_1_1deconv_1_1clean__modified_1_1CleanModified.html">CleanModified</a>]|Literal[<a class="el" href="../../d8/dc0/classaopp__deconv__tool_1_1algorithm_1_1deconv_1_1lucy__richardson_1_1LucyRichardson.html">LucyRichardson</a>] deconvolver, str|Path output_path='./deconv.fits', bool plot=True)</td></tr>
-<tr class="separator:a9857f565a79f5d84be232c9b79eee861"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af35cfec496b7a2253c7a43a6fe365bd3"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d6/de2/namespaceaopp__deconv__tool_1_1deconvolve.html#af35cfec496b7a2253c7a43a6fe365bd3">run</a> (aph.fits.specifier.FitsSpecifier obs_fits_spec, aph.fits.specifier.FitsSpecifier psf_fits_spec, Literal[<a class="el" href="../../dd/d03/classaopp__deconv__tool_1_1algorithm_1_1deconv_1_1clean__modified_1_1CleanModified.html">CleanModified</a>]|Literal[<a class="el" href="../../d8/dc0/classaopp__deconv__tool_1_1algorithm_1_1deconv_1_1lucy__richardson_1_1LucyRichardson.html">LucyRichardson</a>] deconvolver, str|Path output_path='./deconv.fits', bool plot=True, int progress=0)</td></tr>
+<tr class="separator:af35cfec496b7a2253c7a43a6fe365bd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -110,6 +110,12 @@ Variables</h2></td></tr>
 <tr class="separator:aa73f23d5189f3eed51b9741badb760ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afaca5b65a47607e559ab0f4d26fba3ea"><td class="memItemLeft" align="right" valign="top">dictionary&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d6/de2/namespaceaopp__deconv__tool_1_1deconvolve.html#afaca5b65a47607e559ab0f4d26fba3ea">deconv_methods</a></td></tr>
 <tr class="separator:afaca5b65a47607e559ab0f4d26fba3ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a637c33ed48f20a1962d7865ddcffaae7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d6/de2/namespaceaopp__deconv__tool_1_1deconvolve.html#a637c33ed48f20a1962d7865ddcffaae7">i_iter</a></td></tr>
+<tr class="separator:a637c33ed48f20a1962d7865ddcffaae7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a8925f95ec72f03f45906434126157f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d6/de2/namespaceaopp__deconv__tool_1_1deconvolve.html#a1a8925f95ec72f03f45906434126157f">n_iter</a></td></tr>
+<tr class="separator:a1a8925f95ec72f03f45906434126157f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c3f5d27a44a5349715bd63a6a07e7ae"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d6/de2/namespaceaopp__deconv__tool_1_1deconvolve.html#a5c3f5d27a44a5349715bd63a6a07e7ae">print_interval</a></td></tr>
+<tr class="separator:a5c3f5d27a44a5349715bd63a6a07e7ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><pre class="fragment">Script that deconvolves the first argument with the second argument
@@ -147,7 +153,8 @@ Example invocation:
 <div id="dynsection-0-summary" class="dynsummary" style="display:block;">
 </div>
 <div id="dynsection-0-content" class="dyncontent" style="display:none;">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d6/de2/namespaceaopp__deconv__tool_1_1deconvolve_a547bc12665a3e5c16dfb801e8ce8b085_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d6/de2/namespaceaopp__deconv__tool_1_1deconvolve_a547bc12665a3e5c16dfb801e8ce8b085_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
 </div>
 
 </div>
@@ -172,7 +179,8 @@ Example invocation:
 <div id="dynsection-1-summary" class="dynsummary" style="display:block;">
 </div>
 <div id="dynsection-1-content" class="dyncontent" style="display:none;">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d6/de2/namespaceaopp__deconv__tool_1_1deconvolve_aac9167e2fdab893a6897a6bed78f442b_cgraph.svg" width="100%" height="383"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d6/de2/namespaceaopp__deconv__tool_1_1deconvolve_aac9167e2fdab893a6897a6bed78f442b_cgraph.svg" width="100%" height="383"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
 </div>
 <div id="dynsection-2" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
   <img id="dynsection-2-trigger" src="../../closed.png" alt="+"/> Here is the caller graph for this function:</div>
@@ -247,7 +255,8 @@ Example invocation:
 <div id="dynsection-3-summary" class="dynsummary" style="display:block;">
 </div>
 <div id="dynsection-3-content" class="dyncontent" style="display:none;">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d6/de2/namespaceaopp__deconv__tool_1_1deconvolve_af6bd8fd6e2c673853b1544085c2bf222_cgraph.svg" width="100%" height="410"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d6/de2/namespaceaopp__deconv__tool_1_1deconvolve_af6bd8fd6e2c673853b1544085c2bf222_cgraph.svg" width="100%" height="410"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
 </div>
 
 </div>
@@ -284,8 +293,8 @@ Example invocation:
 
 </div>
 </div>
-<a id="a9857f565a79f5d84be232c9b79eee861"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9857f565a79f5d84be232c9b79eee861">&#9670;&nbsp;</a></span>run()</h2>
+<a id="af35cfec496b7a2253c7a43a6fe365bd3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af35cfec496b7a2253c7a43a6fe365bd3">&#9670;&nbsp;</a></span>run()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -318,7 +327,13 @@ Example invocation:
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool &#160;</td>
-          <td class="paramname"><em>plot</em> = <code>True</code>&#160;</td>
+          <td class="paramname"><em>plot</em> = <code>True</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int &#160;</td>
+          <td class="paramname"><em>progress</em> = <code>0</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -355,14 +370,16 @@ Example invocation:
 <div id="dynsection-6-summary" class="dynsummary" style="display:block;">
 </div>
 <div id="dynsection-6-content" class="dyncontent" style="display:none;">
-<div class="center"><iframe scrolling="no" frameborder="0" src="../../d6/de2/namespaceaopp__deconv__tool_1_1deconvolve_a9857f565a79f5d84be232c9b79eee861_cgraph.svg" width="567" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="../../d6/de2/namespaceaopp__deconv__tool_1_1deconvolve_af35cfec496b7a2253c7a43a6fe365bd3_cgraph.svg" width="567" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 <div id="dynsection-7" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
   <img id="dynsection-7-trigger" src="../../closed.png" alt="+"/> Here is the caller graph for this function:</div>
 <div id="dynsection-7-summary" class="dynsummary" style="display:block;">
 </div>
 <div id="dynsection-7-content" class="dyncontent" style="display:none;">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d6/de2/namespaceaopp__deconv__tool_1_1deconvolve_a9857f565a79f5d84be232c9b79eee861_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="../../d6/de2/namespaceaopp__deconv__tool_1_1deconvolve_af35cfec496b7a2253c7a43a6fe365bd3_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
 </div>
 
 </div>
@@ -420,6 +437,48 @@ Example invocation:
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;    <span class="stringliteral">&#39;lucy_richardson&#39;</span> : LucyRichardson</div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;}</div>
 </div><!-- fragment -->
+</div>
+</div>
+<a id="a637c33ed48f20a1962d7865ddcffaae7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a637c33ed48f20a1962d7865ddcffaae7">&#9670;&nbsp;</a></span>i_iter</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">aopp_deconv_tool.deconvolve.i_iter</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1a8925f95ec72f03f45906434126157f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a8925f95ec72f03f45906434126157f">&#9670;&nbsp;</a></span>n_iter</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">aopp_deconv_tool.deconvolve.n_iter</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5c3f5d27a44a5349715bd63a6a07e7ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c3f5d27a44a5349715bd63a6a07e7ae">&#9670;&nbsp;</a></span>print_interval</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">aopp_deconv_tool.deconvolve.print_interval</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
 </div>
 </div>
 </div><!-- contents -->

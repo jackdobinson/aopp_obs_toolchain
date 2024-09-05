@@ -10,6 +10,7 @@ var namespaceaopp__deconv__tool_1_1plot__helper =
     [ "LimSymAroundCurrent", "d0/d80/classaopp__deconv__tool_1_1plot__helper_1_1LimSymAroundCurrent.html", "d0/d80/classaopp__deconv__tool_1_1plot__helper_1_1LimSymAroundCurrent" ],
     [ "LimSymAroundValue", "d7/dbc/classaopp__deconv__tool_1_1plot__helper_1_1LimSymAroundValue.html", "d7/dbc/classaopp__deconv__tool_1_1plot__helper_1_1LimSymAroundValue" ],
     [ "create_figure_with_subplots", "d5/d6b/namespaceaopp__deconv__tool_1_1plot__helper.html#a6ada9daf78ed770c4c609a5c14c40ab1", null ],
+    [ "ensure_fig_and_ax", "d5/d6b/namespaceaopp__deconv__tool_1_1plot__helper.html#aa6504bc0842244a1f67151bcda9be39e", null ],
     [ "fig_add_patch", "d5/d6b/namespaceaopp__deconv__tool_1_1plot__helper.html#a2cb58e41cfaaf4633d27a486ec6758c6", null ],
     [ "fig_draw_bbox_of_artist", "d5/d6b/namespaceaopp__deconv__tool_1_1plot__helper.html#a22f1d69af5f616e21e59c0eb22e7c279", null ],
     [ "figure_n_subplots", "d5/d6b/namespaceaopp__deconv__tool_1_1plot__helper.html#a0d29c229fed44fbec7749b6a99e68aec", null ],

@@ -24,6 +24,7 @@ var dir_918410a5d35c29ada1bf17cd2a9539e7 =
     [ "create_bad_pixel_mask.py", "d3/db9/create__bad__pixel__mask_8py.html", "d3/db9/create__bad__pixel__mask_8py" ],
     [ "deconvolve.py", "d3/d05/deconvolve_8py.html", "d3/d05/deconvolve_8py" ],
     [ "estimate_noise.py", "d6/d4f/estimate__noise_8py.html", "d6/d4f/estimate__noise_8py" ],
+    [ "extract_sources.py", "df/d8d/extract__sources_8py.html", "df/d8d/extract__sources_8py" ],
     [ "fit_psf_model.py", "dc/df7/fit__psf__model_8py.html", "dc/df7/fit__psf__model_8py" ],
     [ "fits_copy_wcs.py", "d8/d5a/fits__copy__wcs_8py.html", "d8/d5a/fits__copy__wcs_8py" ],
     [ "fits_slice.py", "d1/db7/fits__slice_8py.html", "d1/db7/fits__slice_8py" ],

@@ -1,5 +1,9 @@
 <map id="aopp_deconv_tool.scipy_helper.label_ops.remove" name="aopp_deconv_tool.scipy_helper.label_ops.remove">
-<area shape="rect" id="node1" title=" " alt="" coords="349,50,540,91"/>
-<area shape="rect" id="node2" href="$d8/dd5/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1ImageAggregator.html#a51d4ad35dab59a899aa6dd88e3b2c925" title=" " alt="" coords="5,5,301,61"/>
-<area shape="rect" id="node3" href="$de/daa/namespaceaopp__deconv__tool_1_1psf__data__ops.html#a1748b457fcbf82cab1d62a64a5a10c77" title=" " alt="" coords="71,86,235,127"/>
+<area shape="rect" id="node1" title=" " alt="" coords="1065,86,1256,127"/>
+<area shape="rect" id="node2" href="$d8/dd5/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1ImageAggregator.html#a51d4ad35dab59a899aa6dd88e3b2c925" title=" " alt="" coords="721,5,1017,61"/>
+<area shape="rect" id="node3" href="$de/daa/namespaceaopp__deconv__tool_1_1psf__data__ops.html#a1748b457fcbf82cab1d62a64a5a10c77" title=" " alt="" coords="787,86,951,127"/>
+<area shape="rect" id="node4" href="$dc/dd6/namespaceaopp__deconv__tool_1_1extract__sources.html#a49d1861ad880b0306c6d26aa2c19e238" title=" " alt="" coords="763,151,976,193"/>
+<area shape="rect" id="node5" href="$dc/dd6/namespaceaopp__deconv__tool_1_1extract__sources.html#a71ba7a7576bb90388f58eec18881a8b7" title=" " alt="" coords="483,151,673,193"/>
+<area shape="rect" id="node6" href="$dc/dd6/namespaceaopp__deconv__tool_1_1extract__sources.html#adba97220152c924bb19f483434059202" title=" " alt="" coords="244,151,435,193"/>
+<area shape="rect" id="node7" href="$dc/dd6/namespaceaopp__deconv__tool_1_1extract__sources.html#aa4d56ab52c10b8dc7197d1acd18898bb" title=" " alt="" coords="5,151,196,193"/>
 </map>
