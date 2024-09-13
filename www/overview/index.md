@@ -43,6 +43,12 @@ Spectroscopic observations have the same problem. Along with smoothing and reduc
 
 Adjusting observations to remove the effect of the PSF of an instrument is a process called deconvolution. There are many techniques, but many suffer from problems when working with extended sources.
 
+{:nomarkdown}
+\begin{equation}
+	O(x) = R(x) \star S(x) + E(x)
+\end{equation}
+{:/}
+
 <!--
 TODO: 
 * Overview of techniques

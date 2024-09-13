@@ -537,11 +537,11 @@ class SSA:
 		Plots grouped decomposed trajectory matrix of SSA
 		"""
 		# plot elements of X_ssa
-		n_set = list(range(n)) if type(n_max) is int else n_max
-		n_set = list(range(self.X_ssa.shape[0])) if n_max is None else n_max
+		n_set = list(range(n_max)) if type(n_max) is int else n_max
+		n_set = list(range(self.X_ssa.shape[0])) if n_max is None else n_set
 		n_set = [x if x < self.X_ssa.shape[0] else self.X_ssa.shape[0]-1 for x in n_set]
 		
-		n_max = len(n_max) if type(n_max) is not int else n_max
+		n_max = len(n_set) if type(n_max) is not int else n_max
 		
 		n = min(self.X_ssa.shape[0], n_max if n_max is not None else self.X_ssa.shape[0])
 		f1, a1 = plot_helper.figure_n_subplots(n)
