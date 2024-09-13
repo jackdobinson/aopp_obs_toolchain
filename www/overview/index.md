@@ -47,6 +47,10 @@ Adjusting observations to remove the effect of the PSF of an instrument is a pro
 \[
 	O(x) = R(x) \star S(x) + E(x)
 \]
+
+\begin{equation}
+	O(x) = R(x) \star S(x) + E(x)
+\end{equation}
 </div>
 
 <!--

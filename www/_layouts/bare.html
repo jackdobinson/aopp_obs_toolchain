@@ -5,12 +5,23 @@
 		<title>{{ page.title }}</title>
 		<link rel="stylesheet" href="{{ site.baseurl }}/assets/css/style.css">
 		<link rel="stylesheet" href="{{ site.baseurl }}/assets/css/bare-style.css">
-		
+		<script>
+			MathJax = {
+			tex: {
+				inlineMath: [['$', '$'], ['\\(', '\\)']]
+			},
+			svg: {
+				fontCache: 'global'
+			}
+			};
+		</script>
+		<script type="text/javascript" id="MathJax-script" async
+			src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+		</script>
 		
 	</head>
 	
 	<body>
-		<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 		<section id="content">
 			{{ content }}
 		</section>
