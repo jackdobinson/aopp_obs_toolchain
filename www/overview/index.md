@@ -41,17 +41,18 @@ Spectroscopic observations have the same problem. Along with smoothing and reduc
 
 ## Deconvolution Background ##
 
-Adjusting observations to remove the effect of the PSF of an instrument is a process called deconvolution. There are many techniques, but many suffer from problems when working with extended sources.
+A when performing a measurement, the "true" signal is adjusted by the response function of the measurement tool this can be described mathematically as a convolution. Adjusting observations to remove the effect of the PSF of an instrument is a process called deconvolution. There are many techniques, but many suffer from problems when working with extended sources.
 
+Performing an observation $O(x)$, of the true signal a signal, $S(x)$, with an instrument that has a response function, $R(x)$, some noise, $N(x)$ is written as:
 <div>
-\[
-	O(x) = R(x) \star S(x) + E(x)
-\]
-
 \begin{equation}
-	O(x) = R(x) \star S(x) + E(x)
+	O(x) = R(x) \star S(x) + N(x)
+	\label{eq:deconv}
 \end{equation}
 </div>
+
+Where the symbol $\star$ denotes convolution.
+
 
 <!--
 TODO: 
