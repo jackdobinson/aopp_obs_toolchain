@@ -83,15 +83,15 @@ Other deconvolution methods exist; for example the [Wiener Filter](https://en.wi
 
 The [original CLEAN algorithm](https://ui.adsabs.harvard.edu/abs/1974A%26AS...15..417H/abstract) is conceptually very simple:
 
-0) The image is called the "dirty map", and a new empty image is called the "component map".
+0) The image is called the "dirty map", a new empty image is called the "component map", and the "loop gain" parameter is set to a small number
 
 1) The brightest pixel in the dirty map is found
 
-2) The PSF of an instrument is centered on the brightest pixel, multiplied by a fraction of the brightest pixel, and subtracted from the dirty map.
+2) The PSF of an instrument is centered on the brightest pixel, multiplied by the loop gain times the value of the brightest pixel, and subtracted from the dirty map.
 
-3) The fraction of the brightest pixel subtracted in the previous step is written to the component map at the location of the brightest pixel.
+3) The value subtracted in the previous step is written to the component map at the location of the brightest pixel.
 
-4) This process repeats from step (1) until a the brightest pixel in the dirty map is below a specified threshold.
+4) This process repeats from step (1) until a the brightest pixel in the dirty map is below a specified stopping value.
 
 5) The component map is convolved with a gaussian to form the "clean map", smoothing out non-physical high frequency noise in the component map. Note: this is a form of [regularisation](https://en.wikipedia.org/wiki/Regularization_(mathematics)).
 
@@ -148,7 +148,37 @@ The algorithm in this package is a [modified version of CLEAN algorithm](https:/
 
 ## Modified CLEAN ##
 
-Sometimes called the [Steer algorithm](https://www.aanda.org/articles/aa/pdf/2003/49/aa2937.pdf), or [SDI CLEAN](https://www.atnf.csiro.au/computing/software/miriad/userguide/node103.html), MODIFIED CLEAN works with sets of pixels larger than some threshold value rather than only with the brightest pixel as the original CLEAN algorithm does. 
+Sometimes called the [Steer algorithm](https://www.aanda.org/articles/aa/pdf/2003/49/aa2937.pdf), or [SDI CLEAN](https://www.atnf.csiro.au/computing/software/miriad/userguide/node103.html), MODIFIED CLEAN works with sets of pixels larger than some threshold value rather than only with the brightest pixel as the original CLEAN algorithm does. This can enable faster runtimes, but crucially reduces stippling, striping, and other non-physical results that the original CLEAN algorithm can produce. Infact, it is often not required to regularise the component map by convolving it with a gaussian "clean beam". 
+
+The algorithm is still very simple:
+
+0) The image is called the "dirty map". And new empty images are created, the "component map", the "pixel set", and the "current convolved map". The "loop gain" parameter is initialised to a small value, the "threshold" parameter is initialised
+
+1) The brightest pixel in the dirty map is found
+
+  1.1) The pixel set is set to zero, then all pixel larger than threshold (usually calculated as a fraction of the brightest pixel) are copied to the pixel set.
+
+2) The pixel set is multiplied by the loop gain
+
+  2.1) The pixel set is convolved with the PSF to form the current convolved map
+  
+  2.2) The current convolved map is subtracted from the dirty map
+
+3) The pixel set is added to the component map.
+
+4) This process repeats from step (1) until a the brightest pixel in the dirty map is below a specified stopping value.
+
+5) (optional) The component map is convolved with a gaussian to form the "clean map", smoothing out non-physical high frequency noise in the component map. Note: this is a form of [regularisation](https://en.wikipedia.org/wiki/Regularization_(mathematics)).
+
+6) The "residual", the dirty map after all the subtractions, is added to the clean map, or the component map if no clean map was made.
+
+
+As you can see, only steps (1) and (2) differ from the original CLEAN algorithm.
+
+The "loop gain" parameter does the same thing as in the original CLEAN algorithm, it specifies how fast the PSF is subtracted from the dirty map. The new "threshold" parameter controls how many pixels make it into the pixel set each iteration. In the current implementation in this package, the threshold has two possible modes, a value between [0,1] will use that fraction of the brightest pixel to select pixels for the pixel set, whereas a value less than zero [-inf,0) will use a "smart" threshold that uses a heristic which attempts to select compact bright regions before extended regions.
+
+The choice of the "threshold" parameter has a large influence on the output of MODIFIED CLEAN. Setting it to the extremes of its range [0,1] will cause non-physical outcomes, e.g. setting the threshold to 1 results in the same behaviour as the original CLEAN algorithm. The "smart" threshold is an attempt to avoid this problem, but it does not work perfectly in every situation. Using different threshold selection algorithms is something we are investigating.
+
 
 
 <!--
