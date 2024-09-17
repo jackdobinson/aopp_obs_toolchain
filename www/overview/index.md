@@ -68,11 +68,11 @@ Direct inversion of \eqref{eq:deconv} leads to
 
 <div>
 \begin{align}
-	\tilde{O}(x) &= \tilde{R}(x) \times \tilde{S}(x) + \tilde{N}(x) \notag \\
+	\tilde{O}(k) &= \tilde{R}(k) \times \tilde{S}(k) + \tilde{N}(k) \notag \\
 	
-	\tilde{S}(x) &= \frac{\tilde{O}(x) - \tilde{N}(x)}{\tilde{R}(x)} \notag \\
+	\tilde{S}(k) &= \frac{\tilde{O}(k) - \tilde{N}(k)}{\tilde{R}(k)} \notag \\
 	\text{so,} \notag\\
-	\hat{S}(x) &= \mathscr{F}^{-1}\left[ \frac{\tilde{O}(x) - \tilde{N}(x)}{\tilde{R}(x)} \right]
+	\hat{S}(x) &= \mathscr{F}^{-1}\left[ \frac{\tilde{O}(k) - \tilde{N}(k)}{\tilde{R}(k)} \right]
 	\label{eq:fourier_inversion}
 \end{align}
 </div>
