@@ -243,11 +243,15 @@ END_OF_FILE
 The tests are in the directory `<REPO_DIR>/tests`, there is a package `<REPO_DIR>/scientest` which is a testing tool. The module `<REPO_DIR>/scientest/run.py` will search for tests and run them one by one. It tries to ensure that tests do not have side-effects. 
 
 Folders are searched if:
+
 	* They **do not**  begin with double underscores (`__`).
 
 Files are searched if:
+
 	* They have `test` in their name.
+
 	* They end with `.py`.
+
 	* They **do not** begin with double underscores (`__`).
 
 
@@ -263,17 +267,22 @@ Files are searched if:
 
 ### Test Output ###
 
-* Some logging output will appear at the top, this is recognisable as each logging line has a prefix '<TIME> <FILE>:<LINE> "<FUNCTION>" <LEVEL>: '
+* Some logging output will appear at the top, this is recognisable as each logging line has a prefix `<TIME> <FILE>:<LINE> "<FUNCTION>" <LEVEL>: `
   
-  - <TIME> is the system time the log is written
+  `<TIME>`
+  : is the system time the log is written
   
-  - <FILE> is the python file (not including folders) the log is comming from
+  `<FILE>`
+  : is the python file (not including folders) the log is comming from
   
-  - <LINE> is the line of the file the log is coming from
+  `<LINE>`
+  : is the line of the file the log is coming from
   
-  - <FUNCTION> is the function in the file the log is coming from
+  `<FUNCTION>`
+  : is the function in the file the log is coming from
   
-  - <LEVEL> is the level of the log, by default there are 5 log levels. In order of severity they are: "DEBUG", "INFO", "WARN", "ERROR", "CRIT".
+  `<LEVEL>`
+  : is the level of the log, by default there are 5 log levels. In order of severity they are: "DEBUG", "INFO", "WARN", "ERROR", "CRIT".
 
 * There is a "Discovery Summary" section that details all of the tests found by `scientest`. The format is:
 
@@ -349,7 +358,7 @@ Option 3: Store in a (preferably encrypted) file, not in the repository. This is
   - Encrypt just the $HOME directory, often this is an option when installing linux or another operating system.
   - Encrypt a single folder. For example, [ecryptfs](https://wiki.archlinux.org/title/ECryptfs) can encrypt a single folder, then decrypt and mount it upon login.
   
-Then use `$(cat ~/.secrets/pypi_token)` inpace of the token whenever you need to use it.
+Then use `$(cat ~/.secrets/pypi_token)` inplace of the token whenever you need to use it.
 
 Personally, I find option 3 to be the best. Even without encryption, someone would either need root access or physical access to the drive to get the token if the directory and file permissions are set up correctly.
 
