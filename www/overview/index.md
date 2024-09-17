@@ -55,9 +55,9 @@ Where the symbol $\star$ denotes the convolution between two functions and can b
 
 <div>
 \begin{align}
-	R(x) \star S(x) &= \mathscr{F}^{-1} [\mathscr{F}[R(x)] \times \mathscr{F}[S(x)]] \\
+	R(x) \star S(x) &= \mathscr{F}^{-1} [\mathscr{F}[R(x)] \times \mathscr{F}[S(x)]] \notag \\
 	
-	R(x) \star S(x) &= \mathscr{F}^{-1} [\tilde{R}(k) \times \tilde{S}(k)}]
+	R(x) \star S(x) &= \mathscr{F}^{-1} [\tilde{R}(k) \times \tilde{S}(k)]
 	
 \end{align}
 </div>
@@ -68,11 +68,11 @@ Direct inversion of \eqref{eq:deconv} leads to
 
 <div>
 \begin{align}
-	\tilde{O}(x) &= \tilde{R}(x) \times \tilde{S}(x) + \tilde{N}(x) \\
+	& \tilde{O}(x) &= \tilde{R}(x) \times \tilde{S}(x) + \tilde{N}(x) \notag \\
 	
-	\tilde{S}(x) &= \frac{\tilde{O}(x) - \tilde{N}(x)}{\tilde{R}(x)} \\
-	\text{so,}\\
-	\hat{S}(x) &= \mathscr{F}^{-1}\left[ \frac{\tilde{O}(x) - \tilde{N}(x)}{\tilde{R}(x)} \right]
+	& \tilde{S}(x) &= \frac{\tilde{O}(x) - \tilde{N}(x)}{\tilde{R}(x)} \notag \\
+	& \text{so,} \notag\\
+	& \hat{S}(x) &= \mathscr{F}^{-1}\left[ \frac{\tilde{O}(x) - \tilde{N}(x)}{\tilde{R}(x)} \right]
 	\label{eq:fourier_inversion}
 \end{align}
 </div>
@@ -84,11 +84,17 @@ Other deconvolution methods exist; for example the [Wiener Filter](https://en.wi
 The [original CLEAN algorithm](https://ui.adsabs.harvard.edu/abs/1974A%26AS...15..417H/abstract) is conceptually very simple:
 
 0) The image is called the "dirty map", and a new empty image is called the "component map".
+
 1) The brightest pixel in the dirty map is found
+
 2) The PSF of an instrument is centered on the brightest pixel, multiplied by a fraction of the brightest pixel, and subtracted from the dirty map.
+
 3) The fraction of the brightest pixel subtracted in the previous step is written to the component map at the location of the brightest pixel.
+
 4) This process repeats from step (1) until a the brightest pixel in the dirty map is below a specified threshold.
+
 5) The component map is convolved with a gaussian to form the "clean map", smoothing out non-physical high frequency noise in the component map. Note: this is a form of [regularisation](https://en.wikipedia.org/wiki/Regularization_(mathematics)).
+
 6) The "residual", the dirty map after all the subtractions, is added to the clean map.
 
 In pseudo-code:
