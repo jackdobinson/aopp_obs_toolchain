@@ -22,6 +22,6 @@ Please report any bugs via the [github issues](https://github.com/jackdobinson/a
 AOPP Obs Toolchain
 : Top level collection of tools and packages.
   
-  AOPP Deconv Tool
+  [AOPP Deconv Tool](https://pypi.org/project/aopp-deconv-tool/)
   : Apply the Modified CLEAN algorithm to observations in the FITS file format
 
