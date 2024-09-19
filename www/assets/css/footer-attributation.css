@@ -6,7 +6,7 @@ body{
 
 
 footer {
-	background: #EEEEEE;
+	background: var(--main-bg-color);
 	width: 100%;
 	margin: 0;
 	padding: 0;
@@ -14,14 +14,16 @@ footer {
 	
 	
 	p{
-		width:100%;
+		width:calc(100%-0.5em);
 		margin: 0;
 		margin-left: 0;
 		margin-right: 0;
-		padding: 1em;
+		padding-block:0.5em;
+		padding-left: 0.5em;
 		font-size: larger;
-		background-color: var(--secondary-bg-color);
+		background-color: var(--main-focus-bg-color);
 		font-weight: bold;
+		color: var(--main-fg-color);
 	}
 }
 
