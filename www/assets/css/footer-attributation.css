@@ -12,8 +12,9 @@ footer {
 	padding: 0;
 	margin-top: auto;
 	
+	color: var(--main-fg-color);
 	
-	p{
+	p.title{
 		width:calc(100%-0.5em);
 		margin: 0;
 		margin-left: 0;
@@ -21,9 +22,8 @@ footer {
 		padding-block:0.5em;
 		padding-left: 0.5em;
 		font-size: larger;
-		background-color: var(--main-focus-bg-color);
+		background-color: var(--main-selected-bg-color);
 		font-weight: bold;
-		color: var(--main-fg-color);
 	}
 }
 
@@ -48,7 +48,7 @@ footer {
 		width: 10rem;
 		border-style: solid;
 		border-width: 0.2rem;
-		border-color: #AAAAAA;
+		border-color: var(--main-selected-bg-color);
 		margin: 1rem;
 		padding: 1rem;
 		
