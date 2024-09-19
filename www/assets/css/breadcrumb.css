@@ -1,0 +1,27 @@
+
+/* Styling breadcrumb trail */
+nav.breadcrumb {
+	display: flex;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	text-align: left;
+	font-size: small;
+	color: var(--secondary-fg-color);
+	background-color: var(--secondary-bg-color);
+
+	a {
+		padding: 0.2em;
+		display: inline-flex;
+		text-align: center;
+		text-decoration: none;
+	}
+	a:hover {
+		text-decoration: underline;
+	}
+	span.breadcrumb-sep {
+		padding: 0.2em;
+		display: inline-flex;
+		text-align: center;
+	}
+}

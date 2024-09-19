@@ -1,0 +1,69 @@
+
+body{
+	display: flex;
+	flex-direction: column;
+}
+
+
+footer {
+	background: #EEEEEE;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	margin-top: auto;
+	
+	
+	p{
+		width:100%;
+		margin: 0;
+		margin-left: 0;
+		margin-right: 0;
+		padding: 1em;
+		font-size: larger;
+		background-color: var(--secondary-bg-color);
+		font-weight: bold;
+	}
+}
+
+#attributation {
+
+	
+	
+	
+	display: flex;
+	flex-direction:row;
+	
+	
+	
+	
+	
+	figure{
+		position: relative;
+		display: block;
+		text-align: center;
+		align-content: center;
+		align-items: center;
+		width: 10rem;
+		border-style: solid;
+		border-width: 0.2rem;
+		border-color: #AAAAAA;
+		margin: 1rem;
+		padding: 1rem;
+		
+		figcaption {
+			font-size: smaller;
+			width: 100%;
+		}
+
+		img {
+			width: 86%;
+			margin-left: 10%;
+			margin-right: 10%;
+			margin-block: 0.2rem;
+		}
+		
+	}
+
+	
+
+}

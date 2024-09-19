@@ -1,0 +1,31 @@
+
+
+/* Styling defaults for preformatted-text and code */
+pre, code {
+	font-family: courier-new, monospace;
+	tab-size: 4;
+	font-size: normal;
+	font-weight: normal;
+}
+pre {
+	background-color: var(--code-bg-color);
+	margin-inline: 1em;
+	padding-block: 2ex;
+	border-left: solid;
+	border-width: 1em;
+	border-color: var(--code-border-color);
+	width: auto;
+	overflow: scroll;
+	
+	code {
+		background-color: inherit;
+	}
+}
+
+code {
+	position: static;
+	display: inline;
+	margin: 0px;
+	padding-inline: 0.5ex;
+	background-color: var(--code-bg-color);
+}

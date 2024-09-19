@@ -1,11 +1,5 @@
 
-/* imports */
-@import "syntax-highlighting.css";
-@import "message-style.css";
-@import "stub-link.css";
-@import "definition-list.css";
-@import "concertina-page.css";
-@import "footer_attributation.css";
+
 
 /* define constants for background colours etc. here */
 :root {
@@ -54,35 +48,7 @@ body {
 }
 
 
-/* Styling defaults for preformatted-text and code */
-pre, code {
-	font-family: courier-new, monospace;
-	tab-size: 4;
-	font-size: normal;
-	font-weight: normal;
-}
-pre {
-	background-color: var(--code-bg-color);
-	margin-inline: 1em;
-	padding-block: 2ex;
-	border-left: solid;
-	border-width: 1em;
-	border-color: var(--code-border-color);
-	width: auto;
-	overflow: scroll;
-	
-	code {
-		background-color: inherit;
-	}
-}
 
-code {
-	position: static;
-	display: inline;
-	margin: 0px;
-	padding-inline: 0.5ex;
-	background-color: var(--code-bg-color);
-}
 
 p:not(ul p, dl p, ol p, table p) {
 	margin-inline: 1em;
@@ -140,146 +106,6 @@ table {
 
 
 
-/* Styling top navigation menu */
-nav.top-menu {
-	margin: 0;
-	padding: 0;
-	overflow: hidden;
-	background-color: var(--main-bg-color);
-	display: flex;
-
-	a {
-		display: inline-flex;
-		color: var(--main-fg-color);
-		text-align: left;
-		padding: 16px;
-		text-decoration: none;
-	}
-	a:hover {
-		background-color: var(--main-focus-bg-color);
-	}
-	a.current-url {
-		background-color: var(--main-selected-bg-color);
-	}
-}
-
-
-/* Styling breadcrumb trail */
-nav.breadcrumb {
-	display: flex;
-	margin: 0;
-	padding: 0;
-	overflow: hidden;
-	text-align: left;
-	font-size: small;
-	color: var(--secondary-fg-color);
-	background-color: var(--secondary-bg-color);
-
-	a {
-		padding: 0.2em;
-		display: inline-flex;
-		text-align: center;
-		text-decoration: none;
-	}
-	a:hover {
-		text-decoration: underline;
-	}
-	span.breadcrumb-sep {
-		padding: 0.2em;
-		display: inline-flex;
-		text-align: center;
-	}
-}
-
-
-.table-of-contents-container{
-	z-index: 1;
-	position: relative;
-	text-align: right;
-	height: calc(5ex + 2px);
-	font-size:normal;
-	overflow: hidden;
-	border:none;
-	margin:0;
-	padding:0;
-	
-	.table-of-contents{
-		position: absolute;
-		right: 0px;
-		display: block;
-	}
-	.table-of-contents-heading-container {
-		position: static;
-		display: block;
-		margin: 0 0 0 auto;
-		width: 18em;
-		height:5ex;
-		border-style: solid;
-		border-width: 1px;
-		border-color: var(--secondary-bg-color);
-		background-color: var(--table-of-contents-bg-color);
-		
-		.table-of-contents-heading {
-			margin-top: 0.2em;
-		}
-		.table-of-contents-heading:after {
-			content: "  \25C1";
-			padding-right: 0.3em;
-		}
-	}
-	
-	.table-of-contents-list-container {
-		position: static;
-		height: auto;
-		width: auto;
-		text-align:left;
-		float:left;
-		padding-right: 2em;
-		
-		/* Enable table of contents numbering like "2.1.3.2 "*/
-		ol:before {
-			content: "";
-			counter-reset: item;
-		}
-		li {
-			counter-increment: item;
-		}
-		li:before { 
-			content: counters(item, ".") " "; 
-		}
-		li { 
-			display: block 
-		}
-	}
-}
-
-.table-of-contents-container:has(
- .table-of-contents-heading-container:hover, 
- .table-of-contents-heading-container:focus-within,
- .table-of-contents-list-container:hover,
- .table-of-contents-list-container:focus-within
-){
-	overflow:visible;
-	
-	.table-of-contents-heading-container {
-		border-bottom: none;
-		background: none;
-	}
-	.table-of-contents-heading:after{
-		content: "  \25BD";
-	}
-	.table-of-contents-list-container{
-		border-style: solid;
-		border-width: 1px;
-		border-color: var(--secondary-bg-color);
-		background-color: var(--table-of-contents-bg-color);
-	}
-}
-.table-of-contents-container:has(
-.table-of-contents-list-container:empty){
-	display:none;
-}
-
 /* Styling content */
 #content {
 	position: static;
@@ -303,83 +129,15 @@ nav.breadcrumb {
 
 
 
-
-
-
-/* Section numbers for headings in content like "2.1.3.5" */
-#content.number-headings{
-	section {
-		counter-reset: h1c;
-	}
-	h1 {
-		counter-reset: h2c;
-		counter-increment: h1c;
-	}
-	h2 {
-		counter-reset: h3c;
-		counter-increment: h2c;
-	}
-	h3 {
-		counter-reset: h4c;
-		counter-increment: h3c;
-	}
-	h4 {
-		counter-reset: h5c;
-		counter-increment: h4c;
-	}
-	h5 {
-		counter-reset: h6c;
-		counter-increment: h5c;
-	}
-	h6 {
-		counter-increment: h6c;
-	}
-	h1:before {
-		content: counter(h1c)" ";
-	}
-	h2:before {
-		content: counter(h1c)"."counter(h2c)" ";
-	}
-	h3:before {
-		content: counter(h1c)"."counter(h2c)"."counter(h3c)" ";
-	}
-	h4:before {
-		content: counter(h1c)"."counter(h2c)"."counter(h3c)"."counter(h4c)" ";
-	}
-	h5:before {
-		content: counter(h1c)"."counter(h2c)"."counter(h3c)"."counter(h4c)"."counter(h5c)" ";
-	}
-	h6:before {
-		content: counter(h1c)"."counter(h2c)"."counter(h3c)"."counter(h4c)"."counter(h5c)"."counter(h6c)" ";
-	}
-
-	h1, h2, h3 {
-		font-size: var(--heading-font-size);
-		font-weight: bold;
-	}
-	h4, h5, h6 {
-		font-size: var(--subheading-font-size);
-	}
-	h1 {
-		background-color: var(--main-bg-color);
-		color : var(--main-fg-color);
-	}
-
-	h2 {
-		background-color: var(--secondary-bg-color);
-	}
-	h3 {
-		border-bottom:0.4ex solid var(--secondary-bg-color);
-	}
-	h4 {
-		font-weight: bold;
-	}
-	h5 {
-		text-transform: uppercase;
-		font-weight: normal;
-	}
-	h5 {
-		font-style: italic;
-		font-weight: normal;
-	}
-}
+/* imports */
+@import "syntax-highlighting.css";
+@import "message-style.css";
+@import "stub-link.css";
+@import "definition-list.css";
+@import "concertina-page.css";
+@import "footer-attributation.css";
+@import "code.css";
+@import "nav-top-menu.css";
+@import "breadcrumb.css";
+@import "table-of-contents.css";
+@import "heading-numbering.css";

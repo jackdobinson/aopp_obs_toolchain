@@ -1,0 +1,88 @@
+
+.table-of-contents-container{
+	z-index: 1;
+	position: relative;
+	text-align: right;
+	height: calc(5ex + 2px);
+	font-size:normal;
+	overflow: hidden;
+	border:none;
+	margin:0;
+	padding:0;
+	
+	.table-of-contents{
+		position: absolute;
+		right: 0px;
+		display: block;
+	}
+	.table-of-contents-heading-container {
+		position: static;
+		display: block;
+		margin: 0 0 0 auto;
+		width: 18em;
+		height:5ex;
+		border-style: solid;
+		border-width: 1px;
+		border-color: var(--secondary-bg-color);
+		background-color: var(--table-of-contents-bg-color);
+		
+		.table-of-contents-heading {
+			margin-top: 0.2em;
+		}
+		.table-of-contents-heading:after {
+			content: "  \25C1";
+			padding-right: 0.3em;
+		}
+	}
+	
+	.table-of-contents-list-container {
+		position: static;
+		height: auto;
+		width: auto;
+		text-align:left;
+		float:left;
+		padding-right: 2em;
+		
+		/* Enable table of contents numbering like "2.1.3.2 "*/
+		ol:before {
+			content: "";
+			counter-reset: item;
+		}
+		li {
+			counter-increment: item;
+		}
+		li:before { 
+			content: counters(item, ".") " "; 
+		}
+		li { 
+			display: block 
+		}
+	}
+}
+
+.table-of-contents-container:has(
+ .table-of-contents-heading-container:hover, 
+ .table-of-contents-heading-container:focus-within,
+ .table-of-contents-list-container:hover,
+ .table-of-contents-list-container:focus-within
+){
+	overflow:visible;
+	
+	.table-of-contents-heading-container {
+		border-bottom: none;
+		background: none;
+	}
+	.table-of-contents-heading:after{
+		content: "  \25BD";
+	}
+	.table-of-contents-list-container{
+		border-style: solid;
+		border-width: 1px;
+		border-color: var(--secondary-bg-color);
+		background-color: var(--table-of-contents-bg-color);
+	}
+}
+.table-of-contents-container:has(
+.table-of-contents-list-container:empty){
+	display:none;
+}
