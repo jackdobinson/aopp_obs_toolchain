@@ -1,0 +1,30 @@
+
+
+
+#attributation {
+
+	display: flex;
+
+	figcaption {
+		font-size: smaller
+	}
+	
+	img {
+		height: 25mm;
+		margin: 50%;
+	}
+
+	#university_of_oxford {
+		display: inline-flex;
+		text-align: left;
+		padding: 16px;
+	
+	}
+	
+	#leverhulme_trust {
+		display: inline-flex;
+		text-align: left;
+		padding: 16px;
+	}
+
+}
