@@ -172,7 +172,11 @@ fi
 
 echo "Performing deconvolution"
 if [[ ${RECALC} == 1 || ! -f ${FITS_OBS_REBIN_INTERP_DECONV} ]]; then
-	python -m aopp_deconv_tool.deconvolve "${FITS_OBS_REBIN_INTERP}${SLICE}${CELESTIAL_AXES}" "${FITS_STD_REBIN_NORM_MODEL}${SLICE}${CELESTIAL_AXES}" --threshold -1
+	python -m aopp_deconv_tool.deconvolve                       \
+		"${FITS_OBS_REBIN_INTERP}${SLICE}${CELESTIAL_AXES}"     \
+		"${FITS_STD_REBIN_NORM_MODEL}${SLICE}${CELESTIAL_AXES}" \
+		--threshold -1                                          \
+		--progress 10
 fi
 
 echo ""
@@ -184,7 +188,12 @@ echo "The deconvolution was generic, so it may not be the best result."
 echo "To fine tune the deconvolution, use the following command to display"
 echo "plots of the deconvolution in progress to more easily tweak variables."
 echo ""
-echo "python -m aopp_deconv_tool.deconvolve ${FITS_OBS_REBIN_INTERP}${SLICE}${CELESTIAL_AXES} ${FITS_STD_REBIN_NORM_MODEL}${SLICE}${CELESTIAL_AXES}" --threshold -1 --plot --progress 10
+echo "python -m aopp_deconv_tool.deconvolve                   \\"
+echo "  ${FITS_OBS_REBIN_INTERP}${SLICE}${CELESTIAL_AXES}     \\"
+echo "  ${FITS_STD_REBIN_NORM_MODEL}${SLICE}${CELESTIAL_AXES} \\" 
+echo "  --threshold -1                                        \\"
+echo "  --plot                                                \\"
+echo "  --progress 10                                           "
 echo ""
 echo "######################"
 

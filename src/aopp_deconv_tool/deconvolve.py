@@ -43,6 +43,47 @@ deconv_methods = {
 	'lucy_richardson' : LucyRichardson
 }
 
+class IterationTracker:
+	def __init__(self, n_iter, print_interval):
+		self.i_iter = 0
+		self.n_iter = n_iter
+		self.print_interval = print_interval
+		
+	def print(self):
+		if self.i_iter % self.print_interval == 0:
+			self.clear()
+			print(f'Iteration {self.i_iter}/{self.n_iter} [{100*self.i_iter/self.n_iter}%]', end='')
+			
+	def in_notebook(self):
+		try:
+			from IPython import get_ipython
+			if 'IPKernelApp' not in get_ipython().config:  # pragma: no cover
+				return False
+		except ImportError:
+			return False
+		except AttributeError:
+			return False
+		return True
+	
+	def reset(self):
+		self.i_iter=0
+	
+	def clear(self):
+		if self.in_notebook():
+			from IPython.display import clear_output
+			clear_output(True)
+		else:
+			print('\r', end='')
+	
+	def update(self, *args, **kwargs):
+		self.print()
+		self.i_iter += 1
+	
+	def complete(self, *args, **kwargs):
+		self.clear()
+		print(f'Iteration {self.i_iter}/{self.n_iter} [{100*self.i_iter/self.n_iter}%]', end='\n')
+
+
 class Iterator:
 	def __init__(self, obj):
 		self._iterator = iter(obj)
@@ -64,14 +105,13 @@ class Iterator:
 		return self._cached
 		
 	def push(self, obj):
-		# Push a value into the iterator at the current location
+		# Push a value into the iterator at the next location
 		self._stack.append(obj)
 		return self
 	
 	def __next__(self):
 		if len(self._stack) > 0:
-			self._cached = self._stack[0]
-			self._stack.pop(0)
+			self._cached = self._stack.pop()
 			self._cached_valid = True
 			return self._cached
 		
@@ -248,6 +288,26 @@ def run(
 	"""
 	
 	original_data_type=None
+	
+	# Set up plotting if we want it
+	if plot:
+		#plt.figure()
+		#plt.imshow(obs_data[obs_idx])
+		#plt.figure()
+		#plt.imshow(psf_data[psf_idx])
+		#plt.show()
+		plt.close('all')
+		plot_set = create_plot_set(deconvolver, cadence=1 if progress < 1 else progress)
+		deconvolver.post_iter_hooks = []
+		deconvolver.post_iter_hooks.append(lambda *a, **k: plot_set.update())
+		plot_set.show()
+
+	if progress > 0:
+		iteration_tracker = IterationTracker(deconvolver.n_iter, progress)
+		deconvolver.post_iter_hooks.append(iteration_tracker.update)
+		deconvolver.final_hooks.append(iteration_tracker.complete)
+	
+	
 	# Open the fits files
 	with fits.open(Path(obs_fits_spec.path)) as obs_hdul, fits.open(Path(psf_fits_spec.path)) as psf_hdul:
 		
@@ -265,6 +325,9 @@ def run(
 				nph.slice.iter_indices(obs_data, obs_fits_spec.slices, obs_fits_spec.axes['CELESTIAL']),
 				nph.slice.iter_indices(psf_data, psf_fits_spec.slices, psf_fits_spec.axes['CELESTIAL'])
 			)):
+			if progress > 0:
+				iteration_tracker.reset()
+				print(f'Deconvolving slice {i}/{obs_data[obs_fits_spec.slices].shape[obs_fits_spec.axes['CELESTIAL'][0]]}')
 			_lgr.debug(f'Operating on slice {i}')
 			
 			"""
@@ -289,60 +352,7 @@ def run(
 			sys.exit()
 			"""
 		
-			# Set up plotting if we want it
-			if plot:
-				#plt.figure()
-				#plt.imshow(obs_data[obs_idx])
-				#plt.figure()
-				#plt.imshow(psf_data[psf_idx])
-				#plt.show()
-				plt.close('all')
-				plot_set = create_plot_set(deconvolver, cadence=1 if progress < 1 else progress)
-				deconvolver.post_iter_hooks = []
-				deconvolver.post_iter_hooks.append(lambda *a, **k: plot_set.update())
-				plot_set.show()
 			
-			if progress > 0:
-				class IterationTracker:
-					def __init__(self, n_iter, print_interval):
-						self.i_iter = 0
-						self.n_iter = n_iter
-						self.print_interval = print_interval
-						
-					def print(self):
-						if self.i_iter % self.print_interval == 0:
-							self.clear()
-							print(f'Iteration {self.i_iter}/{self.n_iter} [{100*self.i_iter/self.n_iter}%]', end='')
-							
-					def in_notebook(self):
-						try:
-							from IPython import get_ipython
-							if 'IPKernelApp' not in get_ipython().config:  # pragma: no cover
-								return False
-						except ImportError:
-							return False
-						except AttributeError:
-							return False
-						return True
-						
-					def clear(self):
-						if self.in_notebook():
-							from IPython.display import clear_output
-							clear_output(True)
-						else:
-							print('\r', end='')
-					
-					def update(self, *args, **kwargs):
-						self.print()
-						self.i_iter += 1
-					
-					def complete(self, *args, **kwargs):
-						self.clear()
-						print(f'Iteration {self.i_iter}/{self.n_iter} [{100*self.i_iter/self.n_iter}%]', end='\n')
-					
-				iteration_tracker = IterationTracker(deconvolver.n_iter, progress)
-				deconvolver.post_iter_hooks.append(iteration_tracker.update)
-				deconvolver.final_hooks.append(iteration_tracker.complete)
 			
 			# Ensure that we actually have data in this part of the cube
 			if np.all(np.isnan(obs_data[obs_idx])) or np.all(np.isnan(psf_data[psf_idx])):
