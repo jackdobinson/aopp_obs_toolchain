@@ -184,7 +184,7 @@ class Histogram(Base):
 		self._hist[1:-1] = value
 	
 	def update_plot_data(self, data):
-		self.hist[1:-1], self.bins = np.histogram(data, bins=self.nbins, **self.plt_kwargs)
+		self.hist[1:-1], self.bins = np.histogram(data, bins=self.nbins)
 		self.hdl.set_data(self.bins, self.hist)
 	
 	def on_attach_datasource(self):
@@ -195,7 +195,7 @@ class Histogram(Base):
 
 	def on_attach_ax(self):
 		super(Histogram, self).on_attach_ax()
-		self.hdl = self.ax.step([],[], label=self.datasource_name)[0]
+		self.hdl = self.ax.step([],[], label=self.datasource_name, **self.plt_kwargs)[0]
 	
 
 @dc.dataclass(repr=False, eq=False, slots=True)
@@ -275,6 +275,7 @@ class HorizontalLine(Base):
 	def update_plot_data(self, data):
 		
 		self._y_pos = data
+		#print(f'HorizontalLine {data=}')
 		if self.hdl is not None:
 			self.hdl.remove()
 		self.hdl = self.ax.axhline(self._y_pos, label=self.datasource_name, **self.plt_kwargs)
@@ -295,12 +296,12 @@ class IterativeLineGraph(Base):
 			AxisDataMapping(
 				'iteration',
 				'_x',
-				limit_getter=plot_helper.LimRememberExtremes(plot_helper.LimFixed(0))
+				limit_getter=plot_helper.LimRememberExtremes(plot_helper.LimFixed(0,None))
 			),
 			AxisDataMapping(
 				'value',
 				'_y',
-				limit_getter=plot_helper.LimRememberExtremes(plot_helper.LimFixed(0))
+				limit_getter=plot_helper.LimRememberExtremes(plot_helper.LimFixed(0,None))
 			)
 		)
 	)
@@ -309,7 +310,7 @@ class IterativeLineGraph(Base):
 	_y : list = dc.field(default_factory=list)
 	
 	def update_plot_data(self, data):
-		#print(f'{self.datasource_name} {self._y}')
+		#print(f'{self.datasource_name} {data=}')
 		self._x.append(len(self._x))
 		self._y.append(data)
 		self.hdl.set_data(self._x,self._y)
@@ -322,3 +323,12 @@ class IterativeLineGraph(Base):
 	def on_attach_ax(self):
 		super(IterativeLineGraph, self).on_attach_ax()
 		self.hdl = self.ax.plot(self._x, self._y, label=self.datasource_name, **self.plt_kwargs)[0]
+
+
+
+@dc.dataclass(repr=False, eq=False, slots=True)
+class IterativeLogLineGraph(IterativeLineGraph):
+	title : str = 'Iterative Log Line Graph'
+	datasource_name : str = 'iterative log line datasource'
+	
+	ax_funcs=[lambda ax: ax.set_yscale('log')]

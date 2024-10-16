@@ -389,6 +389,7 @@ def run(
 	
 		axes_ordering =  aph.fits.header.get_axes_ordering(data_hdu.header, fits_spec.axes['SPECTRAL'])
 		axis_unit = u.Unit(aph.fits.header.get_axes_unit_string(data_hdu.header, (axes_ordering[0].fits,))[0], format='fits')
+		_lgr.debug(f'{axis_unit=}')
 		if output_unit is None:
 			output_unit = axis_unit
 		axis = axes_ordering[0].numpy

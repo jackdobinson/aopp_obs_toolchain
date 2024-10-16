@@ -27,11 +27,12 @@ from aopp_deconv_tool.algorithm.deconv.clean_modified import CleanModified
 from aopp_deconv_tool.algorithm.deconv.lucy_richardson import LucyRichardson
 
 import matplotlib as mpl
+import matplotlib.cm
 import matplotlib.pyplot as plt
 import copy
 import aopp_deconv_tool.plot_helper as plot_helper
 from aopp_deconv_tool.plot_helper.base import AxisDataMapping
-from aopp_deconv_tool.plot_helper.plotters import PlotSet, Histogram, VerticalLine, Image, IterativeLineGraph, HorizontalLine
+from aopp_deconv_tool.plot_helper.plotters import PlotSet, Histogram, VerticalLine, Image, IterativeLineGraph, IterativeLogLineGraph, HorizontalLine
 
 import aopp_deconv_tool.cfg.logs
 _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
@@ -42,12 +43,53 @@ deconv_methods = {
 	'lucy_richardson' : LucyRichardson
 }
 
+class Iterator:
+	def __init__(self, obj):
+		self._iterator = iter(obj)
+		self._stack = []
+		self._cached = None
+		self._cached_valid = False
+	
+	def is_valid(self):
+		if not self._cached_valid:
+			raise RuntimeError("Current value of iterator is invalid, maybe iterator has not started or already ended?")
+	
+	@property
+	def next(self):
+		return next(self)
+	
+	@property
+	def current(self):
+		self.is_valid()
+		return self._cached
+		
+	def push(self, obj):
+		# Push a value into the iterator at the current location
+		self._stack.append(obj)
+		return self
+	
+	def __next__(self):
+		if len(self._stack) > 0:
+			self._cached = self._stack[0]
+			self._stack.pop(0)
+			self._cached_valid = True
+			return self._cached
+		
+		try:
+			self._cached = next(self._iterator)
+			self._cached_valid = True
+		except StopIteration:
+			self._cached_valid = False
+			raise
+		else:
+			return self._cached
+
 def create_plot_set(deconvolver, cadence = 1):
 	"""
 	Creates a set of plots that are updated every `cadence` steps. Useful to see exactly what a deconvolver is doing.
 	"""
 	fig, axes = plot_helper.figure_n_subplots(8)
-	axes_iter = iter(axes)
+	axes_iter = Iterator(axes)
 	a7_2 = axes[7].twinx()
 	
 	try:
@@ -57,7 +99,7 @@ def create_plot_set(deconvolver, cadence = 1):
 		cmap.set_over('magenta')
 		cmap.set_under('green')
 		cmap.set_bad('black')
-		mpl.cm.register_cmap(name='bwr_oob', cmap=cmap)
+		mpl.colormaps.register(name='bwr_oob', cmap=cmap)
 	
 	try:
 		viridis_oob = mpl.colormaps['viridis_oob']
@@ -66,7 +108,7 @@ def create_plot_set(deconvolver, cadence = 1):
 		viridis_oob.set_bad(color='magenta', alpha=1)
 		#viridis_oob.set_under(color='black', alpha=1)
 		#viridis_oob.set_over(color='black', alpha=1)
-		mpl.cm.register_cmap(name='viridis_oob', cmap=viridis_oob)
+		mpl.colormaps.register(name='viridis_oob', cmap=viridis_oob)
 	
 	
 	
@@ -74,6 +116,8 @@ def create_plot_set(deconvolver, cadence = 1):
 		r = np.array(x._selected_px)
 		r[r==0] = np.nan
 		return r
+		
+	
 	
 	plot_set = PlotSet(
 		fig,
@@ -84,71 +128,86 @@ def create_plot_set(deconvolver, cadence = 1):
 				'residual', 
 				static_frame=False,
 				axis_data_mappings = (AxisDataMapping('value','bins',limit_getter=plot_helper.lim), AxisDataMapping('count','_hist',limit_getter=plot_helper.LimRememberExtremes()))
-			).attach(next(axes_iter), deconvolver, lambda x: x._residual),
+			).attach(axes_iter.next, deconvolver, lambda x: x._residual),
 		 	
 			VerticalLine(
 				None, 
 				static_frame=False, 
 				plt_kwargs={'color':'red'}
-			).attach(axes[0], deconvolver, lambda x: x._pixel_threshold),
+			).attach(axes_iter.current, deconvolver, lambda x: x._pixel_threshold),
+			
+			Histogram(
+				'residual', 
+				static_frame=False,
+				plt_kwargs={'color' : 'green', 'alpha':0.3},
+				axis_labels=(None, 'log(count)'),
+				ax_funcs=[lambda ax: ax.set_yscale('log')],
+				axis_data_mappings = (AxisDataMapping('value','bins',limit_getter=plot_helper.lim), AxisDataMapping('count','_hist',limit_getter=plot_helper.LimRememberExtremes()))
+			).attach(axes_iter.current.twinx(), deconvolver, lambda x: x._residual),
 			
 			Image(
 		 		'residual'
-		 	).attach(next(axes_iter), deconvolver, lambda x: x._residual),
+		 	).attach(axes_iter.next, deconvolver, lambda x: x._residual),
 			
 			Image(
 		 		'current cleaned'
-			).attach(next(axes_iter), deconvolver, lambda x: x._current_cleaned),
+			).attach(axes_iter.next, deconvolver, lambda x: x._current_cleaned),
 			
 			Image(
 		 		'components'
-			).attach(next(axes_iter), deconvolver, lambda x: x._components),
+			).attach(axes_iter.next, deconvolver, lambda x: x._components),
 			
 			Image(
 		 		'selected pixels',
 				plt_kwargs = {'cmap': viridis_oob},
-			).attach(next(axes_iter), deconvolver, lambda x: selected_pixels_non_selected_are_nan(x)),
+			).attach(axes_iter.next, deconvolver, lambda x: selected_pixels_non_selected_are_nan(x)),
 			
 			Image(
 		 		'pixel choice metric',
 		 		axis_data_mappings = (AxisDataMapping('x',None), AxisDataMapping('y',None), AxisDataMapping('brightness', '_z_data', plot_helper.LimSymAroundValue(0))),
 		 		plt_kwargs={'cmap':'bwr_oob'}
-			).attach(next(axes_iter), deconvolver, lambda x: x._px_choice_img_ptr.val),
+			).attach(axes_iter.next, deconvolver, lambda x: x._px_choice_img_ptr.val),
 			
 			Histogram(
 				'pixel choice metric', 
 				static_frame=False,
-			).attach(next(axes_iter), deconvolver, lambda x: x._px_choice_img_ptr.val),
+			).attach(axes_iter.next, deconvolver, lambda x: x._px_choice_img_ptr.val),
 			
-			IterativeLineGraph(
+			Histogram(
+				'pixel choice metric', 
+				static_frame=False,
+				plt_kwargs={'color' : 'green', 'alpha':0.3},
+				axis_labels=(None, 'log(count)'),
+				ax_funcs=[lambda ax: ax.set_yscale('log')]
+			).attach(axes_iter.current.twinx(), deconvolver, lambda x: x._px_choice_img_ptr.val),
+			
+			IterativeLogLineGraph(
 				'metrics',
 				datasource_name='fabs',
 				axis_labels = (None, 'fabs value (blue)'),
 				static_frame=False,
 				plt_kwargs = {},
-				ax_funcs=[lambda ax: ax.set_yscale('log')]
-			).attach(next(axes_iter), deconvolver, lambda x: np.fabs(np.nanmax(x._residual))),
+			).attach(axes_iter.next, deconvolver, lambda x: np.fabs(np.nanmax(x._residual))),
 			
 			HorizontalLine(
 				None, 
 				static_frame=False, 
 				plt_kwargs={'linestyle':'--'}
-			).attach(axes[7], deconvolver, lambda x: x._fabs_threshold),
+			).attach(axes_iter.current, deconvolver, lambda x: x._fabs_threshold),
 			
-			IterativeLineGraph(
+			IterativeLogLineGraph(
 				'metrics',
 				datasource_name='rms',
 				axis_labels = (None,'rms value (red)'),
 				static_frame=False,
 				plt_kwargs={'color':'red'},
-				ax_funcs=[lambda ax: ax.set_yscale('log')]
-			).attach(a7_2, deconvolver, lambda x: np.sqrt(np.nansum(x._residual**2)/x._residual.size)),
+			).attach(axes_iter.push(axes_iter.current.twinx()).next, deconvolver, lambda x: np.sqrt(np.nansum(x._residual**2)/x._residual.size)),
 			
 			HorizontalLine(
 				None, 
 				static_frame=False, 
 				plt_kwargs={'color':'red', 'linestyle':'--'}
-			).attach(a7_2, deconvolver, lambda x: x._rms_threshold),
+			).attach(axes_iter.current, deconvolver, lambda x: x._rms_threshold),
 		]
 	)
 	return plot_set
@@ -238,7 +297,7 @@ def run(
 				#plt.imshow(psf_data[psf_idx])
 				#plt.show()
 				plt.close('all')
-				plot_set = create_plot_set(deconvolver)
+				plot_set = create_plot_set(deconvolver, cadence=1 if progress < 1 else progress)
 				deconvolver.post_iter_hooks = []
 				deconvolver.post_iter_hooks.append(lambda *a, **k: plot_set.update())
 				plot_set.show()

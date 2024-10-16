@@ -208,6 +208,7 @@ def parse(specifier : str, axes_types : list[str]):
 		else:
 			axes = None
 		_lgr.debug(f'{axes=}')
+		#print(f'{axes=}')
 		if axes is not None:
 			for k,v in axes.items():
 				if len(v) == 0:
@@ -257,11 +258,15 @@ def parse(specifier : str, axes_types : list[str]):
 	# Set default extension if one was not specified
 	if ext is None:
 		hdu_names = tuple(x.name for x in fits_info.hdu_identifiers)
-		if 'DATA' in hdu_names:
-			ext = 'DATA'
-		elif 'PRIMARY' in hdu_names:
-			ext = 'PRIMARY'
-		else:
+		hdu_name_priority_list = ('SCI', 'DATA', 'PRIMARY')
+		for x in hdu_name_priority_list:
+			#print(f'{x=} {hdu_names=} {fits_info=}')
+			if x in hdu_names:
+				hdu_ident = fits_info.hdu_identifiers[hdu_names.index(x)]
+				ext = 'PRIMARY' if hdu_ident.index==0 else hdu_ident.name
+				break
+		# If we didn't find any names in our list, use the frist one
+		if ext is None:
 			ext = 0
 	
 

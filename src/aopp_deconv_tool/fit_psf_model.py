@@ -61,6 +61,7 @@ def set_psf_model_dependency_injector(name, fits_spec):
 	global PSF_MODEL_DI_CLASS
 	global PSF_MODEL_DI
 	PSF_MODEL_DI_CLASS = psf_models[name]
+	_lgr.debug(f'{name=} {fits_spec=} {PSF_MODEL_DI_CLASS=} {PSF_MODEL_DI=}')
 	with fits.open(Path(fits_spec.path)) as data_hdul:
 		with nph.axes.to_end(data_hdul[fits_spec.ext].data[fits_spec.slices], fits_spec.axes['CELESTIAL']) as data:
 			PSF_MODEL_DI = PSF_MODEL_DI_CLASS(data[tuple(0 for i in range(data.ndim-2))])
@@ -347,7 +348,7 @@ def run(
 	
 	hdul_output = fits.HDUList(hdus)
 	hdul_output.writeto(output_path, overwrite=True)
-	_lgr.info(f'Written fitted psf to {output_path.relative_to(Path(),walk_up=True)}')
+	_lgr.info(f'Written fitted psf to {output_path.absolute().relative_to(Path().absolute(),walk_up=True)}')
 
 
 def parse_args(argv):

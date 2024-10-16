@@ -131,7 +131,13 @@ class DiffClass:
 def lim(data):
 	a,b = np.nanmin(data), np.nanmax(data)
 	return None if np.isnan(a) else a, None if np.isnan(b) else b
-	
+
+def lim_non_negative(data):
+	a,b = np.nanmin(data), np.nanmax(data)
+	return (
+		None if np.isnan(a) or a < 0 else a, 
+		None if np.isnan(b) or b < 0 else b
+	)
 
 @dc.dataclass
 class LimFixed:
@@ -161,6 +167,12 @@ class LimRememberExtremes:
 		return self._vmin, self._vmax
 
 @dc.dataclass
+class LimRememberExtremesNonNegative(LimRememberExtremes):
+	func : Callable[[Any],tuple[float,float]] = lim_non_negative
+
+
+
+@dc.dataclass
 class LimRememberNExtremes:
 	n : int = 50
 	func : Callable[[Any],tuple[float,float]] = lim
@@ -170,13 +182,13 @@ class LimRememberNExtremes:
 	_vmax : tuple[int,float] = (0,None)
 	
 	def __call__(self, data):
-		#print(f'{data[-self.n:]=} {self._i=} {self.n=} {self._vmin=} {self._vmax=}')
 		a,b = self.func(data[-self.n:])
 		if a is not None and (self._vmin[0] < (self._i-self.n) or self._vmin[1] is None or a < self._vmin[1]): self._vmin = (self._i,a)
 		if b is not None and (self._vmax[0] < (self._i-self.n) or self._vmax[1] is None or b > self._vmax[1]): self._vmax = (self._i,b)
 		
 		self._i += 1
 		return self._vmin[1], self._vmax[1]
+
 
 @dc.dataclass
 class LimSymAroundCurrent:

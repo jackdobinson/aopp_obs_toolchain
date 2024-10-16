@@ -255,8 +255,8 @@ def get_world_coords_of_axis(hdr, ax_idx, wcsaxes_label='', squeeze=True, wcs_un
 	world_axis_array *= wcs_unit_to_return_value_conversion_factor
 	_lgr.debug(f'{world_axis_array[::100]=}')
 	
-	#return(np.squeeze(world_axis_array))
-	return(world_axis_array[0])
+	return(np.squeeze(world_axis_array))
+	#return(world_axis_array[0])
 
 def is_CDi_j_present(header, wcsaxes_label=''):
 	# matches "CDi_ja" where i,j are digits of indeterminate length, and a is an optional uppercase letter in wcsaxes_label
@@ -268,11 +268,13 @@ def is_CDi_j_present(header, wcsaxes_label=''):
 	return(False)
 
 def get_axes_ordering(hdr, axes, ordering='numpy', wcsaxes_label=''):
-	wcsaxes = hdr.get(f'WCSAXES{wcsaxes_label}', hdr['NAXIS'])
-	return tuple(AxesOrdering(_x, wcsaxes, ordering) for _x in axes)
+	num_axes = hdr.get(f'WCSAXES{wcsaxes_label}', hdr['NAXIS'])
+	if num_axes == 0:
+		raise RuntimeError(f'When getting axes ordering, found zero axes. Check which FITS extension is being used.')
+	return tuple(AxesOrdering(_x, num_axes, ordering) for _x in axes)
 
 def get_axes_unit_string(hdr, axes : tuple[int,...]):
-	return tuple(hdr[f'CUNIT{axis}'] for axis in axes)
+	return tuple(hdr.get(f'CUNIT{axis}',None) for axis in axes)
 
 def set_axes_transform(hdr, axis=None, unit=None, reference_value=None, delta_value=None, n_values=None, reference_pixel=None):
 	if axis is None:

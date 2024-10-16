@@ -137,6 +137,7 @@ ALL_FITS_FILES=(
 # Perform each stage in turn
 
 echo "Performing spectral rebinning"
+# TODO: The slice here breaks slicing further on as the shape of the cubes change. Use a different slicing argument here.
 if [[ ${RECALC} == 1 || ! -f ${FITS_OBS_REBIN} ]]; then
 	python -m aopp_deconv_tool.spectral_rebin "${FITS_OBS}${SLICE}${SPECTRAL_AXES}"
 fi
@@ -171,10 +172,21 @@ fi
 
 echo "Performing deconvolution"
 if [[ ${RECALC} == 1 || ! -f ${FITS_OBS_REBIN_INTERP_DECONV} ]]; then
-	python -m aopp_deconv_tool.deconvolve "${FITS_OBS_REBIN_INTERP}${SLICE}${CELESTIAL_AXES}" "${FITS_STD_REBIN_NORM_MODEL}${SLICE}${CELESTIAL_AXES}"
+	python -m aopp_deconv_tool.deconvolve "${FITS_OBS_REBIN_INTERP}${SLICE}${CELESTIAL_AXES}" "${FITS_STD_REBIN_NORM_MODEL}${SLICE}${CELESTIAL_AXES}" --threshold -1
 fi
 
+echo ""
+echo "## PROCESS COMPLETE ##"
+echo ""
 echo "Deconvolved file is ${FITS_OBS_REBIN_INTERP_DECONV}"
+echo ""
+echo "The deconvolution was generic, so it may not be the best result."
+echo "To fine tune the deconvolution, use the following command to display"
+echo "plots of the deconvolution in progress to more easily tweak variables."
+echo ""
+echo "python -m aopp_deconv_tool.deconvolve ${FITS_OBS_REBIN_INTERP}${SLICE}${CELESTIAL_AXES} ${FITS_STD_REBIN_NORM_MODEL}${SLICE}${CELESTIAL_AXES}" --threshold -1 --plot --progress 10
+echo ""
+echo "######################"
 
 # Open all products in the first viewer available
 for FITS_VIEWER in ${FITS_VIEWERS[@]}; do
