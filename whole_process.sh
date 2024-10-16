@@ -188,6 +188,7 @@ echo "The deconvolution was generic, so it may not be the best result."
 echo "To fine tune the deconvolution, use the following command to display"
 echo "plots of the deconvolution in progress to more easily tweak variables."
 echo ""
+{
 echo "python -m aopp_deconv_tool.deconvolve                   \\"
 echo "  ${FITS_OBS_REBIN_INTERP}${SLICE}${CELESTIAL_AXES}     \\"
 echo "  ${FITS_STD_REBIN_NORM_MODEL}${SLICE}${CELESTIAL_AXES} \\" 
@@ -196,7 +197,10 @@ echo "  --plot                                                \\"
 echo "  --progress 10                                           "
 echo ""
 echo "######################"
+} | sed -E 's/([][():])/\\\1/g' # escape the characters the shell has a problem with.
 
+
+exit
 # Open all products in the first viewer available
 for FITS_VIEWER in ${FITS_VIEWERS[@]}; do
 	if command -v ${FITS_VIEWER} &> /dev/null; then
