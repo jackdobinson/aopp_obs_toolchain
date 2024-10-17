@@ -23,7 +23,8 @@ babysitting it.
 
 
 # OPTIONS #
-
+  NOTE: Enter an empty string ('') to use default values of an option
+  
   -h
     Display this help message
   -r
@@ -37,6 +38,9 @@ babysitting it.
   celestial_axes : str
     Axis numbers of celestial axes, enclosed in brakcets e.g., '(1,2)'. Will be
     automatically calculated if not present.
+  spectral_rebin_slice : str
+    Python-style slice notation that will be applied to obs_fits and std_fits 
+    data, when spectrally rebinning data.
 "
 
 # Functions
@@ -51,7 +55,7 @@ RECALC=0
 # let positional arguments and optional arguments be intermixed
 # Therefore, must do this without useing "getopts"
 N_REQUIRED_POS_ARGS=2
-N_OPTIONAL_POS_ARGS=3
+N_OPTIONAL_POS_ARGS=4
 N_MAX_POS_ARGS=$((${N_REQUIRED_POS_ARGS}+${N_OPTIONAL_POS_ARGS}))
 # echo "N_REQUIRED_POS_ARGS=${N_REQUIRED_POS_ARGS}"
 # echo "N_OPTIONAL_POS_ARGS=${N_OPTIONAL_POS_ARGS}"
@@ -93,6 +97,7 @@ FITS_STD=${POS_ARGS[1]}
 SLICE=${POS_ARGS[2]:-'[:]'}
 SPECTRAL_AXES=${POS_ARGS[3]:-'(0)'}
 CELESTIAL_AXES=${POS_ARGS[4]:-'(1,2)'}
+SPECTRAL_REBIN_SLICE=${POS_ARGS[5]:-'[:]'}
 
 
 
@@ -139,10 +144,10 @@ ALL_FITS_FILES=(
 echo "Performing spectral rebinning"
 # TODO: The slice here breaks slicing further on as the shape of the cubes change. Use a different slicing argument here.
 if [[ ${RECALC} == 1 || ! -f ${FITS_OBS_REBIN} ]]; then
-	python -m aopp_deconv_tool.spectral_rebin "${FITS_OBS}${SLICE}${SPECTRAL_AXES}"
+	python -m aopp_deconv_tool.spectral_rebin "${FITS_OBS}${SPECTRAL_REBIN_SLICE}${SPECTRAL_AXES}"
 fi
 if [[ ${RECALC} == 1 || ! -f ${FITS_STD_REBIN} ]]; then
-	python -m aopp_deconv_tool.spectral_rebin "${FITS_STD}${SLICE}${SPECTRAL_AXES}"
+	python -m aopp_deconv_tool.spectral_rebin "${FITS_STD}${SPECTRAL_REBIN_SLICE}${SPECTRAL_AXES}"
 fi
 
 echo "Performing artefact detection"
@@ -200,11 +205,43 @@ echo "######################"
 } | sed -E 's/([][():])/\\\1/g' # escape the characters the shell has a problem with.
 
 
-exit
+DISPLAY_ALL_FILES=1
+
 # Open all products in the first viewer available
 for FITS_VIEWER in ${FITS_VIEWERS[@]}; do
 	if command -v ${FITS_VIEWER} &> /dev/null; then
-		${FITS_VIEWER} ${ALL_FITS_FILES[@]} &
+	
+		# Ask user if we should display files
+		while true; do
+			read -p "Display all files in ${FITS_VIEWER}? (Y/n)" REPLY
+			if [ -n "${REPLY}" ]; then
+				case "$REPLY" in
+					[Yy]* )
+						DISPLAY_ALL_FILES=1
+						break
+						;;
+					[Nn]* )
+						DISPLAY_ALL_FILES=0
+						break
+						;;
+					* ) 
+						echo "Unrecognised response '${REPLY}'. Please answer 'yes' or 'no' (default is 'yes')."
+						;;
+				esac
+			else
+				# If no input given, assume answer is yes
+				break
+			fi
+		done
+		
+		# Communicate FITS viewer being used and files being displayed.
+		if [ ${DISPLAY_ALL_FILES} -eq 1 ]; then
+			echo "Fits viewer '${FITS_VIEWER}' displaying ${#ALL_FITS_FILES[@]} files:"
+			for INDEX in "${!ALL_FITS_FILES[@]}"; do
+				printf "  %3d) %s\n"  $((INDEX+1))  ${ALL_FITS_FILES[$INDEX]}
+			done
+			${FITS_VIEWER} ${ALL_FITS_FILES[@]} &
+		fi
 		break
 	fi
 done
