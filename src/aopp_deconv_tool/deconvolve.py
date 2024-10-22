@@ -287,6 +287,13 @@ def run(
 			If `True` will plot the deconvolution progress
 	"""
 	
+	_lgr.debug(f'{obs_fits_spec=}')
+	_lgr.debug(f'{psf_fits_spec=}')
+	_lgr.debug(f'{output_path=}')
+	_lgr.debug(f'{deconvolver=}')
+	_lgr.debug(f'{plot=}')
+	_lgr.debug(f'{progress=}')
+	
 	original_data_type=None
 	
 	# Set up plotting if we want it
@@ -316,6 +323,10 @@ def run(
 		psf_data = psf_hdul[psf_fits_spec.ext].data
 		original_data_type=obs_data.dtype
 		
+		_lgr.debug(f'{obs_data.shape=}')
+		_lgr.debug(f'{psf_data.shape=}')
+		_lgr.debug(f'{original_data_type=}')
+		
 		# Create holders for deconvolution products
 		deconv_components = np.full_like(obs_data, np.nan)
 		deconv_residual = np.full_like(obs_data, np.nan)
@@ -327,7 +338,7 @@ def run(
 			)):
 			if progress > 0:
 				iteration_tracker.reset()
-				print(f'Deconvolving slice {i}/{obs_data[obs_fits_spec.slices].shape[obs_fits_spec.axes['CELESTIAL'][0]]}')
+				print(f'Deconvolving slice {i}/{obs_data[obs_fits_spec.slices].shape[tuple(x for x in range(obs_data.ndim) if x not in obs_fits_spec.axes['CELESTIAL'])[0]]}')
 			_lgr.debug(f'Operating on slice {i}')
 			
 			"""

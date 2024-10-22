@@ -63,7 +63,7 @@ def generate_masks_from_thresholds(data, thresholds):
 	threshold; the last mask will be everything > the last threshold; intermediate
 	masks will be everything in between neighbouring threshold values.
 	"""
-	thresholds = np.sort(thresholds)
+	thresholds = np.sort([t for t in thresholds if t is not None])
 	_lgr.debug(f'{thresholds=}')
 	for i in range(0,len(thresholds)+1):
 		if i==0:

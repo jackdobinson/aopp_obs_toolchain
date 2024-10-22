@@ -97,6 +97,9 @@ def exact(data, max_elements=None) -> float:
 	#plt.plot(icv)
 	#plt.show()
 	
+	if np.all(np.isnan(icv)):
+		return None
+	
 	min_icv_idx = np.nanargmin(icv)
 	#_lgr.debug(f'{min_icv_idx=}')
 	return sorted_data[min_icv_idx]
