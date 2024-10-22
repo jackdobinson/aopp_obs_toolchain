@@ -37,7 +37,7 @@ from aopp_deconv_tool.fpath import FPath
 import matplotlib.pyplot as plt
 
 import aopp_deconv_tool.cfg.logs
-_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
+_lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'DEBUG')
 
 
 
@@ -427,7 +427,7 @@ def run(
 			response_function_class(response_function_sum, bin_width),
 			bin_start=None, 
 			bin_step=bin_step, 
-			axis_unit_conversion_factors=1, # astropy always responds with SI units
+			axis_unit_conversion_factors=((1*axis_unit).to(axis_si_unit).value,),
 			plot=plot
 		)
 		
