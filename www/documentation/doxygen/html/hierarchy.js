@@ -14,6 +14,8 @@ var hierarchy =
     [ "aopp_deconv_tool.create_bad_pixel_mask.DynamicRegionInterpolator", "da/d0a/classaopp__deconv__tool_1_1create__bad__pixel__mask_1_1DynamicRegionInterpolator.html", null ],
     [ "aopp_deconv_tool.data_structures.bi_directional_map.BiDirectionalMap", "df/da5/classaopp__deconv__tool_1_1data__structures_1_1bi__directional__map_1_1BiDirectionalMap.html", null ],
     [ "aopp_deconv_tool.data_structures.pointer.Pointer", "dd/de2/classaopp__deconv__tool_1_1data__structures_1_1pointer_1_1Pointer.html", null ],
+    [ "aopp_deconv_tool.deconvolve.IterationTracker", "d0/d4f/classaopp__deconv__tool_1_1deconvolve_1_1IterationTracker.html", null ],
+    [ "aopp_deconv_tool.deconvolve.Iterator", "d4/d26/classaopp__deconv__tool_1_1deconvolve_1_1Iterator.html", null ],
     [ "aopp_deconv_tool.geo_array.GeoArray", "dd/dde/classaopp__deconv__tool_1_1geo__array_1_1GeoArray.html", [
       [ "function.OpticalTransferFunction", "d2/d57/classfunction_1_1OpticalTransferFunction.html", null ],
       [ "function.PhasePowerSpectralDensity", "d8/dac/classfunction_1_1PhasePowerSpectralDensity.html", null ],
@@ -62,13 +64,17 @@ var hierarchy =
       [ "aopp_deconv_tool.plot_helper.plotters.Histogram", "d3/ddd/classaopp__deconv__tool_1_1plot__helper_1_1plotters_1_1Histogram.html", null ],
       [ "aopp_deconv_tool.plot_helper.plotters.HorizontalLine", "d0/d38/classaopp__deconv__tool_1_1plot__helper_1_1plotters_1_1HorizontalLine.html", null ],
       [ "aopp_deconv_tool.plot_helper.plotters.Image", "da/d2d/classaopp__deconv__tool_1_1plot__helper_1_1plotters_1_1Image.html", null ],
-      [ "aopp_deconv_tool.plot_helper.plotters.IterativeLineGraph", "d4/d23/classaopp__deconv__tool_1_1plot__helper_1_1plotters_1_1IterativeLineGraph.html", null ],
+      [ "aopp_deconv_tool.plot_helper.plotters.IterativeLineGraph", "d4/d23/classaopp__deconv__tool_1_1plot__helper_1_1plotters_1_1IterativeLineGraph.html", [
+        [ "aopp_deconv_tool.plot_helper.plotters.IterativeLogLineGraph", "de/d0f/classaopp__deconv__tool_1_1plot__helper_1_1plotters_1_1IterativeLogLineGraph.html", null ]
+      ] ],
       [ "aopp_deconv_tool.plot_helper.plotters.VerticalLine", "d0/dba/classaopp__deconv__tool_1_1plot__helper_1_1plotters_1_1VerticalLine.html", null ]
     ] ],
     [ "aopp_deconv_tool.plot_helper.DiffClass", "d1/dfc/classaopp__deconv__tool_1_1plot__helper_1_1DiffClass.html", null ],
     [ "aopp_deconv_tool.plot_helper.LimAroundExtrema", "de/d85/classaopp__deconv__tool_1_1plot__helper_1_1LimAroundExtrema.html", null ],
     [ "aopp_deconv_tool.plot_helper.LimFixed", "d1/d7c/classaopp__deconv__tool_1_1plot__helper_1_1LimFixed.html", null ],
-    [ "aopp_deconv_tool.plot_helper.LimRememberExtremes", "d8/de3/classaopp__deconv__tool_1_1plot__helper_1_1LimRememberExtremes.html", null ],
+    [ "aopp_deconv_tool.plot_helper.LimRememberExtremes", "d8/de3/classaopp__deconv__tool_1_1plot__helper_1_1LimRememberExtremes.html", [
+      [ "aopp_deconv_tool.plot_helper.LimRememberExtremesNonNegative", "da/dc7/classaopp__deconv__tool_1_1plot__helper_1_1LimRememberExtremesNonNegative.html", null ]
+    ] ],
     [ "aopp_deconv_tool.plot_helper.LimRememberNExtremes", "dc/d52/classaopp__deconv__tool_1_1plot__helper_1_1LimRememberNExtremes.html", null ],
     [ "aopp_deconv_tool.plot_helper.LimSymAroundCurrent", "d0/d80/classaopp__deconv__tool_1_1plot__helper_1_1LimSymAroundCurrent.html", null ],
     [ "aopp_deconv_tool.plot_helper.LimSymAroundValue", "d7/dbc/classaopp__deconv__tool_1_1plot__helper_1_1LimSymAroundValue.html", null ],

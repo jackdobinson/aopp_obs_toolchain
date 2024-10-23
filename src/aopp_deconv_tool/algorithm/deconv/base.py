@@ -25,7 +25,7 @@ class Base:
 	"""
 	
 	# Input Paramterers
-	n_iter 			: int	= dc.field(default=100, 	metadata={'description':'Number of iterations'})
+	n_iter 			: int	= dc.field(default=100, 	metadata={'description':'Maximum number of iterations'})
 	
 	# Hooks for callbacks at various parts of the algorithm.
 	pre_init_hooks \
@@ -46,6 +46,7 @@ class Base:
 	
 	# State attributes visible from outside class
 	progress_string : str 				= dc.field(default="Ended prematurely: Class not initialised.", init=False, repr=False, hash=False, compare=False) # reason that iteration was terminated
+	n_iter_stopped	: int				= dc.field(default=None, init=False, repr=False, hash=False, compare=False) # Number of iterations when process stops
 	
 	# Internal attributes
 	_i : int 							= dc.field(init=False, repr=False, hash=False, compare=False) # iteration counter
@@ -130,6 +131,11 @@ class Base:
 			finally:
 				if self._i == self.n_iter:
 					self.progress_string = f"Ended at {self._i} iterations: Maximum number of iterations reached."
+				
+				# If we have not set the iteration we stopped at yet, set it here
+				if self.n_iter_stopped is None:
+					self.n_iter_stopped = self._i
+				
 				_lgr.info(f'{self.progress_string}')
 				self._set_last_parameters()
 		

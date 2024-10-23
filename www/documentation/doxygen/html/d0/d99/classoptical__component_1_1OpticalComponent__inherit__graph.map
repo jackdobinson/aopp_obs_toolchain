@@ -1,6 +1,9 @@
 <map id="optical_component.OpticalComponent" name="optical_component.OpticalComponent">
-<area shape="rect" id="node1" title=" " alt="" coords="5,49,201,90"/>
-<area shape="rect" id="node2" href="$df/d27/classoptical__component_1_1Aperture.html" title=" " alt="" coords="259,5,465,32"/>
-<area shape="rect" id="node3" href="$d6/d5b/classoptical__component_1_1Obstruction.html" title=" " alt="" coords="249,56,475,83"/>
-<area shape="rect" id="node4" href="$db/db5/classoptical__component_1_1Refractor.html" title=" " alt="" coords="257,107,467,133"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,47,201,87"/>
+<area shape="rect" id="Node000002" href="$df/d27/classoptical__component_1_1Aperture.html" title=" " alt="" coords="259,5,465,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="214,44,294,28,295,33,215,49"/>
+<area shape="rect" id="Node000003" href="$d6/d5b/classoptical__component_1_1Obstruction.html" title=" " alt="" coords="249,55,475,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="215,65,249,65,249,70,215,70"/>
+<area shape="rect" id="Node000004" href="$db/db5/classoptical__component_1_1Refractor.html" title=" " alt="" coords="257,104,467,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="215,86,295,101,294,107,214,91"/>
 </map>

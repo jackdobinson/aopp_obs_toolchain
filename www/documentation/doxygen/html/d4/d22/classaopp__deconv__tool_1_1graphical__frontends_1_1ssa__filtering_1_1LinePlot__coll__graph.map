@@ -1,5 +1,7 @@
 <map id="aopp_deconv_tool.graphical_frontends.ssa_filtering.LinePlot" name="aopp_deconv_tool.graphical_frontends.ssa_filtering.LinePlot">
-<area shape="rect" id="node1" title=" " alt="" coords="324,39,555,80"/>
-<area shape="rect" id="node2" href="$d7/d1a/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1BasePlot.html" title=" " alt="" coords="23,5,259,47"/>
-<area shape="rect" id="node3" href="$d3/d42/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1CallbackMixin.html" title=" " alt="" coords="5,71,276,112"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="324,37,555,77"/>
+<area shape="rect" id="Node000002" href="$d7/d1a/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1BasePlot.html" title=" " alt="" coords="23,5,258,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="272,37,324,42,323,48,272,42"/>
+<area shape="rect" id="Node000003" href="$d3/d42/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1CallbackMixin.html" title=" " alt="" coords="5,69,276,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="289,71,323,67,324,72,290,76"/>
 </map>

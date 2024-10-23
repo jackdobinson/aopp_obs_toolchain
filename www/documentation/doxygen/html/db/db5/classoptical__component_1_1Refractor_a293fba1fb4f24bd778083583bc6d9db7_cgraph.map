@@ -1,4 +1,5 @@
 <map id="optical_component.Refractor.out_light_beam" name="optical_component.Refractor.out_light_beam">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,240,47"/>
-<area shape="rect" id="node2" href="$dd/d66/namespaceoptical__component.html#a53595fc555f8927e9213e79b4d568fb8" title=" " alt="" coords="288,13,465,39"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,240,45"/>
+<area shape="rect" id="Node000002" href="$dd/d66/namespaceoptical__component.html#ae7ee02ae9113121471ba3b2b0af17ceb" title=" " alt="" coords="288,13,465,38"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="240,23,274,23,274,28,240,28"/>
 </map>

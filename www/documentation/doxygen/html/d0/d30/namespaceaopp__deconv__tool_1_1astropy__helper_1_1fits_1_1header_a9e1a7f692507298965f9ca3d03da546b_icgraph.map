@@ -1,4 +1,5 @@
 <map id="aopp_deconv_tool.astropy_helper.fits.header.get_key_fmt_max" name="aopp_deconv_tool.astropy_helper.fits.header.get_key_fmt_max">
-<area shape="rect" id="node1" title=" " alt="" coords="303,5,496,61"/>
-<area shape="rect" id="node2" href="$dd/dbd/classaopp__deconv__tool_1_1astropy__helper_1_1fits_1_1header_1_1DictReader.html#aba28982e130531ae6746f053d139e315" title=" " alt="" coords="5,5,255,61"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="297,5,491,60"/>
+<area shape="rect" id="Node000002" href="$dd/dbd/classaopp__deconv__tool_1_1astropy__helper_1_1fits_1_1header_1_1DictReader.html#a60248d949de8310dbc2ef0b2072a5016" title=" " alt="" coords="5,5,249,60"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="284,35,250,35,250,30,284,30"/>
 </map>

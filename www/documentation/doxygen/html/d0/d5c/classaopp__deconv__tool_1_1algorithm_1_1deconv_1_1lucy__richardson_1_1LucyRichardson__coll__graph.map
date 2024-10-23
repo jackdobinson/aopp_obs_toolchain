@@ -1,4 +1,20 @@
 <map id="aopp_deconv_tool.algorithm.deconv.lucy_richardson.LucyRichardson" name="aopp_deconv_tool.algorithm.deconv.lucy_richardson.LucyRichardson">
-<area shape="rect" id="node1" title=" " alt="" coords="25,80,313,121"/>
-<area shape="rect" id="node2" href="$d1/df9/classaopp__deconv__tool_1_1algorithm_1_1deconv_1_1base_1_1Base.html" title=" " alt="" coords="5,5,333,32"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="351,376,639,416"/>
+<area shape="rect" id="Node000002" href="$d1/df9/classaopp__deconv__tool_1_1algorithm_1_1deconv_1_1base_1_1Base.html" title=" " alt="" coords="139,154,467,179"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="324,188,481,374,477,378,320,192"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="444,5,482,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="461,45,452,73,436,100,415,120,391,135,343,156,341,152,388,130,411,115,432,97,447,71,456,43"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="160,5,198,31"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="183,44,189,71,201,97,217,115,236,130,275,152,273,156,233,134,213,119,197,100,184,73,178,45"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="16,5,54,31"/>
+<area shape="poly" id="edge9_Node000001_Node000005" title=" " alt="" coords="28,45,17,80,9,123,11,168,16,189,26,209,56,246,91,278,131,305,174,327,219,345,264,360,351,379,350,384,263,365,217,350,172,332,128,310,88,282,52,250,22,212,12,191,5,169,4,122,12,78,22,43"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="47,42,64,71,87,97,118,116,152,131,220,151,219,157,150,136,116,121,84,101,59,74,43,45"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="292,5,338,31"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="316,44,307,154,301,154,310,44"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="491,154,542,179"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="510,193,499,235,494,313,496,376,491,376,488,313,494,234,504,192"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="586,154,636,179"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="612,193,604,280,596,324,584,353,570,367,554,378,551,374,567,363,579,351,591,322,599,279,607,193"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="724,154,778,179"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="758,193,760,229,758,272,746,316,736,336,722,354,709,363,689,371,640,383,639,378,688,366,706,359,718,350,732,333,741,314,752,271,755,229,752,193"/>
 </map>

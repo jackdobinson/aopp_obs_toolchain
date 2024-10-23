@@ -1,4 +1,16 @@
 <map id="optical_component.Refractor" name="optical_component.Refractor">
-<area shape="rect" id="node1" title=" " alt="" coords="5,95,216,121"/>
-<area shape="rect" id="node2" href="$d5/dc2/classoptical__component_1_1OpticalComponent.html" title=" " alt="" coords="13,5,209,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="103,196,314,221"/>
+<area shape="rect" id="Node000002" href="$d5/dc2/classoptical__component_1_1OpticalComponent.html" title=" " alt="" coords="111,93,307,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="211,147,211,196,206,196,206,147"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="34,5,85,31"/>
+<area shape="poly" id="edge7_Node000001_Node000003" title=" " alt="" coords="41,43,25,63,13,86,8,110,15,132,35,154,61,171,89,184,118,193,116,198,87,189,58,176,32,158,11,135,3,110,8,85,21,60,36,40"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="79,39,110,67,156,91,153,96,107,72,76,43"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="153,5,192,31"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="173,44,177,68,191,92,187,95,172,70,168,45"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="219,5,270,31"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="238,44,219,94,214,92,233,42"/>
+<area shape="rect" id="Node000006" href="$d2/dbe/classaopp__deconv__tool_1_1geometry_1_1shape_1_1GeoShape.html" title=" " alt="" coords="331,93,583,133"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="395,141,240,198,238,193,393,136"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="419,5,494,31"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="459,44,459,93,454,93,454,44"/>
 </map>

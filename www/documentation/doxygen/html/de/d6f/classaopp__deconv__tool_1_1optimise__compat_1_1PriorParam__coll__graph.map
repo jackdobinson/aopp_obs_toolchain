@@ -1,0 +1,11 @@
+<map id="aopp_deconv_tool.optimise_compat.PriorParam" name="aopp_deconv_tool.optimise_compat.PriorParam">
+<area shape="rect" id="Node000001" title=" " alt="" coords="73,108,275,148"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,44,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="30,44,36,64,48,82,64,95,83,105,81,110,61,100,44,86,31,66,25,45"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="105,5,160,31"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="132,44,132,64,136,83,153,106,148,109,132,85,127,64,126,44"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="191,5,242,31"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="210,44,184,109,179,107,205,42"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="279,5,330,31"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="296,44,283,66,265,86,227,110,224,106,262,82,279,63,291,41"/>
+</map>

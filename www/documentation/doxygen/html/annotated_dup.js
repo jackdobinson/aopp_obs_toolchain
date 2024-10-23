@@ -43,7 +43,7 @@ var annotated_dup =
         ] ]
       ] ],
       [ "create_bad_pixel_mask", "d1/d07/namespaceaopp__deconv__tool_1_1create__bad__pixel__mask.html", [
-        [ "Attr", "d1/d15/classaopp__deconv__tool_1_1create__bad__pixel__mask_1_1Attr.html", null ],
+        [ "Attr", "d1/d15/classaopp__deconv__tool_1_1create__bad__pixel__mask_1_1Attr.html", "d1/d15/classaopp__deconv__tool_1_1create__bad__pixel__mask_1_1Attr" ],
         [ "DynamicRegionInterpolator", "da/d0a/classaopp__deconv__tool_1_1create__bad__pixel__mask_1_1DynamicRegionInterpolator.html", "da/d0a/classaopp__deconv__tool_1_1create__bad__pixel__mask_1_1DynamicRegionInterpolator" ]
       ] ],
       [ "data_structures", "da/db8/namespaceaopp__deconv__tool_1_1data__structures.html", [
@@ -53,6 +53,10 @@ var annotated_dup =
         [ "pointer", "df/d90/namespaceaopp__deconv__tool_1_1data__structures_1_1pointer.html", [
           [ "Pointer", "dd/de2/classaopp__deconv__tool_1_1data__structures_1_1pointer_1_1Pointer.html", "dd/de2/classaopp__deconv__tool_1_1data__structures_1_1pointer_1_1Pointer" ]
         ] ]
+      ] ],
+      [ "deconvolve", "d6/de2/namespaceaopp__deconv__tool_1_1deconvolve.html", [
+        [ "IterationTracker", "d0/d4f/classaopp__deconv__tool_1_1deconvolve_1_1IterationTracker.html", "d0/d4f/classaopp__deconv__tool_1_1deconvolve_1_1IterationTracker" ],
+        [ "Iterator", "d4/d26/classaopp__deconv__tool_1_1deconvolve_1_1Iterator.html", "d4/d26/classaopp__deconv__tool_1_1deconvolve_1_1Iterator" ]
       ] ],
       [ "fpath", "da/dd4/namespaceaopp__deconv__tool_1_1fpath.html", [
         [ "FPath", "d8/df1/classaopp__deconv__tool_1_1fpath_1_1FPath.html", "d8/df1/classaopp__deconv__tool_1_1fpath_1_1FPath" ]
@@ -117,6 +121,7 @@ var annotated_dup =
           [ "HorizontalLine", "d0/d38/classaopp__deconv__tool_1_1plot__helper_1_1plotters_1_1HorizontalLine.html", "d0/d38/classaopp__deconv__tool_1_1plot__helper_1_1plotters_1_1HorizontalLine" ],
           [ "Image", "da/d2d/classaopp__deconv__tool_1_1plot__helper_1_1plotters_1_1Image.html", "da/d2d/classaopp__deconv__tool_1_1plot__helper_1_1plotters_1_1Image" ],
           [ "IterativeLineGraph", "d4/d23/classaopp__deconv__tool_1_1plot__helper_1_1plotters_1_1IterativeLineGraph.html", "d4/d23/classaopp__deconv__tool_1_1plot__helper_1_1plotters_1_1IterativeLineGraph" ],
+          [ "IterativeLogLineGraph", "de/d0f/classaopp__deconv__tool_1_1plot__helper_1_1plotters_1_1IterativeLogLineGraph.html", "de/d0f/classaopp__deconv__tool_1_1plot__helper_1_1plotters_1_1IterativeLogLineGraph" ],
           [ "PlotSet", "d5/dc9/classaopp__deconv__tool_1_1plot__helper_1_1plotters_1_1PlotSet.html", "d5/dc9/classaopp__deconv__tool_1_1plot__helper_1_1plotters_1_1PlotSet" ],
           [ "VerticalLine", "d0/dba/classaopp__deconv__tool_1_1plot__helper_1_1plotters_1_1VerticalLine.html", "d0/dba/classaopp__deconv__tool_1_1plot__helper_1_1plotters_1_1VerticalLine" ]
         ] ],
@@ -124,6 +129,7 @@ var annotated_dup =
         [ "LimAroundExtrema", "de/d85/classaopp__deconv__tool_1_1plot__helper_1_1LimAroundExtrema.html", "de/d85/classaopp__deconv__tool_1_1plot__helper_1_1LimAroundExtrema" ],
         [ "LimFixed", "d1/d7c/classaopp__deconv__tool_1_1plot__helper_1_1LimFixed.html", "d1/d7c/classaopp__deconv__tool_1_1plot__helper_1_1LimFixed" ],
         [ "LimRememberExtremes", "d8/de3/classaopp__deconv__tool_1_1plot__helper_1_1LimRememberExtremes.html", "d8/de3/classaopp__deconv__tool_1_1plot__helper_1_1LimRememberExtremes" ],
+        [ "LimRememberExtremesNonNegative", "da/dc7/classaopp__deconv__tool_1_1plot__helper_1_1LimRememberExtremesNonNegative.html", "da/dc7/classaopp__deconv__tool_1_1plot__helper_1_1LimRememberExtremesNonNegative" ],
         [ "LimRememberNExtremes", "dc/d52/classaopp__deconv__tool_1_1plot__helper_1_1LimRememberNExtremes.html", "dc/d52/classaopp__deconv__tool_1_1plot__helper_1_1LimRememberNExtremes" ],
         [ "LimSymAroundCurrent", "d0/d80/classaopp__deconv__tool_1_1plot__helper_1_1LimSymAroundCurrent.html", "d0/d80/classaopp__deconv__tool_1_1plot__helper_1_1LimSymAroundCurrent" ],
         [ "LimSymAroundValue", "d7/dbc/classaopp__deconv__tool_1_1plot__helper_1_1LimSymAroundValue.html", "d7/dbc/classaopp__deconv__tool_1_1plot__helper_1_1LimSymAroundValue" ]
@@ -192,9 +198,9 @@ var annotated_dup =
     ] ],
     [ "function", "d3/d62/namespacefunction.html", [
       [ "OpticalTransferFunction", "d2/d57/classfunction_1_1OpticalTransferFunction.html", "d2/d57/classfunction_1_1OpticalTransferFunction" ],
-      [ "PhasePowerSpectralDensity", "d8/dac/classfunction_1_1PhasePowerSpectralDensity.html", "d8/dac/classfunction_1_1PhasePowerSpectralDensity" ],
+      [ "PhasePowerSpectralDensity", "d8/dac/classfunction_1_1PhasePowerSpectralDensity.html", null ],
       [ "PointSpreadFunction", "d1/dd8/classfunction_1_1PointSpreadFunction.html", "d1/dd8/classfunction_1_1PointSpreadFunction" ],
-      [ "PupilFunction", "d0/dca/classfunction_1_1PupilFunction.html", "d0/dca/classfunction_1_1PupilFunction" ]
+      [ "PupilFunction", "d0/dca/classfunction_1_1PupilFunction.html", null ]
     ] ],
     [ "instrument_base", "d0/d23/namespaceinstrument__base.html", [
       [ "InstrumentBase", "db/d74/classinstrument__base_1_1InstrumentBase.html", "db/d74/classinstrument__base_1_1InstrumentBase" ]

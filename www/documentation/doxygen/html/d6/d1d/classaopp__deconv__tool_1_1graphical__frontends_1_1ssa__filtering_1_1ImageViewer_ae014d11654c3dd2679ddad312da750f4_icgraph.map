@@ -1,0 +1,14 @@
+<map id="aopp_deconv_tool.graphical_frontends.ssa_filtering.ImageViewer.get_displayed_data" name="aopp_deconv_tool.graphical_frontends.ssa_filtering.ImageViewer.get_displayed_data">
+<area shape="rect" id="Node000001" title=" " alt="" coords="725,53,1013,108"/>
+<area shape="rect" id="Node000002" href="$d6/d1d/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1ImageViewer.html#a2b098f0d395c9b52797e60b07b8951a2" title=" " alt="" coords="373,5,659,60"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="711,62,659,55,660,49,712,57"/>
+<area shape="rect" id="Node000003" href="$d6/d1d/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1ImageViewer.html#a928f59c859e6fa028dc5fbf1fa706baf" title=" " alt="" coords="355,109,677,149"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="712,105,664,111,664,106,711,99"/>
+<area shape="poly" id="edge3_Node000003_Node000003" title=" " alt="" coords="577,97,555,90,516,87,482,89,460,94,453,100,457,107,452,109,448,99,458,90,481,84,516,82,556,85,578,92"/>
+<area shape="rect" id="Node000004" href="$d6/d1d/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1ImageViewer.html#a0559152975cdc4323074aec18b35b6c4" title=" " alt="" coords="13,29,299,84"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="401,109,293,87,294,81,402,103"/>
+<area shape="rect" id="Node000005" href="$d6/d1d/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1ImageViewer.html#a3a362bcec191790684ab2d054db8042f" title=" " alt="" coords="5,109,307,149"/>
+<area shape="poly" id="edge5_Node000003_Node000005" title=" " alt="" coords="341,131,307,131,307,126,341,126"/>
+<area shape="rect" id="Node000006" href="$dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#aa5805401ffe03e9fed4dc9e4ee3c745e" title=" " alt="" coords="13,173,299,213"/>
+<area shape="poly" id="edge6_Node000003_Node000006" title=" " alt="" coords="390,154,269,175,269,170,389,148"/>
+</map>

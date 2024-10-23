@@ -1,6 +1,6 @@
 var classvlt_1_1VLT =
 [
-    [ "muse", "dd/d57/classvlt_1_1VLT.html#a20881562685f0015ef6090a5d651ed8f", null ],
+    [ "muse", "dd/d57/classvlt_1_1VLT.html#ad46133d6d23f1c9f012ad5f491c59c39", null ],
     [ "f_ao", "dd/d57/classvlt_1_1VLT.html#a35295844d3bc4fbea46620cc7a3bc636", null ],
     [ "n_actuators", "dd/d57/classvlt_1_1VLT.html#aad8f5dce37f76808875d6bb21448b99c", null ],
     [ "obj_diameter", "dd/d57/classvlt_1_1VLT.html#acf7d5c8e0ba3566fd150ef34aa1e56d5", null ],

@@ -1,6 +1,6 @@
 var mfunc_8py =
 [
-    [ "entropy_adj", "df/d19/mfunc_8py.html#a5cbfab661bdc048db0bc75f7951a3105", null ],
+    [ "entropy_adj", "df/d19/mfunc_8py.html#a84ced1532e94c647d20ce659f4f73d1e", null ],
     [ "entropy_pos", "df/d19/mfunc_8py.html#a338cb86dc268cef695ca198d41c81752", null ],
     [ "entropy_pos_neg", "df/d19/mfunc_8py.html#a97f11862f5ad9e1154aaa55989b99fcb", null ],
     [ "entropy_rel", "df/d19/mfunc_8py.html#a191b13f70ba7e23598e2b98ed29ab7fb", null ],

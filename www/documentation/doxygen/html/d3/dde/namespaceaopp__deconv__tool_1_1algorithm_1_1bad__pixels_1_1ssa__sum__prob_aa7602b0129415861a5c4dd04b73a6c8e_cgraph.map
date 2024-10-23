@@ -1,5 +1,5 @@
 <map id="aopp_deconv_tool.algorithm.bad_pixels.ssa_sum_prob.pixel_map" name="aopp_deconv_tool.algorithm.bad_pixels.ssa_sum_prob.pixel_map">
-<area shape="rect" id="node1" title=" " alt="" coords="5,53,243,94"/>
-<area shape="rect" id="node2" href="$da/df5/namespaceaopp__deconv__tool_1_1scipy__helper_1_1interp.html#afe27d8cf60620374e1470d69c646b2c3" title=" " alt="" coords="315,5,501,61"/>
-<area shape="rect" id="node3" href="$d3/dde/namespaceaopp__deconv__tool_1_1algorithm_1_1bad__pixels_1_1ssa__sum__prob.html#a4a522bbf96785742e41bb09f604c26ae" title=" " alt="" coords="291,85,525,141"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,13,240,53"/>
+<area shape="rect" id="Node000002" href="$d3/dde/namespaceaopp__deconv__tool_1_1algorithm_1_1bad__pixels_1_1ssa__sum__prob.html#a2c8381c6fa04fe0207e07a7b9632dd67" title=" " alt="" coords="288,5,523,60"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="240,30,274,30,274,35,240,35"/>
 </map>

@@ -1,5 +1,7 @@
 <map id="aopp_deconv_tool.graphical_frontends.ssa_filtering.LineRegionPanel.apply_region_action" name="aopp_deconv_tool.graphical_frontends.ssa_filtering.LineRegionPanel.apply_region_action">
-<area shape="rect" id="node1" title=" " alt="" coords="603,5,853,61"/>
-<area shape="rect" id="node2" href="$df/dfb/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1LineRegionPanel.html#a83a9853a1dacc7cd65e79199c4ae834d" title=" " alt="" coords="304,5,555,61"/>
-<area shape="rect" id="node3" href="$df/dfb/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1LineRegionPanel.html#a3d08829f40709844fd76236d30086b3a" title=" " alt="" coords="5,5,256,61"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="603,5,853,60"/>
+<area shape="rect" id="Node000002" href="$df/dfb/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1LineRegionPanel.html#a181421ed36a45f889fa46266d3457134" title=" " alt="" coords="304,5,555,60"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="589,35,555,35,555,30,589,30"/>
+<area shape="rect" id="Node000003" href="$df/dfb/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1LineRegionPanel.html#a3d08829f40709844fd76236d30086b3a" title=" " alt="" coords="5,5,256,60"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="290,35,256,35,256,30,290,30"/>
 </map>

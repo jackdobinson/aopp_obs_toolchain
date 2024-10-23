@@ -1,5 +1,8 @@
 <map id="aopp_deconv_tool.graphical_frontends.ssa_filtering.ImageAggregator" name="aopp_deconv_tool.graphical_frontends.ssa_filtering.ImageAggregator">
-<area shape="rect" id="node1" title=" " alt="" coords="637,5,929,47"/>
-<area shape="rect" id="node2" href="$d6/d1d/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1ImageViewer.html" title=" " alt="" coords="324,35,589,76"/>
-<area shape="rect" id="node3" href="$d3/d42/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1CallbackMixin.html" title=" " alt="" coords="5,5,276,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="636,5,927,45"/>
+<area shape="rect" id="Node000002" href="$d6/d1d/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1ImageViewer.html" title=" " alt="" coords="324,33,588,73"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="601,38,636,35,636,40,602,43"/>
+<area shape="rect" id="Node000003" href="$d3/d42/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1CallbackMixin.html" title=" " alt="" coords="5,5,276,45"/>
+<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="290,19,324,19,588,19,636,19,636,25,588,24,324,24,290,24"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="290,36,324,39,324,44,289,41"/>
 </map>

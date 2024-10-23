@@ -1,0 +1,14 @@
+<map id="aopp_deconv_tool.image_processing.otsu_thresholding.calc" name="aopp_deconv_tool.image_processing.otsu_thresholding.calc">
+<area shape="rect" id="Node000001" title=" " alt="" coords="601,170,851,210"/>
+<area shape="rect" id="Node000002" href="$d5/d78/namespaceaopp__deconv__tool_1_1image__processing_1_1otsu__thresholding.html#a582b48bbda7425290d71b2b25b6c5611" title=" " alt="" coords="303,5,551,60"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="689,163,627,118,552,74,526,63,528,58,555,69,630,113,692,159"/>
+<area shape="rect" id="Node000003" href="$d5/d78/namespaceaopp__deconv__tool_1_1image__processing_1_1otsu__thresholding.html#a0e2c8878cb805362010a1ef5e112e293" title=" " alt="" coords="301,84,553,139"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="635,169,531,141,533,136,637,164"/>
+<area shape="rect" id="Node000004" href="$d5/d78/namespaceaopp__deconv__tool_1_1image__processing_1_1otsu__thresholding.html#a058b025811ccc923d1c63cbbea1e3fcf" title=" " alt="" coords="301,163,553,217"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="588,193,554,193,554,187,588,187"/>
+<area shape="rect" id="Node000005" href="$d5/d78/namespaceaopp__deconv__tool_1_1image__processing_1_1otsu__thresholding.html#ad0498bff3e80a86d7d89d53782b24ad8" title=" " alt="" coords="312,241,543,296"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="637,216,533,244,531,239,635,211"/>
+<area shape="rect" id="Node000006" href="$d5/d78/namespaceaopp__deconv__tool_1_1image__processing_1_1otsu__thresholding.html#a76b0936539bf3615df910e80f935de4e" title=" " alt="" coords="5,275,253,329"/>
+<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="696,222,634,270,595,293,554,310,478,327,399,333,323,332,254,326,254,321,323,327,399,328,477,321,553,305,593,288,631,266,693,217"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="299,286,254,291,253,286,298,280"/>
+</map>

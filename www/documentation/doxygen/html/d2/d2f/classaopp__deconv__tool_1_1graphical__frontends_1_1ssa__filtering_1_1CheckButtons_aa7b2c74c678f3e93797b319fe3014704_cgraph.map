@@ -1,0 +1,12 @@
+<map id="aopp_deconv_tool.graphical_frontends.ssa_filtering.CheckButtons.on_clicked" name="aopp_deconv_tool.graphical_frontends.ssa_filtering.CheckButtons.on_clicked">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,109,293,164"/>
+<area shape="poly" id="edge5_Node000001_Node000001" title=" " alt="" coords="81,109,81,99,93,90,116,85,149,83,189,86,212,94,210,99,188,91,149,88,117,90,95,95,86,101,86,109"/>
+<area shape="rect" id="Node000002" href="$da/d39/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1WidgetBase.html#a50e64e1fc378bfc45bb50f9eb6a961fb" title=" " alt="" coords="397,5,621,60"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="226,107,341,70,383,59,384,64,342,75,228,112"/>
+<area shape="rect" id="Node000003" href="$d2/d2f/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1CheckButtons.html#af410b1ad557888c7ef236bab981f1efe" title=" " alt="" coords="341,85,677,125"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="293,121,328,118,328,123,294,127"/>
+<area shape="rect" id="Node000004" href="$da/d4a/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1TextBox.html#ad9cacfd56b8b2b133a9bc9179a05c390" title=" " alt="" coords="360,149,659,189"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="294,147,346,152,346,157,293,152"/>
+<area shape="rect" id="Node000005" href="$d9/d2e/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1RadioButtons.html#ab058bb7bc5aedda2b36c5e9fe87e8d06" title=" " alt="" coords="343,213,676,253"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="225,162,342,198,380,207,379,212,341,203,224,167"/>
+</map>

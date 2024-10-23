@@ -1,5 +1,7 @@
 <map id="aopp_deconv_tool.geometry.bounding_box.BoundingBox.inflate" name="aopp_deconv_tool.geometry.bounding_box.BoundingBox.inflate">
-<area shape="rect" id="node1" title=" " alt="" coords="5,39,275,80"/>
-<area shape="rect" id="node2" href="$dd/dde/classaopp__deconv__tool_1_1geo__array_1_1GeoArray.html#aecd422226a40aae43985616d0bce39e3" title=" " alt="" coords="372,5,543,47"/>
-<area shape="rect" id="node3" href="$d4/d16/classaopp__deconv__tool_1_1geometry_1_1bounding__box_1_1BoundingBox.html#ae434d489f41b1c2206592d48b6afd3f0" title=" " alt="" coords="323,71,592,112"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,37,275,77"/>
+<area shape="rect" id="Node000002" href="$dd/dde/classaopp__deconv__tool_1_1geo__array_1_1GeoArray.html#a984a762fd8c683cf9db6d4fb4f68787e" title=" " alt="" coords="372,5,543,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="275,41,358,33,358,38,275,46"/>
+<area shape="rect" id="Node000003" href="$d4/d16/classaopp__deconv__tool_1_1geometry_1_1bounding__box_1_1BoundingBox.html#ae434d489f41b1c2206592d48b6afd3f0" title=" " alt="" coords="323,69,592,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="275,68,309,72,309,77,275,74"/>
 </map>

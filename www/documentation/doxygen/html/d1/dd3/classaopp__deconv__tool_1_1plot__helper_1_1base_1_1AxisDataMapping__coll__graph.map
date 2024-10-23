@@ -1,0 +1,7 @@
+<map id="aopp_deconv_tool.plot_helper.base.AxisDataMapping" name="aopp_deconv_tool.plot_helper.base.AxisDataMapping">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,108,228,148"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="52,5,91,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="70,44,70,64,75,83,93,106,88,109,70,85,65,65,65,44"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="126,5,201,31"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="155,44,127,109,122,107,150,42"/>
+</map>

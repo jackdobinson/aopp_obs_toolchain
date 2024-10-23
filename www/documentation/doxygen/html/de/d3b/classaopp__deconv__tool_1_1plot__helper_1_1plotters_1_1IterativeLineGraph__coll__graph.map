@@ -1,4 +1,26 @@
 <map id="aopp_deconv_tool.plot_helper.plotters.IterativeLineGraph" name="aopp_deconv_tool.plot_helper.plotters.IterativeLineGraph">
-<area shape="rect" id="node1" title=" " alt="" coords="5,95,216,151"/>
-<area shape="rect" id="node2" href="$d4/d84/classaopp__deconv__tool_1_1plot__helper_1_1base_1_1Base.html" title=" " alt="" coords="26,5,195,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="287,197,496,252"/>
+<area shape="rect" id="Node000002" href="$d4/d84/classaopp__deconv__tool_1_1plot__helper_1_1base_1_1Base.html" title=" " alt="" coords="580,108,749,148"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="598,155,468,200,466,195,596,150"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="215,5,253,31"/>
+<area shape="poly" id="edge11_Node000001_Node000003" title=" " alt="" coords="240,43,254,83,276,116,303,146,357,195,354,199,300,150,272,119,249,85,235,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="249,41,266,63,289,82,341,98,416,110,580,122,579,127,416,115,340,104,286,86,262,67,245,44"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="5,5,60,31"/>
+<area shape="poly" id="edge12_Node000001_Node000004" title=" " alt="" coords="44,42,66,83,92,119,126,146,164,166,205,182,287,204,285,210,204,187,162,171,123,150,88,122,61,85,40,45"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="54,39,81,62,114,81,174,89,298,100,580,119,579,124,298,105,173,95,112,87,78,67,50,43"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="837,5,887,31"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="856,45,844,67,826,86,790,107,750,119,749,114,788,102,823,82,840,63,851,42"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="385,5,432,31"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="413,44,418,64,430,82,454,95,491,105,580,118,579,123,490,110,452,100,427,86,414,67,408,45"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="1159,5,1202,31"/>
+<area shape="poly" id="edge13_Node000001_Node000007" title=" " alt="" coords="1201,41,1211,63,1211,75,1205,86,1184,105,1157,122,1084,152,993,175,891,193,784,206,678,215,496,224,496,219,678,210,783,201,890,188,992,170,1082,147,1154,118,1181,101,1201,82,1205,74,1205,64,1196,43"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="1158,42,1102,86,1036,103,943,115,750,127,749,121,942,109,1035,98,1099,82,1155,38"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="947,5,993,31"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="967,45,958,67,942,86,909,101,861,112,750,125,749,120,860,107,907,96,939,82,954,64,962,43"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="1017,5,1064,31"/>
+<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="1030,44,1013,67,989,86,946,101,885,112,750,125,749,120,884,107,944,96,986,82,1009,63,1026,41"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="533,5,607,31"/>
+<area shape="poly" id="edge9_Node000002_Node000010" title=" " alt="" coords="567,44,567,64,574,83,585,95,600,106,597,110,582,99,569,85,562,65,562,44"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="740,5,779,31"/>
+<area shape="poly" id="edge10_Node000002_Node000011" title=" " alt="" coords="754,45,745,66,732,86,703,110,700,106,728,82,741,63,750,43"/>
 </map>

@@ -1,0 +1,7 @@
+<map id="aopp_deconv_tool.algorithm.bad_pixels.ssa_sum_prob.get_bp_mask_from_badness_map" name="aopp_deconv_tool.algorithm.bad_pixels.ssa_sum_prob.get_bp_mask_from_badness_map">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,240,60"/>
+<area shape="rect" id="Node000002" href="$d3/dde/namespaceaopp__deconv__tool_1_1algorithm_1_1bad__pixels_1_1ssa__sum__prob.html#aa7602b0129415861a5c4dd04b73a6c8e" title=" " alt="" coords="288,13,523,53"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="240,30,274,30,274,35,240,35"/>
+<area shape="rect" id="Node000003" href="$d3/dde/namespaceaopp__deconv__tool_1_1algorithm_1_1bad__pixels_1_1ssa__sum__prob.html#a2c8381c6fa04fe0207e07a7b9632dd67" title=" " alt="" coords="571,5,805,60"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="523,30,557,30,557,35,523,35"/>
+</map>

@@ -1,8 +1,13 @@
 <map id="aopp_deconv_tool.spectral_rebin.rebin_hdu_over_axis_with_response_function" name="aopp_deconv_tool.spectral_rebin.rebin_hdu_over_axis_with_response_function">
-<area shape="rect" id="node1" title=" " alt="" coords="5,63,205,119"/>
-<area shape="rect" id="node2" href="$d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a4e174b0f84cf2d54a37155ffc8f15c40" title=" " alt="" coords="261,5,457,47"/>
-<area shape="rect" id="node3" href="$d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a75f176aa453b954c58427a9ccb24ab9b" title=" " alt="" coords="253,71,465,112"/>
-<area shape="rect" id="node6" href="$d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a22a287aa9d55cf8a29bdf4cbe79371d4" title=" " alt="" coords="261,137,458,193"/>
-<area shape="rect" id="node4" href="$d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#ad2d029f9bded4dbfcf3df6fd649dc198" title=" " alt="" coords="513,71,724,112"/>
-<area shape="rect" id="node5" href="$d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a23c60b2215405487c73ccdd8f4e6d083" title=" " alt="" coords="772,71,995,112"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,62,205,117"/>
+<area shape="rect" id="Node000002" href="$d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a4e174b0f84cf2d54a37155ffc8f15c40" title=" " alt="" coords="261,5,457,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="205,62,265,46,267,51,206,67"/>
+<area shape="rect" id="Node000003" href="$d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a75f176aa453b954c58427a9ccb24ab9b" title=" " alt="" coords="253,69,465,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="206,87,240,87,240,92,206,92"/>
+<area shape="rect" id="Node000006" href="$d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a8b4568cf198b4e461e422728312cb8c2" title=" " alt="" coords="261,134,458,189"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="203,114,250,128,249,133,202,119"/>
+<area shape="rect" id="Node000004" href="$d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#ad2d029f9bded4dbfcf3df6fd649dc198" title=" " alt="" coords="513,69,724,109"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="465,87,500,87,500,92,465,92"/>
+<area shape="rect" id="Node000005" href="$d1/d3b/namespaceaopp__deconv__tool_1_1spectral__rebin.html#a23c60b2215405487c73ccdd8f4e6d083" title=" " alt="" coords="772,69,995,109"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="724,87,758,87,758,92,724,92"/>
 </map>

@@ -1,0 +1,8 @@
+<map id="aopp_deconv_tool.graphical_frontends.ssa_filtering.LineRegionPanel.set_data" name="aopp_deconv_tool.graphical_frontends.ssa_filtering.LineRegionPanel.set_data">
+<area shape="rect" id="Node000001" title=" " alt="" coords="355,30,605,85"/>
+<area shape="poly" id="edge1_Node000001_Node000001" title=" " alt="" coords="535,19,515,12,480,9,451,11,432,16,423,22,423,30,418,30,418,20,429,11,450,5,480,3,516,6,536,14"/>
+<area shape="rect" id="Node000002" href="$d6/d1d/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1ImageViewer.html#a3a362bcec191790684ab2d054db8042f" title=" " alt="" coords="5,5,307,45"/>
+<area shape="poly" id="edge2_Node000001_Node000002" title=" " alt="" coords="341,46,307,43,307,38,341,41"/>
+<area shape="rect" id="Node000003" href="$dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#aa5805401ffe03e9fed4dc9e4ee3c745e" title=" " alt="" coords="13,69,299,109"/>
+<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="341,74,299,78,299,73,341,68"/>
+</map>

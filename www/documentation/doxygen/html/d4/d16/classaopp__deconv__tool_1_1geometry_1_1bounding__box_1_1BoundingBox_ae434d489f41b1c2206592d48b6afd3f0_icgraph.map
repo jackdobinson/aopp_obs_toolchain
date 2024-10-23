@@ -1,4 +1,5 @@
 <map id="aopp_deconv_tool.geometry.bounding_box.BoundingBox.extent" name="aopp_deconv_tool.geometry.bounding_box.BoundingBox.extent">
-<area shape="rect" id="node1" title=" " alt="" coords="323,5,592,47"/>
-<area shape="rect" id="node2" href="$d4/d16/classaopp__deconv__tool_1_1geometry_1_1bounding__box_1_1BoundingBox.html#adf5b3c7e8b5b74179f0725536a13b33d" title=" " alt="" coords="5,5,275,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="323,5,592,45"/>
+<area shape="rect" id="Node000002" href="$d4/d16/classaopp__deconv__tool_1_1geometry_1_1bounding__box_1_1BoundingBox.html#adf5b3c7e8b5b74179f0725536a13b33d" title=" " alt="" coords="5,5,275,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="309,28,275,28,275,23,309,23"/>
 </map>

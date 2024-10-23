@@ -1,0 +1,8 @@
+<map id="aopp_deconv_tool.graphical_frontends.ssa_filtering.ImageViewer.set_data" name="aopp_deconv_tool.graphical_frontends.ssa_filtering.ImageViewer.set_data">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,53,328,93"/>
+<area shape="poly" id="edge3_Node000001_Node000001" title=" " alt="" coords="100,53,96,43,107,34,130,28,167,26,209,29,231,36,230,41,208,34,167,31,131,33,109,38,101,44,105,51"/>
+<area shape="rect" id="Node000002" href="$d6/d1d/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1ImageViewer.html#ae014d11654c3dd2679ddad312da750f4" title=" " alt="" coords="389,5,677,60"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="328,52,375,47,376,53,328,58"/>
+<area shape="rect" id="Node000003" href="$d8/dd5/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1ImageAggregator.html#a9e02916c8226e973ad4c7807fe59306c" title=" " alt="" coords="376,84,691,139"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="328,87,363,91,362,96,328,92"/>
+</map>

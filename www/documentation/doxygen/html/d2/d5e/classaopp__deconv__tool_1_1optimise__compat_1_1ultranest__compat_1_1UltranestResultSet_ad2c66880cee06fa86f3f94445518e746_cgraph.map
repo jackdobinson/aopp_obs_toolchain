@@ -1,6 +1,9 @@
 <map id="aopp_deconv_tool.optimise_compat.ultranest_compat.UltranestResultSet.get_params_vs_run_index" name="aopp_deconv_tool.optimise_compat.ultranest_compat.UltranestResultSet.get_params_vs_run_index">
-<area shape="rect" id="node1" title=" " alt="" coords="5,85,265,141"/>
-<area shape="rect" id="node2" href="$d2/d5e/classaopp__deconv__tool_1_1optimise__compat_1_1ultranest__compat_1_1UltranestResultSet.html#aeb1ad340f149774c00a0009fadbd9041" title=" " alt="" coords="313,5,576,61"/>
-<area shape="rect" id="node3" href="$d2/d5e/classaopp__deconv__tool_1_1optimise__compat_1_1ultranest__compat_1_1UltranestResultSet.html#a07efcf04bbd41257f6b8654d3b0bd1e0" title=" " alt="" coords="315,85,575,141"/>
-<area shape="rect" id="node4" href="$d2/d5e/classaopp__deconv__tool_1_1optimise__compat_1_1ultranest__compat_1_1UltranestResultSet.html#aeb023b50a435cccd038835f67fbd8605" title=" " alt="" coords="315,165,575,221"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,84,265,139"/>
+<area shape="rect" id="Node000002" href="$d2/d5e/classaopp__deconv__tool_1_1optimise__compat_1_1ultranest__compat_1_1UltranestResultSet.html#aa9644f9814e3b2d290836b8c77b32150" title=" " alt="" coords="313,5,576,60"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="243,81,323,61,324,66,244,87"/>
+<area shape="rect" id="Node000003" href="$d2/d5e/classaopp__deconv__tool_1_1optimise__compat_1_1ultranest__compat_1_1UltranestResultSet.html#a333d0d1034772a03abb30a4af64285c9" title=" " alt="" coords="315,84,575,139"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="265,109,301,109,301,114,265,114"/>
+<area shape="rect" id="Node000004" href="$d2/d5e/classaopp__deconv__tool_1_1optimise__compat_1_1ultranest__compat_1_1UltranestResultSet.html#aeb023b50a435cccd038835f67fbd8605" title=" " alt="" coords="315,163,575,217"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="244,136,324,157,323,162,243,141"/>
 </map>

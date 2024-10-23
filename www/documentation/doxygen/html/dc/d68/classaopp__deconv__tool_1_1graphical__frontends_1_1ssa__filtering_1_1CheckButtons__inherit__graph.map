@@ -1,4 +1,5 @@
 <map id="aopp_deconv_tool.graphical_frontends.ssa_filtering.CheckButtons" name="aopp_deconv_tool.graphical_frontends.ssa_filtering.CheckButtons">
-<area shape="rect" id="node1" title=" " alt="" coords="5,95,275,136"/>
-<area shape="rect" id="node2" href="$da/d39/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1WidgetBase.html" title=" " alt="" coords="11,5,269,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,93,273,133"/>
+<area shape="rect" id="Node000002" href="$da/d39/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1WidgetBase.html" title=" " alt="" coords="11,5,267,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="142,59,142,93,137,93,137,59"/>
 </map>

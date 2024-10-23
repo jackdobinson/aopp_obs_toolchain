@@ -1,4 +1,5 @@
 <map id="aopp_deconv_tool.interpolate.InterpolationStratInfo" name="aopp_deconv_tool.interpolate.InterpolationStratInfo">
-<area shape="rect" id="node1" title=" " alt="" coords="5,95,224,136"/>
-<area shape="rect" id="node2" href="$d3/d9c/classaopp__deconv__tool_1_1task__strat_1_1TaskStratInfo.html" title=" " alt="" coords="29,5,201,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,93,224,133"/>
+<area shape="rect" id="Node000002" href="$d3/d9c/classaopp__deconv__tool_1_1task__strat_1_1TaskStratInfo.html" title=" " alt="" coords="29,5,201,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="117,59,117,93,112,93,112,59"/>
 </map>

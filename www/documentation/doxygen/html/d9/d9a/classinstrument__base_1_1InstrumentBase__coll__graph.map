@@ -1,0 +1,7 @@
+<map id="instrument_base.InstrumentBase" name="instrument_base.InstrumentBase">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,93,244,119"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="34,5,85,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="79,40,118,91,113,94,74,43"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="109,5,273,31"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="176,43,136,94,132,91,172,40"/>
+</map>

@@ -1,5 +1,7 @@
 <map id="aopp_deconv_tool.algorithm.deconv.base.Base" name="aopp_deconv_tool.algorithm.deconv.base.Base">
-<area shape="rect" id="node1" title=" " alt="" coords="5,46,333,73"/>
-<area shape="rect" id="node2" href="$dd/d03/classaopp__deconv__tool_1_1algorithm_1_1deconv_1_1clean__modified_1_1CleanModified.html" title=" " alt="" coords="381,5,677,47"/>
-<area shape="rect" id="node3" href="$d8/dc0/classaopp__deconv__tool_1_1algorithm_1_1deconv_1_1lucy__richardson_1_1LucyRichardson.html" title=" " alt="" coords="385,71,673,112"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,45,333,70"/>
+<area shape="rect" id="Node000002" href="$dd/d03/classaopp__deconv__tool_1_1algorithm_1_1deconv_1_1clean__modified_1_1CleanModified.html" title=" " alt="" coords="381,5,677,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="325,41,381,36,381,41,326,46"/>
+<area shape="rect" id="Node000003" href="$d8/dc0/classaopp__deconv__tool_1_1algorithm_1_1deconv_1_1lucy__richardson_1_1LucyRichardson.html" title=" " alt="" coords="385,69,673,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="326,69,385,74,385,79,326,74"/>
 </map>

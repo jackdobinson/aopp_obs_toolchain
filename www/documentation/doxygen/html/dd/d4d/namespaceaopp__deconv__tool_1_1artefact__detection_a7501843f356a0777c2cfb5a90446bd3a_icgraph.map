@@ -1,0 +1,10 @@
+<map id="aopp_deconv_tool.artefact_detection.generate_masks_from_thresholds" name="aopp_deconv_tool.artefact_detection.generate_masks_from_thresholds">
+<area shape="rect" id="Node000001" title=" " alt="" coords="733,22,936,77"/>
+<area shape="rect" id="Node000002" href="$dd/d4d/namespaceaopp__deconv__tool_1_1artefact__detection.html#ad6a49feded1a28b44da02e27344a35b3" title=" " alt="" coords="491,29,685,69"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="719,52,686,52,686,47,719,47"/>
+<area shape="rect" id="Node000003" href="$dd/d4d/namespaceaopp__deconv__tool_1_1artefact__detection.html#a85e230af714e8a2e7a292c51f0ff39d6" title=" " alt="" coords="248,29,443,69"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="477,52,443,52,443,47,477,47"/>
+<area shape="poly" id="edge3_Node000003_Node000003" title=" " alt="" coords="387,18,372,11,345,8,322,10,308,15,303,21,305,28,300,30,297,20,305,10,321,5,345,3,374,6,389,13"/>
+<area shape="rect" id="Node000004" href="$dd/d4d/namespaceaopp__deconv__tool_1_1artefact__detection.html#a87f271a8aa2a92f2943244eb29d02ca6" title=" " alt="" coords="5,29,200,69"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="234,52,200,52,200,47,234,47"/>
+</map>

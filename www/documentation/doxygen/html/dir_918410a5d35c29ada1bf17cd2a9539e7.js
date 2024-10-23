@@ -28,9 +28,7 @@ var dir_918410a5d35c29ada1bf17cd2a9539e7 =
     [ "fit_psf_model.py", "dc/df7/fit__psf__model_8py.html", "dc/df7/fit__psf__model_8py" ],
     [ "fits_copy_wcs.py", "d8/d5a/fits__copy__wcs_8py.html", "d8/d5a/fits__copy__wcs_8py" ],
     [ "fits_slice.py", "d1/db7/fits__slice_8py.html", "d1/db7/fits__slice_8py" ],
-    [ "fpath.py", "dc/da9/fpath_8py.html", [
-      [ "FPath", "d8/df1/classaopp__deconv__tool_1_1fpath_1_1FPath.html", "d8/df1/classaopp__deconv__tool_1_1fpath_1_1FPath" ]
-    ] ],
+    [ "fpath.py", "dc/da9/fpath_8py.html", "dc/da9/fpath_8py" ],
     [ "geo_array.py", "df/de0/geo__array_8py.html", "df/de0/geo__array_8py" ],
     [ "interpolate.py", "dd/d3b/interpolate_8py.html", "dd/d3b/interpolate_8py" ],
     [ "mfunc.py", "df/d19/mfunc_8py.html", "df/d19/mfunc_8py" ],
@@ -40,10 +38,7 @@ var dir_918410a5d35c29ada1bf17cd2a9539e7 =
     [ "py_svd.py", "d6/de1/py__svd_8py.html", "d6/de1/py__svd_8py" ],
     [ "spatial_rebin.py", "db/dad/spatial__rebin_8py.html", "db/dad/spatial__rebin_8py" ],
     [ "spectral_rebin.py", "de/d1b/spectral__rebin_8py.html", "de/d1b/spectral__rebin_8py" ],
-    [ "task_strat.py", "d3/df0/task__strat_8py.html", [
-      [ "TaskStratInfo", "d3/d9c/classaopp__deconv__tool_1_1task__strat_1_1TaskStratInfo.html", "d3/d9c/classaopp__deconv__tool_1_1task__strat_1_1TaskStratInfo" ],
-      [ "TaskStratSet", "d6/da1/classaopp__deconv__tool_1_1task__strat_1_1TaskStratSet.html", "d6/da1/classaopp__deconv__tool_1_1task__strat_1_1TaskStratSet" ]
-    ] ],
+    [ "task_strat.py", "d3/df0/task__strat_8py.html", "d3/df0/task__strat_8py" ],
     [ "to_fits.py", "dc/d95/to__fits_8py.html", "dc/d95/to__fits_8py" ],
     [ "typedef.py", "da/d37/typedef_8py.html", "da/d37/typedef_8py" ]
 ];

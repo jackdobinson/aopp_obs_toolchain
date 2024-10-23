@@ -1,4 +1,9 @@
 <map id="aopp_deconv_tool.geometry.shape.PolyShape" name="aopp_deconv_tool.geometry.shape.PolyShape">
-<area shape="rect" id="node1" title=" " alt="" coords="5,95,257,136"/>
-<area shape="rect" id="node2" href="$d2/dbe/classaopp__deconv__tool_1_1geometry_1_1shape_1_1GeoShape.html" title=" " alt="" coords="5,5,257,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="132,196,384,236"/>
+<area shape="rect" id="Node000002" href="$d2/dbe/classaopp__deconv__tool_1_1geometry_1_1shape_1_1GeoShape.html" title=" " alt="" coords="5,93,257,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="168,140,236,194,233,198,164,144"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="94,5,169,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="134,44,134,93,129,93,129,44"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="281,101,320,126"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="293,140,268,197,264,195,288,138"/>
 </map>

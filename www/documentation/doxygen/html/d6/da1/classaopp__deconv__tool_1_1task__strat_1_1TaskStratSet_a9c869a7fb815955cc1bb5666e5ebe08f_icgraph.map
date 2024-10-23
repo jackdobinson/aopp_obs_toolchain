@@ -1,8 +1,15 @@
 <map id="aopp_deconv_tool.task_strat.TaskStratSet._del_item" name="aopp_deconv_tool.task_strat.TaskStratSet._del_item">
-<area shape="rect" id="node1" title=" " alt="" coords="956,31,1128,87"/>
-<area shape="rect" id="node2" href="$d6/da1/classaopp__deconv__tool_1_1task__strat_1_1TaskStratSet.html#a089f805d274ef3be0b64217e99ffed9d" title=" " alt="" coords="709,39,908,80"/>
-<area shape="rect" id="node3" href="$db/dd6/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1ImagePlot.html#aaad6d78efd48d8e620295a5106faaf8a" title=" " alt="" coords="356,5,661,47"/>
-<area shape="rect" id="node6" href="$d1/d4b/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1LinePlot.html#afa75f9b57597a0ca2eca6c912239b41a" title=" " alt="" coords="363,71,654,112"/>
-<area shape="rect" id="node4" href="$d6/d1d/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1ImageViewer.html#adb6b1efe24b9e6e6558ef0ba9416079d" title=" " alt="" coords="5,5,308,47"/>
-<area shape="rect" id="node5" href="$dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#a7507dee8ce74c985371256e8a870dfab" title=" " alt="" coords="13,71,301,112"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="953,30,1125,85"/>
+<area shape="rect" id="Node000002" href="$d6/da1/classaopp__deconv__tool_1_1task__strat_1_1TaskStratSet.html#a089f805d274ef3be0b64217e99ffed9d" title=" " alt="" coords="707,37,905,77"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="939,60,905,60,905,55,939,55"/>
+<area shape="rect" id="Node000003" href="$db/dd6/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1ImagePlot.html#aa2bda605c014c2b3193e8c4db3e4ecfb" title=" " alt="" coords="355,5,659,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="693,48,659,44,659,39,693,43"/>
+<area shape="rect" id="Node000006" href="$d1/d4b/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1LinePlot.html#abbc55db75bf504c9785025cd364e77bf" title=" " alt="" coords="361,69,652,109"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="693,72,652,76,652,71,692,67"/>
+<area shape="rect" id="Node000004" href="$d6/d1d/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1ImageViewer.html#a3a362bcec191790684ab2d054db8042f" title=" " alt="" coords="5,5,307,45"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="341,28,307,28,307,23,341,23"/>
+<area shape="rect" id="Node000005" href="$dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#aa5805401ffe03e9fed4dc9e4ee3c745e" title=" " alt="" coords="13,69,299,109"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="383,50,267,72,266,67,382,45"/>
+<area shape="poly" id="edge6_Node000006_Node000004" title=" " alt="" coords="382,69,266,48,267,43,383,64"/>
+<area shape="poly" id="edge7_Node000006_Node000005" title=" " alt="" coords="348,92,299,92,299,87,348,87"/>
 </map>

@@ -1,4 +1,9 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,131,32"/>
-<area shape="rect" id="node2" href="$dd/d57/classvlt_1_1VLT.html" title=" " alt="" coords="179,5,245,32"/>
+<area shape="rect" id="Node000000" href="$d5/dc2/classoptical__component_1_1OpticalComponent.html" title=" " alt="" coords="5,47,201,87"/>
+<area shape="rect" id="Node000001" href="$df/d27/classoptical__component_1_1Aperture.html" title=" " alt="" coords="259,5,465,31"/>
+<area shape="poly" id="edge59_Node000000_Node000001" title=" " alt="" coords="214,44,294,28,295,33,215,49"/>
+<area shape="rect" id="Node000002" href="$d6/d5b/classoptical__component_1_1Obstruction.html" title=" " alt="" coords="249,55,475,80"/>
+<area shape="poly" id="edge60_Node000000_Node000002" title=" " alt="" coords="215,65,249,65,249,70,215,70"/>
+<area shape="rect" id="Node000003" href="$db/db5/classoptical__component_1_1Refractor.html" title=" " alt="" coords="257,104,467,129"/>
+<area shape="poly" id="edge61_Node000000_Node000003" title=" " alt="" coords="215,86,295,101,294,107,214,91"/>
 </map>

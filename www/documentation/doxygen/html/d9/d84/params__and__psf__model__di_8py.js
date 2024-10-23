@@ -1,6 +1,6 @@
 var params__and__psf__model__di_8py =
 [
-    [ "ParamsAndPsfModelDependencyInjector", "d6/d94/classaopp__deconv__tool_1_1psf__model_1_1dependency__injector_1_1params__and__psf__model__di_1_1ba2ec6983774f489c0efd6a2ad6addb5.html", "d6/d94/classaopp__deconv__tool_1_1psf__model_1_1dependency__injector_1_1params__and__psf__model__di_1_1ba2ec6983774f489c0efd6a2ad6addb5" ],
+    [ "aopp_deconv_tool.psf_model.dependency_injector.params_and_psf_model_di.ParamsAndPsfModelDependencyInjector", "d6/d94/classaopp__deconv__tool_1_1psf__model_1_1dependency__injector_1_1params__and__psf__model__di_1_1ba2ec6983774f489c0efd6a2ad6addb5.html", "d6/d94/classaopp__deconv__tool_1_1psf__model_1_1dependency__injector_1_1params__and__psf__model__di_1_1ba2ec6983774f489c0efd6a2ad6addb5" ],
     [ "prior_param_args_from_param_spec", "d9/d84/params__and__psf__model__di_8py.html#a1cc5fce0eac650a1a270fab791113eae", null ],
     [ "bound", "d9/d84/params__and__psf__model__di_8py.html#ab44c5c062df1d465a0b333f17c3fe382", null ],
     [ "M", "d9/d84/params__and__psf__model__di_8py.html#a423b5e9945cce33d19920f70ecb34f44", null ],

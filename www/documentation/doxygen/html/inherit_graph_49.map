@@ -1,3 +1,28 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$d5/d45/classlight__beam_1_1LightBeamSet.html" title=" " alt="" coords="5,5,196,32"/>
+<area shape="rect" id="Node000000" href="$dd/d52/classIntVar.html" title=" " alt="" coords="11,175,71,201"/>
+<area shape="rect" id="Node000001" href="$d5/d03/classaopp__deconv__tool_1_1psf__data__ops_1_1S.html" title=" " alt="" coords="178,228,342,268"/>
+<area shape="poly" id="edge44_Node000000_Node000001" title=" " alt="" coords="85,200,126,212,178,226,177,231,125,217,84,205"/>
+<area shape="rect" id="Node000006" href="$d6/db6/classaopp__deconv__tool_1_1psf__data__ops_1_1S1.html" title=" " alt="" coords="178,292,342,332"/>
+<area shape="poly" id="edge45_Node000000_Node000006" title=" " alt="" coords="68,209,79,221,101,252,111,265,127,278,152,290,179,299,177,304,150,295,124,282,107,269,97,256,75,224,64,213"/>
+<area shape="rect" id="Node000007" href="$d9/d1a/classaopp__deconv__tool_1_1psf__model_1_1gaussian__psf__model_1_1S.html" title=" " alt="" coords="151,356,369,396"/>
+<area shape="poly" id="edge46_Node000000_Node000007" title=" " alt="" coords="70,209,80,221,95,256,99,287,106,315,114,328,127,342,152,357,149,362,124,346,110,331,101,317,94,288,90,257,75,224,65,212"/>
+<area shape="rect" id="Node000008" href="$da/dca/classaopp__deconv__tool_1_1psf__model_1_1gaussian__psf__model_1_1S1.html" title=" " alt="" coords="147,5,373,45"/>
+<area shape="poly" id="edge47_Node000000_Node000008" title=" " alt="" coords="49,161,77,107,98,79,124,55,145,43,148,47,127,59,102,83,81,110,54,164"/>
+<area shape="rect" id="Node000009" href="$d0/dd1/classaopp__deconv__tool_1_1psf__model_1_1turbulence__psf__model_1_1S.html" title=" " alt="" coords="175,70,345,125"/>
+<area shape="poly" id="edge48_Node000000_Node000009" title=" " alt="" coords="70,165,124,134,174,115,175,120,126,138,73,169"/>
+<area shape="rect" id="Node000010" href="$df/d2f/classaopp__deconv__tool_1_1psf__model_1_1turbulence__psf__model_1_1S1.html" title=" " alt="" coords="175,149,345,203"/>
+<area shape="poly" id="edge49_Node000000_Node000010" title=" " alt="" coords="85,183,174,178,174,183,85,188"/>
+<area shape="rect" id="Node000004" href="$d1/def/classT.html" title=" " alt="" coords="22,402,61,427"/>
+<area shape="rect" id="Node000003" href="$d4/d16/classaopp__deconv__tool_1_1geometry_1_1bounding__box_1_1BoundingBox.html" title=" " alt="" coords="125,420,395,460"/>
+<area shape="poly" id="edge50_Node000004_Node000003" title=" " alt="" coords="74,416,125,422,125,427,74,421"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="22,451,61,477"/>
+<area shape="poly" id="edge51_Node000005_Node000003" title=" " alt="" coords="74,458,125,452,125,457,74,463"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,235,77,261"/>
+<area shape="poly" id="edge53_Node000002_Node000001" title=" " alt="" coords="91,245,178,245,178,251,91,251"/>
+<area shape="poly" id="edge54_Node000002_Node000006" title=" " alt="" coords="86,263,126,277,179,292,177,297,125,283,84,268"/>
+<area shape="poly" id="edge55_Node000002_Node000007" title=" " alt="" coords="60,271,88,308,106,326,127,342,152,354,149,359,124,346,103,330,84,312,55,274"/>
+<area shape="poly" id="edge56_Node000002_Node000008" title=" " alt="" coords="65,224,75,211,85,189,90,168,93,130,98,93,107,74,124,55,145,40,148,45,127,59,112,77,103,94,98,130,96,169,90,190,80,213,69,227"/>
+<area shape="poly" id="edge57_Node000002_Node000009" title=" " alt="" coords="63,224,75,210,88,189,96,170,106,152,124,134,148,119,174,109,176,114,150,124,127,138,110,155,101,172,93,191,79,214,68,227"/>
+<area shape="poly" id="edge58_Node000002_Node000010" title=" " alt="" coords="85,228,124,213,174,198,175,203,126,219,87,233"/>
+<area shape="poly" id="edge52_Node000002_Node000003" title=" " alt="" coords="51,273,61,304,77,340,98,376,127,406,146,418,143,422,124,410,94,379,72,343,56,306,46,275"/>
 </map>

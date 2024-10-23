@@ -1,0 +1,15 @@
+<map id="aopp_deconv_tool.plot_helper.plotters.PlotSet" name="aopp_deconv_tool.plot_helper.plotters.PlotSet">
+<area shape="rect" id="Node000001" title=" " alt="" coords="109,167,282,207"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,52,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="33,44,42,93,53,119,69,141,88,155,110,166,107,171,85,160,65,145,49,121,37,95,27,45"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="76,5,115,31"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="97,44,102,92,109,118,121,141,134,154,149,164,145,169,130,158,117,144,104,120,96,93,92,44"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="139,5,182,31"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="160,44,159,91,161,117,167,142,180,165,176,168,162,144,156,118,153,91,155,44"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="206,5,257,31"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="229,45,202,167,197,166,223,44"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="281,5,320,31"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="298,45,284,93,272,120,256,144,230,169,226,165,252,141,267,117,279,91,293,43"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="363,5,409,31"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="390,45,384,95,375,121,359,144,342,158,323,169,283,182,281,177,321,164,339,154,355,141,370,119,379,94,384,44"/>
+</map>

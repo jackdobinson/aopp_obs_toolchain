@@ -1,10 +1,17 @@
 <map id="aopp_deconv_tool.task_strat.TaskStratSet.__call__" name="aopp_deconv_tool.task_strat.TaskStratSet.__call__">
-<area shape="rect" id="node1" title=" " alt="" coords="5,151,177,207"/>
-<area shape="rect" id="node2" href="$d6/da1/classaopp__deconv__tool_1_1task__strat_1_1TaskStratSet.html#ad7d425601c3adf5f89372f5c7cd5fcb9" title=" " alt="" coords="225,151,397,207"/>
-<area shape="rect" id="node3" href="$d5/d45/classlight__beam_1_1LightBeamSet.html#a3a2d8747141be2e5632caa5f430a3105" title=" " alt="" coords="477,5,671,47"/>
-<area shape="rect" id="node4" href="$d6/da1/classaopp__deconv__tool_1_1task__strat_1_1TaskStratSet.html#a16bcd4d5e98aa809db0c219b6b0aff51" title=" " alt="" coords="488,71,660,127"/>
-<area shape="rect" id="node6" href="$df/da5/classaopp__deconv__tool_1_1data__structures_1_1bi__directional__map_1_1BiDirectionalMap.html#aee299272ed1c87829cc9006e9a823722" title=" " alt="" coords="445,151,703,207"/>
-<area shape="rect" id="node7" href="$d0/dda/classoptical__component_1_1OpticalComponentSet.html#a181dc234d01cfebdf5ad26cc52c4bac1" title=" " alt="" coords="473,232,675,273"/>
-<area shape="rect" id="node8" href="$d9/d34/classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet.html#ad6f05162d6a853ae0e1a695db8cef33d" title=" " alt="" coords="473,298,675,354"/>
-<area shape="rect" id="node5" href="$d6/da1/classaopp__deconv__tool_1_1task__strat_1_1TaskStratSet.html#a76324e28a364c9e85b911725b852314b" title=" " alt="" coords="751,71,923,127"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,149,177,203"/>
+<area shape="rect" id="Node000002" href="$d6/da1/classaopp__deconv__tool_1_1task__strat_1_1TaskStratSet.html#ad7d425601c3adf5f89372f5c7cd5fcb9" title=" " alt="" coords="225,149,397,203"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="178,173,212,173,212,179,178,179"/>
+<area shape="rect" id="Node000003" href="$d5/d45/classlight__beam_1_1LightBeamSet.html#a7b067f101871cd6c837d626958b03a3b" title=" " alt="" coords="477,5,671,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="334,146,382,99,412,75,444,55,463,46,465,51,447,60,415,80,385,103,338,150"/>
+<area shape="rect" id="Node000004" href="$d6/da1/classaopp__deconv__tool_1_1task__strat_1_1TaskStratSet.html#a16bcd4d5e98aa809db0c219b6b0aff51" title=" " alt="" coords="488,70,660,125"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="397,148,474,124,475,130,398,153"/>
+<area shape="rect" id="Node000006" href="$df/da5/classaopp__deconv__tool_1_1data__structures_1_1bi__directional__map_1_1BiDirectionalMap.html#a614b437f58a5a3e5b548bd67436ae109" title=" " alt="" coords="445,149,703,203"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="397,173,431,173,431,179,397,179"/>
+<area shape="rect" id="Node000007" href="$d0/dda/classoptical__component_1_1OpticalComponentSet.html#ab8abbe5c0a1e1d1434239962fb70be0c" title=" " alt="" coords="473,228,675,268"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="398,199,446,212,482,222,481,227,445,217,397,204"/>
+<area shape="rect" id="Node000008" href="$d9/d34/classaopp__deconv__tool_1_1optimise__compat_1_1PriorParamSet.html#a8af3ab497153694a2bd2db8760918b23" title=" " alt="" coords="473,293,675,347"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="343,202,390,241,447,278,462,285,460,290,444,282,387,245,340,206"/>
+<area shape="rect" id="Node000005" href="$d6/da1/classaopp__deconv__tool_1_1task__strat_1_1TaskStratSet.html#a76324e28a364c9e85b911725b852314b" title=" " alt="" coords="751,70,923,125"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="660,95,737,95,737,100,660,100"/>
 </map>

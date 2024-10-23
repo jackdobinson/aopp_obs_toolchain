@@ -1,6 +1,10 @@
 <map id="aopp_deconv_tool.to_fits.read_image_into_data_bundle" name="aopp_deconv_tool.to_fits.read_image_into_data_bundle">
-<area shape="rect" id="node1" title=" " alt="" coords="445,31,608,87"/>
-<area shape="rect" id="node2" href="$d9/d77/namespaceaopp__deconv__tool_1_1to__fits.html#aa3e8c7d6cf6c33134f75ae9e720fe2bb" title=" " alt="" coords="225,5,383,47"/>
-<area shape="rect" id="node4" href="$d9/d77/namespaceaopp__deconv__tool_1_1to__fits.html#aa59ff5aafa0a1cf924e85b64cbc8fc33" title=" " alt="" coords="211,71,397,112"/>
-<area shape="rect" id="node3" href="$d9/d77/namespaceaopp__deconv__tool_1_1to__fits.html#a3b8c4b8711a10fe9badf4cbe1af0a316" title=" " alt="" coords="5,5,163,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="443,54,605,109"/>
+<area shape="rect" id="Node000002" href="$d9/d77/namespaceaopp__deconv__tool_1_1to__fits.html#a8b96332211de6e1520aa954995b627c8" title=" " alt="" coords="224,29,381,69"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="429,70,381,63,382,58,430,65"/>
+<area shape="rect" id="Node000004" href="$d9/d77/namespaceaopp__deconv__tool_1_1to__fits.html#a3b39fe7fe0fd372761076c896cd1e6e0" title=" " alt="" coords="211,93,395,133"/>
+<area shape="poly" id="edge4_Node000001_Node000004" title=" " alt="" coords="430,98,395,103,395,97,429,92"/>
+<area shape="poly" id="edge2_Node000002_Node000002" title=" " alt="" coords="340,18,327,11,303,8,282,10,269,15,264,21,267,28,262,30,259,20,266,10,280,5,303,3,328,6,342,13"/>
+<area shape="rect" id="Node000003" href="$d9/d77/namespaceaopp__deconv__tool_1_1to__fits.html#a46b9e841b4debbe3f33b61ab43e0d5d3" title=" " alt="" coords="5,29,163,69"/>
+<area shape="poly" id="edge3_Node000002_Node000003" title=" " alt="" coords="210,52,163,52,163,47,210,47"/>
 </map>

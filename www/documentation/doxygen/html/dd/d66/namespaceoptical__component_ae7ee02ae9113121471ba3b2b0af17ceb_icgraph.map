@@ -1,0 +1,9 @@
+<map id="optical_component.sign" name="optical_component.sign">
+<area shape="rect" id="Node000001" title=" " alt="" coords="304,77,481,102"/>
+<area shape="rect" id="Node000002" href="$db/db5/classoptical__component_1_1Refractor.html#a293fba1fb4f24bd778083583bc6d9db7" title=" " alt="" coords="13,5,248,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="326,76,213,48,214,43,327,71"/>
+<area shape="rect" id="Node000003" href="$df/d27/classoptical__component_1_1Aperture.html#acee3228d118688f0b282fa0dd2174407" title=" " alt="" coords="15,69,246,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="290,92,246,92,246,87,290,87"/>
+<area shape="rect" id="Node000004" href="$d6/d5b/classoptical__component_1_1Obstruction.html#a047f3df6799989eced45a2b384a598a9" title=" " alt="" coords="5,133,256,173"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="327,108,214,136,213,131,326,103"/>
+</map>

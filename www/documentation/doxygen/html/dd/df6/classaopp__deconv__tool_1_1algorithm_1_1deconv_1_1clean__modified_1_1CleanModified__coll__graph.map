@@ -1,4 +1,26 @@
 <map id="aopp_deconv_tool.algorithm.deconv.clean_modified.CleanModified" name="aopp_deconv_tool.algorithm.deconv.clean_modified.CleanModified">
-<area shape="rect" id="node1" title=" " alt="" coords="21,80,317,121"/>
-<area shape="rect" id="node2" href="$d1/df9/classaopp__deconv__tool_1_1algorithm_1_1deconv_1_1base_1_1Base.html" title=" " alt="" coords="5,5,333,32"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="756,508,1052,548"/>
+<area shape="rect" id="Node000002" href="$d1/df9/classaopp__deconv__tool_1_1algorithm_1_1deconv_1_1base_1_1Base.html" title=" " alt="" coords="225,113,553,138"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="510,139,554,155,617,191,675,235,727,285,774,337,849,436,894,506,889,509,844,439,770,340,724,289,671,239,614,195,552,160,508,144"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="13,46,52,71"/>
+<area shape="poly" id="edge6_Node000001_Node000003" title=" " alt="" coords="65,47,84,44,143,40,201,44,381,55,459,68,554,97,610,119,653,140,691,168,734,210,766,248,794,289,842,374,877,451,898,507,893,509,872,453,838,376,790,292,761,251,730,214,688,172,650,145,608,124,552,103,457,73,381,60,201,49,143,46,84,49,66,53"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="62,77,85,88,154,107,226,118,225,123,153,112,83,93,60,81"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="13,125,52,150"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="66,135,201,133,225,132,225,138,201,139,66,140"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="13,278,52,303"/>
+<area shape="poly" id="edge9_Node000001_Node000005" title=" " alt="" coords="66,292,226,308,338,311,483,312,626,319,686,329,733,344,761,360,787,379,833,424,869,469,893,506,889,509,864,472,829,428,784,383,758,365,731,349,685,334,625,325,483,317,338,316,225,313,66,297"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="65,281,132,257,168,237,199,212,208,198,210,184,213,169,224,155,258,136,260,140,227,159,218,172,215,185,213,200,203,215,171,242,134,262,66,286"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="9,174,56,199"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="69,178,201,156,318,135,318,141,202,161,70,183"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="364,491,415,517"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="428,503,756,518,756,524,428,508"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="364,541,415,566"/>
+<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="428,550,732,537,755,536,756,541,732,543,428,555"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="366,667,413,693"/>
+<area shape="poly" id="edge10_Node000001_Node000009" title=" " alt="" coords="426,681,486,685,563,684,648,675,690,666,731,654,777,631,819,602,882,546,886,550,822,606,780,636,733,658,692,671,649,680,564,690,486,690,426,687"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="5,745,60,770"/>
+<area shape="poly" id="edge11_Node000001_Node000010" title=" " alt="" coords="73,749,84,748,184,742,270,745,419,756,489,756,561,748,641,727,731,690,781,658,825,619,861,579,886,547,891,550,865,583,829,622,784,662,733,694,642,732,562,754,489,762,418,761,270,750,184,748,84,753,74,754"/>
+<area shape="rect" id="Node000011" href="$dd/de2/classaopp__deconv__tool_1_1data__structures_1_1pointer_1_1Pointer.html" title=" " alt="" coords="293,780,486,820"/>
+<area shape="poly" id="edge13_Node000011_Node000010" title=" " alt="" coords="74,761,84,763,293,788,292,793,84,768,73,766"/>
+<area shape="poly" id="edge12_Node000001_Node000011" title=" " alt="" coords="499,808,556,808,616,802,675,787,731,763,762,741,790,715,838,654,872,593,893,547,898,549,876,596,842,657,794,718,765,745,733,768,677,792,616,807,556,813,500,814"/>
 </map>

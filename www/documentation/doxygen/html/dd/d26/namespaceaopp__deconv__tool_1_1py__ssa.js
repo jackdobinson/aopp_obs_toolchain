@@ -11,6 +11,7 @@ var namespaceaopp__deconv__tool_1_1py__ssa =
     [ "Array_2D", "dd/d26/namespaceaopp__deconv__tool_1_1py__ssa.html#a1c3f14834c300547f1b13292e5267b36", null ],
     [ "Array_3D", "dd/d26/namespaceaopp__deconv__tool_1_1py__ssa.html#a615de3c799d10113e32c945b5164f0c8", null ],
     [ "Convolution_Mode_literals", "dd/d26/namespaceaopp__deconv__tool_1_1py__ssa.html#a90406dd3474760be5dd5b21e14a14192", null ],
+    [ "dataset", "dd/d26/namespaceaopp__deconv__tool_1_1py__ssa.html#a2363162a00aaaf66335f37d7f48aefda", null ],
     [ "eval_n_set_frac", "dd/d26/namespaceaopp__deconv__tool_1_1py__ssa.html#a83d9b0a9e61db59bf7d0ffefc7e38596", null ],
     [ "Grouping_Mode_Literals", "dd/d26/namespaceaopp__deconv__tool_1_1py__ssa.html#a80d3ee4dd560798a66c3599951db1c8f", null ],
     [ "L", "dd/d26/namespaceaopp__deconv__tool_1_1py__ssa.html#a2bf707eaaac8c196f365377c4580e3fc", null ],

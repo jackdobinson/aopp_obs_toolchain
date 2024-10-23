@@ -1,4 +1,5 @@
 <map id="aopp_deconv_tool.graphical_frontends.ssa_filtering.CallbackMixin.attach_callback" name="aopp_deconv_tool.graphical_frontends.ssa_filtering.CallbackMixin.attach_callback">
-<area shape="rect" id="node1" title=" " alt="" coords="343,5,577,61"/>
-<area shape="rect" id="node2" href="$d6/d1d/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1ImageViewer.html#ae68d7cb1e634d445ac0a498215e29db6" title=" " alt="" coords="5,5,295,61"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="340,5,575,60"/>
+<area shape="rect" id="Node000002" href="$d6/d1d/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1ImageViewer.html#a2b098f0d395c9b52797e60b07b8951a2" title=" " alt="" coords="5,5,292,60"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="326,35,292,35,292,30,326,30"/>
 </map>

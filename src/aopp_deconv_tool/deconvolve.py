@@ -9,6 +9,10 @@ import sys, os
 from pathlib import Path
 from typing import Literal
 
+from concurrent.futures import ProcessPoolExecutor as Executor, as_completed
+from multiprocessing import Queue as MsgQueue
+import multiprocessing as mp
+
 import numpy as np
 from astropy.io import fits
 
@@ -252,6 +256,134 @@ def create_plot_set(deconvolver, cadence = 1):
 	)
 	return plot_set
 
+
+
+def init_process_context(msg_queue):
+	global queue
+	queue = msg_queue
+	
+
+def deconv_process(group_index, idx, deconvolver, obs, psf):
+	#lambda idx, obs, psf: (idx, deconvolver(obs, psf), deconvolver.get_parameters()), obs_idx, processed_obs, normed_psf))
+	import sys
+	from contextlib import redirect_stdout
+	from time import sleep
+	
+	class OutFileLikeQueue:
+		def __init__(self, q, group_index):
+			self.q = q
+			self.group_index = group_index
+		
+		def write(self, msg):
+			#print(f'queue in: {self.group_index=} {msg=}', file=sys.stderr)
+			self.q.put_nowait((self.group_index, msg))
+			#sleep(0.1)
+		
+		def close(self):
+			self.q.put((self.group_index, None))
+	
+	with redirect_stdout(OutFileLikeQueue(queue, group_index)) as q:
+	
+		try:
+			result = deconvolver(obs, psf)
+			params = deconvolver.get_parameters()
+		except Exception:
+			print(e, file=sys.stdout)
+		finally:
+			q.write(None)
+			q.close()
+		
+	return group_index, idx, result, params
+
+
+
+def display_process_progress():
+	from time import sleep
+	from collections import OrderedDict
+	
+	stop = False
+	empty = True
+
+	max_line_len = 16
+	display_line = []
+	most_recent_msg = dict()
+	display_msg = dict()
+	#print('ONE')
+
+	while not stop:
+	
+		#print('TWO')
+		try:
+			empty = queue.empty()
+		except OSError as e:
+			#print('queue stopping')
+			#print(e)
+			stop = True
+			break
+		
+		#print('THREE')
+		if empty:
+			#print('queue is empty')
+			sleep(0.1)
+			continue
+		
+		#print('FOUR')
+		
+		group_index, msg = queue.get()
+		
+		#print('FIVE')
+		
+		if group_index is None and msg is None:
+			#print('queue stopping')
+			stop = True
+			break
+		
+		#print('SIX')
+		
+		if msg is None:
+			#print(f'msg is "None", deleting state tracker for {group_index=}')
+			if group_index in most_recent_msg:
+				del most_recent_msg[group_index]
+			if group_index in display_msg:
+				del display_msg[group_index]
+	
+		
+		
+		#print('SEVEN')
+		#print(f'queue out: {group_index=} msg="{msg}"')
+
+		if type(msg) is str:
+			most_recent_msg[group_index] = msg.replace('\r', '').strip()
+
+		#print('EIGHT')
+		if len(most_recent_msg.get(group_index, '')) == 0:
+			#print('continue')
+			continue
+		else:
+			#print('keep message')
+			display_msg[group_index] = most_recent_msg.get(group_index, 'X'*16)
+		
+		#print('NINE')
+		
+		#print(' '*max_line_len, end='\r')
+		
+		display_line = ['- Parallel Processes ' + '-'*20] + [f'{k} {v}' for k,v in display_msg.items()]
+		show_line = '\n'.join(display_line)
+		
+		if len(show_line) > max_line_len:
+			max_line_len = len(show_line)
+		
+		#print(show_line, end='')
+		print(show_line, end='\n')
+		
+		
+		#print('queue out: restart loop')
+	
+	print(f'queue ended')
+	queue.close()
+		
+
+
 def run(
 		obs_fits_spec : aph.fits.specifier.FitsSpecifier,
 		psf_fits_spec : aph.fits.specifier.FitsSpecifier,
@@ -259,6 +391,7 @@ def run(
 		output_path : str | Path = './deconv.fits',
 		plot : bool = True,
 		progress : int = 0,
+		n_processes : int = (mp.cpu_count() - 2),
 	):
 	"""
 	Given a FitsSpecifier for an observation and a PSF, an output path, and a class that performs deconvolution,
@@ -285,6 +418,8 @@ def run(
 			Instance of Class to use for deconvolving, defaults to an instance of CleanModified
 		plot : bool = True
 			If `True` will plot the deconvolution progress
+		n_processes : int = N_cpu - 2
+			Number of processes to parallelise the calculations over
 	"""
 	
 	_lgr.debug(f'{obs_fits_spec=}')
@@ -315,6 +450,8 @@ def run(
 		deconvolver.final_hooks.append(iteration_tracker.complete)
 	
 	
+	#idx_result=[[]]
+	
 	# Open the fits files
 	with fits.open(Path(obs_fits_spec.path)) as obs_hdul, fits.open(Path(psf_fits_spec.path)) as psf_hdul:
 		
@@ -322,6 +459,9 @@ def run(
 		obs_data = obs_hdul[obs_fits_spec.ext].data
 		psf_data = psf_hdul[psf_fits_spec.ext].data
 		original_data_type=obs_data.dtype
+		
+		group_shape = tuple(s for x, s in enumerate(obs_data.shape) if x not in obs_fits_spec.axes['CELESTIAL'])
+		idx_result = np.full(group_shape, dtype=object, fill_value=dict())
 		
 		_lgr.debug(f'{obs_data.shape=}')
 		_lgr.debug(f'{psf_data.shape=}')
@@ -331,67 +471,144 @@ def run(
 		deconv_components = np.full_like(obs_data, np.nan)
 		deconv_residual = np.full_like(obs_data, np.nan)
 		
-		# Loop over the index range specified by `obs_fits_spec` and `psf_fits_spec`
-		for i, (obs_idx, psf_idx) in enumerate(zip(
-				nph.slice.iter_indices(obs_data, obs_fits_spec.slices, obs_fits_spec.axes['CELESTIAL']),
-				nph.slice.iter_indices(psf_data, psf_fits_spec.slices, psf_fits_spec.axes['CELESTIAL'])
-			)):
-			if progress > 0:
-				iteration_tracker.reset()
-				print(f'Deconvolving slice {i}/{obs_data[obs_fits_spec.slices].shape[tuple(x for x in range(obs_data.ndim) if x not in obs_fits_spec.axes['CELESTIAL'])[0]]}')
-			_lgr.debug(f'Operating on slice {i}')
-			
-			"""
-			# Playing with wiener filter deconvolution
-			import scipy as sp
-			from skimage import restoration
-			import scipy.signal
-			mask = np.zeros_like(psf_data[psf_idx], dtype=bool)
-			mask[tuple(slice(s//4,3*s//4) for s in mask.shape)] = 1
-			noise_var = 1E6
-			_lgr.debug(f'{noise_var=}')
-			wiener_filtered_data = restoration.wiener(obs_data[obs_idx], psf_data[psf_idx], 1E-2, clip=False)
-			reconvolve =  sp.signal.fftconvolve(wiener_filtered_data, psf_data[psf_idx], mode='same')
-			plt.clf()
-			f = plt.gcf()
-			ax = f.subplots(2,2).flatten()
-			ax[0].imshow(obs_data[obs_idx])
-			ax[1].imshow(wiener_filtered_data)
-			ax[2].imshow(reconvolve)
-			ax[3].imshow(obs_data[obs_idx] -reconvolve)
-			plt.show()
-			sys.exit()
-			"""
+		msg_queue = MsgQueue()
 		
+		with Executor(max_workers=n_processes, initializer=init_process_context, initargs=(msg_queue,)) as executor:
 			
+			msg_responder_process = executor.submit(display_process_progress)
 			
-			# Ensure that we actually have data in this part of the cube
-			if np.all(np.isnan(obs_data[obs_idx])) or np.all(np.isnan(psf_data[psf_idx])):
-				_lgr.warn('All NAN obs or psf layer detected. Skipping...')
+			futures = []
+			# Loop over the index range specified by `obs_fits_spec` and `psf_fits_spec`
+			for i, (obs_idx, psf_idx) in enumerate(zip(
+					nph.slice.iter_indices(obs_data, obs_fits_spec.slices, obs_fits_spec.axes['CELESTIAL']),
+					nph.slice.iter_indices(psf_data, psf_fits_spec.slices, psf_fits_spec.axes['CELESTIAL'])
+				)):
+				if progress > 0:
+					iteration_tracker.reset()
+					print(f'Deconvolving slice {i}/{obs_data[obs_fits_spec.slices].shape[tuple(x for x in range(obs_data.ndim) if x not in obs_fits_spec.axes['CELESTIAL'])[0]]}')
+				_lgr.debug(f'Operating on slice {i}')
+				
+				
+				# Get group index we can use to uniquely identify which
+				# section of the array we are operating on
+				gi_elems = tuple(0 for x in range(obs_data.ndim) if x not in obs_fits_spec.axes['CELESTIAL'])
+				group_index = []
+				group_obs_idx = obs_idx
+				counter = 0
+				for ax in sorted(obs_fits_spec.axes['CELESTIAL'], reverse=True):
+					group_obs_idx = np.take(group_obs_idx, 0, ax-counter)
+					counter += 1
+				for _i,_v in enumerate(gi_elems):
+					group_index.append(np.take(group_obs_idx, _i, axis=_v))
+				group_index = tuple(group_index)
+				
+				
+				# Ensure that we actually have data in this part of the cube
+				if np.all(np.isnan(obs_data[obs_idx])) or np.all(np.isnan(psf_data[psf_idx])):
+					_lgr.warn('All NAN obs or psf layer detected. Skipping...')
+					continue
+				
+				# perform any normalisation and processing
+				normed_psf = psf_data_ops.normalise(np.nan_to_num(psf_data[psf_idx]))
+				processed_obs = np.nan_to_num(obs_data[obs_idx])
+				
+				"""
+				# Store the deconvolution products in the arrays we created earlier
+				deconv_components[obs_idx], deconv_residual[obs_idx], deconv_iters = deconvolver(processed_obs, normed_psf)
+				
+				# Save the parameters we used. NOTE: we are only saving the LAST set of parameters as they are all the same
+				# in this case. However, if they vary with index they should be recorded with index as well.
+				deconv_params = deconvolver.get_parameters()
 			
-			# perform any normalisation and processing
-			normed_psf = psf_data_ops.normalise(np.nan_to_num(psf_data[psf_idx]))
-			processed_obs = np.nan_to_num(obs_data[obs_idx])
+				idx_result.append({**deconv_params})
+				"""
+				
+				futures.append(executor.submit(deconv_process, group_index, obs_idx, deconvolver, processed_obs, normed_psf))
 			
-			# Store the deconvolution products in the arrays we created earlier
-			deconv_components[obs_idx], deconv_residual[obs_idx], deconv_iters = deconvolver(processed_obs, normed_psf)
-			
-		
-		# Save the parameters we used. NOTE: we are only saving the LAST set of parameters as they are all the same
-		# in this case. However, if they vary with index they should be recorded with index as well.
-		deconv_params = deconvolver.get_parameters()
-		
-		# Make sure we get all the observaiton header data as well as the deconvolution parameters
-		hdr = obs_hdul[obs_fits_spec.ext].header
-		hdr.update(aph.fits.header.DictReader(
-			{
-				'obs_file' : obs_fits_spec.path,
-				'psf_file' : psf_fits_spec.path, # record the PSF file we used
-				**deconv_params # record the deconvolution parameters we used
-			},
-			prefix='deconv',
-			pkey_count_start=aph.fits.header.DictReader.find_max_pkey_n(hdr)
-		))
+			print(f'Waiting for processes...')
+			for future in as_completed(futures):
+				if not future.done():
+					_lgr.error(f'Deconv process {future} not completed, something went wrong')
+					continue
+				if future.cancelled():
+					_lgr.warn(f'Deconv process {fugure} cancelled, skipping result...')
+					continue
+				
+				_lgr.info(f'Process {group_index} ended')
+				msg_queue.put((group_index, None))
+				
+				group_index, idx, (future_deconv_components, future_deconv_residual, future_deconv_iters), future_params = future.result()
+				
+				_lgr.debug(f'{group_index=}')
+				_lgr.debug(f'{idx=}')
+				_lgr.debug(f'{future_deconv_components=}')
+				_lgr.debug(f'{future_deconv_residual=}')
+				_lgr.debug(f'{future_deconv_iters=}')
+				_lgr.debug(f'{future_params=}')
+				deconv_components[idx] = future_deconv_components
+				deconv_residual[idx] = future_deconv_residual
+				
+				idx_result[*group_index] = {**future_params}
+
+			_lgr.info(f'Processes completed')
+			msg_queue.put((None,None))
+			msg_queue.close()
+	
+
+	_lgr.debug(f'{idx_result=}')
+	
+	param_names = None
+	param_defaults = None
+	for item in idx_result:
+		if len(item) > 0:
+			param_names = tuple(item.keys())
+			param_defaults = item
+			break
+	
+	params_that_change = []
+	for k in param_names:
+		if any((x[k] != param_defaults[k] for x in idx_result if len(x) != 0)):
+			params_that_change.append(k)
+	params_that_are_static=[k for k in param_names if k not in params_that_change]
+	
+	vp_type_missing = {}
+	vp_type_codes = {}
+	for k in params_that_change:
+		v = param_defaults[k]
+		if type(v) is str:
+			vp_type_codes[k] = 'A'
+			vp_type_missing[k] = 'MISSING'
+		elif type(v) is int:
+			vp_type_codes[k]='I'
+			vp_type_missing[k] = -1
+		elif type(v) is float:
+			vp_type_codes[k]='D'
+			vp_type_missing[k] = np.nan
+		else:
+			vp_type_codes[k]='1024A'
+			vp_type_missing[k] = 'MISSING'
+	
+	static_params = dict(((k,param_defaults[k]) for k in param_names if k in params_that_are_static))
+	volatile_params = dict((k, [x.get(k, vp_type_missing[k]) for x in idx_result]) for k in params_that_change)
+	
+	
+	
+	for k,v in vp_type_codes.items():
+		if v[0]=='A':
+			vp_type_codes[k]=f'{max(map(len,volatile_params[k]))}A'
+	
+	
+	# Make sure we get all the observaiton header data as well as the deconvolution parameters
+	hdr = obs_hdul[obs_fits_spec.ext].header
+	hdr.update(aph.fits.header.DictReader(
+		{
+			'obs_file' : obs_fits_spec.path,
+			'psf_file' : psf_fits_spec.path, # record the PSF file we used
+			**static_params # record the deconvolution parameters we used
+		},
+		prefix='deconv',
+		pkey_count_start=aph.fits.header.DictReader.find_max_pkey_n(hdr)
+	))
 	
 	# Save the deconvolution products to a FITS file
 	hdu_components = fits.PrimaryHDU(
@@ -403,9 +620,17 @@ def run(
 		data = deconv_residual.astype(original_data_type),
 		name = 'RESIDUAL'
 	)
+	hdu_deconv_param_tbl = fits.BinTableHDU.from_columns(
+		columns = [fits.Column(name=f'deconv.{k}', format=vp_type_codes[k], array=v) for k,v in volatile_params.items()],
+		name = 'VOLATILE_PARAMS',
+		header = None,
+	)
+	
+	
 	hdul_output = fits.HDUList([
 		hdu_components,
-		hdu_residual
+		hdu_residual,
+		hdu_deconv_param_tbl
 	])
 	hdul_output.writeto(output_path, overwrite=True)
 	
@@ -507,6 +732,13 @@ def parse_args(argv):
 		help='Show progression of deconvolution on each `progress` step, 0 does not display progress'
 	)
 	
+	parser.add_argument(
+		'--n_processes',
+		type=int,
+		default=mp.cpu_count() - 2,
+		help= 'Number of processors to parallelise the calculations over'
+	)
+	
 	parser.successful = True
 	parser.error_message = None
 	
@@ -549,7 +781,8 @@ def go(
 		output_path=None, 
 		plot=None, 
 		deconv_method=None, 
-		deconv_method_help_FLAG=None, 
+		deconv_method_help_FLAG=None,
+		n_processes=None,
 		**kwargs
 	):
 	"""
@@ -591,6 +824,7 @@ def exec_with_args(argv):
 		output_path = args.output_path, 
 		plot = args.plot,
 		progress = args.progress,
+		n_processes = args.n_processes,
 	)
 	
 	return

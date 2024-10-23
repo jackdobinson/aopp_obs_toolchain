@@ -1,4 +1,5 @@
 <map id="T" name="T">
-<area shape="rect" id="node1" title=" " alt="" coords="121,5,159,32"/>
-<area shape="rect" id="node2" href="$d4/d16/classaopp__deconv__tool_1_1geometry_1_1bounding__box_1_1BoundingBox.html" title=" " alt="" coords="5,80,275,121"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="121,5,159,31"/>
+<area shape="rect" id="Node000002" href="$d4/d16/classaopp__deconv__tool_1_1geometry_1_1bounding__box_1_1BoundingBox.html" title=" " alt="" coords="5,79,275,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="143,44,143,79,137,79,137,44"/>
 </map>

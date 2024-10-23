@@ -1,4 +1,15 @@
 <map id="optical_component.Obstruction" name="optical_component.Obstruction">
-<area shape="rect" id="node1" title=" " alt="" coords="5,95,231,121"/>
-<area shape="rect" id="node2" href="$d5/dc2/classoptical__component_1_1OpticalComponent.html" title=" " alt="" coords="20,5,216,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="129,196,354,221"/>
+<area shape="rect" id="Node000002" href="$d5/dc2/classoptical__component_1_1OpticalComponent.html" title=" " alt="" coords="21,93,217,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="156,140,228,194,225,198,153,144"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,5,56,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="42,42,58,68,86,91,83,95,54,71,38,45"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="99,5,138,31"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="121,44,121,93,116,93,116,44"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="165,5,216,31"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="181,45,163,71,142,95,138,91,159,68,176,42"/>
+<area shape="rect" id="Node000006" href="$d2/dbe/classaopp__deconv__tool_1_1geometry_1_1shape_1_1GeoShape.html" title=" " alt="" coords="241,93,493,133"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="332,144,258,198,255,194,328,140"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="329,5,404,31"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="369,44,369,93,364,93,364,44"/>
 </map>

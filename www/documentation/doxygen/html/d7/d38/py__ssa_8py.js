@@ -1,6 +1,6 @@
 var py__ssa_8py =
 [
-    [ "SSA", "dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA.html", "dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA" ],
+    [ "aopp_deconv_tool.py_ssa.SSA", "dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA.html", "dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA" ],
     [ "frobenius_inner_prod", "d7/d38/py__ssa_8py.html#a989a76a014de9ff900fe3b559b64f70e", null ],
     [ "frobenius_norm", "d7/d38/py__ssa_8py.html#a8bd9aa3cd1f0fb908170f4c1257fdc1a", null ],
     [ "unvectorise_mat", "d7/d38/py__ssa_8py.html#a7af2d22a80671103151158b1330f3d50", null ],
@@ -11,6 +11,7 @@ var py__ssa_8py =
     [ "Array_2D", "d7/d38/py__ssa_8py.html#a1c3f14834c300547f1b13292e5267b36", null ],
     [ "Array_3D", "d7/d38/py__ssa_8py.html#a615de3c799d10113e32c945b5164f0c8", null ],
     [ "Convolution_Mode_literals", "d7/d38/py__ssa_8py.html#a90406dd3474760be5dd5b21e14a14192", null ],
+    [ "dataset", "d7/d38/py__ssa_8py.html#a2363162a00aaaf66335f37d7f48aefda", null ],
     [ "eval_n_set_frac", "d7/d38/py__ssa_8py.html#a83d9b0a9e61db59bf7d0ffefc7e38596", null ],
     [ "Grouping_Mode_Literals", "d7/d38/py__ssa_8py.html#a80d3ee4dd560798a66c3599951db1c8f", null ],
     [ "L", "d7/d38/py__ssa_8py.html#a2bf707eaaac8c196f365377c4580e3fc", null ],

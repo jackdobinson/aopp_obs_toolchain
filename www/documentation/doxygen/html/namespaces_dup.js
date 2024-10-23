@@ -1,8 +1,8 @@
 var namespaces_dup =
 [
     [ "adaptive_optics_model", "d9/d3e/namespaceadaptive__optics__model.html", [
-      [ "moffat_function", "d9/d3e/namespaceadaptive__optics__model.html#ab5e715850c9c258be2c266ced7f0b478", null ],
-      [ "phase_psd_fetick_2019_moffat_function", "d9/d3e/namespaceadaptive__optics__model.html#a0813f514f4298d5473d3f078e1829aaf", null ]
+      [ "moffat_function", "d9/d3e/namespaceadaptive__optics__model.html#a09d22200b0ecf89522a89b0d39c20b02", null ],
+      [ "phase_psd_fetick_2019_moffat_function", "d9/d3e/namespaceadaptive__optics__model.html#a0f8bdb73e23f6065e5adb2ce0903e145", null ]
     ] ],
     [ "aopp_deconv_tool", "d1/d0c/namespaceaopp__deconv__tool.html", "d1/d0c/namespaceaopp__deconv__tool" ],
     [ "function", "d3/d62/namespacefunction.html", "d3/d62/namespacefunction" ],
@@ -15,7 +15,7 @@ var namespaces_dup =
       [ "_lgr", "d4/db8/namespacetelescope__model.html#a121da9e66c0af0a12fd62f4ef150fc0e", null ]
     ] ],
     [ "turbulence_model", "db/dc4/namespaceturbulence__model.html", [
-      [ "phase_psd_von_karman_turbulence", "db/dc4/namespaceturbulence__model.html#af3a7012b9c39c537e5f9c90401e2d12a", null ],
+      [ "phase_psd_von_karman_turbulence", "db/dc4/namespaceturbulence__model.html#a031d895858488e70a6020396556aa3cf", null ],
       [ "_lgr", "db/dc4/namespaceturbulence__model.html#ad8b0f838a0c9abb9119101d9ce4420d4", null ]
     ] ],
     [ "vlt", "d2/d6e/namespacevlt.html", "d2/d6e/namespacevlt" ]

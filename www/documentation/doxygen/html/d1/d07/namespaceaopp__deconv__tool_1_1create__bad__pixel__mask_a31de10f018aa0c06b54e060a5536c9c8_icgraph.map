@@ -1,6 +1,10 @@
 <map id="aopp_deconv_tool.create_bad_pixel_mask.load_dynamic_regions" name="aopp_deconv_tool.create_bad_pixel_mask.load_dynamic_regions">
-<area shape="rect" id="node1" title=" " alt="" coords="760,5,991,61"/>
-<area shape="rect" id="node2" href="$d1/d07/namespaceaopp__deconv__tool_1_1create__bad__pixel__mask.html#ae4241a7463849ecf0dada0cc62d40b34" title=" " alt="" coords="527,13,712,54"/>
-<area shape="rect" id="node3" href="$d1/d07/namespaceaopp__deconv__tool_1_1create__bad__pixel__mask.html#a656853bce6dbc18e632700c0daaca43e" title=" " alt="" coords="239,13,479,54"/>
-<area shape="rect" id="node4" href="$d1/d07/namespaceaopp__deconv__tool_1_1create__bad__pixel__mask.html#a8dd3e186d7fb2632f6636b4697448f7e" title=" " alt="" coords="5,13,191,54"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="759,22,988,77"/>
+<area shape="rect" id="Node000002" href="$d1/d07/namespaceaopp__deconv__tool_1_1create__bad__pixel__mask.html#a682bc2ed60b422fd25b8e129eaaecf37" title=" " alt="" coords="525,29,711,69"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="745,52,711,52,711,47,745,47"/>
+<area shape="rect" id="Node000003" href="$d1/d07/namespaceaopp__deconv__tool_1_1create__bad__pixel__mask.html#a0aa99e7152235361dccbaa951b53d825" title=" " alt="" coords="239,29,477,69"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="512,52,477,52,477,47,512,47"/>
+<area shape="poly" id="edge3_Node000003_Node000003" title=" " alt="" coords="402,18,387,11,358,8,333,10,318,15,312,21,315,28,310,30,307,20,315,10,332,5,358,3,388,6,404,13"/>
+<area shape="rect" id="Node000004" href="$d1/d07/namespaceaopp__deconv__tool_1_1create__bad__pixel__mask.html#a5f856e8b1feca41397f810042306f140" title=" " alt="" coords="5,29,191,69"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="225,52,191,52,191,47,225,47"/>
 </map>

@@ -1,0 +1,16 @@
+<map id="aopp_deconv_tool.fits_slice.go" name="aopp_deconv_tool.fits_slice.go">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,49,169,89"/>
+<area shape="rect" id="Node000002" href="$da/d5f/namespaceaopp__deconv__tool_1_1arguments.html#aec2c9d770d31aa257cf89a398d910714" title=" " alt="" coords="217,5,496,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="169,53,220,45,221,50,170,59"/>
+<area shape="rect" id="Node000003" href="$d6/d01/namespaceaopp__deconv__tool_1_1fits__slice.html#a22c48d7ced086dab4c8658964fc83178" title=" " alt="" coords="275,93,439,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="170,80,261,95,260,100,169,85"/>
+<area shape="poly" id="edge3_Node000003_Node000003" title=" " alt="" coords="307,94,304,84,312,74,330,69,357,67,388,69,405,77,403,82,387,75,357,72,331,74,315,79,309,85,312,92"/>
+<area shape="rect" id="Node000004" href="$d6/d01/namespaceaopp__deconv__tool_1_1fits__slice.html#a07e531c1e706bd0a972662aab71208a8" title=" " alt="" coords="544,61,708,101"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="438,101,530,90,531,95,439,106"/>
+<area shape="rect" id="Node000007" href="$d6/d01/namespaceaopp__deconv__tool_1_1fits__slice.html#a8e80cea11fbef7df02ee4343d76b5526" title=" " alt="" coords="544,125,708,165"/>
+<area shape="poly" id="edge7_Node000003_Node000007" title=" " alt="" coords="439,120,531,131,530,137,438,126"/>
+<area shape="rect" id="Node000005" href="$d8/d5b/namespaceaopp__deconv__tool_1_1text.html#a75d81e58c71da89b56473e2616edd1c6" title=" " alt="" coords="756,69,963,94"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="708,79,742,79,742,84,708,84"/>
+<area shape="rect" id="Node000006" href="$d8/d5b/namespaceaopp__deconv__tool_1_1text.html#a1496cf89a275b1b851ff81f401628c27" title=" " alt="" coords="1011,61,1241,101"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="963,79,997,79,997,84,963,84"/>
+</map>

@@ -1,0 +1,14 @@
+<map id="aopp_deconv_tool.graphical_frontends.ssa_filtering.SSAViewer.set_data" name="aopp_deconv_tool.graphical_frontends.ssa_filtering.SSAViewer.set_data">
+<area shape="rect" id="Node000001" title=" " alt="" coords="740,123,1047,163"/>
+<area shape="poly" id="edge1_Node000001_Node000001" title=" " alt="" coords="954,112,933,105,893,102,859,104,838,109,830,115,834,122,829,124,825,114,835,104,858,99,893,97,934,99,956,107"/>
+<area shape="rect" id="Node000002" href="$dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#a4f1db2c1933153633875d158080fd879" title=" " alt="" coords="406,44,677,99"/>
+<area shape="poly" id="edge2_Node000001_Node000002" title=" " alt="" coords="781,123,675,101,676,96,782,118"/>
+<area shape="rect" id="Node000005" href="$d6/d1d/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1ImageViewer.html#a3a362bcec191790684ab2d054db8042f" title=" " alt="" coords="391,123,692,163"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="726,146,692,146,692,141,726,141"/>
+<area shape="rect" id="Node000006" href="$dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#aa5805401ffe03e9fed4dc9e4ee3c745e" title=" " alt="" coords="399,187,684,227"/>
+<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="770,168,652,190,651,185,769,163"/>
+<area shape="rect" id="Node000003" href="$dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#add57887bb2a4187c49fe64b654c2ce52" title=" " alt="" coords="37,5,311,60"/>
+<area shape="poly" id="edge3_Node000002_Node000003" title=" " alt="" coords="392,58,311,50,311,44,393,53"/>
+<area shape="rect" id="Node000004" href="$dd/d48/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1SSAViewer.html#af20faf3c5bc20d839e6c504f12a76abf" title=" " alt="" coords="5,84,343,139"/>
+<area shape="poly" id="edge4_Node000002_Node000004" title=" " alt="" coords="392,90,343,96,342,90,392,85"/>
+</map>

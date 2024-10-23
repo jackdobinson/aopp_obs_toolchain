@@ -1,0 +1,10 @@
+<map id="optical_component.OpticalComponentSet.psf" name="optical_component.OpticalComponentSet.psf">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,13,201,53"/>
+<area shape="rect" id="Node000002" href="$d0/dda/classoptical__component_1_1OpticalComponentSet.html#aa90be9d766d2dd7952a1a4098d0f6df0" title=" " alt="" coords="249,13,464,53"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="202,30,236,30,236,35,202,35"/>
+<area shape="rect" id="Node000003" href="$d0/dda/classoptical__component_1_1OpticalComponentSet.html#a4e7c3638f1edd823fa7b4ed1566ffe69" title=" " alt="" coords="756,5,952,60"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="464,24,512,22,708,22,742,23,742,29,708,27,512,27,464,29"/>
+<area shape="rect" id="Node000004" href="$d0/dda/classoptical__component_1_1OpticalComponentSet.html#a08350fc7bd0cdf6d877b56d30fd42547" title=" " alt="" coords="512,37,708,92"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="465,44,499,48,498,53,464,49"/>
+<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="708,49,742,45,743,50,708,54"/>
+</map>

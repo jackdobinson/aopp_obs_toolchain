@@ -1,0 +1,9 @@
+<map id="optical_component.OpticalComponentSet.get_pupil_function_scale" name="optical_component.OpticalComponentSet.get_pupil_function_scale">
+<area shape="rect" id="Node000001" title=" " alt="" coords="756,5,952,60"/>
+<area shape="rect" id="Node000002" href="$d0/dda/classoptical__component_1_1OpticalComponentSet.html#aa90be9d766d2dd7952a1a4098d0f6df0" title=" " alt="" coords="493,13,708,53"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="742,35,708,35,708,30,742,30"/>
+<area shape="rect" id="Node000003" href="$d0/dda/classoptical__component_1_1OpticalComponentSet.html#ae63c6b683ce2043a310ef64a0669c8e9" title=" " alt="" coords="249,13,445,53"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="480,35,446,35,446,30,480,30"/>
+<area shape="rect" id="Node000004" href="$d0/dda/classoptical__component_1_1OpticalComponentSet.html#a35eda5cce83a6ec1a596724a66d3d6d6" title=" " alt="" coords="5,13,201,53"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="236,35,201,35,201,30,236,30"/>
+</map>

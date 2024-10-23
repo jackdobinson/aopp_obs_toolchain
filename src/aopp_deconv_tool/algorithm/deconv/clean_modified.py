@@ -146,8 +146,9 @@ class CleanModified(Base):
 	def get_residual(self) -> np.ndarray:
 		#return(self._residual)
 		return self._obs - sp.signal.fftconvolve(self.get_components(), self._psf, mode='same')/self._flux_correction_factor
+	
 	def get_iters(self):
-		return(self._i_best if self.give_best_result else self._i)
+		return self.n_iter_stopped
 	
 	
 	def _init_algorithm(self, obs, psf) -> None:
@@ -253,8 +254,12 @@ class CleanModified(Base):
 			increase_frac = (self._iter_stat_record[self._i] - self._stats_best)/self._stats_best
 			increase_frac_idxs_above_threshold = np.argwhere(increase_frac > self.max_stat_increase)
 			_lgr.debug(f'{increase_frac=}')
+			
+			# If any stats have increased above the "best-so-far" by the threshold,
+			# terminate iterations.
 			if increase_frac_idxs_above_threshold.size > 0:
-				self.progress_string = f"Ended at {self._i} iterations: Statistics {self._iter_stat_names[increase_frac_idxs_above_threshold]} have increased from the best seen statistic beyond set threshold defined by `max_stat_increase` parameter."
+				self.n_iter_stopped = self._i_best
+				self.progress_string = f"Ended at {self._i} iterations: Statistics {self._iter_stat_names[increase_frac_idxs_above_threshold]} have increased from the best seen statistic (found at {self._i_best} iterations) beyond set threshold defined by `max_stat_increase` parameter."
 				return False
 		
 		

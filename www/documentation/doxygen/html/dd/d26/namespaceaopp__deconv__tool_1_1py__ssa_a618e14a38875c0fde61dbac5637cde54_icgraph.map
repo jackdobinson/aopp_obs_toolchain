@@ -1,5 +1,7 @@
 <map id="aopp_deconv_tool.py_ssa.vectorise_mat" name="aopp_deconv_tool.py_ssa.vectorise_mat">
-<area shape="rect" id="node1" title=" " alt="" coords="460,5,620,47"/>
-<area shape="rect" id="node2" href="$dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA.html#a116709b20b95929c4c1c98027c3882f8" title=" " alt="" coords="252,5,412,47"/>
-<area shape="rect" id="node3" href="$dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA.html#ad081203f3d62552d821e66ed70971109" title=" " alt="" coords="5,5,204,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="460,5,620,45"/>
+<area shape="rect" id="Node000002" href="$dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA.html#a116709b20b95929c4c1c98027c3882f8" title=" " alt="" coords="252,5,412,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="446,28,412,28,412,23,446,23"/>
+<area shape="rect" id="Node000003" href="$dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA.html#ad081203f3d62552d821e66ed70971109" title=" " alt="" coords="5,5,204,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="238,28,204,28,204,23,238,23"/>
 </map>

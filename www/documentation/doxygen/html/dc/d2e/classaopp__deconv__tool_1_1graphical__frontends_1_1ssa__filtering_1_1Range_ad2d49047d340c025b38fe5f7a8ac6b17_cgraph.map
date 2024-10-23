@@ -1,0 +1,25 @@
+<map id="aopp_deconv_tool.graphical_frontends.ssa_filtering.Range.set_limits" name="aopp_deconv_tool.graphical_frontends.ssa_filtering.Range.set_limits">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,187,292,227"/>
+<area shape="rect" id="Node000002" href="$da/d39/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1WidgetBase.html#a50e64e1fc378bfc45bb50f9eb6a961fb" title=" " alt="" coords="779,5,1003,60"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="182,185,252,147,339,111,450,83,563,61,670,47,764,37,765,43,671,52,564,67,451,88,341,117,255,152,184,190"/>
+<area shape="rect" id="Node000003" href="$d2/d2f/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1CheckButtons.html#af410b1ad557888c7ef236bab981f1efe" title=" " alt="" coords="723,85,1059,125"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="206,185,270,165,339,149,433,134,529,122,708,108,709,113,530,127,434,139,341,154,271,170,208,190"/>
+<area shape="rect" id="Node000004" href="$da/d4a/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1TextBox.html#ad9cacfd56b8b2b133a9bc9179a05c390" title=" " alt="" coords="741,149,1040,189"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="251,185,340,173,541,162,727,161,727,167,541,167,340,178,252,190"/>
+<area shape="rect" id="Node000005" href="$d9/d2e/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1RadioButtons.html#ab058bb7bc5aedda2b36c5e9fe87e8d06" title=" " alt="" coords="724,213,1057,253"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="250,225,340,237,435,242,531,244,710,241,710,246,531,250,435,248,340,242,249,230"/>
+<area shape="rect" id="Node000006" href="$d9/d2e/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1RadioButtons.html#a0657025ad2cdd49dc0c3d199a76f02e2" title=" " alt="" coords="341,302,673,342"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="196,225,263,253,341,281,396,296,395,301,339,286,262,258,194,230"/>
+<area shape="rect" id="Node000008" href="$da/d39/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1WidgetBase.html#a60cb9c76c496750c40e4982422b4b6f7" title=" " alt="" coords="395,367,619,421"/>
+<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="172,226,243,288,290,323,341,352,383,368,381,373,339,356,287,327,240,292,168,230"/>
+<area shape="rect" id="Node000009" href="$d2/d2f/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1CheckButtons.html#a7ec932ab45bcc9e3ca7ff7d33a38dc46" title=" " alt="" coords="340,187,675,227"/>
+<area shape="poly" id="edge9_Node000001_Node000009" title=" " alt="" coords="292,205,326,205,326,210,292,210"/>
+<area shape="rect" id="Node000007" href="$da/d39/classaopp__deconv__tool_1_1graphical__frontends_1_1ssa__filtering_1_1WidgetBase.html#a57c669a0b1d75a6756ec5e30a6a39832" title=" " alt="" coords="779,301,1003,356"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="673,322,765,324,764,329,673,328"/>
+<area shape="poly" id="edge7_Node000007_Node000007" title=" " alt="" coords="818,301,818,291,831,282,855,277,891,275,933,278,957,286,955,291,932,283,891,280,856,282,833,287,823,293,823,301"/>
+<area shape="poly" id="edge10_Node000009_Node000002" title=" " alt="" coords="533,185,615,128,667,97,722,70,765,55,766,60,724,75,669,102,617,132,536,189"/>
+<area shape="poly" id="edge11_Node000009_Node000003" title=" " alt="" coords="562,185,637,159,722,134,761,125,762,130,723,139,639,164,564,190"/>
+<area shape="poly" id="edge12_Node000009_Node000004" title=" " alt="" coords="675,188,728,182,728,188,675,193"/>
+<area shape="poly" id="edge13_Node000009_Node000005" title=" " alt="" coords="675,216,711,218,710,223,675,221"/>
+<area shape="poly" id="edge14_Node000009_Node000007" title=" " alt="" coords="572,225,791,295,790,300,571,230"/>
+</map>

@@ -1,0 +1,19 @@
+<map id="aopp_deconv_tool.py_ssa.SSA.plot_all" name="aopp_deconv_tool.py_ssa.SSA.plot_all">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,165,165,205"/>
+<area shape="rect" id="Node000002" href="$dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA.html#a8b52b3a3094a98fb10d567788674050e" title=" " alt="" coords="214,5,415,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="100,163,146,110,177,80,212,55,223,49,226,54,215,60,181,85,150,113,104,167"/>
+<area shape="rect" id="Node000003" href="$dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA.html#ae8e9a7f5b2348e659006feabb358a057" title=" " alt="" coords="213,69,416,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="121,163,212,119,232,111,234,116,214,124,124,168"/>
+<area shape="rect" id="Node000004" href="$dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA.html#a64409d45134018ab60813efb84503539" title=" " alt="" coords="235,133,395,173"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="166,172,220,164,221,169,166,177"/>
+<area shape="rect" id="Node000007" href="$dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA.html#a2700d61a8bb9cd826135f87b5ee82805" title=" " alt="" coords="235,197,395,237"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="166,194,221,202,220,207,166,199"/>
+<area shape="rect" id="Node000008" href="$dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA.html#ae0753c33465f2f8fc8d107f48bc72a8a" title=" " alt="" coords="225,262,405,317"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="126,203,214,247,231,254,229,259,212,252,123,208"/>
+<area shape="rect" id="Node000009" href="$dc/dbb/classaopp__deconv__tool_1_1py__ssa_1_1SSA.html#afcc9d027fe393caff617573199186c7f" title=" " alt="" coords="225,341,405,395"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="102,204,148,264,179,298,215,327,222,332,219,336,212,331,176,302,144,268,98,207"/>
+<area shape="rect" id="Node000005" href="$d4/d4e/classaopp__deconv__tool_1_1numpy__helper_1_1axes_1_1AxesOrdering.html#a2c9a54b6029b66d8210c9634c145c0ba" title=" " alt="" coords="464,101,671,141"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="394,141,450,134,451,139,395,146"/>
+<area shape="rect" id="Node000006" href="$d4/d4e/classaopp__deconv__tool_1_1numpy__helper_1_1axes_1_1AxesOrdering.html#a39ab54eb13f6f13f73d6846a28964739" title=" " alt="" coords="464,165,671,205"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="395,161,451,168,450,173,394,166"/>
+</map>

@@ -1,4 +1,8 @@
 <map id="aopp_deconv_tool.spectral_rebin.SquareResponseFunction" name="aopp_deconv_tool.spectral_rebin.SquareResponseFunction">
-<area shape="rect" id="node1" title=" " alt="" coords="5,95,235,136"/>
-<area shape="rect" id="node2" href="$d8/d61/classaopp__deconv__tool_1_1spectral__rebin_1_1ResponseFunction.html" title=" " alt="" coords="22,5,218,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,183,235,223"/>
+<area shape="rect" id="Node000002" href="$d8/d61/classaopp__deconv__tool_1_1spectral__rebin_1_1ResponseFunction.html" title=" " alt="" coords="237,93,433,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="276,141,167,185,165,180,274,136"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="33,5,84,31"/>
+<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="53,44,46,87,47,110,53,132,71,159,94,181,90,184,67,163,48,134,42,111,41,87,48,43"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="98,30,280,91,278,96,96,35"/>
 </map>

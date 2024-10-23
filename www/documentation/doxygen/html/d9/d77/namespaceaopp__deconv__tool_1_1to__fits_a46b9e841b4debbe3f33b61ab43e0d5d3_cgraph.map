@@ -1,0 +1,18 @@
+<map id="aopp_deconv_tool.to_fits.go" name="aopp_deconv_tool.to_fits.go">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,49,163,89"/>
+<area shape="rect" id="Node000002" href="$da/d5f/namespaceaopp__deconv__tool_1_1arguments.html#aec2c9d770d31aa257cf89a398d910714" title=" " alt="" coords="211,5,489,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="162,54,215,45,215,50,163,59"/>
+<area shape="rect" id="Node000003" href="$d9/d77/namespaceaopp__deconv__tool_1_1to__fits.html#a8b96332211de6e1520aa954995b627c8" title=" " alt="" coords="271,93,429,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="163,80,258,96,257,101,162,85"/>
+<area shape="poly" id="edge3_Node000003_Node000003" title=" " alt="" coords="301,94,298,84,306,74,323,69,350,67,381,69,397,77,395,82,379,75,350,72,324,74,309,79,303,85,306,92"/>
+<area shape="rect" id="Node000004" href="$d9/d77/namespaceaopp__deconv__tool_1_1to__fits.html#a3d6ea059cbbafecaf0e960a74019c8d4" title=" " alt="" coords="540,21,697,61"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="425,91,529,62,531,68,426,96"/>
+<area shape="rect" id="Node000006" href="$d9/d77/namespaceaopp__deconv__tool_1_1to__fits.html#ad659ee84e52aad3a61927e3f264a6506" title=" " alt="" coords="537,86,700,141"/>
+<area shape="poly" id="edge6_Node000003_Node000006" title=" " alt="" coords="429,111,524,111,524,116,429,116"/>
+<area shape="rect" id="Node000008" href="$d9/d77/namespaceaopp__deconv__tool_1_1to__fits.html#a564ebdad3b554d975ef4554f93b70faf" title=" " alt="" coords="540,165,697,205"/>
+<area shape="poly" id="edge8_Node000003_Node000008" title=" " alt="" coords="426,131,531,159,529,164,425,136"/>
+<area shape="rect" id="Node000005" href="$d9/d77/namespaceaopp__deconv__tool_1_1to__fits.html#afa8a56923d801cf29e0a24560f44377b" title=" " alt="" coords="748,14,905,69"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="698,39,734,39,734,44,698,44"/>
+<area shape="rect" id="Node000007" href="$d9/d77/namespaceaopp__deconv__tool_1_1to__fits.html#a606b7793353ac04a7eb4cf12d274d251" title=" " alt="" coords="748,93,905,133"/>
+<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="701,111,734,111,734,116,701,116"/>
+</map>
