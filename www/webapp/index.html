@@ -8,6 +8,9 @@
 	</head>
 
 	<body>
+	
+		<a id="link-to-home" href="{{ site.baseurl }}/index.html">Home</a>
+	
 		<hr/>
 		
 		<figure style="overflow:visible;" id="spinner">
@@ -159,6 +162,21 @@
 		<hr/>
 			<textarea class="emscripten" id="output" rows="8"></textarea>
 		<hr>
+		
+		<footer>
+	<p class="title">Attributation</p>
+	<div id="attributation">
+		<figure id="university_of_oxford">
+			<img src="{{ site.baseurl }}/assets/imgs/university_of_oxford.png" alt="University of oxford logo" />
+			<figcaption>Thanks to the University of Oxford for their continued support.</figcaption>
+		</figure>
+		
+		<figure id="leverhulme_trust">
+			<img src="{{ site.baseurl }}/assets/imgs/Leverhulme_Trust_RGB_white.png" alt="Leverhulme Trust Logo"/>
+			<figcaption>This work was made possible by the generous funding of the Leverhulme Trust for project RPG-2023-028</figcaption>
+		</figure>
+	</div>
+</footer>
 		
 		<script type='text/javascript' src="emscripten_environment.js"></script>
 		<script async type="text/javascript" src="deconv.js"></script>

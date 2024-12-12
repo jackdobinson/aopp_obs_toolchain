@@ -27,3 +27,45 @@ cp ${WEBAPP_DIR}/minimal.css ${THIS_DIR}/
 # Copy all javascript to here
 cp -r ${WEBAPP_DIR}/*.js ${WEBAPP_DIR}/js_modules ${THIS_DIR}/
 
+
+############################################################
+# Update parts of HTML file to add links back to home page #
+############################################################
+
+find_1='<a id="link-to-home"></a>'
+replace_1='<a id="link-to-home" href="{{ site.baseurl }}/index.html">Home</a>'
+
+sed -i -e "s#${find_1}#${replace_1}#g" ${THIS_DIR}/index.html
+
+
+find_1='<div id="attributation"></div>'
+replace_1=$(cat << "END"
+<footer>
+	<p class="title">Attributation</p>
+	<div id="attributation">
+		<figure id="university_of_oxford">
+			<img src="{{ site.baseurl }}/assets/imgs/university_of_oxford.png" alt="University of oxford logo" />
+			<figcaption>Thanks to the University of Oxford for their continued support.</figcaption>
+		</figure>
+		
+		<figure id="leverhulme_trust">
+			<img src="{{ site.baseurl }}/assets/imgs/Leverhulme_Trust_RGB_white.png" alt="Leverhulme Trust Logo"/>
+			<figcaption>This work was made possible by the generous funding of the Leverhulme Trust for project RPG-2023-028</figcaption>
+		</figure>
+	</div>
+</footer>
+END
+)
+
+
+#echo "find_1=${find_1}"
+#echo "replace_1=${replace_1}"
+
+find_escaped=$(printf "%q" "${find_1}") # for some reason this fails when finding the thing to replace
+replace_escaped=$(printf "%q" "${replace_1}") # for some reason this adds some extra characters we have to remove
+
+#echo "find_escaped=${find_escaped}"
+#echo "replace_escaped=${replace_escaped:2:-1}"
+#echo "s@${find_1}@${replace_1}@g"
+
+sed -i -e "s@${find_1}@${replace_escaped:2:-1}@g" ${THIS_DIR}/index.html
