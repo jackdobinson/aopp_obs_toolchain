@@ -76,7 +76,7 @@ sed -i -e "s@${find_1}@${replace_escaped:2:-1}@g" ${THIS_DIR}/index.html
 
 # Update stylesheet
 find_1='<link rel="stylesheet" href="minimal.css" />'
-replace_1='<link rel="stylesheet" href="https://jackdobinson.github.io/aopp_obs_toolchain/assets/style.css" /><link rel="stylesheet" href="minimal.css" />'
+replace_1='<link rel="stylesheet" href="https://jackdobinson.github.io/aopp_obs_toolchain/assets/css/style.css" /><link rel="stylesheet" href="minimal.css" />'
 
 sed -i -e "s@${find_1}@${replace_1}@g" ${THIS_DIR}/index.html
 
