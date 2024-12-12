@@ -104,21 +104,14 @@ let figure = new Figure({
 
 figure.appendPlotAreaFromRect("stopping_criteria", new R(0.05,0.05,0.9,0.9))
 figure.plot_areas.get("stopping_criteria").appendDataAreaFromRect("stopping_criteria_data_area", new R(0.1,0.1,0.8,0.8))
-figure.plot_areas.get("stopping_criteria").appendAxesFromExtent("stopping_criteria_axes", E.from(NaN,NaN,NaN,NaN), {axis_names : ["iteration", "fabs/rms value"]})
-figure.plot_areas.get("stopping_criteria").appendAxesFromExtent("stopping_criteria_axes_2", E.from(NaN,NaN,NaN,NaN), {axis_positions : [null, 1], axis_names : ["iteration", "threshold value"]})
+figure.plot_areas.get("stopping_criteria").appendAxesFromExtent("stopping_criteria_axes", E.from(NaN,NaN,NaN,NaN), {axis_names : ["iteration", "fabs (red) and rms (green) value"]})
+figure.plot_areas.get("stopping_criteria").appendAxesFromExtent("stopping_criteria_axes_2", E.from(NaN,NaN,NaN,NaN), {axis_positions : [null, 1], axis_names : ["iteration", "threshold (purple) value"]})
 
 //figure.plot_areas.get("fabs_record").appendAxesFromExtent("fabs_axes", E.from(-1.2,3.7,-0.9,2))
 figure.plot_areas.get("stopping_criteria").newDatasetForAxes("stopping_criteria_axes", "fabs_record")
 figure.plot_areas.get("stopping_criteria").newDatasetForAxes("stopping_criteria_axes", "rms_record")
 figure.plot_areas.get("stopping_criteria").newDatasetForAxes("stopping_criteria_axes_2", "threshold_record")
 
-figure.plot_areas.get("stopping_criteria").newDatasetForAxes("stopping_criteria_axes", "test_1_dataset")
-figure.plot_areas.get("stopping_criteria").newDatasetForAxes("stopping_criteria_axes_2", "test_2_dataset")
-
-figure.plot_areas.get("stopping_criteria").setDatasetPlotTypeArtist("test_2_dataset", new StepPlotArtist())
-
-figure.plot_areas.get("stopping_criteria").addDatasetToAxes("stopping_criteria_axes_2", new RingbufferDataset("test_3_dataset",1))
-figure.plot_areas.get("stopping_criteria").setDatasetPlotTypeArtist("test_3_dataset", new VlinePlotArtist())
 
 let figure2 = new Figure({
 	container : document.getElementById("progress-plots"),
@@ -127,7 +120,7 @@ let figure2 = new Figure({
 })
 figure2.appendPlotAreaFromRect("residual_histogram",  new R(0.05,0.05,0.9,0.9))
 figure2.plot_areas.get("residual_histogram").appendDataAreaFromRect("residual_histogram_data_area", new R(0.1,0.1,0.8,0.8))
-figure2.plot_areas.get("residual_histogram").appendAxesFromExtent("residual_histogram_axes", E.from(NaN,NaN,NaN,NaN), {axis_names : ["value", "count"], nonlinear_transform : log_transform_y})
+figure2.plot_areas.get("residual_histogram").appendAxesFromExtent("residual_histogram_axes", E.from(NaN,NaN,NaN,NaN), {axis_names : ["value (vertical line is the current step's threshold value)", "count"], nonlinear_transform : log_transform_y})
 figure2.plot_areas.get("residual_histogram").newDatasetForAxes("residual_histogram_axes", "residual_histogram_data")
 figure2.plot_areas.get("residual_histogram").setDatasetPlotTypeArtist("residual_histogram_data", new StepPlotArtist())
 figure2.plot_areas.get("residual_histogram").addDatasetToAxes("residual_histogram_axes", new RingbufferDataset("threshold_line_data",1))
@@ -176,63 +169,6 @@ plot_name_map.set("selected_pixels_histogram", figure4.plot_areas.get("selected_
 plot_name_map.set("current_convolved_histogram", figure5.plot_areas.get("current_convolved_histogram"))
 
 
-
-
-let plt = plot_name_map.get("stopping_criteria")
-plt.clear()
-//plt.setCurrentDataset("test_1_dataset")
-plt.addDataToDataset("test_1_dataset", 0,0)
-plt.addDataToDataset("test_1_dataset", 1,1)
-plt.addDataToDataset("test_1_dataset", 2,4)
-//plt.addDataToDataset("test_1_dataset", 3,9)
-//plt.addDataToDataset("test_1_dataset", 4,16)
-//plt.addDataToDataset("test_1_dataset", 5,25)
-//plt.addDataToDataset("test_1_dataset", 6,36)
-//plt.addDataToDataset("test_1_dataset", 7,49)
-//plt.addDataToDataset("test_1_dataset", 8,64)
-plt.addDataToDataset("test_1_dataset", 9,80)
-plt.addDataToDataset("test_1_dataset", 10,100)
-plt.addDataToDataset("test_1_dataset", 11,121)
-plt.addDataToDataset("test_1_dataset", 12,144)
-
-console.log("Adding test data for 'test_2_dataset'")
-plt.setAsDataset(
-[[0,0.5*0],
-[1,0.5*1],
-[2,0.5*4],
-[3,0.5*9],
-[4,0.5*16],
-[5,0.5*25],
-[6,0.5*36],
-[7,0.5*49],
-[8,0.5*64],
-[9,0.5*80],
-[10,0.5*100],
-[11,0.5*121],
-[12,0.5*144],
-],
-"test_2_dataset"
-)
-/*
-plt.addDataToDataset("test_2_dataset", 0,0.5*0)
-plt.addDataToDataset("test_2_dataset", 1,0.5*1)
-plt.addDataToDataset("test_2_dataset", 2,0.5*4)
-plt.addDataToDataset("test_2_dataset", 3,0.5*9)
-plt.addDataToDataset("test_2_dataset", 4,0.5*16)
-plt.addDataToDataset("test_2_dataset", 5,0.5*25)
-plt.addDataToDataset("test_2_dataset", 6,0.5*36)
-plt.addDataToDataset("test_2_dataset", 7,0.5*49)
-plt.addDataToDataset("test_2_dataset", 8,0.5*64)
-plt.addDataToDataset("test_2_dataset", 9,0.5*80)
-plt.addDataToDataset("test_2_dataset", 10,0.5*100)
-plt.addDataToDataset("test_2_dataset", 11,0.5*121)
-plt.addDataToDataset("test_2_dataset", 12,0.5*144)
-*/
-// Testing vertical line drawing and RingbufferDataset
-//plt.addDataToDataset("test_3_dataset", 3,0)
-//plt.addDataToDataset("test_3_dataset", 9,0)
-
-
 download_clean_map_button.addEventListener(
 	"click",
 	new WasmDataDownloader( 
@@ -278,86 +214,94 @@ download_residual_button.addEventListener(
 )
 
 run_deconv_button.addEventListener("click", async (e)=>{
-		if ((sci_image_holder.name === null) || (psf_image_holder.name === null)) {
-			alert("ERROR: Missing input data.\n\nDeconvolution requires upload of a science image and a psf image")
-			return
+		try{
+			e.target.textContent = "Deconvolution in progress..."
+			e.target.disabled = true
+			if ((sci_image_holder.name === null) || (psf_image_holder.name === null)) {
+				alert("ERROR: Missing input data.\n\nDeconvolution requires upload of a science image and a psf image")
+				return
+			}
+
+			let invalid_params = clean_modified_params.validate()
+			if(invalid_params.length != 0){
+				alert(`ERROR: Could not run deconvolution.\n\nThe following parameters are invalid and need to be corrected:\n\t${invalid_params.join("\n\t")}`)
+				return;
+			}
+			
+			deconv_complete = false
+			deconv_status_mgr.set("Deconvolution Running", true)
+			deconv_status_mgr.set("Results Available", false, {"is-good":false})
+			console.log("Creating deconvolver")
+			
+			await Module.create_deconvolver(deconv_type, deconv_name)
+
+			// Check for invalid params again when we set the values
+			invalid_params = clean_modified_params.set_params(deconv_type, deconv_name)
+			if(invalid_params.length != 0){
+				alert(`ERROR: Could not run deconvolution.\n\nThe following parameters are invalid and need to be corrected:\n\t${invalid_params.join("\n\t")}`)
+				return;
+			}
+			
+			console.log("run_deconv_button.addEventListener::click", Math.log10(clean_modified_params.valueOf("fabs_frac_threshold")))
+
+			console.log("Preparing deconvolver for ${sci_image_holder.name} ${psf_image_holder.name}")
+			await Module.prepare_deconvolver(deconv_type, deconv_name, sci_image_holder.name, psf_image_holder.name, "")
+			
+			
+			// Clear plots
+			for(const plot_area of plot_name_map.values()){
+				plot_area.clear()
+			}
+			
+			
+			
+			console.log("Running prepared deconvolver")
+			await Module.run_deconvolver(deconv_type, deconv_name)
+			
+			deconv_complete = true
+			deconv_status_mgr.set("Deconvolution Running", false)
+			
+			let width = sci_image_holder.im_w
+			let height = sci_image_holder.im_h
+			width += (1-width%2)
+			height += (1-height%2)
+
+			console.log("Get results from deconvolver")
+			// assume results are the same size as the science image
+			deconv_clean_map = getImageDataFromResult(
+				Module.get_deconvolver_clean_map, 
+				[deconv_type, deconv_name], 
+				width, 
+				height
+			)
+			deconv_residual = getImageDataFromResult(
+				Module.get_deconvolver_residual,
+				[deconv_type, deconv_name],
+				width,
+				height
+			)
+
+			console.log("deconv_clean_map", deconv_clean_map)
+			console.log("deconv_residual", deconv_residual)
+
+			console.log("Display results on canvas elements")
+
+			clean_map_canvas.width = width
+			clean_map_canvas.height = height
+			clean_map_canvas.getContext("2d").putImageData(deconv_clean_map,0,0)
+
+		
+			residual_canvas.width = width
+			residual_canvas.height = height
+			residual_canvas.getContext("2d").putImageData(deconv_residual,0,0)	
+
+			console.log("Results should be displayed")
+			deconv_status_mgr.set("Results Available", true, {"is-good":true})
 		}
-
-		let invalid_params = clean_modified_params.validate()
-		if(invalid_params.length != 0){
-			alert(`ERROR: Could not run deconvolution.\n\nThe following parameters are invalid and need to be corrected:\n\t${invalid_params.join("\n\t")}`)
-			return;
+		finally {
+			e.target.textContent = "Run Deconvolution"
+			e.target.disabled = false
 		}
-		
-		deconv_complete = false
-		deconv_status_mgr.set("Deconvolution Running", true)
-		deconv_status_mgr.set("Results Available", false, {"is-good":false})
-		console.log("Creating deconvolver")
-		
-		await Module.create_deconvolver(deconv_type, deconv_name)
-
-		// Check for invalid params again when we set the values
-		invalid_params = clean_modified_params.set_params(deconv_type, deconv_name)
-		if(invalid_params.length != 0){
-			alert(`ERROR: Could not run deconvolution.\n\nThe following parameters are invalid and need to be corrected:\n\t${invalid_params.join("\n\t")}`)
-			return;
-		}
-		
-		console.log("run_deconv_button.addEventListener::click", Math.log10(clean_modified_params.valueOf("fabs_frac_threshold")))
-
-		console.log("Preparing deconvolver for ${sci_image_holder.name} ${psf_image_holder.name}")
-		await Module.prepare_deconvolver(deconv_type, deconv_name, sci_image_holder.name, psf_image_holder.name, "")
-		
-		
-		// Clear plots
-		for(const plot_area of plot_name_map.values()){
-			plot_area.clear()
-		}
-		
-		
-		
-		console.log("Running prepared deconvolver")
-		await Module.run_deconvolver(deconv_type, deconv_name)
-		
-		deconv_complete = true
-		deconv_status_mgr.set("Deconvolution Running", false)
-		
-		let width = sci_image_holder.im_w
-		let height = sci_image_holder.im_h
-		width += (1-width%2)
-		height += (1-height%2)
-
-		console.log("Get results from deconvolver")
-		// assume results are the same size as the science image
-		deconv_clean_map = getImageDataFromResult(
-			Module.get_deconvolver_clean_map, 
-			[deconv_type, deconv_name], 
-			width, 
-			height
-		)
-		deconv_residual = getImageDataFromResult(
-			Module.get_deconvolver_residual,
-			[deconv_type, deconv_name],
-			width,
-			height
-		)
-
-		console.log("deconv_clean_map", deconv_clean_map)
-		console.log("deconv_residual", deconv_residual)
-
-		console.log("Display results on canvas elements")
-
-		clean_map_canvas.width = width
-		clean_map_canvas.height = height
-		clean_map_canvas.getContext("2d").putImageData(deconv_clean_map,0,0)
-
-	
-		residual_canvas.width = width
-		residual_canvas.height = height
-		residual_canvas.getContext("2d").putImageData(deconv_residual,0,0)	
-
-		console.log("Results should be displayed")
-		deconv_status_mgr.set("Results Available", true, {"is-good":true})
 	}
 )
 

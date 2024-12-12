@@ -357,7 +357,7 @@ class CleanModifiedParameters{
 			'Maximum number of iterations to perform. A good starting number is 100', 
 			'integer(1,inf)', 
 			Number, 
-			10
+			100
 		),
 		new Parameter(
 			"adaptive_threshold_flag", 
@@ -413,7 +413,7 @@ class CleanModifiedParameters{
 			"How often to update plots (in number of iterations). Less frequent updates are faster, set to zero to never update plots.", 
 			"integer(0,inf)", 
 			Number, 
-			1
+			10
 		),
 	];
 	
