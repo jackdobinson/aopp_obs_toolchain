@@ -21,5 +21,9 @@ cp ${WEBAPP_DIR}/minimal.html ${THIS_DIR}/index.html
 # Copy web assembly module
 cp ${WEBAPP_DIR}/deconv.wasm ${THIS_DIR}/
 
-# Copy all javascrip to here
+# Copy CSS file
+cp ${WEBAPP_DIR}/minimal.css ${THIS_DIR}/
+
+# Copy all javascript to here
 cp -r ${WEBAPP_DIR}/*.js ${WEBAPP_DIR}/js_modules ${THIS_DIR}/
+
