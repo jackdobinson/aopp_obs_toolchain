@@ -33,7 +33,7 @@ cp -r ${WEBAPP_DIR}/*.js ${WEBAPP_DIR}/js_modules ${THIS_DIR}/
 ############################################################
 
 find_1='<a id="link-to-home"></a>'
-replace_1='<a id="link-to-home" href="{{ site.baseurl }}/index.html">Home</a>'
+replace_1='<a id="link-to-home" href="https://jackdobinson.github.io/aopp_obs_toolchain/index.html">Home</a>'
 
 sed -i -e "s#${find_1}#${replace_1}#g" ${THIS_DIR}/index.html
 
@@ -44,12 +44,12 @@ replace_1=$(cat << "END"
 	<p class="title">Attributation</p>
 	<div id="attributation">
 		<figure id="university_of_oxford">
-			<img src="{{ site.baseurl }}/assets/imgs/university_of_oxford.png" alt="University of oxford logo" />
+			<img src="https://jackdobinson.github.io/aopp_obs_toolchain/assets/imgs/university_of_oxford.png" alt="University of oxford logo" />
 			<figcaption>Thanks to the University of Oxford for their continued support.</figcaption>
 		</figure>
 		
 		<figure id="leverhulme_trust">
-			<img src="{{ site.baseurl }}/assets/imgs/Leverhulme_Trust_RGB_white.png" alt="Leverhulme Trust Logo"/>
+			<img src="https://jackdobinson.github.io/aopp_obs_toolchain/assets/imgs/Leverhulme_Trust_RGB_white.png" alt="Leverhulme Trust Logo"/>
 			<figcaption>This work was made possible by the generous funding of the Leverhulme Trust for project RPG-2023-028</figcaption>
 		</figure>
 	</div>
