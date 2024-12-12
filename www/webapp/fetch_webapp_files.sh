@@ -35,7 +35,7 @@ cp -r ${WEBAPP_DIR}/*.js ${WEBAPP_DIR}/js_modules ${THIS_DIR}/
 # Add link back to home page
 
 find_1='<a id="link-to-home"></a>'
-replace_1='<a id="link-to-home" href="https://jackdobinson.github.io/aopp_obs_toolchain/index.html">Home</a>'
+replace_1='<nav class="top-menu"><a id="link-to-home" href="https://jackdobinson.github.io/aopp_obs_toolchain/index.html">Home</a></nav>'
 
 sed -i -e "s#${find_1}#${replace_1}#g" ${THIS_DIR}/index.html
 
