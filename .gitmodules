@@ -1,0 +1,3 @@
+[submodule "emscripten_test"]
+	path = emscripten_test
+	url = https://github.com/jackdobinson/emscripten_test.git
