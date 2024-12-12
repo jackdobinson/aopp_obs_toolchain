@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en-us">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link rel="stylesheet" href="minimal.css" />
+		<title>Emscripten-Generated Code</title>
+	</head>
+
+	<body>
+		<hr/>
+		
+		<figure style="overflow:visible;" id="spinner">
+			<div class="spinner"></div>
+			<center style="margin-top:0.5em"><strong>aopp_deconv_tool</strong></center>
+		</figure>
+
+		<div class="emscripten" id="status">
+			Downloading...
+		</div>
+		
+		<div class="emscripten">
+			<progress value="0" max="100" id="progress" hidden=false>
+			Initializing
+			</progress>  
+		</div>
+
+		<div class="emscripten-hide-boilerplate" style="display:none;width=100%">
+			<canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+			<hr/>
+		
+			<div class="emscripten" style="display:none;">
+				<input type="checkbox" id="resize">Resize canvas
+				<input type="checkbox" id="pointerLock" checked>Lock/hide mouse pointer
+				&nbsp;&nbsp;&nbsp;
+				<input type="button"
+					value="Fullscreen"
+					onclick="
+						Module.requestFullscreen(
+						document.getElementById('pointerLock').checked, 
+						document.getElementById('resize').checked)
+					"
+				>
+			</div>
+		</div>
+
+
+		<hr>
+		<h4>Input Images</h4>
+		<div class="emscripten_border">
+
+			<div class="h-flow">
+				<div class="v-flow canvas-container">
+					<div class="item">
+						<label for="sci_file">
+							<div class="button-like">
+								Select Science Target File...
+							</div>
+						</label>
+						<input type="file" id="sci_file" name="sci_file" style="display: none;">
+						<div class="canvas-container">
+							<canvas id="sci_canvas" oncontextmenu="event.preventDefault()" tabindex=-1>
+							</canvas>
+						</div>
+					</div>
+				</div>
+
+				<div class="v-flow">
+					<div class="item">
+						<label for="psf_file">
+							<div class="button-like">
+								Select PSF File...
+							</div>
+						</label>
+						<input type="file" id="psf_file" name="psf_file" style="display:none;">
+						<div class="canvas-container">
+							<canvas id="psf_canvas" oncontextmenu="event.preventDefault()" tabindex=-1>
+							</canvas>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		
+		<hr>
+		
+		<div class="h-flow">
+			<div class="item">
+				<h4>Deconvolution Parameters</h4>
+				<div id="param-container"></div>
+				<button class="run-button" id="run_deconv" type="button">Run Deconvolution</button>
+			</div>
+			<div class="item">
+				<h4>Deconvolution Status</h4>
+				<div id="status-container"></div>
+			</div>
+		</div>
+		
+		
+		<hr>
+		<div>
+			<details id="progress-plot-details" class="progress-plot-details">
+				<summary><h4 style="display:inline;">Progress Plots</h4></summary>
+				<!--
+				<canvas id="uncentered-psf-canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+				<canvas id="adjusted-psf-canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+				-->
+				
+
+			</details>
+			<div id="plot-container-1">
+				<div class="v-flow">
+					<div class="h-flow">
+						<div class="v-flow">
+							<div class="item">
+								<p>Residual</p>
+								<canvas id="residual-canvas" class="auto-size" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+							</div>
+							<div class="item">
+								<p>Selected Pixels</p>
+								<canvas id="selected-pixels-canvas" class="auto-size" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+							</div>
+						</div>
+						<div class="v-flow">
+							<div class="item">
+								<p>Current Convolved</p>
+								<canvas id="current-convolved-canvas" class="auto-size" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+							</div>
+							<div class="item">
+								<p>Current Components</p>
+								<canvas id="components-canvas" class="auto-size" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+							</div>
+						</div>
+					</div>
+					<div id="progress-plots" class="v-flow"></div>
+				</div>
+			</div>
+		</div>
+		
+		<hr>
+		
+		<h4>Results</h4>
+		<div id="results" class="h-flow">
+			<div class="item">
+				<div>
+					<canvas id="clean_map_canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+					<button class="download-result" id="download-clean-map-button" type="button">Download Clean Map .TIFF</button>
+				</div>
+			</div>
+			<div class="item">
+				<div>
+					<canvas id="residual_canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+					<button class="download-result" id="download-residual-button" type="button">Download Residual .TIFF</button>
+				</div>
+			</div>
+		</div>
+		
+		<hr/>
+			<textarea class="emscripten" id="output" rows="8"></textarea>
+		<hr>
+		
+		<script type='text/javascript' src="emscripten_environment.js"></script>
+		<script async type="text/javascript" src="deconv.js"></script>
+		
+		<script type="text/javascript" src="js_modules/vector_ops.js"></script>
+		<script type="text/javascript" src="js_modules/transform_ops.js"></script>
+		<script type="text/javascript" src="js_modules/matrix_ops.js"></script>
+		<script type="text/javascript" src="js_modules/map_ops.js"></script>
+		<script type="text/javascript" src="js_modules/object_ops.js"></script>
+		<script type="text/javascript" src="js_modules/rect_ops.js"></script>
+		<script type="text/javascript" src="js_modules/extent_ops.js"></script>
+		<script type="text/javascript" src="js_modules/path_ops.js"></script>
+		<script type="text/javascript" src="js_modules/svg_ops.js"></script>
+		<script type="text/javascript" src="js_modules/html_ops.js"></script>
+		
+		<script type="text/javascript" src="wasm_data_downloader.js"></script>
+		<script type="text/javascript" src="qplot.js"></script>
+		<script type="text/javascript" src="image_holder.js"></script>
+		<script type="text/javascript" src="deconv_params.js"></script>
+		<script type="text/javascript" src="status_kv.js"></script>
+		<script type="text/javascript" src="main.js"></script>
+	</body>
+</html>
