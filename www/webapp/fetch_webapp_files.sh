@@ -28,15 +28,19 @@ cp ${WEBAPP_DIR}/minimal.css ${THIS_DIR}/
 cp -r ${WEBAPP_DIR}/*.js ${WEBAPP_DIR}/js_modules ${THIS_DIR}/
 
 
-############################################################
-# Update parts of HTML file to add links back to home page #
-############################################################
+###############################################################
+# Update parts of HTML file to overwrite placeholder elements #
+###############################################################
+
+# Add link back to home page
 
 find_1='<a id="link-to-home"></a>'
 replace_1='<a id="link-to-home" href="https://jackdobinson.github.io/aopp_obs_toolchain/index.html">Home</a>'
 
 sed -i -e "s#${find_1}#${replace_1}#g" ${THIS_DIR}/index.html
 
+
+# Add attributations
 
 find_1='<div id="attributation"></div>'
 replace_1=$(cat << "END"
@@ -69,3 +73,11 @@ replace_escaped=$(printf "%q" "${replace_1}") # for some reason this adds some e
 #echo "s@${find_1}@${replace_1}@g"
 
 sed -i -e "s@${find_1}@${replace_escaped:2:-1}@g" ${THIS_DIR}/index.html
+
+# Update stylesheet
+find_1='<link rel="stylesheet" href="minimal.css" />'
+replace_1='<link rel="stylesheet" href="https://jackdobinson.github.io/aopp_obs_toolchain/assets/style.css" /><link rel="stylesheet" href="minimal.css" />'
+
+sed -i -e "s@${find_1}@${replace_1}@g" ${THIS_DIR}/index.html
+
+
