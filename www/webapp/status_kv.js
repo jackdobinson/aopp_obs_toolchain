@@ -93,9 +93,10 @@ class StatusKV extends HtmlContainer {
 		this.html.onmouseenter = (e)=>{
 			//console.log("MOUSE ENTER")
 			
+			this.body_rect = document.body.getBoundingClientRect()
 			this.target_rect = this.target.getBoundingClientRect()
-			this.target_top = this.target_rect.top + window.scrollY
-			this.target_left = this.target_rect.left + window.scrollX
+			this.target_top = this.target_rect.top - (this.body_rect.top < 0 ? this.body_rect.top : 0)
+			this.target_left = this.target_rect.left - (this.body_rect.left < 0 ? this.body_rect.left : 0)
 			
 			this.target_highlighter = Html.createElement("div",{"style":`position:absolute;left:${this.target_left}px;top:${this.target_top}px;width:${this.target_rect.width}px;height:${this.target_rect.height}px;border:5px solid red;z-index: 99;`})
 			//console.log(this.target_highlighter.style)
