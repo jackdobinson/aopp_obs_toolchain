@@ -2,7 +2,7 @@
 
 class WasmDataDownloader{
 	constructor(
-			filename, // <String> or <Callable()->String> Name of the file that will be downloaded, e.g. "image.jpg"
+			filename, // <String> or <Callable(file_id)->String> Name of the file that will be downloaded, e.g. "image.jpg"
 			file_id, // <Obj> argument passed to `wasm_data_provider` that enables retrieval of the data we want
 			wasm_data_provider, // <Callable(Obj)->TypedArray> A function that provides the data for the download.
 			predicate_required_for_download = ()=>true, // <Callable()->Bool> function called to see if download should proceed, true means download can proceed.
@@ -22,7 +22,7 @@ class WasmDataDownloader{
 	}
 	
 	resolve_filename(){
-		this.resolved_filename = typeof(this.filename) == "function" ? this.filename() : this.filename
+		this.resolved_filename = typeof(this.filename) == "function" ? this.filename(this.file_id) : this.filename
 	}
 	
 	unresolve_filename(){
@@ -41,17 +41,21 @@ class WasmDataDownloader{
 			throw new Error("Predicate failed, cannot proceed with download")
 		}
 		
-		this.resolve_filename()
+		
 		
 		const a = document.createElement("a")
 		a.style = 'display:none'
 		document.body.appendChild(a)
 		
+		
 		const wasm_data = this.wasm_data_provider(this.file_id)
+		
 		const blob = new Blob([wasm_data], {type:"octet/stream"})
 		const url = window.URL.createObjectURL(blob)
 		
 		a.href=url
+		
+		this.resolve_filename()
 		a.download = this.resolved_filename
 		a.click() // make the element perform its download
 		

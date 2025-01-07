@@ -1809,6 +1809,8 @@ class Figure{
 		shape = V.from(6,4),
 		units = "cm",
 		scale = null,
+		title = null,
+		caption = null,
 	} = {}){
 		
 		if (scale === null){
@@ -1817,6 +1819,8 @@ class Figure{
 		}
 		
 		this.container = container
+		this.set_title(title);
+		this.set_caption(caption);
 		// Unit coords go from zero to one in each dimension
 		this.aspect_ratio = shape[0]/shape[1] // dx/dy
 		this.f_rect_in_s = new R(0,scale*shape[1],scale*shape[0],-scale*shape[1])
@@ -1838,12 +1842,45 @@ class Figure{
 		)
 		
 		
-		
-		this.container.appendChild(this.svg.root)
+		this.div_node = this.container.appendChild(Html.createElement("div", {class:["item","figure"]}))
+		this.svg_node = this.div_node.appendChild(this.svg.root)
 		
 		this.draw()
 	}
 	
+	set_title(title = null){
+		this.title = title;
+		
+		if (this.title_node !== undefined){
+			this.container.removeChild(this.title_node)
+			delete this.title_node
+		}
+		if (this.title !== null){
+			this.title_node = Html.createElement("p", {class:"title", textContent:this.title})
+			this.div_node.insertBefore(this.title_node, this.svg_node)
+		}
+	}
+	
+	set_caption(caption = null){
+		this.caption = caption;
+		
+		if (this.caption_node !== undefined){
+			this.container.removeChild(this.caption_node)
+			delete this.caption_node
+		}
+		if (this.caption !== null){
+			this.caption_node = Html.createElement("div", {class:"caption"})
+			this.div_node.insertBefore(this.caption_node, this.svg_node.nextSibling)
+		
+			if (Array.isArray(this.caption)){
+				for(const c of this.caption){
+					this.caption_node.appendChild(Html.createElement("p", {innerHTML:c}))
+				}
+			} else {
+				this.caption_node.appendChild(Html.createElement("p", {innerHTML:this.caption}))
+			}
+		}
+	}
 	
 	draw(){
 		return

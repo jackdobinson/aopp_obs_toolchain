@@ -11,6 +11,18 @@
 	
 		<nav class="top-menu"><a id="link-to-home" href="https://jackdobinson.github.io/aopp_obs_toolchain/index.html">Home</a></nav><h1>Deconv Tool Web Application</h1>
 	
+		<p>
+		This is an online tool that performs deconvolution using the MODIFIED CLEAN algorithm. This algorithm is 
+		<em>quantitive</em> (i.e. deconvolved values are on the same scale as the input data) and <em>conservative</em> (i.e.
+		the flux of the residual plus the flux of the clean map equals the flux of the original image) making it suitable
+		for use where photometic stability is important.
+		</p>
+		<p>
+		This tool uses TIFF files for input and output. TIFF is optimised for image transport, not for describing the units
+		the image is in. Therefore, the deconvolved results have their range (in terms of the input image range) added to their 
+		filename when they are downloaded.
+		</p>
+	
 		<hr/>
 		
 		<figure style="overflow:visible;" id="spinner">
@@ -54,7 +66,7 @@
 
 			<div class="h-flow">
 				<div class="v-flow canvas-container">
-					<div class="item">
+					<div id="science-target-button" class="item">
 						<label for="sci_file">
 							<div class="button-like">
 								Select Science Target File...
@@ -69,7 +81,7 @@
 				</div>
 
 				<div class="v-flow">
-					<div class="item">
+					<div id="psf-target-button" class="item">
 						<label for="psf_file">
 							<div class="button-like">
 								Select PSF File...
@@ -88,21 +100,48 @@
 		
 		<hr>
 		
+		<div id="results-region">
+			<details id="results-details" class="results-details">
+				<summary><h4>Results</h4></summary>
+			</details>
+			<div id="results">
+				<div class="h-flow">
+					<div class="item">
+						<div>
+							<canvas id="clean_map_canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+							<button class="download-result" id="download-clean-map-button" type="button">Download Clean Map .TIFF</button>
+						</div>
+					</div>
+					<div class="item">
+						<div>
+							<canvas id="residual_canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+							<button class="download-result" id="download-residual-button" type="button">Download Residual .TIFF</button>
+						</div>
+					</div>
+				</div>
+				<p style="font-size: small;">Note: While the algorithm used conserves flux, the TIFF format does not know about flux. Therefore we use the entire available range of values.</p>
+			</div>
+		</div>
+		
+		<hr>
+		
 		<div class="h-flow">
 			<div class="item">
 				<h4>Deconvolution Parameters</h4>
 				<div id="param-container"></div>
 				<button class="run-button" id="run_deconv" type="button">Run Deconvolution</button>
 			</div>
-			<div class="item">
+			<div id="deconvolution-status" class="item">
 				<h4>Deconvolution Status</h4>
 				<div id="status-container"></div>
 			</div>
 		</div>
 		
 		
+		
+		
 		<hr>
-		<div>
+		<div id="progress-plot-region">
 			<details id="progress-plot-details" class="progress-plot-details">
 				<summary><h4 style="display:inline;">Progress Plots</h4></summary>
 				<!--
@@ -114,25 +153,70 @@
 			</details>
 			<div id="plot-container-1">
 				<div class="v-flow">
-					<div class="h-flow">
-						<div class="v-flow">
-							<div class="item">
-								<p>Residual</p>
-								<canvas id="residual-canvas" class="auto-size" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+					<div class="v-flow">
+						<div class="h-flow">
+							<div class="item figure">
+								<p class="title">Residual</p>
+								<canvas id="inprogress-residual-canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+								<div class="caption">
+									<p>
+									Figure 1: Shows the <em>residual</em> (the components at the current iteration convolved with the PSF, 
+									subtracted from the original image) at the current iteration.
+									</p>
+									<p>
+									This should progress from being identical to the original image at iteration 0, to being 
+									mostly (if not entirely) noise at the final iteration.
+									</p>
+								</div>
 							</div>
-							<div class="item">
-								<p>Selected Pixels</p>
-								<canvas id="selected-pixels-canvas" class="auto-size" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+							<div class="item figure">
+								<p class="title">Selected Pixels</p>
+								<canvas id="inprogress-selected-pixels-canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+								<div class="caption">
+									<p>
+									Figure 2: Shows the <em>selected pixels</em> at the current iteration. Pixels are selected as those whose magnitude is
+									larger than the brightest pixel in the <em>residual</em> multipled by the <em>threshold</em> of the 
+									current iteration. At each iteration the <em>selected pixels</em> are multipled by the <em>loop_gain</em> and added to the 
+									<em>current components</em>. This image gives direct insight into what is happening each step and you are 
+									often able to pinpoint the stage in a deconvolution where things start to go wrong by watching this image.
+									</p>
+									<p>
+									When using <em>adaptive_threshold_flag</em> this may look similar to the residual (especially at the start)
+									as adaptive thresholding attempts to initially separate the image into low brightness "background" 
+									and high brightness"foreground", so in the vast majority of images the object will be the "foreground" initially.
+									As iterations progress, bright features start to be classified as "foreground". 
+									</p>
+									<p>
+									When using a <em>manual threshold</em>, this will often look very different from the residual at all times. This
+									is because a manual threshold is not dynamic, generally the selected pixels will start of as a contiguous blob,
+									but become more fragmented over time. This can be a source of speckling that degrades the final image, therefore
+									<em>adaptive thresholding</em> is recommended. 
+									</p>
+								</div>
 							</div>
 						</div>
-						<div class="v-flow">
-							<div class="item">
-								<p>Current Convolved</p>
-								<canvas id="current-convolved-canvas" class="auto-size" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+						<div class="h-flow">
+							<div class="item figure">
+								<p class="title">Current Convolved</p>
+								<canvas id="inprogress-current-convolved-canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+								<div class="caption">
+									<p>
+									Figure 3: Shows the <em>currently</em> selected pixels <em>convolved</em> with the PSF. This looks like (and is)
+									a "smoothed out" view of the <em>selected pixels</em>. You can think of this image as what will be subtracted from
+									the current <em>residual</em> to get the next iteration's <em>residual</em>.
+									</p>
+								</div>
+							
 							</div>
-							<div class="item">
-								<p>Current Components</p>
-								<canvas id="components-canvas" class="auto-size" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+							<div class="item figure">
+								<p class="title">Current Components</p>
+								<canvas id="inprogress-components-canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+								<div class="caption">
+									<p>
+									Figure 4: Shows the <em>current components</em> of the deconvolved image. If deconvolution were to stop, this
+									would be come the <em>clean map</em> (if no <em>clean beam</em> is used and the <em>residual</em> is not added).
+									</p>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -141,24 +225,8 @@
 			</div>
 		</div>
 		
-		<hr>
 		
-		<h4>Results</h4>
-		<div id="results" class="h-flow">
-			<div class="item">
-				<div>
-					<canvas id="clean_map_canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
-					<button class="download-result" id="download-clean-map-button" type="button">Download Clean Map .TIFF</button>
-				</div>
-			</div>
-			<div class="item">
-				<div>
-					<canvas id="residual_canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
-					<button class="download-result" id="download-residual-button" type="button">Download Residual .TIFF</button>
-				</div>
-			</div>
-		</div>
-		<p style="font-size: small;">Note: While the algorithm used conserves flux, the TIFF format does not know about flux. Therefore we use the entire available range of values.</p>
+		
 		
 		<hr/>
 			<textarea class="emscripten" id="output" rows="8"></textarea>

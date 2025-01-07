@@ -25,10 +25,10 @@ for FILE in "${EXAMPLE_FILE_SET[@]}"; do
 	DIR=${FILE%/*}
 	NAME=${FILE##*/}
 	
-	EXAMPLE_DATA_DIR=${DIR}/../example_data
-	if [ ! -e "${EXAMPLE_DATA_DIR}" ]; then
+	EXAMPLE_DATA_DIR=$(realpath -Ls "${DIR}/../example_data")
+	if [ ! -h "${EXAMPLE_DATA_DIR}" ]; then
 		ln -s ${THIS_DIR}/../../example_data/aopp_deconv_tool_example_datasets_small_extracted ${EXAMPLE_DATA_DIR}
-	fi;
+	fi
 
 	case "${FILE}" in
 		*.sh)

@@ -13,8 +13,16 @@ class Html{
 				value = attrs[key]
 				if (key == "class"){
 					if (value !==null ){
-						element.classList.add(value) // classList is a set so no need to test for membership first
+						if (Array.isArray(value)) {
+							for(const v of value){
+								element.classList.add(v)
+							}
+						} else {
+							element.classList.add(value) // classList is a set so no need to test for membership first
+						}
 					}
+				} else if (key in element === true){
+					element[key] = value
 				} else {
 					element.setAttribute(key, value)
 				}

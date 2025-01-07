@@ -29,13 +29,13 @@ let n_max_iter_field = document.getElementById("n_max_iter")
 
 
 let deconv_status_mgr = new StatusKVManager([
-	["Science Observation Uploaded", false, {"is-good":false}],
-	["PSF Observation Uploaded", false, {"is-good":false}],
-	["Parameters Validated", false, {"is-good":false}],
-	["Deconvolution Running", false, {"is-good":undefined}],
+	["Science Observation Uploaded", false, {"is-good":false}, {highlight_on_hover_target:document.getElementById("science-target-button")}],
+	["PSF Observation Uploaded", false, {"is-good":false}, {highlight_on_hover_target:document.getElementById("psf-target-button")}],
+	["Parameters Validated", false, {"is-good":false}, {highlight_on_hover_target:document.getElementById("param-container")}],
+	["Deconvolution Running", false, {"is-good":undefined}, {highlight_on_hover_target:document.getElementById("run_deconv")}],
 	["Deconvolution Iteration", "No Previous Run", {"is-good":undefined}],
-	["Last Plot Update Iteration", "No Previous Run", {"is-good":undefined}],
-	["Results Available", false, {"is-good":false}]
+	["Last Plot Update Iteration", "No Previous Run", {"is-good":undefined}, {highlight_on_hover_target:document.getElementById("progress-plot-region")}],
+	["Results Available", false, {"is-good":false}, {highlight_on_hover_target:document.getElementById("results-region")}]
 ])
 deconv_status_mgr.addTo(document.getElementById("status-container"))
 
@@ -62,34 +62,42 @@ let deconv_residual = null
 let clean_modified_params = new CleanModifiedParameters(document.getElementById("param-container"))
 
 
-let progress_plot_details = document.getElementById("progress-plot-details")
-let plot_container_1 = document.getElementById("plot-container-1")
-plot_container_1.hide = ()=>{
-	plot_container_1.setAttribute("style","height:0px;overflow:hidden")
-}
-plot_container_1.show = ()=>{
-	plot_container_1.setAttribute("style","height:auto;overflow:visible")
-}
-plot_container_1.hide()
-
-progress_plot_details.onclick = (e)=>{
+function setHideViaDetails(detail_element_name, container_element_name, show_at_start_flag=false){
+	let details = document.getElementById(detail_element_name)
+	let container = document.getElementById(container_element_name)
 	
-	if(progress_plot_details.hasAttribute("open")){
-		// We are closing the details
-		plot_container_1.hide()
+	container.hide = ()=>{
+		container.prev_style = container.getAttribute("style")
+		if (container.prev_style === null){
+			container.prev_style = "height:auto;overflow:visible"
+		}
+		container.setAttribute("style","height:0px;overflow:hidden")
 	}
-	else {
-		plot_container_1.show()
+	container.show = ()=>{
+		container.setAttribute("style", container.prev_style)
+	}
+	
+	details.onclick = (e)=>{
+		if(details.hasAttribute("open")){
+			// We are closing the details
+			container.hide()
+		}
+		else {
+			container.show()
+		}
+	}
+	
+	container.hide()
+	
+	if(show_at_start_flag){
+		details.dispatchEvent(new Event("click"))
+		details.setAttribute("open", null)
 	}
 }
-/*
-let svg_figure = new SvgFig(
-	"progress plots", 
-	document.getElementById("progress-plots"),
-	V.from(20,20),
-	new R(0,0,2,2)
-)
-*/
+
+setHideViaDetails("results-details", "results")
+setHideViaDetails("progress-plot-details", "plot-container-1")
+
 let dataset_cpp_array_cache = new Map();
 let plot_name_map = new Map();
 
@@ -111,6 +119,23 @@ figure.plot_areas.get("stopping_criteria").appendAxesFromExtent("stopping_criter
 figure.plot_areas.get("stopping_criteria").newDatasetForAxes("stopping_criteria_axes", "fabs_record")
 figure.plot_areas.get("stopping_criteria").newDatasetForAxes("stopping_criteria_axes", "rms_record")
 figure.plot_areas.get("stopping_criteria").newDatasetForAxes("stopping_criteria_axes_2", "threshold_record")
+figure.set_title("Stopping Criteria and Threshold for each Iteration")
+figure.set_caption([
+"Figure 5: Left axis shows two stopping criteria: 1) <em>fabs</em> (red), the absolute brightest pixel of the residual \
+divided by the absolute brightest pixel of the original image; 2) <em>rms</em> (green), the root-mean-square of the residual \
+divided by the root-mean-square of the original image. Right axis shows the threshold (purple) which is used to choose the \
+<em>selected pixels</em> (Fig. 2).",
+
+"The two stopping criteria <em>fabs</em> and <em>rms</em> progress from a value of 1 to whatever value is specified in \
+<em>fabs_frac_threshold</em> and <em>rms_frac_threshold</em> respectively. When they reach their respective thresholds, \
+iteration is terminated. Ideally the graphs of the stopping criteria should be monotonically decreasing, having upwards \
+movement of these lines implies that the algorithm is struggling to find a solution.",
+
+"The threshold for each iteration may jump around if <em>adaptive_threshold_flag</em> is set, as different parts of the \
+residual are classified as 'background' and 'foreground'. If <em>adpative_threshold_flag</em> is not set, the graph should \
+monotonically decrease as the <em>threshold</em> is a constant fraction of the absolute brightest pixel of the residual."
+
+])
 
 
 let figure2 = new Figure({
@@ -125,6 +150,15 @@ figure2.plot_areas.get("residual_histogram").newDatasetForAxes("residual_histogr
 figure2.plot_areas.get("residual_histogram").setDatasetPlotTypeArtist("residual_histogram_data", new StepPlotArtist())
 figure2.plot_areas.get("residual_histogram").addDatasetToAxes("residual_histogram_axes", new RingbufferDataset("threshold_line_data",1))
 figure2.plot_areas.get("residual_histogram").setDatasetPlotTypeArtist("threshold_line_data", new VlinePlotArtist())
+figure2.set_title("Histogram of Residual at current Iteration")
+figure2.set_caption([
+"Figure 6: Step graph shows the histogram of the <em>residual</em> at the current iteration. The vertical line shows the <em>threshold</em> \
+of the current iteration. The histogram should initially be the same as the histogram of the original image, typically this is a high count \
+of low value pixels (the field) and a similar (but often lesser) count of high value pixels (the object). The boundary between the \
+two populations may be flattened due to blurring of the object. In later iterations, as the object is removed from the residual, the graph should \
+resemble the graph of a gaussian (in log space) centered on zero with a variance depending on the noise in the image."
+])
+
 
 let figure3 = new Figure({
 	container : document.getElementById("progress-plots"),
@@ -136,7 +170,11 @@ figure3.plot_areas.get("component_histogram").appendDataAreaFromRect("component_
 figure3.plot_areas.get("component_histogram").appendAxesFromExtent("component_axes", E.from(NaN,NaN,NaN,NaN), {axis_names : ["value", "count"], nonlinear_transform : log_transform_y})
 figure3.plot_areas.get("component_histogram").newDatasetForAxes("component_axes", "component_data")
 figure3.plot_areas.get("component_histogram").setDatasetPlotTypeArtist("component_data", new StepPlotArtist())
-
+figure3.set_title("Histogram of Components at current Iteration")
+figure3.set_caption([
+"Figure 7: Step graph shows the histogram of the <em>current components</em> (Fig. 4). Initially this will all be zeros, and typically evolve into \
+a bi-modal distribution of dark 'background' pixels, and bright 'foreground' pixels."
+])
 
 let figure4 = new Figure({
 	container : document.getElementById("progress-plots"),
@@ -148,7 +186,11 @@ figure4.plot_areas.get("selected_pixels_histogram").appendDataAreaFromRect("sp_d
 figure4.plot_areas.get("selected_pixels_histogram").appendAxesFromExtent("sp_data_area", E.from(NaN,NaN,NaN,NaN), {axis_names : ["value", "count"], nonlinear_transform : log_transform_y})
 figure4.plot_areas.get("selected_pixels_histogram").newDatasetForAxes("sp_data_area", "selected_pixels_data")
 figure4.plot_areas.get("selected_pixels_histogram").setDatasetPlotTypeArtist("selected_pixels_data", new StepPlotArtist())
-
+figure4.set_title("Histogram of selected pixels at current Iteration")
+figure4.set_caption([
+"Figure 8: Step graph shows the histogram of the <em>selected pixels</em> for the current iteration (Fig. 2). Should always consist of the section \
+of the <em>residual</em> histogram (Fig. 6) above the current <em>threshold</em>."
+])
 
 let figure5 = new Figure({
 	container : document.getElementById("progress-plots"),
@@ -160,6 +202,11 @@ figure5.plot_areas.get("current_convolved_histogram").appendDataAreaFromRect("cc
 figure5.plot_areas.get("current_convolved_histogram").appendAxesFromExtent("cc_data_area", E.from(NaN,NaN,NaN,NaN), {axis_names : ["value", "count"], nonlinear_transform : log_transform_y})
 figure5.plot_areas.get("current_convolved_histogram").newDatasetForAxes("cc_data_area", "current_convolved_data")
 figure5.plot_areas.get("current_convolved_histogram").setDatasetPlotTypeArtist("current_convolved_data", new StepPlotArtist())
+figure5.set_title("Histogram of the 'current convolved', i.e. the selected pixels of the current Iteration convolved with the PSF")
+figure5.set_caption([
+"Figure 9: Step graph shows the histogram of the <em>current convolved</em> (Fig. 3), i.e. the <em>currently</em> selected pixels <em>convolved</em> \
+with the PSF. This should look very similar to the <em>selected pixels</em> histogram (Fig. 8), but with smoothed edges."
+]);
 
 
 plot_name_map.set("stopping_criteria", figure.plot_areas.get("stopping_criteria"))
@@ -172,7 +219,7 @@ plot_name_map.set("current_convolved_histogram", figure5.plot_areas.get("current
 download_clean_map_button.addEventListener(
 	"click",
 	new WasmDataDownloader( 
-		()=>{
+		(file_id)=>{
 			let fn = ""
 			let ext = ".tiff"
 			if(sci_image_holder.file.name.endsWith(".tiff")){
@@ -183,7 +230,11 @@ download_clean_map_button.addEventListener(
 				ext = ".tif"
 			}
 			
-			return fn+"deconvolved_clean_map" + ext
+			console.log(deconv_type, deconv_name, file_id)
+			const data_min = Module.get_data_min(deconv_type, deconv_name, file_id)
+			const data_max = Module.get_data_max(deconv_type, deconv_name, file_id)
+			
+			return fn+`deconvolved_clean_map__min_${data_min}_max_${data_max}` + ext
 		},
 		"deconv.clean_map", 
 		(file_id)=>Module.get_tiff(deconv_type, deconv_name, file_id, sci_image_holder.name),
@@ -194,7 +245,7 @@ download_clean_map_button.addEventListener(
 download_residual_button.addEventListener(
 	"click",
 	new WasmDataDownloader( 
-		()=>{
+		(file_id)=>{
 			let fn = ""
 			let ext=".tiff"
 			if(sci_image_holder.file.name.endsWith(".tiff")){
@@ -205,7 +256,10 @@ download_residual_button.addEventListener(
 				ext = ".tif"
 			}
 			
-			return fn+"deconvolved_residual"+ext
+			const data_min = Module.get_data_min(deconv_type, deconv_name, file_id)
+			const data_max = Module.get_data_max(deconv_type, deconv_name, file_id)
+			
+			return fn+`deconvolved_residual__min_${data_min}_max_${data_max}`+ext
 		},
 		"deconv.residual", 
 		(file_id)=>Module.get_tiff(deconv_type, deconv_name, file_id, sci_image_holder.name),
@@ -213,7 +267,8 @@ download_residual_button.addEventListener(
 	)
 )
 
-run_deconv_button.addEventListener("click", async (e)=>{
+run_deconv_button.addEventListener("click", 
+	async (e)=>{
 		try{
 			e.target.textContent = "Deconvolution in progress..."
 			e.target.disabled = true

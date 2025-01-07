@@ -361,56 +361,56 @@ class CleanModifiedParameters{
 		),
 		new Parameter(
 			"adaptive_threshold_flag", 
-			"If true, will apply heuteristics to find the optimal threshold at each iteration and not rely upon a manually set threshold", 
+			"If checked (recommended), will use Otsu's Method to dynamically set a new threshold at each iteration. If unchecked, will use a manual (constant fraction) threshold.", 
 			"bool", 
 			Boolean, 
 			true
 		),
 		new Parameter(
 			'threshold', 
-			"Fraction of the residual's brightest pixel, above which a pixel will be selected as a 'source pixel'. Must be in the range (0,1).", 
+			"Fraction of the residual's brightest pixel, above which a pixel will be selected as a 'source pixel'. Must be in the range (0,1). It is recommended to use an adaptive threshold, however a good starting point for a manual threshold is 0.3.", 
 			"real(0,1)", 
 			Number, 
 			0.3
 		),
 		new Parameter(
 			"loop_gain", 
-			"What fraction of a selected pixel is treated as a 'source' each iteration. Must be in the range (0,1).", 
+			"What fraction of a selected pixel is treated as a 'source' each iteration. Must be in the range (0,1). Higher values converge faster but can cause instability, lower values are more stable but converge slowly. A recommended starting point is 0.1", 
 			"real(0,1)", 
 			Number, 
 			0.1
 		),
 		new Parameter(
 			"rms_frac_threshold", 
-			"When the root-mean-square of the residual is below this fraction of it's original value, iteration will stop. Must be in the range (0,1).", 
+			"When the root-mean-square of the residual is below this fraction of its original value, iteration will stop. Must be in the range (0,1). A recommended starting point is the (approximate) inverse of the signal/noise ratio of the image. Increasing this, i.e. 'stopping early', can reduce noise in the deconvolved image at the expense of not fully conserving flux.", 
 			"real(0,1)", 
 			Number, 
 			1E-2
 		),
 		new Parameter(
 			"fabs_frac_threshold", 
-			"When the brightest pixel of the residual is below this fraction of it's original value, iteration will stop. Must be in the range (0,1).", 
+			"When the brightest pixel of the residual is below this fraction of its original value, iteration will stop. Must be in the range (0,1). A recommended starting point is the (approximate) inverse of the signal/noise ratio of the image. Increasing this, i.e. 'stopping early', can reduce noise in the deconvolved image at the expense of not fully conserving flux.", 
 			"real(0,1)", 
 			Number, 
 			1E-2
 		),
 		new Parameter(
 			"clean_beam_sigma", 
-			"The standard deviation (in pixels) of the gaussian 'clean beam' to convolve source components with, forming the 'clean map'. If zero, no clean beam is used", 
+			"The standard deviation (in pixels) of the gaussian 'clean beam' to convolve source components with, forming the 'clean map'. If zero, no clean beam is used. Recommended to be non-zero only if altering other parameters does not give a physically plausible result.", 
 			"real", 
 			Number, 
 			0
 		),
 		new Parameter(
 			"add_residual_flag", 
-			"If true, will add the residual to the clean map after convolution with the cleam beam (if requested)", 
+			"If true, will add the residual to the clean map after convolution with the cleam beam (if 'clean_beam_sigma' is non-zero).", 
 			"bool", 
 			Boolean, 
 			false
 		),
 		new Parameter(
 			"plot_update_interval", 
-			"How often to update plots (in number of iterations). Less frequent updates are faster, set to zero to never update plots.", 
+			"How often to update plots (in number of iterations). Less frequent updates are faster, set this to zero to never update plots. Recommended number is 1/10th of 'n_iter'.", 
 			"integer(0,inf)", 
 			Number, 
 			10
