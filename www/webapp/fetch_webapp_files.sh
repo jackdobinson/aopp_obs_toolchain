@@ -9,7 +9,7 @@ THIS_DIR=$(readlink -f $(dirname $0))
 CWD=${PWD}
 
 WEBAPP_DIR=${THIS_DIR}/../../emscripten_test/deconv_testing
-
+echo "Fetching webapp files from ${WEBAPP_DIR} copying to ${THIS_DIR}"
 
 ###############################
 # Copy files to this location #
@@ -80,4 +80,17 @@ replace_1='<link rel="stylesheet" href="https://jackdobinson.github.io/aopp_obs_
 
 sed -i -e "s@${find_1}@${replace_1}@g" ${THIS_DIR}/index.html
 
+#####################################################################
+# Update JAVASCRIPT that is different between repos for some reason #
+#####################################################################
 
+echo "Patching javascript that behaves differently between repos"
+
+find='(this.body_rect.top < 0 ? this.body_rect.top : 0)'
+replace='this.body_rect.top'
+sed -i -e "s@${find}@${replace}@g" ${THIS_DIR}/status_kv.js
+
+
+find='(this.body_rect.left < 0 ? this.body_rect.left : 0)'
+replace='this.body_rect.left'
+sed -i -e "s@${find}@${replace}@g" ${THIS_DIR}/status_kv.js
