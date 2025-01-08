@@ -129,13 +129,13 @@ class Parameter{
 	static next_id=0;
 	
 	constructor(
-		name, // the name of the parameter
-		description, // a description explaining what the paramter controls
-		type_name, // the name of the data type of the parameter, must be one of the registered data types
-		deserialiser, // function(string) -> type // When given a string that represents a value, sets the value of the parameter
-		default_value = null, // default value to use when no other value is provided. 
-		validator = (v)=>true, // function(type) -> bool // ensures parameter value is in correct range
-		serialier = (v)=>{return v.toString()}, // function(type) -> string // represents the value of the parameter as a string
+		name, // <str> the name of the parameter
+		description, // <str || Array[str]> a description explaining what the paramter controls
+		type_name, // <str> the name of the data type of the parameter, must be one of the registered data types
+		deserialiser, // <function(string) -> type> // When given a string that represents a value, sets the value of the parameter
+		default_value = null, // <Any> default value consistent with `type_name` to use when no other value is provided. 
+		validator = (v)=>true, // <function(type) -> bool> // ensures parameter value is in correct range
+		serialier = (v)=>{return v.toString()}, // <function(type) -> string> // represents the value of the parameter as a string
 	){
 		this.id = Parameter.next_id++
 		this.name = name
@@ -319,7 +319,18 @@ class ControlManager{
 		
 		let tooltip_element = document.createElement("p")
 		tooltip_element.classList.add("tooltip")
-		tooltip_element.textContent = param.description
+		if (Array.isArray(param.description)){
+			for(const item of param.description){
+				if (item[0] == "<"){ // assume that first character would be '<' to start a tag
+					tooltip_element.innerHTML += item
+				} else { // If item does not start with a tag, assume it should be text
+					tooltip_element.innerHTML += "<p>"+item+"</p>"
+				}
+			}
+		} else {
+			//tooltip_element.textContent = param.description
+			tooltip_element.innerHTML = param.description
+		}
 		
 		ctl.html_container.appendChild(tooltip_element)
 		ctl.tooltip_element = tooltip_element
@@ -354,42 +365,78 @@ class CleanModifiedParameters{
 	static parameters = [
 		new Parameter(
 			'n_iter', 
-			'Maximum number of iterations to perform. A good starting number is 100', 
+			[
+				'Maximum number of iterations to perform. A good starting number is 100',
+				"Generally you want iterations to stop when one of the stopping criteria "
+				+ "(<em>rms_frac_threshold</em>, <em>fabs_frac_threshold</em>) is met. Therefore "
+				+ "increase this if the maximum number of iterations is reached."
+			], 
 			'integer(1,inf)', 
 			Number, 
 			100
 		),
 		new Parameter(
 			"adaptive_threshold_flag", 
-			"If checked (recommended), will use Otsu's Method to dynamically set a new threshold at each iteration. If unchecked, will use a manual (constant fraction) threshold.", 
+			[
+				"If checked (recommended), will use Otsu's Method to dynamically set a new threshold at each iteration. "
+				+ "If unchecked, will use a manual (constant fraction) threshold.",
+				"It is recommended to use the adaptive threshold. However, under specific circumstances (e.g. the "
+				+ "adaptive threshold not finding a bright spot) it can be useful to set the threshold manually. ",
+				"In an extreme case, it may be neccessary to 'manually adapt' the threshold via: 1) perform X number of iterations manually; "
+				+ "2) download the result; 3) reupload the result as a 'new' input; 4) <em>either</em> loop back to (1) or "
+				+ "continue deconvolution with adpative thresholding. However, if this is needed, it may be better to use the Python version "
+				+ "which is much more adaptable and can be modified more easily by the end user."
+			], 
 			"bool", 
 			Boolean, 
 			true
 		),
 		new Parameter(
 			'threshold', 
-			"Fraction of the residual's brightest pixel, above which a pixel will be selected as a 'source pixel'. Must be in the range (0,1). It is recommended to use an adaptive threshold, however a good starting point for a manual threshold is 0.3.", 
+			[
+				"Fraction of the residual's brightest pixel, above which a pixel will be selected as a 'source pixel'. Must be in the range (0,1). "
+				+"It is recommended to use an adaptive threshold, however a good starting point for a manual threshold is 0.3.",
+				"When setting a manual threshold, set it so the <em>selected pixels</em> (Fig. 2) are either a single 'compact' region or a "
+				+ "collection of 'compact' regions. The easiest way to do this initially is to try and select the target object (this is what "
+				+ "adaptive thresholding attempts to do). Note however, that the threshold is a fraction of the brightest pixel in the "
+				+ "<em>residual</em> (Fig. 1) so it is difficult to set a specific value. If more adaptability is required, it is recommended "
+				+ "to use the Python version which can more easily be modified by the end user."
+			], 
 			"real(0,1)", 
 			Number, 
 			0.3
 		),
 		new Parameter(
 			"loop_gain", 
-			"What fraction of a selected pixel is treated as a 'source' each iteration. Must be in the range (0,1). Higher values converge faster but can cause instability, lower values are more stable but converge slowly. A recommended starting point is 0.1", 
+			[
+				"What fraction of a selected pixel is treated as a 'source' each iteration. Must be in the range (0,1). "
+				+ "A recommended starting point is 0.1.",
+				"Higher values converge faster but can cause instability, lower values are more stable but converge slowly. "
+				+ "If the <em>selected pixels</em> (Fig. 2) is not 'compact' (i.e. many disconnected single pixels are selected), "
+				+ "it may help (e.g. reduce speckling) to lower this value."
+			], 
 			"real(0,1)", 
 			Number, 
 			0.1
 		),
 		new Parameter(
 			"rms_frac_threshold", 
-			"When the root-mean-square of the residual is below this fraction of its original value, iteration will stop. Must be in the range (0,1). A recommended starting point is the (approximate) inverse of the signal/noise ratio of the image. Increasing this, i.e. 'stopping early', can reduce noise in the deconvolved image at the expense of not fully conserving flux.", 
+			[
+				"When the root-mean-square of the residual is below this fraction of its original value, iteration will stop. Must be in the range (0,1). "
+				+"A recommended starting point is the (approximate) inverse of the signal/noise ratio of the image.",
+				"Increasing this, i.e. 'stopping early', can reduce noise in the deconvolved image at the expense of not fully conserving flux."
+			], 
 			"real(0,1)", 
 			Number, 
 			1E-2
 		),
 		new Parameter(
 			"fabs_frac_threshold", 
-			"When the brightest pixel of the residual is below this fraction of its original value, iteration will stop. Must be in the range (0,1). A recommended starting point is the (approximate) inverse of the signal/noise ratio of the image. Increasing this, i.e. 'stopping early', can reduce noise in the deconvolved image at the expense of not fully conserving flux.", 
+			[
+				"When the brightest pixel of the residual is below this fraction of its original value, iteration will stop. Must be in the range (0,1). "
+				+ "A recommended starting point is the (approximate) inverse of the signal/noise ratio of the image.",
+				"Increasing this, i.e. 'stopping early', can reduce noise in the deconvolved image at the expense of not fully conserving flux."
+			], 
 			"real(0,1)", 
 			Number, 
 			1E-2
@@ -403,7 +450,7 @@ class CleanModifiedParameters{
 		),
 		new Parameter(
 			"add_residual_flag", 
-			"If true, will add the residual to the clean map after convolution with the cleam beam (if 'clean_beam_sigma' is non-zero).", 
+			"If true, will add the residual to the clean map after convolution with the cleam beam (if <em>clean_beam_sigma</em> is non-zero).", 
 			"bool", 
 			Boolean, 
 			false
