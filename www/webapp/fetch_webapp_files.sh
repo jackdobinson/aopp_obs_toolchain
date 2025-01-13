@@ -9,7 +9,9 @@ THIS_DIR=$(readlink -f $(dirname $0))
 CWD=${PWD}
 
 WEBAPP_DIR=${THIS_DIR}/../../emscripten_test/deconv_testing
-echo "Fetching webapp files from ${WEBAPP_DIR} copying to ${THIS_DIR}"
+echo "Fetching webapp files (copying):"
+echo "    SOURCE      '${WEBAPP_DIR}'"
+echo "    DESTINATION '${THIS_DIR}'"
 
 ###############################
 # Copy files to this location #
@@ -28,9 +30,13 @@ cp ${WEBAPP_DIR}/minimal.css ${THIS_DIR}/
 cp -r ${WEBAPP_DIR}/*.js ${WEBAPP_DIR}/js_modules ${THIS_DIR}/
 
 
+echo "Files copied."
+
 ###############################################################
 # Update parts of HTML file to overwrite placeholder elements #
 ###############################################################
+
+echo "Patching placeholders in HTML files..."
 
 # Add link back to home page
 
@@ -80,11 +86,13 @@ replace_1='<link rel="stylesheet" href="https://jackdobinson.github.io/aopp_obs_
 
 sed -i -e "s@${find_1}@${replace_1}@g" ${THIS_DIR}/index.html
 
+echo "Placeholders patched in HTML files."
+
 #####################################################################
 # Update JAVASCRIPT that is different between repos for some reason #
 #####################################################################
 
-echo "Patching javascript that behaves differently between repos"
+echo "Patching javascript that behaves differently between repos..."
 
 find='(this.body_rect.top < 0 ? this.body_rect.top : 0)'
 replace='this.body_rect.top'
@@ -94,3 +102,6 @@ sed -i -e "s@${find}@${replace}@g" ${THIS_DIR}/status_kv.js
 find='(this.body_rect.left < 0 ? this.body_rect.left : 0)'
 replace='this.body_rect.left'
 sed -i -e "s@${find}@${replace}@g" ${THIS_DIR}/status_kv.js
+
+
+echo "Javascript patching complete."
