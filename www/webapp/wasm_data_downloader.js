@@ -2,7 +2,7 @@
 
 class WasmDataDownloader{
 	constructor(
-			filename, // <String> or <Callable(file_id)->String> Name of the file that will be downloaded, e.g. "image.jpg"
+			filename, // <String> or <Callable(file_id)->String> Name of the file that will be downloaded, e.g., "image.jpg"
 			file_id, // <Obj> argument passed to `wasm_data_provider` that enables retrieval of the data we want
 			wasm_data_provider, // <Callable(Obj)->TypedArray> A function that provides the data for the download.
 			predicate_required_for_download = ()=>true, // <Callable()->Bool> function called to see if download should proceed, true means download can proceed.

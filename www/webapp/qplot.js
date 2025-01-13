@@ -1,7 +1,7 @@
 
 // TODO:
 // * Have a think about breaking up the dependence of DataArea and Axis upon eachother
-// * Want to have some way to draw arbitrary lines on plots e.g. "axvline" from matplotlib
+// * Want to have some way to draw arbitrary lines on plots e.g., "axvline" from matplotlib
 // * Ideally be able to hot-swap between log and non-log axes (plus others if possible)
 // * Would be nice to be able to have more than one set of axes on a DataArea
 // * Would be nice to plot multiple datasets in their own colour
@@ -37,7 +37,7 @@ data areas hold data points
 #                                            #
 ##############################################
 
-"display coordinates" are in terms of whatever we are drawing on, e.g. a screen or a canvas. This is
+"display coordinates" are in terms of whatever we are drawing on, e.g., a screen or a canvas. This is
 the coordinate system that we ultimately convert to.
 
 "figure coordinates" always run from 0 to 1, with (0,0) at the bottom left and (1,1) at the top right.
@@ -47,9 +47,9 @@ the coordinate system that we ultimately convert to.
 dataArea represents the area of a plot that we want to
 draw a dataset inside. Can be any geometrical shape but usually a rectangle
 
-A dataset is a collection of data. I.e. the (x,y) coords of point data, 
+A dataset is a collection of data. i.e., the (x,y) coords of point data, 
 the (category, count) values of categorical data. All data in a dataset
-MUST share the same interpretation. I.e. cannot mix (x,y) data with 
+MUST share the same interpretation. i.e., cannot mix (x,y) data with 
 (category, count) data within a dataset.
 
 When a dataset is drawn to a dataArea, it's values are transformed from
@@ -58,13 +58,13 @@ its "dataset coordinates" to "representation coordinates" to "dataArea coordinat
 "dataArea coordinates" always run from 0 to 1, with (0,0) at the bottom left and (1,1) at the top right.
 
 "representation coordinates" are an intermediate coordinate system that defines how the axes are drawn.
-This allows us to e.g. plot the logarithm of a dataset instead of the dataset itself just by changing 
+This allows us to e.g., plot the logarithm of a dataset instead of the dataset itself just by changing 
 the "representation coordinate transform". Data that is transformed to the same "representation coordinates"
 can SHARE and axis.
 
 The "dataset coordinates" are the raw values of the data in the dataset. In simple cases the transformation
 from "dataset coordinates" to "representation coordinates" is the identity transform. However, if we
-e.g. have two datasets (A and B) where A is a collection of (time, instrument_A_reading), and B is a collection
+e.g., have two datasets (A and B) where A is a collection of (time, instrument_A_reading), and B is a collection
 of (time, instrument_B_reading), and we know that instrument_A_reading is in units X, but instrument_B_reading is
 in units log(X). We can plot them on the same axis by letting the dataset2representation_transform for each dataset be
 datasetA2representation_transform = identity, datasetB2representation_transform=(b[0],exp(b[1])).
@@ -241,7 +241,7 @@ class PlotTypeArtist{
 	
 	static plot_style_defaults = {
 		"marker-type" : "none",
-		"line-type" : "solid", // "solid", "dash", "dot", any combination of "dash" and "dot" separated by "-" e.g. "dot-dash-dot"
+		"line-type" : "solid", // "solid", "dash", "dot", any combination of "dash" and "dot" separated by "-" e.g., "dot-dash-dot"
 	}
 	
 	static line_style_defaults = {
@@ -835,7 +835,7 @@ class Axis{
 		containing_rect,
 		pos_in_rect = 1,
 		name = null,
-		nonlinear_transform = null, // e.g. logarithm
+		nonlinear_transform = null, // e.g., logarithm
 		
 	}={}){
 		Axis.n_instances++
@@ -1593,13 +1593,13 @@ class PlotArea{
 	}
 	
 	setCurrentAxes(axes_name){
-		// Sets axes `axes_name` as the "current axes" i.e. the default unless a different axes is specified
+		// Sets axes `axes_name` as the "current axes" i.e., the default unless a different axes is specified
 		assert_not_null(axes_name)
 		this.current_axes = axes_name
 	}
 	
 	setCurrentDataset(dataset_name){
-		// Sets dataset `dataset_name` as the "current_dataset" i.e. the default if a different dataset is not specified
+		// Sets dataset `dataset_name` as the "current_dataset" i.e., the default if a different dataset is not specified
 		assert_not_null(dataset_name)
 		this.current_dataset = dataset_name
 	}

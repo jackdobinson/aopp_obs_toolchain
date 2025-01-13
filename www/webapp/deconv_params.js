@@ -380,7 +380,7 @@ class CleanModifiedParameters{
 			[
 				"If checked (recommended), will use Otsu's Method to dynamically set a new threshold at each iteration. "
 				+ "If unchecked, will use a manual (constant fraction) threshold.",
-				"It is recommended to use the adaptive threshold. However, under specific circumstances (e.g. the "
+				"It is recommended to use the adaptive threshold. However, under specific circumstances (e.g., the "
 				+ "adaptive threshold not finding a bright spot) it can be useful to set the threshold manually. ",
 				"In an extreme case, it may be neccessary to 'manually adapt' the threshold via: 1) perform X number of iterations manually; "
 				+ "2) download the result; 3) reupload the result as a 'new' input; 4) <em>either</em> loop back to (1) or "
@@ -412,8 +412,8 @@ class CleanModifiedParameters{
 				"What fraction of a selected pixel is treated as a 'source' each iteration. Must be in the range (0,1). "
 				+ "A recommended starting point is 0.1.",
 				"Higher values converge faster but can cause instability, lower values are more stable but converge slowly. "
-				+ "If the <em>selected pixels</em> (Fig. 2) is not 'compact' (i.e. many disconnected single pixels are selected), "
-				+ "it may help (e.g. reduce speckling) to lower this value."
+				+ "If the <em>selected pixels</em> (Fig. 2) is not 'compact' (i.e., many disconnected single pixels are selected), "
+				+ "it may help (e.g., reduce speckling) to lower this value."
 			], 
 			"real(0,1)", 
 			Number, 
@@ -424,7 +424,7 @@ class CleanModifiedParameters{
 			[
 				"When the root-mean-square of the residual is below this fraction of its original value, iteration will stop. Must be in the range (0,1). "
 				+"A recommended starting point is the (approximate) inverse of the signal/noise ratio of the image.",
-				"Increasing this, i.e. 'stopping early', can reduce noise in the deconvolved image at the expense of not fully conserving flux."
+				"Increasing this, i.e., 'stopping early', can reduce noise in the deconvolved image at the expense of not fully conserving flux."
 			], 
 			"real(0,1)", 
 			Number, 
@@ -435,7 +435,7 @@ class CleanModifiedParameters{
 			[
 				"When the brightest pixel of the residual is below this fraction of its original value, iteration will stop. Must be in the range (0,1). "
 				+ "A recommended starting point is the (approximate) inverse of the signal/noise ratio of the image.",
-				"Increasing this, i.e. 'stopping early', can reduce noise in the deconvolved image at the expense of not fully conserving flux."
+				"Increasing this, i.e., 'stopping early', can reduce noise in the deconvolved image at the expense of not fully conserving flux."
 			], 
 			"real(0,1)", 
 			Number, 

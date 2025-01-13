@@ -147,7 +147,7 @@ class V{
 	}
 
 	static mutate(v1, mutator, predicate=(i,v)=>{return true}){
-		// Mutate the elements of v1 (i.e. change in place), using the `mutator` static, only when `predicate` is true.
+		// Mutate the elements of v1 (i.e., change in place), using the `mutator` static, only when `predicate` is true.
 		// mutator : callable = (index, original_value) -> new_value
 		// 		Calculates the `new_value` of v1[index] from the `index` and `original_value` of v1[index]
 		// predicate : callable = (index, original_value) -> bool

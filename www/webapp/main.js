@@ -202,9 +202,9 @@ figure5.plot_areas.get("current_convolved_histogram").appendDataAreaFromRect("cc
 figure5.plot_areas.get("current_convolved_histogram").appendAxesFromExtent("cc_data_area", E.from(NaN,NaN,NaN,NaN), {axis_names : ["value", "count"], nonlinear_transform : log_transform_y})
 figure5.plot_areas.get("current_convolved_histogram").newDatasetForAxes("cc_data_area", "current_convolved_data")
 figure5.plot_areas.get("current_convolved_histogram").setDatasetPlotTypeArtist("current_convolved_data", new StepPlotArtist())
-figure5.set_title("Histogram of the 'current convolved', i.e. the selected pixels of the current Iteration convolved with the PSF")
+figure5.set_title("Histogram of the 'current convolved', i.e., the selected pixels of the current Iteration convolved with the PSF")
 figure5.set_caption([
-"Figure 9: Step graph shows the histogram of the <em>current convolved</em> (Fig. 3), i.e. the <em>currently</em> selected pixels <em>convolved</em> \
+"Figure 9: Step graph shows the histogram of the <em>current convolved</em> (Fig. 3), i.e., the <em>currently</em> selected pixels <em>convolved</em> \
 with the PSF. This should look very similar to the <em>selected pixels</em> histogram (Fig. 8), but with smoothed edges."
 ]);
 
