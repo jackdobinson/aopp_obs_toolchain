@@ -318,6 +318,7 @@ def display_process_progress():
 		except OSError as e:
 			#print('queue stopping')
 			#print(e)
+			_lgr.error(f"Queue stopped due to error: {e}")
 			stop = True
 			break
 		
@@ -335,13 +336,14 @@ def display_process_progress():
 		
 		if group_index is None and msg is None:
 			#print('queue stopping')
+			_lgr.info("Queue stopping as got 'stop' signal (None,None)")
 			stop = True
 			break
 		
 		#print('SIX')
 		
 		if msg is None:
-			#print(f'msg is "None", deleting state tracker for {group_index=}')
+			_lgr.info(f'msg is "None", deleting state tracker for {group_index=}')
 			if group_index in most_recent_msg:
 				del most_recent_msg[group_index]
 			if group_index in display_msg:
@@ -461,11 +463,18 @@ def run(
 		original_data_type=obs_data.dtype
 		
 		group_shape = tuple(s for x, s in enumerate(obs_data.shape) if x not in obs_fits_spec.axes['CELESTIAL'])
+		psf_group_shape = tuple(s for x, s in enumerate(psf_data.shape) if x not in psf_fits_spec.axes['CELESTIAL'])
+		
+		assert len(group_shape) == len(psf_group_shape), f"After slicing, SCI and PSF observations MUST have the same number of dimensions. Currently SCI {group_shape} PSF {psf_group_shape}."
+		assert all(group_shape[i] == psf_group_shape[i] for i in range(len(group_shape))), f"After slicing, SCI and PSF observations MUST have the same shape. Currently SCI {group_shape} PSF {psf_group_shape}."
+		
+		
 		idx_result = np.full(group_shape, dtype=object, fill_value=dict())
 		
 		_lgr.debug(f'{obs_data.shape=}')
 		_lgr.debug(f'{psf_data.shape=}')
 		_lgr.debug(f'{original_data_type=}')
+		
 		
 		# Create holders for deconvolution products
 		deconv_components = np.full_like(obs_data, np.nan)
@@ -525,13 +534,14 @@ def run(
 				
 				futures.append(executor.submit(deconv_process, group_index, obs_idx, deconvolver, processed_obs, normed_psf))
 			
-			print(f'Waiting for processes...')
+			
+			print(f'Waiting for {len(futures)} processes...')
 			for future in as_completed(futures):
 				if not future.done():
 					_lgr.error(f'Deconv process {future} not completed, something went wrong')
 					continue
 				if future.cancelled():
-					_lgr.warn(f'Deconv process {fugure} cancelled, skipping result...')
+					_lgr.warn(f'Deconv process {future} cancelled, skipping result...')
 					continue
 				
 				_lgr.info(f'Process {group_index} ended')

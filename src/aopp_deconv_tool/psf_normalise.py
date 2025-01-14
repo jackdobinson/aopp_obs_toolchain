@@ -29,6 +29,20 @@ import aopp_deconv_tool.cfg.logs
 _lgr = aopp_deconv_tool.cfg.logs.get_logger_at_level(__name__, 'WARN')
 
 
+def embed_in_nan_array(
+		data, 
+		embed_slice, 
+		big_shape, 
+		conform_axes # axes to conform to 'big_shape'
+	):
+
+	wanted_shape = tuple(big_shape[i] if (i not in conform_axes) else data.shape[i] for i in range(data.ndim))
+	big_array = np.full(wanted_shape, np.nan)
+	big_array[*embed_slice] = data
+	return big_array
+	
+	
+
 def run(
 		fits_spec : aph.fits.specifier.FitsSpecifier,
 		output_path : Path,
@@ -138,21 +152,21 @@ def run(
 	
 	hdus.append(fits.PrimaryHDU(
 		header = hdr,
-		data = normalised_data.astype(original_data_type)
+		data = embed_in_nan_array(normalised_data, fits_spec.slices, data_hdu.shape, fits_spec.axes['CELESTIAL']).astype(original_data_type)
 	))
 	hdus.append(fits.ImageHDU(
 		header = hdr,
-		data = roi_mask.astype(int),
+		data = embed_in_nan_array(roi_mask, fits_spec.slices, data_hdu.shape, fits_spec.axes['CELESTIAL']).astype(int),
 		name = 'ROI_MASK'
 	))
 	hdus.append(fits.ImageHDU(
 		header = hdr,
-		data = background_mask.astype(int),
+		data = embed_in_nan_array(background_mask, fits_spec.slices, data_hdu.shape, fits_spec.axes['CELESTIAL']).astype(int),
 		name = 'BACKGROUND_MASK'
 	))
 	hdus.append(fits.ImageHDU(
 		header = hdr,
-		data = outlier_mask.astype(int),
+		data = embed_in_nan_array(outlier_mask, fits_spec.slices, data_hdu.shape, fits_spec.axes['CELESTIAL']).astype(int),
 		name = 'OUTLIER_MASK'
 	))
 	hdus.append(fits.BinTableHDU.from_columns(
