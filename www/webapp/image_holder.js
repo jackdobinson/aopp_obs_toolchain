@@ -35,6 +35,7 @@ class ImageHolder {
 		this.im_w = null
 		this.im_h = null
 		this.im_display_data = null
+		this.status_message = ""
 	}
 
 	async loadImageToModule(){
