@@ -83,18 +83,31 @@ class ImageHolder {
 	alert_status(){
 		if (this.status_message.length > 0){
 			alert(this.status_message)
+			for (const label of this.html_element.labels){
+				let inner_html = label
+				while (inner_html.firstElementChild !== null){
+					inner_html = inner_html.firstElementChild
+				}
+				inner_html.innerText = "ERROR LOADING FILE..."
+			}
+			return true
 		}
+		return false
 	}
 
 	async handleEvent(e) {
 		this.discardPreviousImage()
-		this.alert_status()
+		if (this.alert_status()){
+			return
+		}
 		
 		if (e.target.files.length != 1) {
 			this.status_message = "ERROR: Selected multiple files, only want a single file"
 			console.log(this.status_message)
 		}
-		this.alert_status()
+		if (this.alert_status()){
+			return
+		}
 		
 		// update label show "LOADING..."
 		for (const label of e.target.labels){
@@ -110,13 +123,19 @@ class ImageHolder {
 		let filename = this.file.name
 
 		await this.loadImageToModule()
-		this.alert_status()
+		if (this.alert_status()){
+			return
+		}
 
 		this.getImageDimensions()
-		this.alert_status()
+		if (this.alert_status()){
+			return
+		}
 		
 		this.displayImage()
-		this.alert_status()
+		if (this.alert_status()){
+			return
+		}
 		
 		// update label to be the new file name
 		for (const label of e.target.labels){
