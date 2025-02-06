@@ -374,6 +374,7 @@ def run(
 		response_function_class : Literal[SquareResponseFunction] | Literal[TriangularResponseFunction] = TriangularResponseFunction,
 		output_unit : u.Unit | None = None,
 		plot : bool = False,
+		alternate_header_fits_spec = None,
 	) -> tuple[np.ndarray, np.ndarray]:
 
 	original_data_type=None
@@ -388,7 +389,14 @@ def run(
 		
 	
 		axes_ordering =  aph.fits.header.get_axes_ordering(data_hdu.header, fits_spec.axes['SPECTRAL'])
-		axis_unit = u.Unit(aph.fits.header.get_axes_unit_string(data_hdu.header, (axes_ordering[0].fits,))[0], format='fits')
+		try:
+			axis_unit = u.Unit(aph.fits.header.get_axes_unit_string(data_hdu.header, (axes_ordering[0].fits,))[0], format='fits')
+		except TypeError:
+			if alternate_header_fits_spec is not None:
+				axis_unit = u.Unit(aph.fits.header.get_axes_unit_string(fits.getheader(alternate_header_fits_spec.path, alternate_header_fits_spec.ext), (axes_ordering[0].fits,))[0], format='fits')
+			else:
+				raise
+				
 		_lgr.debug(f'{axis_unit=}')
 		if output_unit is None:
 			output_unit = axis_unit
@@ -530,6 +538,8 @@ def parse_args(argv):
 	parser.add_argument('--spectral_unit_in_meters', type=float, default=None, help='The conversion factor between the spectral unit and meters. Only required when the unit cannot be automatically determined, or there is a mismatch between unit and data. Any automatically found unit information will be overwritten.')
 	parser.add_argument('--rebin_operation', choices=['sum', 'mean', 'mean_err'], default='mean', help='Operation to perform when binning.')
 	parser.add_argument('--output_unit', type=str, default=None, help='Units to use for output datacube. If not specified will use the same units as the input datacube.')
+	parser.add_argument('--alternate_header_fits_spec', type=str, default=None, metavar='FITS Specifier', help='If trouble is encountered when finding data in header of `fits_spec` will attempt to use this header instead.')
+	
 	
 	rebin_group = parser.add_mutually_exclusive_group(required=False)
 	rebin_group.add_argument('--rebin_preset', choices=list(named_spectral_binning_parameters.keys()), default='spex', help='Rebin according to the spectral resolution of the preset')
@@ -538,6 +548,8 @@ def parse_args(argv):
 	args = parser.parse_args(argv)
 	
 	args.fits_spec = aph.fits.specifier.parse(args.fits_spec, DESIRED_FITS_AXES)
+	if args.alternate_header_fits_spec is not None:
+		args.alternate_header_fits_spec = aph.fits.specifier.parse(args.alternate_header_fits_spec, DESIRED_FITS_AXES)
 	
 	if args.output_unit is not None:
 		try:
@@ -592,7 +604,8 @@ def go(
 		rebin_operation=None,
 		output_unit=None,
 		rebin_preset=None,
-		rebin_params=None
+		rebin_params=None,
+		alternate_header_fits_spec=None,
 	):
 	"""
 	Thin wrapper around `run()` to accept string inputs.
@@ -619,6 +632,7 @@ def exec_with_args(argv):
 		spectral_unit_in_meters= 1 if args.spectral_unit_in_meters is None else args.spectral_unit_in_meters,
 		response_function_class = args.response_function_class,
 		output_unit = args.output_unit,
+		alternate_header_fits_spec = args.alternate_header_fits_spec,
 	)
 
 if __name__ == '__main__':
