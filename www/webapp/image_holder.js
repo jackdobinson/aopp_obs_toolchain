@@ -86,6 +86,9 @@ class ImageHolder {
 	}
 
 	async handleEvent(e) {
+		this.discardPreviousImage()
+		this.alert_status()
+		
 		if (e.target.files.length != 1) {
 			this.status_message = "ERROR: Selected multiple files, only want a single file"
 			console.log(this.status_message)
@@ -101,9 +104,6 @@ class ImageHolder {
 			console.log(inner_html)
 			inner_html.innerText= "LOADING..."
 		}
-
-		this.discardPreviousImage()
-		this.alert_status()
 
 		this.file = e.target.files[0]
 		let filename = this.file.name
