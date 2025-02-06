@@ -20,9 +20,10 @@ class ImageHolder {
 		this.im_h=null
 		this.im_display_data=null
 		this.status_message = ""
+		this.html_element = html_element
 
-		if ((html_element !== undefined) && (event_name !== undefined)){
-			html_element.addEventListener(event_name, this)
+		if ((this.html_element !== undefined) && (event_name !== undefined)){
+			this.html_element.addEventListener(event_name, this)
 		}
 	}
 
