@@ -8,6 +8,11 @@ set -o errexit -o nounset -o pipefail
 THIS_DIR=$(readlink -f $(dirname $0))
 CWD=${PWD}
 
+
+# Set all files writable
+chmod -R u+w ${THIS_DIR}/*
+
+
 WEBAPP_DIR=${THIS_DIR}/../../emscripten_test/deconv_testing
 echo "Fetching webapp files (copying):"
 echo "    SOURCE      '${WEBAPP_DIR}'"
@@ -36,6 +41,7 @@ echo "Files copied."
 # Update parts of HTML file to overwrite placeholder elements #
 ###############################################################
 
+echo ""
 echo "Patching placeholders in HTML files..."
 
 # Add link back to home page
@@ -92,6 +98,7 @@ echo "Placeholders patched in HTML files."
 # Update JAVASCRIPT that is different between repos for some reason #
 #####################################################################
 
+echo ""
 echo "Patching javascript that behaves differently between repos..."
 
 find='(this.body_rect.top < 0 ? this.body_rect.top : 0)'
@@ -105,3 +112,14 @@ sed -i -e "s@${find}@${replace}@g" ${THIS_DIR}/status_kv.js
 
 
 echo "Javascript patching complete."
+
+
+echo ""
+echo "Setting all webapp files as readonly (except this script)"
+echo "as any changes should be made in the webapp submodule '${WEBAPP_DIR}'"
+
+# Set all files readonly
+chmod -R u-w ${THIS_DIR}/*
+
+# Set this script as writable
+chmod u+w $0
