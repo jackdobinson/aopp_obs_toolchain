@@ -4,8 +4,11 @@
 function getImageDataFromResult(get_result, arg_list, image_width, image_height){
 	console.log(get_result, arg_list, image_width, image_height)
 	let typed_array = get_result(...arg_list)
+	console.log('image_width*image_height*4', image_width*image_height*4)
+	console.log('typed_array.length',typed_array.length)
 	console.log(typed_array)
-	return new ImageData( new Uint8ClampedArray(typed_array.buffer, typed_array.byteOffset, typed_array.byteLength), image_width, image_height)
+	let data = new Uint8ClampedArray(typed_array.buffer, typed_array.byteOffset, typed_array.byteLength)
+	return new ImageData( data, image_width, image_height)
 }
 
 

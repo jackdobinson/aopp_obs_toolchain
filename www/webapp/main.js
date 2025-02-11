@@ -299,8 +299,13 @@ run_deconv_button.addEventListener("click",
 			
 			console.log("run_deconv_button.addEventListener::click", Math.log10(clean_modified_params.valueOf("fabs_frac_threshold")))
 
-			console.log("Preparing deconvolver for ${sci_image_holder.name} ${psf_image_holder.name}")
-			await Module.prepare_deconvolver(deconv_type, deconv_name, sci_image_holder.name, psf_image_holder.name, "")
+			console.log(`Preparing deconvolver for ${sci_image_holder.name} ${psf_image_holder.name}`)
+			let err_msg = await Module.prepare_deconvolver(deconv_type, deconv_name, sci_image_holder.name, psf_image_holder.name, "")
+			
+			if (err_msg.length >0){
+				alert(`ERROR: ${err_msg}`)
+				return
+			}
 			
 			
 			// Clear plots
@@ -318,8 +323,8 @@ run_deconv_button.addEventListener("click",
 			
 			let width = sci_image_holder.im_w
 			let height = sci_image_holder.im_h
-			width += (1-width%2)
-			height += (1-height%2)
+			//width += (1-width%2)
+			//height += (1-height%2)
 
 			console.log("Get results from deconvolver")
 			// assume results are the same size as the science image
