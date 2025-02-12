@@ -33,6 +33,7 @@ let deconv_status_mgr = new StatusKVManager([
 	["PSF Observation Uploaded", false, {"is-good":false}, {highlight_on_hover_target:document.getElementById("psf-target-button")}],
 	["Parameters Validated", false, {"is-good":false}, {highlight_on_hover_target:document.getElementById("param-container")}],
 	["Deconvolution Running", false, {"is-good":undefined}, {highlight_on_hover_target:document.getElementById("run_deconv")}],
+	["Current Deconvolution Image Layer", "No Previous Run", {"is-good":undefined}],
 	["Deconvolution Iteration", "No Previous Run", {"is-good":undefined}],
 	["Last Plot Update Iteration", "No Previous Run", {"is-good":undefined}, {highlight_on_hover_target:document.getElementById("progress-plot-region")}],
 	["Results Available", false, {"is-good":false}, {highlight_on_hover_target:document.getElementById("results-region")}]
@@ -124,7 +125,8 @@ figure.set_caption([
 "Figure 5: Left axis shows two stopping criteria: 1) <em>fabs</em> (red), the absolute brightest pixel of the residual \
 divided by the absolute brightest pixel of the original image; 2) <em>rms</em> (green), the root-mean-square of the residual \
 divided by the root-mean-square of the original image. Right axis shows the threshold (purple) which is used to choose the \
-<em>selected pixels</em> (Fig. 2).",
+<em>selected pixels</em> (Fig. 2). The history for each colour layer is kept, resulting in multiple curves for each quantity \
+if there are multiple colour layers.",
 
 "The two stopping criteria <em>fabs</em> and <em>rms</em> progress from a value of 1 to whatever value is specified in \
 <em>fabs_frac_threshold</em> and <em>rms_frac_threshold</em> respectively. When they reach their respective thresholds, \
@@ -297,7 +299,7 @@ run_deconv_button.addEventListener("click",
 				return;
 			}
 			
-			console.log("run_deconv_button.addEventListener::click", Math.log10(clean_modified_params.valueOf("fabs_frac_threshold")))
+			//console.log("run_deconv_button.addEventListener::click", Math.log10(clean_modified_params.valueOf("fabs_frac_threshold")))
 
 			console.log(`Preparing deconvolver for ${sci_image_holder.name} ${psf_image_holder.name}`)
 			let err_msg = await Module.prepare_deconvolver(deconv_type, deconv_name, sci_image_holder.name, psf_image_holder.name, "")
@@ -323,6 +325,10 @@ run_deconv_button.addEventListener("click",
 			
 			let width = sci_image_holder.im_w
 			let height = sci_image_holder.im_h
+			
+			// Updated webassembly so results are the same shape as
+			// input science image. Therefore do not need to change to
+			// odd-shape.
 			//width += (1-width%2)
 			//height += (1-height%2)
 

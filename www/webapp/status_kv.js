@@ -47,6 +47,8 @@ class StatusKV extends HtmlContainer {
 		key_class : "status-kv-key", 
 		value_class:"status-kv-value",
 		highlight_on_hover_target : null,
+		target_highlighter_class : "status-kv-highlighter",
+		target_highlighter_style : "border:5px solid red;z-index: 99;"
 	}
 	
 	constructor(
@@ -64,7 +66,11 @@ class StatusKV extends HtmlContainer {
 		
 		this.setKey(key)
 		this.setValue(value)
-		this.setHighlightOnHover(opts.highlight_on_hover_target)
+		this.setHighlightOnHover(
+			opts.highlight_on_hover_target,
+			opts.target_highlighter_class,
+			opts.target_highlighter_style
+		)
 		
 		assert_all_defined(this.key, this.value, this.html_key_element, this.html_value_element)
 		
@@ -82,7 +88,11 @@ class StatusKV extends HtmlContainer {
 		this.html_value_element.textContent = value
 	}
 	
-	setHighlightOnHover(target){
+	setHighlightOnHover(
+			target,
+			target_highlighter_class,
+			target_highlighter_style
+		){
 		if (target === null){
 			return
 		}
@@ -98,7 +108,9 @@ class StatusKV extends HtmlContainer {
 			this.target_top = this.target_rect.top - this.body_rect.top
 			this.target_left = this.target_rect.left - this.body_rect.left
 			
-			this.target_highlighter = Html.createElement("div",{"style":`position:absolute;left:${this.target_left}px;top:${this.target_top}px;width:${this.target_rect.width}px;height:${this.target_rect.height}px;border:5px solid red;z-index: 99;`})
+			
+			let target_highlighter_position = `position:absolute;left:${this.target_left}px;top:${this.target_top}px;width:${this.target_rect.width}px;height:${this.target_rect.height}px;`
+			this.target_highlighter = Html.createElement("div",{"class":target_highlighter_class ,"style":target_highlighter_position+target_highlighter_style})
 			//console.log(this.target_highlighter.style)
 			this.target_highlighter_node = document.body.appendChild(this.target_highlighter)
 		}

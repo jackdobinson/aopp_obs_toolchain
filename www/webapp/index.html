@@ -23,13 +23,15 @@
 		filename when they are downloaded.
 		</p>
 		<p>
-		Currently it has been tested to cope with single-channel or 3-channel data in (un)signed 8 or 16 bit integers.
+		Currently it has been tested to cope with single-colour or 3-colour data in (un)signed 8 or 16 bit integers. Each colour is
+		deconvolved as an independent layer. Therefore a science image and a PSF must have the same number of colour layers. After
+		deconvolution, the colour layers are recombined in the same format as the input science image.
 		</p>
 		<hr/>
 		
 		<figure style="overflow:visible;" id="spinner">
 			<div class="spinner"></div>
-			<center style="margin-top:0.5em"><strong>aopp_deconv_tool</strong></center>
+			<h1 style="text-align:center;margin-top:0.5em"><strong>aopp_deconv_tool</strong></h1>
 		</figure>
 
 		<div class="emscripten" id="status">
@@ -42,7 +44,7 @@
 			</progress>  
 		</div>
 
-		<div class="emscripten-hide-boilerplate" style="display:none;width=100%">
+		<div class="emscripten-hide-boilerplate" style="display:none;width:100%">
 			<canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
 			<hr/>
 		

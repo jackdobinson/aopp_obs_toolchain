@@ -1531,11 +1531,11 @@ class DataArea{
 	
 	draw(){
 		return
-		this.svg.add(
-			"rect",
-			T.apply_block(this.frame.toRoot_transform, E.from(0,0,1,1)),
-			{stroke:"blue"}
-		)
+		//this.svg.add(
+		//	"rect",
+		//	T.apply_block(this.frame.toRoot_transform, E.from(0,0,1,1)),
+		//	{stroke:"blue"}
+		//)
 	}
 	
 	
@@ -1692,11 +1692,11 @@ class PlotArea{
 			V.from(0.5,0)
 		)
 		return
-		this.svg.add(
-			"rect",
-			T.apply_block(this.frame.toRoot_transform, E.from(0,0,1,1)),
-			{stroke:"green"}
-		)
+		//this.svg.add(
+		//	"rect",
+		//	T.apply_block(this.frame.toRoot_transform, E.from(0,0,1,1)),
+		//	{stroke:"green"}
+		//)
 	}
 	
 	addDatasetToAxes(axes_name, dataset){
@@ -1884,11 +1884,11 @@ class Figure{
 	
 	draw(){
 		return
-		this.svg.add(
-			"rect",
-			T.apply_block(this.frame.toRoot_transform, E.from(0,0,1,1)),
-			{stroke:"red"}
-		)
+		//this.svg.add(
+		//	"rect",
+		//	T.apply_block(this.frame.toRoot_transform, E.from(0,0,1,1)),
+		//	{stroke:"red"}
+		//)
 	}
 	
 	appendPlotArea(name, plot_area){
