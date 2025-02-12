@@ -1716,11 +1716,34 @@ class PlotArea{
 		this.current_axes = axes
 	}
 	
-	newDatasetForAxes(axes_name, dataset_name = null){
+	newDatasetForAxes(axes_name=null, dataset_name = null){
+		if(axes_name === null){
+			axes_name = this.current_axes
+		}
 		let ds = new Dataset(
 			(dataset_name === null) ? `dataset-${this.datasets.size}` : dataset_name
 		)
 		this.addDatasetToAxes(axes_name, ds)
+		return ds.name
+	}
+	
+	newDatasetLike(dataset_name=null, new_dataset_name=null){
+		if (dataset_name === null){
+			dataset_name = this.current_dataset.name
+		}
+		let ds = new Dataset(
+			(new_dataset_name === null) ? `dataset-${this.datasets.size}` : new_dataset_name
+		)
+		this.datasets.set(ds.name, ds)
+		let afd = []
+		
+		for (const axes of this.axes_for_dataset.get(dataset_name)){
+			afd.push(axes)
+		}
+		this.axes_for_dataset.set(ds.name, afd)
+		for (const axes of afd){
+			axes.registerDataset(ds.name)
+		}
 		return ds.name
 	}
 	

@@ -125,8 +125,7 @@ figure.set_caption([
 "Figure 5: Left axis shows two stopping criteria: 1) <em>fabs</em> (red), the absolute brightest pixel of the residual \
 divided by the absolute brightest pixel of the original image; 2) <em>rms</em> (green), the root-mean-square of the residual \
 divided by the root-mean-square of the original image. Right axis shows the threshold (purple) which is used to choose the \
-<em>selected pixels</em> (Fig. 2). The history for each colour layer is kept, resulting in multiple curves for each quantity \
-if there are multiple colour layers.",
+<em>selected pixels</em> (Fig. 2).",
 
 "The two stopping criteria <em>fabs</em> and <em>rms</em> progress from a value of 1 to whatever value is specified in \
 <em>fabs_frac_threshold</em> and <em>rms_frac_threshold</em> respectively. When they reach their respective thresholds, \
