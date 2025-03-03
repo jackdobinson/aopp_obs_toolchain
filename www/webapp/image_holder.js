@@ -2,11 +2,7 @@
 
 
 function getImageDataFromResult(get_result, arg_list, image_width, image_height){
-	console.log(get_result, arg_list, image_width, image_height)
 	let typed_array = get_result(...arg_list)
-	console.log('image_width*image_height*4', image_width*image_height*4)
-	console.log('typed_array.length',typed_array.length)
-	console.log(typed_array)
 	let data = new Uint8ClampedArray(typed_array.buffer, typed_array.byteOffset, typed_array.byteLength)
 	return new ImageData( data, image_width, image_height)
 }
@@ -44,24 +40,37 @@ class ImageHolder {
 
 	async loadImageToModule(){
 		if (this.file === null){
-			this.status_message = "ERROR: Cannot load a null file to module"
-			console.log(this.status_message)
+			this.status_message = "ERROR: Attempting to load NULL file."
 			return
 		}
 
 		if (this.file.name.endsWith(".tiff") || this.file.name.endsWith(".tif")) {
-			this.name = Module.TIFF_from_js_array(this.file.name, await this.file.bytes())
+			let uint8_file_data = null
+			try{
+				if (this.file.bytes !== undefined){ // For some reason File.bytes() is only available for Firefox.
+					uint8_file_data = await this.file.bytes()
+				} else {
+					uint8_file_data = new Uint8Array((await this.file.arrayBuffer()).transferToFixedLength())
+				}
+			} catch (e) {
+				this.status_message = `ERROR: File "${this.file.name}", could not read bytes from file. Recieved error message: ${e.message}`
+				return
+			}
+			try{
+				this.name = Module.TIFF_from_js_array(this.file.name, uint8_file_data)
+			} catch (e) {
+				this.status_message = `ERROR: File "${this.file.name}", could not read bytes as TIFF file. Recieved error message: ${e.message}`
+				return
+			}
 		}
 		else {
-			this.status_message = `ERROR: Unknown file extension. Cannot load image ${this.file.name}.`
-			console.log(this.status_message)
+			this.status_message = `ERROR: File "${this.file.name}", unknown file extension.`
 		}
 	}
 
 	getImageDimensions(){
 		if(this.name === null){
 			this.status_message = "ERROR: Must have an image name to get image dimensions"
-			console.log(this.status_message)
 			return
 		}
 		this.im_w = Module.TIFF_get_width(this.name)
@@ -71,11 +80,15 @@ class ImageHolder {
 	async displayImage(){
 		if ((this.name===null) || (this.im_w===null) || (this.im_h===null)){
 			this.status_message = "ERROR: Must have image name, image width, and image height to display image"
-			console.log(this.status_message)
 			return
 		}
-		//this.im_display_data = new ImageData(new Uint8ClampedArray(Module.image_as_JSImageData(this.name)), this.im_w, this.im_h)
-		this.im_display_data = await getImageDataFromResult(Module.image_as_JSImageData, [this.name], this.im_w, this.im_h)
+		try{
+			this.im_display_data = await getImageDataFromResult(Module.image_as_JSImageData, [this.name], this.im_w, this.im_h)
+		}
+		catch (e){
+			this.status_message = `ERROR: File "${this.file.name}", could not retrieve image data using internal name "${this.name}". Recieved error message: ${e.message}`
+			return
+		}
 		this.target_canvas.width = this.im_w
 		this.target_canvas.height = this.im_h
 		this.target_canvas.style = `aspect-ratio: ${this.im_w} / ${this.im_h};`
@@ -86,6 +99,7 @@ class ImageHolder {
 
 	alert_status(){
 		if (this.status_message.length > 0){
+			console.error(this.status_message)
 			alert(this.status_message)
 			for (const label of this.html_element.labels){
 				let inner_html = label

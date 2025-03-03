@@ -32,37 +32,51 @@ class WasmDataDownloader{
 	handleEvent(){
 		// This actually causes the download to start
 		// Shamelessly copied from "https://gist.github.com/TrevorSundberg/74dc4f576b94d19711a4547dcf04af40"
-				
-		//if (!deconv_complete){
-		//	throw new Error("Deconvolution has not completed, cannot download results")
-		//}
 		
 		if(!this.predicate_required_for_download(this)){
 			throw new Error("Predicate failed, cannot proceed with download")
 		}
 		
 		
+		let a = null
+		let url = null
+		let success = false
 		
-		const a = document.createElement("a")
-		a.style = 'display:none'
-		document.body.appendChild(a)
+		try {
+			a = document.createElement("a")
+			a.style = 'display:none'
+			document.body.appendChild(a)
+			
+			const wasm_data = this.wasm_data_provider(this.file_id)
+			
+			const blob = new Blob([wasm_data], {type:"octet/stream"})
+			url = window.URL.createObjectURL(blob)
+			
+			a.href=url
+			
+			this.resolve_filename()
+			a.download = this.resolved_filename
+			a.click() // make the element perform its download
+			
+			success = true; // If we get here without throwing an error we are successful
+		}
+		catch (e){
+			const msg = `An error occured during download. Recieved error message: ${e.message}`
+			console.error(msg)
+			alert(msg)
+		}
+		finally {
+			this.unresolve_filename()
+			if(url !== null){
+				window.URL.revokeObjectURL(url)
+			}
+			if (a !== null){
+				document.body.removeChild(a)
+			}
+		}
 		
-		
-		const wasm_data = this.wasm_data_provider(this.file_id)
-		
-		const blob = new Blob([wasm_data], {type:"octet/stream"})
-		const url = window.URL.createObjectURL(blob)
-		
-		a.href=url
-		
-		this.resolve_filename()
-		a.download = this.resolved_filename
-		a.click() // make the element perform its download
-		
-		window.URL.revokeObjectURL(url)
-		document.body.removeChild(a)
-		
-		this.unresolve_filename()
-		this.on_success_callback()
+		if (success){
+			this.on_success_callback()
+		}
 	}
 }

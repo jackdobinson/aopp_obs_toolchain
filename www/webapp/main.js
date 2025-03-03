@@ -63,9 +63,9 @@ let deconv_residual = null
 let clean_modified_params = new CleanModifiedParameters(document.getElementById("param-container"))
 
 
-function setHideViaDetails(detail_element_name, container_element_name, show_at_start_flag=false){
-	let details = document.getElementById(detail_element_name)
-	let container = document.getElementById(container_element_name)
+function setHideViaDetails(detail_element_id, container_element_id, show_at_start_flag=false){
+	let details = document.getElementById(detail_element_id)
+	let container = document.getElementById(container_element_id)
 	
 	container.hide = ()=>{
 		container.prev_style = container.getAttribute("style")
@@ -273,13 +273,17 @@ run_deconv_button.addEventListener("click",
 		try{
 			e.target.textContent = "Deconvolution in progress..."
 			e.target.disabled = true
+			
+			
 			if ((sci_image_holder.name === null) || (psf_image_holder.name === null)) {
+				console.error("Input data is missing")
 				alert("ERROR: Missing input data.\n\nDeconvolution requires upload of a science image and a psf image")
 				return
 			}
 
 			let invalid_params = clean_modified_params.validate()
 			if(invalid_params.length != 0){
+				console.error("Parameter validation failed.")
 				alert(`ERROR: Could not run deconvolution.\n\nThe following parameters are invalid and need to be corrected:\n\t${invalid_params.join("\n\t")}`)
 				return;
 			}
@@ -294,6 +298,7 @@ run_deconv_button.addEventListener("click",
 			// Check for invalid params again when we set the values
 			invalid_params = clean_modified_params.set_params(deconv_type, deconv_name)
 			if(invalid_params.length != 0){
+				console.error("Parameter validation failed after deconvolver creation.")
 				alert(`ERROR: Could not run deconvolution.\n\nThe following parameters are invalid and need to be corrected:\n\t${invalid_params.join("\n\t")}`)
 				return;
 			}
@@ -304,6 +309,7 @@ run_deconv_button.addEventListener("click",
 			let err_msg = await Module.prepare_deconvolver(deconv_type, deconv_name, sci_image_holder.name, psf_image_holder.name, "")
 			
 			if (err_msg.length >0){
+				console.error(err_msg)
 				alert(`ERROR: ${err_msg}`)
 				return
 			}
@@ -324,12 +330,6 @@ run_deconv_button.addEventListener("click",
 			
 			let width = sci_image_holder.im_w
 			let height = sci_image_holder.im_h
-			
-			// Updated webassembly so results are the same shape as
-			// input science image. Therefore do not need to change to
-			// odd-shape.
-			//width += (1-width%2)
-			//height += (1-height%2)
 
 			console.log("Get results from deconvolver")
 			// assume results are the same size as the science image
@@ -346,8 +346,8 @@ run_deconv_button.addEventListener("click",
 				height
 			)
 
-			console.log("deconv_clean_map", deconv_clean_map)
-			console.log("deconv_residual", deconv_residual)
+			//console.log("deconv_clean_map", deconv_clean_map)
+			//console.log("deconv_residual", deconv_residual)
 
 			console.log("Display results on canvas elements")
 
@@ -355,13 +355,17 @@ run_deconv_button.addEventListener("click",
 			clean_map_canvas.height = height
 			clean_map_canvas.getContext("2d").putImageData(deconv_clean_map,0,0)
 
-		
 			residual_canvas.width = width
 			residual_canvas.height = height
 			residual_canvas.getContext("2d").putImageData(deconv_residual,0,0)	
 
 			console.log("Results should be displayed")
 			deconv_status_mgr.set("Results Available", true, {"is-good":true})
+		}
+		catch (e){
+			let msg = `An error occured during deconvolution. Recieved error message: ${e.message}`
+			console.error(msg)
+			alert(msg)
 		}
 		finally {
 			e.target.textContent = "Run Deconvolution"
