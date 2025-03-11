@@ -27,6 +27,10 @@ let download_residual_button = document.getElementById("download-residual-button
 let run_deconv_button = document.getElementById("run_deconv")
 let n_max_iter_field = document.getElementById("n_max_iter")
 
+let gen_psf_button = document.getElementById("gen_psf_button")
+gen_psf_button.px_angular_size_input = document.getElementById("gen_psf_px_angular_size")
+gen_psf_button.sigma_input = document.getElementById("gen_psf_sigma")
+
 
 let deconv_status_mgr = new StatusKVManager([
 	["Science Observation Uploaded", false, {"is-good":false}, {highlight_on_hover_target:document.getElementById("science-target-button")}],
@@ -375,6 +379,30 @@ run_deconv_button.addEventListener("click",
 )
 
 
+gen_psf_button.addEventListener("click", 
+	async(e)=>{
+		let msg = ""
+		const px_angular_size = parseFloat(gen_psf_button.px_angular_size_input.value) // arcsec/pixel
+		if (isNaN(px_angular_size)){
+			msg += "\nangular pixel size of science image must be a number"
+		}
+		const sigma = parseFloat(gen_psf_button.sigma_input.value) // argsec
+		if (isNaN(sigma)){
+			msg += "\nseeing must be a number"
+		}
+		
+		if (msg.length > 0){
+			msg = "An error occured during PSF generation:" + msg
+			alert(msg)
+		}
+		
+		console.log(msg)
+		console.log(px_angular_size)
+		console.log(sigma)
+		
+		psf_image_holder.GenGaussianImage(px_angular_size, sigma)
+	}
+)
 
 
 

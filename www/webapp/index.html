@@ -24,8 +24,9 @@
 		</p>
 		<p>
 		Currently it has been tested to cope with single-colour or 3-colour data in (un)signed 8 or 16 bit integers. Each colour is
-		deconvolved as an independent layer. Therefore a science image and a PSF must have the same number of colour layers. After
-		deconvolution, the colour layers are recombined in the same format as the input science image.
+		deconvolved as an independent layer. Therefore a science image and a PSF must either 1) have the same number of colour layers
+		or 2) the PSF has one colour layer that is applied to all the science image colour layers. After deconvolution, the colour 
+		layers are recombined in the same format as the input science image.
 		</p>
 		<hr/>
 		
@@ -85,13 +86,70 @@
 				</div>
 
 				<div class="v-flow">
-					<div id="psf-target-button" class="item">
-						<label for="psf_file">
-							<div class="button-like">
-								Select PSF File...
+					<div id="psf-target-button">
+						<div class="h-flow">
+							<div class="item">
+								<label for="psf_file">
+									<div class="button-like has-tooltip">
+										Select PSF File...
+										<div class="tooltip">
+											<p>
+												A PSF is a a measure of how the instrument used to obtain the science image responds to a point source, usually a star.
+												There are broadly two ways to obtain one (see below). Using an empirical PSF is usually the simplest method.
+												<ol>
+													<li>
+													An empirical PSF.
+													</li>
+													<ol>
+														<li>
+														An image of a star taken with the same setup as the science image.
+														</li>
+														<li>
+														If there is a star in the science image "far enough away" (at least 5 "blob sizes" is a good rule of thumb) from the planet, that section of the image can be cut out and used.
+														</li>
+													</ol>
+													<li>
+													A modeled PSF.
+														<ol>
+														<li>
+														If your telescope is <a href="https://en.wikipedia.org/wiki/Astronomical_seeing">"seeing" limited</a>, and your exposure time is longer than a few seconds, you can usually get away with a 2d Gaussian function, where the standard deviation is the same as the "seeing" angular resolution.
+														</li>
+														<li>
+														If your telescope is <a href="https://en.wikipedia.org/wiki/Diffraction-limited_system">diffraction limited</a>, and your exposure time is longer than a few seconds, you can use an Airy disk function.
+														</li>
+														<li>
+														Other situations. E.g., If your exposure time is really short, or you have an adaptive optics setup, or something even more exotic. Then the modeling can get very involved.
+														</li>
+														</ol>
+													</li>
+												</ol>
+											</p>
+										</div>
+									</div>
+								</label>
+								<input type="file" id="psf_file" name="psf_file" style="display:none;">
 							</div>
-						</label>
-						<input type="file" id="psf_file" name="psf_file" style="display:none;">
+							<div class="item" style="width:20rem;">
+								<details>
+								<summary>Generate PSF</summary>
+								
+								<div>
+									<div style="display:flex; flex-flow:row; padding-block:0.1rem; justify-content: space-between;">
+										<label for="gen_psf_px_angular_size" style="font-size: small;">Pixel size of science image (argsec)</label>
+										<input type="number" id="gen_psf_px_angular_size" value="1" required style="width:3rem; height:1.6rem"/>
+									</div>
+									<div style="display:flex;flex-flow:row; padding-block:0.1rem; justify-content: space-between;">
+										<label for="gen_psf_sigma" style="font-size: small;">seeing (argsec)</label>
+										<input type="number" id="gen_psf_sigma" value="3" required style="width:3rem; height:1.6rem"/>
+									</div>
+								</div>
+								<button id="gen_psf_button">Generate PSF</button>
+								</details>
+							</div>
+						
+						</div>
+						
+						
 						<div class="canvas-container">
 							<canvas id="psf_canvas" oncontextmenu="event.preventDefault()" tabindex=-1>
 							</canvas>
