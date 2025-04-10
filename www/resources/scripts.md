@@ -683,6 +683,8 @@ PYTHON_VERSION_SOURCE_URL="https://www.python.org/ftp/python/${PYTHON_VERSION_ST
 PY_SRC_DIR="${PYTHON_SOURCE_DIR}/Python-${PYTHON_VERSION_STR}"
 PY_SRC_FILE="${PY_SRC_DIR}.tgz"
 
+# Create directories if required
+mkdir -p "${PYTHON_INSTALL_DIR}"
 
 # Perform actions
 install_python | tee >(term_remove_ctrl_chars > ${LOG_FILE:-/dev/null})
