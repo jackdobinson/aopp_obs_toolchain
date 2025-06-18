@@ -15,7 +15,7 @@ pkg_stream_hdlr = logging.StreamHandler()
 pkg_stream_hdlr.setLevel(logging.DEBUG)
 
 pkg_stream_hdlr_formatter = logging.Formatter(
-	format="%(asctime)s %(filename)s:%(lineno)d \"%(funcName)s\" %(levelname)s: %(message)s",
+	fmt="%(asctime)s %(filename)s:%(lineno)d \"%(funcName)s\" %(levelname)s: %(message)s",
 	datefmt="%Y-%m-%dT%H:%M:%S %z",
 )
 pkg_stream_hdlr.setFormatter(pkg_stream_hdlr_formatter)
