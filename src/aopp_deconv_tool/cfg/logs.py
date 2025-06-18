@@ -5,13 +5,27 @@ import sys
 import types
 import logging
 
-logging.basicConfig(
+pkg_name = __name__.split('.',1)[0]
+pkg_lgr = logging.getLogger(pkg_name)
+pkg_lgr.propagate = False
+
+pkg_lgr.setLevel(logging.DEBUG)
+
+pkg_stream_hdlr = logging.StreamHandler()
+pkg_stream_hdlr.setLevel(logging.DEBUG)
+
+pkg_stream_hdlr_formatter = logging.Formatter(
 	format="%(asctime)s %(filename)s:%(lineno)d \"%(funcName)s\" %(levelname)s: %(message)s",
 	datefmt="%Y-%m-%dT%H:%M:%S %z",
-	force=True
 )
+pkg_stream_hdlr.setFormatter(pkg_stream_hdlr_formatter)
 
-excepthook_lgr = logging.getLogger('excepthook')
+
+pkg_lgr.addHandler(pkg_stream_hdlr)
+
+
+
+excepthook_lgr = logging.getLogger(f'{pkg_name}.excepthook')
 def log_excepthook(type, value, traceback):
 	"""
 	Override for `sys.excepthook`.
@@ -47,7 +61,10 @@ def get_logger_at_level(name : str | types.ModuleType, level : str|int = logging
 	"""
 	if type(name) is types.ModuleType:
 		name = name.__name__
-	
+		
+	if name.split('.',1)[0] != pkg_name:
+		raise RuntimeError(f'Trying to get logger "{name}" but logger is not a child of "{pkg_name}"')
+		
 	_lgr = logging.getLogger(name)
 	_lgr.setLevel(level)
 	return _lgr
@@ -58,5 +75,9 @@ def set_logger_at_level(name : str | types.ModuleType, level : str|int = logging
 	"""
 	if type(name) is types.ModuleType:
 		name = name.__name__
+	
+	if name.split('.',1)[0] != pkg_name:
+		raise RuntimeError(f'Trying to set level of logger "{name}" but logger is not a child of "{pkg_name}"')
+	
 	get_logger_at_level(name, level)
 	return None
